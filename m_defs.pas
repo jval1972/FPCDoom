@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -47,11 +48,14 @@ uses
   i_sound,
   m_menu,
   r_aspect,
-  r_defs, 
-  r_main, 
-  r_hires, 
-  r_lights, 
-  r_intrpl, 
+  r_defs,
+  r_lightmap,
+  r_main,
+  r_mirror,
+  r_grayscale,
+  r_colorsubsampling,
+  r_hires,
+  r_intrpl,
   s_sound,
   t_main,
   v_video;
@@ -77,7 +81,7 @@ type
   Pdefault_t = ^default_t;
 
 const
-  NUMDEFAULTS = 104;
+  NUMDEFAULTS = 112;
 
   defaults: array[0..NUMDEFAULTS - 1] of default_t = (
     (name: 'Display';
@@ -180,9 +184,17 @@ const
      location: @shademenubackground;
      setable: DFS_ALWAYS;
      defaultsvalue: '';
+     defaultivalue: 2;
+     defaultbvalue: false;
+     _type: tInteger),
+
+    (name: 'menubackgroundflat';
+     location: @menubackgroundflat;
+     setable: DFS_ALWAYS;
+     defaultsvalue: DEFMENUBACKGROUNDFLAT;
      defaultivalue: 0;
-     defaultbvalue: true;
-     _type: tBoolean),
+     defaultbvalue: false;
+     _type: tString),
 
     (name: 'displayendscreen';
      location: @displayendscreen;
@@ -208,19 +220,35 @@ const
      defaultbvalue: false;
      _type: tInteger),
 
-    (name: 'uselightboost';
-     location: @uselightboost;
+    (name: 'uselightmap';
+     location: @uselightmap;
      setable: DFS_ALWAYS;
      defaultsvalue: '';
      defaultivalue: 0;
      defaultbvalue: true;
      _type: tBoolean),
 
-    (name: 'lightboostfactor';
-     location: @lightboostfactor;
+    (name: 'lightmapaccuracymode';
+     location: @lightmapaccuracymode;
      setable: DFS_ALWAYS;
      defaultsvalue: '';
-     defaultivalue: 192;
+     defaultivalue: 0;
+     defaultbvalue: true;
+     _type: tInteger),
+
+    (name: 'lightmapcolorintensity';
+     location: @lightmapcolorintensity;
+     setable: DFS_ALWAYS;
+     defaultsvalue: '';
+     defaultivalue: 64;
+     defaultbvalue: true;
+     _type: tInteger),
+
+    (name: 'lightwidthfactor';
+     location: @lightwidthfactor;
+     setable: DFS_ALWAYS;
+     defaultsvalue: '';
+     defaultivalue: 5;
      defaultbvalue: true;
      _type: tInteger),
 
@@ -279,6 +307,30 @@ const
      defaultivalue: 0;
      defaultbvalue: false;
      _type: tString),
+
+    (name: 'mirrormode';
+     location: @mirrormode;
+     setable: DFS_ALWAYS;
+     defaultsvalue: '';
+     defaultivalue: 0;
+     defaultbvalue: false;
+     _type: tInteger),
+
+    (name: 'grayscalemode';
+     location: @grayscalemode;
+     setable: DFS_ALWAYS;
+     defaultsvalue: '';
+     defaultivalue: 0;
+     defaultbvalue: false;
+     _type: tInteger),
+
+    (name: 'colorsubsamplingmode';
+     location: @colorsubsamplingmode;
+     setable: DFS_ALWAYS;
+     defaultsvalue: '';
+     defaultivalue: 0;
+     defaultbvalue: false;
+     _type: tInteger),
 
     (name: 'Automap';
      location: nil;
@@ -577,6 +629,22 @@ const
 
     (name: 'mouse_sensitivity';
      location: @mouseSensitivity;
+     setable: DFS_ALWAYS;
+     defaultsvalue: '';
+     defaultivalue: 5;
+     defaultbvalue: false;
+     _type: tInteger),
+
+    (name: 'mouse_sensitivityX';
+     location: @mouseSensitivityX;
+     setable: DFS_ALWAYS;
+     defaultsvalue: '';
+     defaultivalue: 5;
+     defaultbvalue: false;
+     _type: tInteger),
+
+    (name: 'mouse_sensitivityY';
+     location: @mouseSensitivityY;
      setable: DFS_ALWAYS;
      defaultsvalue: '';
      defaultivalue: 5;

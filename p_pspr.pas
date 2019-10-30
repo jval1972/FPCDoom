@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -502,7 +503,7 @@ begin
   begin
     S_StartSound(player.mo, Ord(sfx_punch));
     player.mo.angle :=
-      R_PointToAngle2(player.mo.x, player.mo.y, linetarget.x, linetarget.y);
+      P_PointToAngle(player.mo.x, player.mo.y, linetarget.x, linetarget.y);
   end;
 end;
 
@@ -533,7 +534,7 @@ begin
 
   // turn to face target
   angle :=
-    R_PointToAngle2(player.mo.x, player.mo.y, linetarget.x, linetarget.y);
+    P_PointToAngle(player.mo.x, player.mo.y, linetarget.x, linetarget.y);
   if angle - player.mo.angle > ANG180 then
   begin
     if integer(angle - player.mo.angle) < - integer(ANG90 div 20) then

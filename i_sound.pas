@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -134,7 +135,7 @@ begin
   begin
     oldsize := numsoundparams * SizeOf(soundparam_t);
     numsoundparams := id + 1;
-    realloc(pointer(soundparams), oldsize, numsoundparams * SizeOf(soundparam_t));
+    realloc(soundparams, oldsize, numsoundparams * SizeOf(soundparam_t));
     soundparams[id].wavestatus := ws_nowave;
   end;
   result := @soundparams[id];
@@ -828,7 +829,7 @@ begin
   if pDS <> nil then
     I_ClearInterface(IInterface(pDS));
 
-  memfree(pointer(soundparams), numsoundparams * SizeOf(soundparam_t));
+  memfree(soundparams, numsoundparams * SizeOf(soundparam_t));
 
   S_ShutDownSound;
 end;

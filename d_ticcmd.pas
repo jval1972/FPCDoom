@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -30,6 +31,9 @@ unit d_ticcmd;
 
 interface
 
+const
+  CF_MIRROR = 1;
+
 // The data sampled per tick (single player)
 // and transmitted to other peers (multiplayer).
 // Mainly movements/button commands per game tick,
@@ -45,7 +49,8 @@ type
     commands: byte;      // JVAL for special commands
     lookupdown16: word;  // JVAL Smooth Look Up/Down
     lookleftright: byte; // JVAL look left/right/forward
-    jump: byte;     // JVAL Jump!
+    jump: byte;          // JVAL Jump!
+    flags: byte;         // JVAL for mirror, etc
   end;
   Pticcmd_t = ^ticcmd_t;
 

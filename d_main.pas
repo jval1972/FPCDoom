@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -138,7 +139,7 @@ uses
   r_defs,
   r_intrpl,
   r_data,
-  r_lights,
+  r_lightmap,
   sounds,
   s_sound,
   sc_actordef,
@@ -614,13 +615,8 @@ var
 procedure D_AddFile(const fname: string);
 begin
   if fname <> '' then
-  begin
-    try
-      wadfiles.Add(fname);
-    except
-      printf('D_AddFile(): Can not add %s'#13#10, [fname]);
-    end;
-  end;
+    if wadfiles.IndexOf(strupper(fname)) < 0 then
+      wadfiles.Add(strupper(fname));
 end;
 
 const
@@ -1458,19 +1454,13 @@ begin
       SCREENHEIGHT := MAXHEIGHT;
   end;
 
-  if SCREENHEIGHT = -1 then
+  if SCREENHEIGHT <= 0 then
     SCREENHEIGHT := I_ScreenHeight;
   if SCREENHEIGHT > MAXHEIGHT then
     SCREENHEIGHT := MAXHEIGHT;
 
-  if SCREENWIDTH = -1 then
+  if SCREENWIDTH <= 0 then
     SCREENWIDTH := I_ScreenWidth;
-  if SCREENWIDTH > MAXWIDTH then
-    SCREENWIDTH := MAXWIDTH;
-
-  if SCREENHEIGHT > MAXHEIGHT then
-    SCREENHEIGHT := MAXHEIGHT;
-
   if SCREENWIDTH > MAXWIDTH then
     SCREENWIDTH := MAXWIDTH;
 
@@ -1486,19 +1476,10 @@ begin
     usetransparentsprites := true;
   if M_CheckParm('-dontusetransparentsprites') <> 0 then
     usetransparentsprites := false;
-  if M_CheckParm('-uselightboost') <> 0 then
-    uselightboost := true;
-  if M_CheckParm('-dontuselightboost') <> 0 then
-    uselightboost := false;
-  p := M_CheckParm('-lightboostfactor');
-  if (p <> 0) and (p < myargc - 1) then
-  begin
-    p := atoi(myargv[p + 1], -1);
-    if (p >= LFACTORMIN) and (p <= LFACTORMAX) then
-      lightboostfactor := p
-    else
-      I_Warning('Invalid lightboostfactor specified from command line %d. Specify a value in range (%d..%d)'#13#10, [p, LFACTORMIN, LFACTORMAX]);
-  end;
+  if M_CheckParm('-uselightmap') <> 0 then
+    uselightmap := true;
+  if M_CheckParm('-dontuselightmap') <> 0 then
+    uselightmap := false;
   if M_CheckParm('-chasecamera') <> 0 then
     chasecamera := true;
   if M_CheckParm('-nochasecamera') <> 0 then

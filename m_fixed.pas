@@ -1,6 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
 //  Copyright (C) 2017-2018 by Jim Valavanis
 //
@@ -29,6 +30,9 @@
 unit m_fixed;
 
 interface
+
+uses
+  d_fpc;
 
 //
 // Fixed point, 32bit as 16.16.
@@ -62,12 +66,13 @@ function FixedDiv2(const a, b: fixed_t): fixed_t;
 
 function FixedInt(const x: integer): integer;
 
+function FixedFloat(const f: float): integer;
+
 function FixedInt64(const x: int64): integer;
 
 implementation
 
 uses
-  d_fpc,
   doomtype;
 
 function FixedMul(const a, b: fixed_t): fixed_t; assembler;
@@ -158,6 +163,11 @@ end;
 function FixedInt(const x: integer): integer; assembler;
 asm
   sar eax, FRACBITS
+end;
+
+function FixedFloat(const f: float): integer;
+begin
+  result := round(f * FRACUNIT);
 end;
 
 //

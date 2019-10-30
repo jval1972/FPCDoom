@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="10"/>
+    <Version Value="11"/>
     <PathDelim Value="\"/>
     <General>
       <Flags>
@@ -23,10 +23,10 @@
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
       <MajorVersionNr Value="1"/>
-      <MinorVersionNr Value="11"/>
-      <RevisionNr Value="2"/>
-      <BuildNr Value="42"/>
-      <StringTable Comments="http://sourceforge.net/projects/fpcdoom/" CompanyName="Jim Valavanis" FileDescription="Source port of the game Doom developed in FPC/Lazarus" InternalName="FPCDoom" LegalCopyright="Copyright 2005 - 2019, Jim Valavanis" LegalTrademarks="Copyright 2005 - 2019, Jim Valavanis" OriginalFilename="FPCDoom.exe" ProductName="FPCDoom" ProductVersion="1.0"/>
+      <MinorVersionNr Value="12"/>
+      <RevisionNr Value="1"/>
+      <BuildNr Value="76"/>
+      <StringTable Comments="http://sourceforge.net/projects/fpcdoom/" CompanyName="Jim Valavanis" FileDescription="Source port of the game Doom developed in FPC/Lazarus" InternalName="FPCDoom" LegalCopyright="Copyright 2005 - 2019, Jim Valavanis" LegalTrademarks="Copyright 2005 - 2019, Jim Valavanis" OriginalFilename="FPCDoom.exe" ProductName="FPCDoom" ProductVersion="1.12"/>
     </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="Default" Default="True"/>
@@ -36,11 +36,18 @@
     </PublishOptions>
     <RunParams>
       <local>
-        <FormatVersion Value="1"/>
-        <CommandLineParams Value="-nofullscreen -fullhd -iwad doom.wad"/>
+        <CommandLineParams Value="-nofullscreen -geom 1280X720 -iwad PLUTONIA.wad"/>
       </local>
+      <FormatVersion Value="2"/>
+      <Modes Count="1">
+        <Mode0 Name="default">
+          <local>
+            <CommandLineParams Value="-nofullscreen -geom 1280X720 -iwad PLUTONIA.wad"/>
+          </local>
+        </Mode0>
+      </Modes>
     </RunParams>
-    <Units Count="109">
+    <Units Count="118">
       <Unit0>
         <Filename Value="FPCDoom.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -342,141 +349,177 @@
         <IsPartOfProject Value="True"/>
       </Unit74>
       <Unit75>
-        <Filename Value="r_lights.pas"/>
+        <Filename Value="r_main.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit75>
       <Unit76>
-        <Filename Value="r_main.pas"/>
+        <Filename Value="r_mmx.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit76>
       <Unit77>
-        <Filename Value="r_mmx.pas"/>
+        <Filename Value="r_plane.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit77>
       <Unit78>
-        <Filename Value="r_plane.pas"/>
+        <Filename Value="r_segs.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit78>
       <Unit79>
-        <Filename Value="r_segs.pas"/>
+        <Filename Value="r_sky.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit79>
       <Unit80>
-        <Filename Value="r_sky.pas"/>
+        <Filename Value="r_things.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit80>
       <Unit81>
-        <Filename Value="r_things.pas"/>
+        <Filename Value="rtl_types.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit81>
       <Unit82>
-        <Filename Value="rtl_types.pas"/>
+        <Filename Value="sounds.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit82>
       <Unit83>
-        <Filename Value="sounds.pas"/>
+        <Filename Value="s_sound.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit83>
       <Unit84>
-        <Filename Value="s_sound.pas"/>
+        <Filename Value="sc_engine.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit84>
       <Unit85>
-        <Filename Value="sc_engine.pas"/>
+        <Filename Value="sc_params.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit85>
       <Unit86>
-        <Filename Value="sc_params.pas"/>
+        <Filename Value="st_lib.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit86>
       <Unit87>
-        <Filename Value="st_lib.pas"/>
+        <Filename Value="st_stuff.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit87>
       <Unit88>
-        <Filename Value="st_stuff.pas"/>
+        <Filename Value="t_bmp.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit88>
       <Unit89>
-        <Filename Value="t_bmp.pas"/>
+        <Filename Value="t_colors.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit89>
       <Unit90>
-        <Filename Value="t_colors.pas"/>
+        <Filename Value="t_draw.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit90>
       <Unit91>
-        <Filename Value="t_draw.pas"/>
+        <Filename Value="t_main.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit91>
       <Unit92>
-        <Filename Value="t_main.pas"/>
+        <Filename Value="t_tga.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit92>
       <Unit93>
-        <Filename Value="t_tga.pas"/>
+        <Filename Value="tables.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit93>
       <Unit94>
-        <Filename Value="tables.pas"/>
+        <Filename Value="v_video.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit94>
       <Unit95>
-        <Filename Value="v_video.pas"/>
+        <Filename Value="w_wad.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit95>
       <Unit96>
-        <Filename Value="w_wad.pas"/>
+        <Filename Value="w_pak.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit96>
       <Unit97>
-        <Filename Value="w_pak.pas"/>
+        <Filename Value="wi_stuff.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit97>
       <Unit98>
-        <Filename Value="wi_stuff.pas"/>
+        <Filename Value="sc_actordef.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit98>
       <Unit99>
-        <Filename Value="sc_actordef.pas"/>
+        <Filename Value="z_memory.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit99>
       <Unit100>
-        <Filename Value="z_memory.pas"/>
+        <Filename Value="r_trans8.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit100>
       <Unit101>
-        <Filename Value="r_trans8.pas"/>
+        <Filename Value="r_draw_span.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit101>
       <Unit102>
-        <Filename Value="r_draw_span.pas"/>
+        <Filename Value="r_draw_column.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit102>
       <Unit103>
-        <Filename Value="r_draw_column.pas"/>
+        <Filename Value="r_aspect.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit103>
       <Unit104>
-        <Filename Value="r_aspect.pas"/>
+        <Filename Value="DirectX.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit104>
       <Unit105>
-        <Filename Value="DirectX.pas"/>
+        <Filename Value="e_endoom.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit105>
       <Unit106>
-        <Filename Value="e_endoom.pas"/>
+        <Filename Value="z_files.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit106>
       <Unit107>
-        <Filename Value="z_files.pas"/>
+        <Filename Value="t_png.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit107>
       <Unit108>
-        <Filename Value="t_png.pas"/>
+        <Filename Value="r_depthbuffer.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit108>
+      <Unit109>
+        <Filename Value="i_threads.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit109>
+      <Unit110>
+        <Filename Value="r_render.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit110>
+      <Unit111>
+        <Filename Value="r_lightmap.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit111>
+      <Unit112>
+        <Filename Value="sc_tokens.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit112>
+      <Unit113>
+        <Filename Value="r_draw_light.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit113>
+      <Unit114>
+        <Filename Value="r_mirror.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit114>
+      <Unit115>
+        <Filename Value="r_lights.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit115>
+      <Unit116>
+        <Filename Value="r_grayscale.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit116>
+      <Unit117>
+        <Filename Value="r_colorsubsampling.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit117>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -491,10 +534,8 @@
     </SearchPaths>
     <Linking>
       <Debugging>
-        <GenerateDebugInfo Value="False"/>
-        <UseLineInfoUnit Value="False"/>
+        <UseExternalDbgSyms Value="True"/>
       </Debugging>
-      <LinkSmart Value="True"/>
     </Linking>
     <Other>
       <Verbosity>

@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -41,7 +42,7 @@ uses
 function P_GetMapName(const episode, map: integer): string;
 
 // NOT called by W_Ticker. Fixme.
-procedure P_SetupLevel(episode, map, playermask: integer);
+procedure P_SetupLevel(episode, map: integer);
 
 // Called by startup code.
 procedure P_Init;
@@ -172,6 +173,8 @@ begin
   begin
     li.x := ml.x * FRACUNIT;
     li.y := ml.y * FRACUNIT;
+    li.r_x := li.x;
+    li.r_y := li.y;
     inc(ml);
     inc(li);
   end;
@@ -440,6 +443,8 @@ begin
       else
         ld.slopetype := ST_NEGATIVE;
     end;
+
+    ld.len := trunc(sqrt(sqr(ld.dx / FRACUNIT) + sqr(ld.dy / FRACUNIT)) * FRACUNIT);
 
     if v1.x < v2.x then
     begin
@@ -723,8 +728,15 @@ begin
             y0 := v.y;
             x1 := l.v1.x;
             y1 := l.v1.y;
-            v.x := Round((dx2 * x0 + dy2 * x1 + dxy * (y0 - y1)) / s);
-            v.y := Round((dy2 * y0 + dx2 * y1 + dxy * (x0 - x1)) / s);
+            v.r_x := Round((dx2 * x0 + dy2 * x1 + dxy * (y0 - y1)) / s);
+            v.r_y := Round((dy2 * y0 + dx2 * y1 + dxy * (x0 - x1)) / s);
+      			// [crispy] wait a minute... moved more than 8 map units?
+      			// maybe that's a linguortal then, back to the original coordinates
+      			if (abs(v.r_x - v.x) > 8 * FRACUNIT) or (abs(v.r_y - v.y) > 8 * FRACUNIT) then
+      			begin
+      			  v.r_x := v.x;
+      			  v.r_y := v.y;
+            end;
           end;
         end;
         if v = segs[i].v2 then
@@ -733,14 +745,14 @@ begin
       end;
     end;
   end;
-  memfree(pointer(hit), numvertexes);
+  memfree(hit, numvertexes);
 end;
 
 
 //
 // P_SetupLevel
 //
-procedure P_SetupLevel(episode, map, playermask: integer);
+procedure P_SetupLevel(episode, map: integer);
 var
   i: integer;
   lumpname: string;

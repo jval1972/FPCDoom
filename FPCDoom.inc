@@ -24,7 +24,9 @@
 //  Site  : https://sourceforge.net/projects/fpcdoom/
 //------------------------------------------------------------------------------
 
+{$IFDEF FPC}
 {$MODE DELPHI}
+{$ENDIF}
 {$A+,B-,C+,D+,H+,I+,J+,M-,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Z1}
 {$MINSTACKSIZE $00004000}
 {$MAXSTACKSIZE $00200000}

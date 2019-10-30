@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -313,7 +314,7 @@ end;
 
 procedure I_ShutDownNetwork;
 begin
-  memfree(pointer(doomcom), SizeOf(doomcom_t));
+  memfree(doomcom, SizeOf(doomcom_t));
 end;
 
 procedure I_NetCmd;

@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -16372,7 +16373,7 @@ end;
 
 function Info_GetNewState: integer;
 begin
-  realloc(pointer(states), numstates * SizeOf(state_t), (numstates + 1) * SizeOf(state_t));
+  realloc(states, numstates * SizeOf(state_t), (numstates + 1) * SizeOf(state_t));
   ZeroMemory(@states[numstates], SizeOf(state_t));
   result := numstates;
   inc(numstates);
@@ -16380,7 +16381,7 @@ end;
 
 function Info_GetNewMobjInfo: integer;
 begin
-  realloc(pointer(mobjinfo), nummobjtypes * SizeOf(mobjinfo_t), (nummobjtypes + 1) * SizeOf(mobjinfo_t));
+  realloc(mobjinfo, nummobjtypes * SizeOf(mobjinfo_t), (nummobjtypes + 1) * SizeOf(mobjinfo_t));
   ZeroMemory(@mobjinfo[nummobjtypes], SizeOf(mobjinfo_t));
   mobjinfo[nummobjtypes].inheritsfrom := -1; // Set to -1
   mobjinfo[nummobjtypes].doomednum := -1; // Set to -1
@@ -16423,7 +16424,7 @@ begin
 
   sprnames[numsprites] := check;
   inc(numsprites);
-  realloc(pointer(sprnames), numsprites * 4, (numsprites + 1) * 4);
+  realloc(sprnames, numsprites * 4, (numsprites + 1) * 4);
   sprnames[numsprites] := 0;
 end;
 
@@ -16514,9 +16515,9 @@ begin
     if states[i].params <> nil then
       FreeAndNil(states[i].params);
 
-  memfree(pointer(states), numstates * SizeOf(state_t));
-  memfree(pointer(mobjinfo), nummobjtypes * SizeOf(mobjinfo_t));
-  memfree(pointer(sprnames), numsprites * 4);
+  memfree(states, numstates * SizeOf(state_t));
+  memfree(mobjinfo, nummobjtypes * SizeOf(mobjinfo_t));
+  memfree(sprnames, numsprites * 4);
 end;
 
 function Info_GetInheritance(const imo: Pmobjinfo_t): integer;

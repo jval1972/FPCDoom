@@ -1,6 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
 //  Copyright (C) 2017-2019 by Jim Valavanis
 //
@@ -1682,7 +1683,7 @@ begin
   if midi <> nil then
     FreeAndNil(midi);
 
-  memfree(pointer(MidiData), MidiDataSize);
+  memfree(MidiData, MidiDataSize);
 
   midi := TMidi.Create();
 
@@ -1727,7 +1728,7 @@ end;
 procedure I_ShutDownMidi;
 begin
   FreeAndNil(midi);
-  memfree(pointer(MidiData), MidiDataSize);
+  memfree(MidiData, MidiDataSize);
 end;
 
 const

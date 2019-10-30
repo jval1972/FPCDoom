@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -119,7 +120,16 @@ procedure I_DetectOS;
 
 procedure I_DetectCPU;
 
+function I_GetNumCPUs: integer;
+
 procedure I_ClearInterface(var Dest: IInterface);
+
+type
+  process_t = function(p: pointer): LongInt; stdcall;
+
+function I_CreateProcess(p: process_t; parm: pointer; suspended: boolean): integer;
+
+procedure I_WaitForProcess(pid: integer; msec: integer);
 
 function I_ScreenWidth: integer;
 
@@ -568,7 +578,7 @@ begin
     result := result + PChar(res)^;
     res := pointer(integer(res) + 1);
   end;
-  memfree(pointer(buffer), vsize + 1);
+  memfree(buffer, vsize + 1);
 end;
 
 function I_DirectoryExists(const Name: string): Boolean;
@@ -616,7 +626,9 @@ begin
             osname := 'Server 2003';
         end
         else if (info.dwMajorVersion = 6) and (info.dwMinorVersion = 0) then
-          osname := 'Vista';
+          osname := 'Vista'
+        else if (info.dwMajorVersion = 6) and (info.dwMinorVersion = 1) then
+          osname := '7';
       end;
     else
       begin
@@ -636,7 +648,12 @@ begin
 
 end;
 
+var
+  numcpus: Integer = 0;
+
 procedure I_DetectCPU;
+var
+  info: TSystemInfo;
 begin
   try
   // detect MMX and 3DNow! capable CPU (adapted from AMD's "3DNow! Porting Guide")
@@ -665,6 +682,17 @@ begin
     printf(' MMX extentions detected'#13#10);
   if AMD3DNowMachine <> 0 then
     printf(' AMD 3D Now! extentions detected'#13#10);
+
+  GetSystemInfo(info);
+  numcpus := info.dwNumberOfProcessors;
+
+  if numcpus > 1 then
+    printf(' Multi-core system detected (%d CPUs)'#13#10, [numcpus]);
+end;
+
+function I_GetNumCPUs: integer;
+begin
+  result := numcpus;
 end;
 
 procedure I_ClearInterface(var Dest: IInterface);
@@ -679,6 +707,21 @@ begin
     Pointer(Dest) := nil;
     IInterface(P)._Release;
   end;
+end;
+
+function I_CreateProcess(p: process_t; parm: pointer; suspended: boolean): integer;
+var
+  id: LongWord;
+begin
+  if suspended then
+    result := CreateThread(nil, $1000, @p, parm, CREATE_SUSPENDED, id)
+  else
+    result := CreateThread(nil, $1000, @p, parm, 0, id);
+end;
+
+procedure I_WaitForProcess(pid: integer; msec: integer);
+begin
+  WaitForSingleObject(pid, msec);
 end;
 
 function I_ScreenWidth: integer;

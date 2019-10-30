@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -138,7 +139,7 @@ begin
   I_EnableAltTab;
   memfree(oscreen, allocscreensize);
   if screen16 <> nil then
-    memfree(pointer(screen16), SCREENWIDTH * SCREENHEIGHT * 2);
+    memfree(screen16, SCREENWIDTH * SCREENHEIGHT * 2);
 end;
 
 var
@@ -216,7 +217,6 @@ procedure I_FinishUpdate;
 var
   srcrect: TRect;
   destrect: TRect;
-  h1: integer;
   parms1: finishupdateparms_t;
   stretch: boolean;
 begin
@@ -592,7 +592,7 @@ begin
   begin
     ddsd.lPitch := 4 * SCREENWIDTH; // Display is true color
     if screen16 <> nil then
-      memfree(pointer(screen16), SCREENWIDTH * SCREENHEIGHT * 2);
+      memfree(screen16, SCREENWIDTH * SCREENHEIGHT * 2);
   end
   else if bpp = 16 then
   begin

@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -899,7 +900,7 @@ begin
   if (inflictor <> nil) and (target.flags and MF_NOCLIP = 0) and
     ((source = nil) or (source.player = nil) or (Pplayer_t(source.player).readyweapon <> wp_chainsaw)) then
   begin
-    ang := R_PointToAngle2(inflictor.x, inflictor.y, target.x, target.y);
+    ang := P_PointToAngle(inflictor.x, inflictor.y, target.x, target.y);
 
     mass := target.info.mass;
     if mass = 0 then

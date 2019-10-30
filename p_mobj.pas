@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -1026,7 +1027,7 @@ begin
   A_SeeSound(th, th);
 
   th.target := source;  // where it came from
-  an := R_PointToAngle2(source.x, source.y, dest.x, dest.y);
+  an := P_PointToAngle(source.x, source.y, dest.x, dest.y);
 
   // fuzzy player
   if dest.flags and MF_SHADOW <> 0 then
@@ -1104,7 +1105,7 @@ begin
     th.momy := th.momy + FixedMul(th.info.speed, finesine[an]);
   end;
 
-  th.angle := R_PointToAngle2(0, 0, th.momx, th.momy);
+  th.angle := P_PointToAngle(0, 0, th.momx, th.momy);
 
   if P_CheckMissileSpawn(th) then
     result := th
@@ -1231,7 +1232,7 @@ var
   angle2: angle_t;
 begin
   angle1 := source.angle;
-  angle2 := R_PointToAngle2(source.x, source.y, target.x, target.y);
+  angle2 := P_PointToAngle(source.x, source.y, target.x, target.y);
   if angle2 > angle1 then
   begin
     diff := angle2 - angle1;

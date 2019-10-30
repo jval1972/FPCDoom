@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -448,7 +449,7 @@ begin
           continue;
         end;
         dec(mobj_no); // JVAL DEH patches start Think numbers from 1
-      end;                      
+      end;
 
       while true do
       begin
@@ -644,7 +645,6 @@ begin
       end;
 
     end
-
 
 
 
@@ -1622,25 +1622,23 @@ begin
 
   result.Add('');
 
-
-  result.Add('');
-  result.Add('# Strings');
-  result.Add('');
   //////////////////////////////////////////////////////////////////////////////
   // Add strings
   //////////////////////////////////////////////////////////////////////////////
+  result.Add('');
+  result.Add('# Strings');
+  result.Add('');
   result.Add('[Strings]');
   for i := 0 to deh_strings.numstrings - 1 do
     result.Add('%s = %s', [deh_strings._array[i].name, DEH_StringToCString(deh_strings._array[i]._string^)]);
   result.Add('');
 
-
+  //////////////////////////////////////////////////////////////////////////////
+  // Add music
+  //////////////////////////////////////////////////////////////////////////////
   result.Add('');
   result.Add('# Music');
   result.Add('');
-  //////////////////////////////////////////////////////////////////////////////
-  // Add strings
-  //////////////////////////////////////////////////////////////////////////////
   result.Add('[MUSIC]');
   for i := 1 to Ord(NUMMUSIC) - 1 do
   begin
@@ -1651,13 +1649,12 @@ begin
   end;
   result.Add('');
 
-
+  //////////////////////////////////////////////////////////////////////////////
+  // Add sounds
+  //////////////////////////////////////////////////////////////////////////////
   result.Add('');
   result.Add('# Sounds');
   result.Add('');
-  //////////////////////////////////////////////////////////////////////////////
-  // Add strings
-  //////////////////////////////////////////////////////////////////////////////
   result.Add('[SOUND]');
   for i := 1 to numsfx - 1 do
     result.Add('%d = %s', [i, S_sfx[i].name]);
@@ -2260,6 +2257,7 @@ begin
   DEH_AddString(@deh_strings, @STSTR_CLEV, 'STSTR_CLEV');
   DEH_AddString(@deh_strings, @STSTR_LGON, 'STSTR_LGON');
   DEH_AddString(@deh_strings, @STSTR_LGOFF, 'STSTR_LGOFF');
+
   DEH_AddString(@deh_strings, @STSTR_MASSACRE, 'STSTR_MASSACRE');
 
 
@@ -2443,7 +2441,7 @@ begin
   FreeAndNil(renderstyle_tokens);
   FreeAndNil(misc_tokens);
 
-  realloc(pointer(deh_strings._array), deh_strings.realnumstrings * SizeOf(deh_string_t), 0);
+  realloc(deh_strings._array, deh_strings.realnumstrings * SizeOf(deh_string_t), 0);
 end;
 
 

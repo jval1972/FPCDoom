@@ -1,6 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
 //  Copyright (C) 2017-2018 by Jim Valavanis
 //
@@ -48,6 +49,9 @@ procedure P_SaveRandom;
 procedure P_RestoreRandom;
 
 function I_Random: integer;
+
+// JVAL: Using custom seed
+function C_Random(var idx: integer): integer;
 
 var
   rndindex: integer = 0;
@@ -128,6 +132,13 @@ function I_Random: integer;
 begin
   result := Random(256);
 end;
+
+function C_Random(var idx: integer): integer;
+begin
+  idx := (idx + 1) and $ff;
+  result := rndtable[idx];
+end;
+
 
 initialization
   Randomize;

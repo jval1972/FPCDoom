@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -82,7 +83,6 @@ uses
   i_system,
   r_defs,
   r_main,
-  st_stuff,
   v_video,
   w_wad,
   z_memory;
@@ -114,6 +114,7 @@ var
   ConsoleHead: integer;
   ConsoleWidth: integer;      //chars
   ConsoleHeight: integer = 0; //lines
+  ConsolePgUpDown: integer = -1; // Page Up / Page Down
   ConsolePos: integer = 0;    //bottom of console, in pixels
   MaxConsolePos: integer;
   ConsoleYFrac: integer = 0;
@@ -298,10 +299,17 @@ end;
 //
 // C_Init
 //
+var
+  consolebuffer: TDStringList;
+
+const
+  MAX_CONSOLE_BUFFER = 8192;
+
 procedure C_Init;
 var
   i: integer;
 begin
+  consolebuffer := TDStringList.Create;
   ConsoleHead := 0;
   ConsoleState := CST_UP;
   for i := 0 to MAX_CONSOLE_LINES - 1 do
@@ -345,10 +353,28 @@ procedure C_ShutDown;
 begin
   if execs <> nil then
     execs.Free;
+  consolebuffer.Free;
+  ConsoleInitialized := false;
 end;
 
 var
-  consolebuffer: string;
+  commandbuffer: string;
+
+procedure C_RestoreFromBuffer;
+var
+  i: integer;
+begin
+  for i := consolebuffer.Count - MAX_CONSOLE_LINES to consolebuffer.Count - 1 do
+  begin
+    ConsoleHead := (ConsoleHead + CONSOLETEXT_MASK) and CONSOLETEXT_MASK;
+    if i >= 0 then
+      ConsoleText[ConsoleHead].line := consolebuffer.Strings[i]
+    else
+      ConsoleText[ConsoleHead].line := '';
+  end;
+  i := (ConsoleHead + CONSOLETEXT_MASK) and CONSOLETEXT_MASK;
+  ConsoleText[i].line := '';
+end;
 
 procedure C_AddLine(const line: string; len: integer = -1);
 var
@@ -362,33 +388,116 @@ begin
     cline := ' '
   else
   begin
+    cline := '';
     if len = -1 then
       len := Length(line);
-    SetLength(cline, len);
-    for i := 1 to len do
-      cline[i] := ' ';
-    j := 0;
     for i := 1 to len do
     begin
       if line[i] = #8 then
-        inc(j, 2)
+      begin
+        if cline <> '' then
+          SetLength(cline, Length(cline) - 1);
+      end
       else
-        cline[i - j] := line[i];
+        cline := cline + line[i];
     end;
-    SetLength(cline, len - j div 2);
   end;
   if console_paused then
   begin
-    consolebuffer := consolebuffer + cline + #13#10;
+    commandbuffer := commandbuffer + cline + #13#10;
   end
   else
   begin
+    if ConsolePgUpDown <> -1 then
+    begin
+      C_RestoreFromBuffer;
+      ConsolePgUpDown := -1;
+    end;
+
     ConsoleHead := (ConsoleHead + CONSOLETEXT_MASK) and CONSOLETEXT_MASK;
     ConsoleText[ConsoleHead].line := cline;
+    consolebuffer.Add(cline);
+    if consolebuffer.Count > MAX_CONSOLE_BUFFER then
+      for j := 0 to MAX_CONSOLE_BUFFER div 4 do
+        consolebuffer.Delete(0);
     i := (ConsoleHead + CONSOLETEXT_MASK) and CONSOLETEXT_MASK;
     ConsoleText[i].line := '';
     con_needsupdate := true;
   end;
+end;
+
+procedure C_DoPageUp;
+var
+  bufstart, bufend: integer;
+  i: integer;
+begin
+  if consolebuffer.Count < ConsoleHeight then
+    Exit; // Too short output to page up
+
+  if ConsolePgUpDown = 0 then
+    Exit; // At the top
+
+  if ConsolePgUpDown = -1 then
+    ConsolePgUpDown := consolebuffer.Count - 2 * ConsoleHeight
+  else
+    ConsolePgUpDown := ConsolePgUpDown - ConsoleHeight;
+  if ConsolePgUpDown < 0 then
+    ConsolePgUpDown := 0;
+
+  bufstart := ConsolePgUpDown;
+  bufend := ConsolePgUpDown + ConsoleHeight - 1;
+
+  for i := bufstart to bufend do
+  begin
+    ConsoleHead := (ConsoleHead + CONSOLETEXT_MASK) and CONSOLETEXT_MASK;
+    if i < consolebuffer.Count then
+      ConsoleText[ConsoleHead].line := consolebuffer.Strings[i]
+    else
+      ConsoleText[ConsoleHead].line := '';
+  end;
+  i := (ConsoleHead + CONSOLETEXT_MASK) and CONSOLETEXT_MASK;
+  ConsoleText[i].line := '';
+  con_needsupdate := true;
+end;
+
+procedure C_DoPageDown;
+var
+  bufstart, bufend: integer;
+  i: integer;
+begin
+  if consolebuffer.Count < ConsoleHeight then
+    Exit; // Too short output to page up
+
+  if ConsolePgUpDown = -1 then
+    Exit; // At the end
+
+  if ConsolePgUpDown >= consolebuffer.Count - ConsoleHeight then
+    ConsolePgUpDown := ConsolePgUpDown - 2 * ConsoleHeight
+  else
+    ConsolePgUpDown := ConsolePgUpDown + ConsoleHeight;
+
+  if ConsolePgUpDown >= consolebuffer.Count - ConsoleHeight then
+  begin
+    C_RestoreFromBuffer;
+    ConsolePgUpDown := -1;
+    con_needsupdate := true;
+    Exit;
+  end;
+
+  bufstart := ConsolePgUpDown;
+  bufend := ConsolePgUpDown + ConsoleHeight - 1;
+
+  for i := bufstart to bufend do
+  begin
+    ConsoleHead := (ConsoleHead + CONSOLETEXT_MASK) and CONSOLETEXT_MASK;
+    if i >= 0 then
+      ConsoleText[ConsoleHead].line := consolebuffer.Strings[i]
+    else
+      ConsoleText[ConsoleHead].line := '';
+  end;
+  i := (ConsoleHead + CONSOLETEXT_MASK) and CONSOLETEXT_MASK;
+  ConsoleText[i].line := '';
+  con_needsupdate := true;
 end;
 
 procedure C_AddText(const txt: string);
@@ -472,8 +581,8 @@ begin
           if console_paused then
           begin
             console_paused := false;
-            C_AddText(consolebuffer);
-            consolebuffer := '';
+            C_AddText(commandbuffer);
+            commandbuffer := '';
           end
           else
           case c of
@@ -534,6 +643,10 @@ begin
                   con_needsupdate := true;
                 end;
               end;
+            KEY_PAGEUP:
+              C_DoPageUp;
+            KEY_PAGEDOWN:
+              C_DoPageDown;
           else
             begin
               c := Ord(toupper(Chr(c)));
@@ -683,7 +796,7 @@ begin
     exit;
 
   xmax := ConsoleWidth * C_FONTWIDTH;
-  
+
   if con_needsupdate then
   begin
 
@@ -695,7 +808,10 @@ begin
     begin
       x := C_FONTWIDTH;
       len := Length(ConsoleText[line].line);
-      lnum := lnum - (len - 1) div ConsoleWidth - 1;
+      if ConsolePgUpDown = -1 then
+        lnum := lnum - (len - 1) div ConsoleWidth - 1
+      else
+        lnum := lnum - 1;
       i := 1;
       if lnum < 0 then
       begin
@@ -716,6 +832,7 @@ begin
         Z_ChangeTag(patch, PU_CACHE);
       end
       else
+      begin
         while i <= len do
         begin
           c := toupper(ConsoleText[line].line[i]);
@@ -737,13 +854,19 @@ begin
             x := x + C_FONTWIDTH;
           if x > xmax then
           begin
-            x := C_FONTWIDTH;
-            y := y + C_FONTHEIGHT;
+            if ConsolePgUpDown = -1 then
+            begin
+              x := C_FONTWIDTH;
+              y := y + C_FONTHEIGHT;
+            end
+            else
+              break;
           end;
           inc(i);
         end;
-        line := (line + 1) and CONSOLETEXT_MASK;
       end;
+      line := (line + 1) and CONSOLETEXT_MASK;
+    end;
 
     x := C_FONTWIDTH;
     y := V_GetScreenHeight(SCN_CON) - C_FONTHEIGHT;
@@ -789,7 +912,6 @@ begin
     end;
     cursor_needs_update := false;
   end;
-
 
   V_CopyAddRect(0, V_GetScreenHeight(SCN_CON) - ConsolePos, SCN_CON,
     V_GetScreenWidth(SCN_CON), ConsolePos, 0, 0, SCN_FG,

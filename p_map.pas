@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -715,12 +716,12 @@ begin
 
   side := P_PointOnLineSide(slidemo.x, slidemo.y, ld);
 
-  lineangle := R_PointToAngle2(0, 0, ld.dx, ld.dy);
+  lineangle := P_PointToAngle(0, 0, ld.dx, ld.dy);
 
   if side = 1 then
     lineangle := lineangle + ANG180;
 
-  moveangle := R_PointToAngle2(0, 0, tmxmove, tmymove);
+  moveangle := P_PointToAngle(0, 0, tmxmove, tmymove);
   deltaangle := moveangle - lineangle;
 
   if deltaangle > ANG180 then

@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -72,20 +73,28 @@ procedure wipe_initMelt;
 var
   i, r: integer;
   py, py1: Pfixed_t;
+  SHEIGHTS: array[0..MAXWIDTH - 1] of integer;
+  RANDOMS: array[0..319] of byte;
 begin
+  for i := 0 to SCREENWIDTH - 1 do
+    SHEIGHTS[i] := trunc(i * 320 / SCREENWIDTH);
+  for i := 0 to 319 do
+    RANDOMS[i] := I_Random;
+
   // copy start screen to main screen
   memcpy(screen32, wipe_scr_start, SCREENWIDTH * SCREENHEIGHT * SizeOf(LongWord));
 
   // setup initial column positions
   // (y<0 => not ready to scroll yet)
-  yy := Pfixed_tArray(Z_Malloc(SCREENWIDTH * SizeOf(fixed_t), PU_STATIC, nil));
+  yy := Z_Malloc(SCREENWIDTH * SizeOf(fixed_t), PU_STATIC, nil);
   py := @yy[0];
   py1 := py;
-  py^ := -(M_Random mod 16);
+
+  py^ := -(RANDOMS[0] mod 16);
   for i := 1 to SCREENWIDTH - 1 do
   begin
     inc(py);
-    r := (M_Random mod 3) - 1;
+    r := (RANDOMS[SHEIGHTS[i]] mod 3) - 1;
     py^ := py1^ + r;
     if py^ > 0 then
       py^ := 0
@@ -102,7 +111,10 @@ begin
     py^ := py^ * vy;
     inc(py);
   end;
-
+  
+  for i := 1 to SCREENWIDTH - 1 do
+    if SHEIGHTS[i - 1] = SHEIGHTS[i] then
+      yy[i] := yy[i - 1];
 end;
 
 function wipe_doMelt(ticks: integer): integer;
@@ -168,8 +180,8 @@ end;
 procedure wipe_exitMelt;
 begin
   Z_Free(yy);
-  memfree(pointer(wipe_scr_start), SCREENWIDTH * SCREENHEIGHT * SizeOf(LongWord));
-  memfree(pointer(wipe_scr_end), SCREENWIDTH * SCREENHEIGHT * SizeOf(LongWord));
+  memfree(wipe_scr_start, SCREENWIDTH * SCREENHEIGHT * SizeOf(LongWord));
+  memfree(wipe_scr_end, SCREENWIDTH * SCREENHEIGHT * SizeOf(LongWord));
 end;
 
 procedure wipe_StartScreen;
@@ -209,4 +221,3 @@ begin
 end;
 
 end.
-

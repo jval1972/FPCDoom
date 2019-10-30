@@ -1,6 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
 //  Copyright (C) 2017-2018 by Jim Valavanis
 //
@@ -31,6 +32,7 @@ unit info_h;
 interface
 
 uses
+  d_fpc,
   d_think,
   sc_params;
 
@@ -362,6 +364,7 @@ type
     misc1: integer;
     misc2: integer;
     params: TCustomParamList;
+    dlights: TDNumberList;
     flags_ex: integer;
   end;
   Pstate_t = ^state_t;

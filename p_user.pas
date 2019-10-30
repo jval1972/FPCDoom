@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -325,7 +326,7 @@ begin
   if (player.attacker <> nil) and (player.attacker <> player.mo) then
   begin
 
-    angle := R_PointToAngle2(
+    angle := P_PointToAngle(
       player.mo.x, player.mo.y, player.attackerx, player.attackery);
 
     delta := angle - player.mo.angle;

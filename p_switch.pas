@@ -1,6 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
 //  Copyright (C) 2017-2018 by Jim Valavanis
 //
@@ -76,9 +77,9 @@ type
   Pswitchlist_t = ^switchlist_t;
 
 const
-  NUMSWITCHLIST = 40;
+  NUMSWITCHLIST = 41;
 
-  alphSwitchList: array[0..40] of switchlist_t = (
+  alphSwitchList: array[0..NUMSWITCHLIST - 1] of switchlist_t = (
     // Doom shareware episode 1 switches
     (name1: 'SW1BRCOM'; name2: 'SW2BRCOM'; episode: 1),
     (name1: 'SW1BRN1';  name2: 'SW2BRN1';  episode: 1),

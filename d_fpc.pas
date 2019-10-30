@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -62,6 +63,7 @@ type
   PBooleanArray = ^TBooleanArray;
 
   PProcedure = procedure;
+  PPointerParmProcedure = procedure(const p: pointer);
 
   TStringArray = array[0..$FFFF] of string;
   PStringArray = ^TStringArray;
@@ -257,6 +259,25 @@ type
     procedure Clear;
     property Count: integer read fNumItems;
     property Numbers[Index: Integer]: integer read Get write Put; default;
+  end;
+
+type
+  TDPointerList = class(TObject)
+  private
+    fList: PPointerArray;
+    fNumItems: integer;
+    fRealSize: integer;
+  public
+    constructor Create; virtual;
+    destructor Destroy; override;
+    procedure AddItem(const value: pointer);
+    function DeleteItem(const item: pointer): boolean;
+    function IndexOf(const value: pointer): integer;
+    procedure Clear;
+    procedure FastClear;
+    function HasSameContentWith(const pl: TDPointerList): boolean;
+    property Pointers: PPointerArray read fList;
+    property Count: integer read fNumItems;
   end;
 
 type
@@ -526,6 +547,10 @@ type
 function NowTime: TDateTime;
 
 function formatDateTimeAsString(const Format: string; DateTime: TDateTime): string;
+
+function min3b(const a, b, c: byte): byte;
+
+function max3b(const a, b, c: byte): byte;
 
 implementation
 
@@ -1321,7 +1346,7 @@ end;
 
 procedure TDNumberList.Add(const value: integer);
 begin
-  realloc(pointer(fList), fNumItems * SizeOf(integer), (fNumItems + 1) * SizeOf(integer));
+  realloc(fList, fNumItems * SizeOf(integer), (fNumItems + 1) * SizeOf(integer));
   Put(fNumItems, value);
   inc(fNumItems);
 end;
@@ -1347,7 +1372,7 @@ begin
   for i := Index + 1 to fNumItems - 1 do
     fList[i - 1] := fList[i];
 
-  realloc(pointer(fList), fNumItems * SizeOf(integer), (fNumItems - 1) * SizeOf(integer));
+  realloc(fList, fNumItems * SizeOf(integer), (fNumItems - 1) * SizeOf(integer));
   dec(fNumItems);
 
   result := true;
@@ -1368,11 +1393,109 @@ end;
 
 procedure TDNumberList.Clear;
 begin
-  realloc(pointer(fList), fNumItems * SizeOf(integer), 0);
+  realloc(fList, fNumItems * SizeOf(integer), 0);
   fList := nil;
   fNumItems := 0;
 end;
 
+////////////////////////////////////////////////////////////////////////////////
+// TDPointerList
+constructor TDPointerList.Create;
+begin
+  fList := nil;
+  fNumItems := 0;
+  fRealSize := 0;
+  inherited;
+end;
+
+destructor TDPointerList.Destroy;
+begin
+  Clear;
+  inherited;
+end;
+
+procedure TDPointerList.AddItem(const value: pointer);
+var
+  newsize: integer;
+begin
+  if fNumItems >= fRealSize then
+  begin
+    if fRealSize < 16 then
+      newsize := fRealSize + 4
+    else if fRealSize < 128 then
+      newsize := fRealSize + 16
+    else if fRealSize < 1024 then
+      newsize := fRealSize + 128
+    else
+      newsize := fRealSize + 256;
+    realloc(fList, fRealSize * SizeOf(pointer), newsize * SizeOf(pointer));
+    fRealSize := newsize;
+  end;
+  fList[fNumItems] := value;
+  Inc(fNumItems);
+end;
+
+function TDPointerList.DeleteItem(const item: pointer): boolean;
+var
+  i: integer;
+begin
+  for i := 0 to fNumItems - 1 do
+    if fList[i] = item then
+    begin
+      fList[i] := fList[fNumItems - 1];
+      dec(fNumItems);
+      Result := True;
+      Exit;
+    end;
+
+  Result := False;
+end;
+
+function TDPointerList.IndexOf(const value: pointer): integer;
+var
+  i: integer;
+  p: pointer;
+begin
+  for i := 0 to fNumItems - 1 do
+    if fList[i] = value then
+    begin
+      Result := i;
+      Exit;
+    end;
+  Result := -1;
+end;
+
+procedure TDPointerList.Clear;
+begin
+  memfree(fList, fNumItems * SizeOf(pointer));
+  fList := nil;
+  fNumItems := 0;
+  fRealSize := 0;
+end;
+
+procedure TDPointerList.FastClear;
+begin
+  fNumItems := 0;
+end;
+
+function TDPointerList.HasSameContentWith(const pl: TDPointerList): boolean;
+var
+  i: integer;
+begin
+  for i := 0 to fnumitems - 1 do
+    if pl.IndexOf(fList[i]) < 0 then
+    begin
+      result := false;
+      exit;
+    end;
+  for i := 0 to pl.fnumitems - 1 do
+    if IndexOf(pl.fList[i]) < 0 then
+    begin
+      result := false;
+      exit;
+    end;
+  result := true;
+end;
 
 ////////////////////////////////////////////////////////////////////////////////
 // TDTextList
@@ -1402,7 +1525,7 @@ end;
 
 procedure TDTextList.Add(const value: string);
 begin
-  realloc(pointer(fList), fNumItems * 256, (fNumItems + 1) * 256);
+  realloc(fList, fNumItems * 256, (fNumItems + 1) * 256);
   Put(fNumItems, value);
   inc(fNumItems);
 end;
@@ -1428,7 +1551,7 @@ begin
   for i := Index + 1 to fNumItems - 1 do
     fList[i - 1] := fList[i];
 
-  realloc(pointer(fList), fNumItems * 256, (fNumItems - 1) * 256);
+  realloc(fList, fNumItems * 256, (fNumItems - 1) * 256);
   dec(fNumItems);
 
   result := true;
@@ -1449,7 +1572,7 @@ end;
 
 procedure TDTextList.Clear;
 begin
-  realloc(pointer(fList), fNumItems * 256, 0);
+  realloc(fList, fNumItems * 256, 0);
   fList := nil;
   fNumItems := 0;
 end;
@@ -1668,7 +1791,7 @@ begin
   A := malloc(Size);
   strm.Read(A^, Size);
   SetByteStr(A, Size);
-  memfree(pointer(A), Size);
+  memfree(A, Size);
   {$I+}
   result := IOresult = 0;
 end;
@@ -1940,7 +2063,7 @@ end;
 
 procedure TDStringList.SetCapacity(NewCapacity: Integer);
 begin
-  realloc(pointer(FList), FCapacity * SizeOf(TStringItem), NewCapacity * SizeOf(TStringItem));
+  realloc(FList, FCapacity * SizeOf(TStringItem), NewCapacity * SizeOf(TStringItem));
   FCapacity := NewCapacity;
 end;
 
@@ -2541,6 +2664,24 @@ end;
 function formatDateTimeAsString(const Format: string; DateTime: TDateTime): string;
 begin
   DateTimeToString(Result, Format, DateTime);
+end;
+
+function min3b(const a, b, c: byte): byte;
+begin
+  result := a;
+  if b < result then
+    result := b;
+  if c < result then
+    result := c;
+end;
+
+function max3b(const a, b, c: byte): byte;
+begin
+  result := a;
+  if b > result then
+    result := b;
+  if c > result then
+    result := c;
 end;
 
 end.

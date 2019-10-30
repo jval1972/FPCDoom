@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -305,6 +306,7 @@ uses
   r_data, 
   r_draw, 
   r_hires,
+  r_mirror,
   p_mobj_h,
   p_setup,
   v_video;
@@ -1089,7 +1091,10 @@ var
 
   procedure PUTDOT(xx, yy, cc: integer);
   begin
-  // JVAL Clip line if in overlay mode
+    // Mirror mode
+    if mirrormode and MR_ENVIROMENT <> 0 then
+      xx := SCREENWIDTH - xx - 1;
+    // JVAL Clip line if in overlay mode
     if amstate = am_overlay then
     begin
       if yy <= viewwindowy then
@@ -1263,10 +1268,10 @@ begin
   pl := @lines[0];
   for i := 0 to numlines - 1 do
   begin
-    l.a.x := pl.v1.x;
-    l.a.y := pl.v1.y;
-    l.b.x := pl.v2.x;
-    l.b.y := pl.v2.y;
+    l.a.x := pl.v1.r_x;
+    l.a.y := pl.v1.r_y;
+    l.b.x := pl.v2.r_x;
+    l.b.y := pl.v2.r_y;
 
     if allowautomaprotate then
     begin
@@ -1465,6 +1470,10 @@ begin
 
       fx := CXMTOF(fx);
       fy := CYMTOF(fy);
+
+      // Mirror mode
+      if mirrormode and MR_ENVIROMENT <> 0 then
+        fx := SCREENWIDTH - fx - 1;
 
       if (fx >= f_x) and (fx <= f_w - w) and (fy >= f_y) and (fy <= f_h - h) then
         V_DrawPatch(fx, fy, SCN_FG, marknums[i], false);

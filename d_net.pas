@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -232,7 +233,7 @@ var
 begin
   result := $1234567;
 
-  p := PLongWordArray(pointer(netbuffer));
+  p := PLongWordArray(netbuffer);
 
   // Hack: first position of doomdata_t is checksum (longword)
   for i := 1 to NetbufferSize div 4 do
@@ -308,7 +309,7 @@ begin
        [ExpandTics(netbuffer.starttic), netbuffer.numtics,
         realretrans, doomcom.datalength]);
 
-    p := PByteArray(pointer(netbuffer));
+    p := PByteArray(netbuffer);
     for i := 0 to doomcom.datalength - 1 do
       fprintf(debugfile, '%d ', [p[i]]);
 
@@ -390,7 +391,7 @@ begin
         [doomcom.remotenode, ExpandTics(netbuffer.starttic),
          netbuffer.numtics, realretrans, doomcom.datalength]);
 
-      p := PByteArray(pointer(netbuffer));
+      p := PByteArray(netbuffer);
       for i := 0 to doomcom.datalength - 1 do
         fprintf(debugfile, '%d ', [p[i]]);
       fprintf(debugfile, #13#10);
@@ -492,7 +493,7 @@ begin
       dest := @netcmds[netconsole][nettics[netnode] mod BACKUPTICS];
       nettics[netnode] := nettics[netnode] + 1;
       dest^ := src^;
-      src := Pticcmd_t(pointer(integer(src) + SizeOf(ticcmd_t)));
+      inc(src);
     end;
   end;
 end;

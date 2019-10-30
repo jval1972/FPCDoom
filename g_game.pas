@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -274,6 +275,7 @@ uses
   r_main,
   r_draw,
   r_intrpl,
+  r_mirror,
   tables;
 
 const
@@ -281,7 +283,7 @@ const
   SAVESTRINGSIZE = 24;
 
 procedure G_ReadDemoTiccmd(cmd: Pticcmd_t); forward;
-procedure G_WriteDemoTiccmd (cmd: Pticcmd_t); forward;
+procedure G_WriteDemoTiccmd(cmd: Pticcmd_t); forward;
 
 procedure G_DoReborn(playernum: integer); forward;
 
@@ -676,7 +678,7 @@ begin
     end;
     if look2 < 0 then
       look2 := look2 + 16;
-    cmd.lookleftright:= look2;
+    cmd.lookleftright := look2;
     // JVAL
     // allowplayerjumps variable controls if we accept input for jumping
     if allowplayerjumps and (gamekeydown[key_jump] or (usejoystick and joybuttons[joybjump])) then
@@ -709,6 +711,19 @@ begin
     cmd.commands := CM_SAVEGAME;
   end;
 
+  cmd.flags := 0;
+  if mirrormode and MR_ENVIROMENT <> 0 then
+    cmd.flags := cmd.flags or CF_MIRROR;
+end;
+
+//
+// G_DoLoadLevel
+//
+procedure G_MirrorTiccmd(cmd: Pticcmd_t);
+begin
+  cmd.angleturn := - cmd.angleturn;
+  cmd.lookleftright := 16 - cmd.lookleftright;
+  cmd.sidemove := -cmd.sidemove;
 end;
 
 //
@@ -753,7 +768,7 @@ begin
     ZeroMemory(@players[i].frags, SizeOf(players[i].frags));
   end;
 
-  P_SetupLevel(gameepisode, gamemap, 0);
+  P_SetupLevel(gameepisode, gamemap);
   displayplayer := consoleplayer;    // view the guy you are playing
   starttime := I_GetTime;
   gameaction := ga_nothing;
@@ -876,8 +891,8 @@ begin
           mousebuttons[0] := ev.data1 and 1 <> 0;
           mousebuttons[1] := ev.data1 and 2 <> 0;
           mousebuttons[2] := ev.data1 and 4 <> 0;
-          mousex := mousex + (ev.data2 * (mouseSensitivity + 5)) div 10;
-          mousey := mousey + (ev.data3 * (mouseSensitivity + 5)) div 10;
+          mousex := mousex + ((ev.data2 * (mouseSensitivity + 5)) div 10) * mouseSensitivityX div 5;
+          mousey := mousey + ((ev.data3 * (mouseSensitivity + 5)) div 10) * mouseSensitivityY div 5;
         end
         else
         begin
@@ -978,8 +993,13 @@ begin
 
       if demoplayback then
         G_ReadDemoTiccmd(cmd);
+
       if demorecording then
         G_WriteDemoTiccmd(cmd);
+
+      if cmd.flags and CF_MIRROR <> 0 then
+        G_MirrorTiccmd(cmd);
+
 
       // check for turbo cheats
       if (cmd.forwardmove > TURBOTHRESHOLD) and
@@ -1505,8 +1525,8 @@ begin
     exit;
   end;
 
-  len := M_ReadFile(savename, pointer(savebuffer));
-  save_p := PByteArray(integer(savebuffer) + SAVESTRINGSIZE);
+  len := M_ReadFile(savename, savebuffer);
+  save_p := @savebuffer[SAVESTRINGSIZE];
 
   savegameversion := VERSION; // Assume current version
 
@@ -1616,6 +1636,9 @@ begin
 
   savegameversion := VERSION;
   sprintf(name2, 'version %d', [VERSION]);
+  while length(name2) < VERSIONSIZE do
+    name2 := name2 + ' ';
+
   memcpy(save_p, @name2[1], VERSIONSIZE);
   save_p := PByteArray(integer(save_p) + VERSIONSIZE);
 
@@ -1943,6 +1966,7 @@ begin
     cmd.lookupdown16 := 0; // JVAL Smooth Look Up/Down
     cmd.lookleftright := 0;
     cmd.jump := 0;
+    cmd.flags := 0;
   end
   else
   begin
@@ -1951,6 +1975,8 @@ begin
     cmd.lookleftright := demo_p[0];
     demo_p := @demo_p[1];
     cmd.jump := demo_p[0];
+    demo_p := @demo_p[1];
+    cmd.flags := demo_p[0];
     demo_p := @demo_p[1];
   end;
 end;
@@ -2022,6 +2048,9 @@ begin
   demo_p := @demo_p[1];
 
   demo_p[0] := cmd.jump;
+  demo_p := @demo_p[1];
+
+  demo_p[0] := cmd.flags;
 
   demo_p := demo_start;
 
@@ -2218,7 +2247,7 @@ var
 begin
   gameaction := ga_nothing;
   if externaldemo then
-    len := M_ReadFile(defdemoname, pointer(demobuffer))
+    len := M_ReadFile(defdemoname, demobuffer)
   else
   begin
     lump := W_GetNumForName(defdemoname);
@@ -2243,18 +2272,19 @@ begin
   else
   begin
     demoversion := demobuffer[0];
-    olddemo := (demoversion <= 110) and (demoversion >= 100);
-    if olddemo then
-      I_Warning('G_DoPlayDemo(): Playing demo from partial compatible version = %d.%d'#13#10,
-        [demo_p[0] div 100, demo_p[0] mod 100])
-    else if demo_p[0] <> VERSION then
-    begin
-      I_Warning('G_DoPlayDemo(): Demo is from an unsupported game version = %d.%d' + #13#10,
-        [demo_p[0] div 100, demo_p[0] mod 100]);
-      gameaction := ga_nothing;
-      exit;
-    end;
+    olddemo := (demoversion <= 110) and (demoversion >= 109);
   end;
+  // Only current version and 1.9 doom version demo
+  if (demoversion <> VERSION) and not olddemo then
+  begin
+    I_Warning('G_DoPlayDemo(): Demo is from an unsupported game version = %d.%d' + #13#10,
+      [demo_p[0] div 100, demo_p[0] mod 100]);
+    gameaction := ga_nothing;
+    exit;
+  end;
+  if olddemo then
+    I_Warning('G_DoPlayDemo(): Playing demo from partial compatible version = %d.%d'#13#10,
+      [demoversion div 100, demoversion mod 100]);
 
   demo_p := @demo_p[1];
 
@@ -2421,7 +2451,9 @@ begin
     gamestate := GS_ENDOOM;
     printf('E_Init: Initializing ENDOOM screen.'#13#10);
     E_Init;
-  end;
+  end
+  else
+    I_Quit;
 end;
 
 initialization

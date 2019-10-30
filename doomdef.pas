@@ -1,6 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
 //  Copyright (C) 2017-2018 by Jim Valavanis
 //
@@ -40,7 +41,8 @@ uses
 const
   VERSION110 = 110;
   VERSION111 = 111;
-  VERSION = VERSION111;
+  VERSION112 = 112;
+  VERSION = VERSION112;
 
 var
   oldsharewareversion: boolean = false;

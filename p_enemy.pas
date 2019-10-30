@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -763,7 +764,7 @@ begin
 
     if not allaround then
     begin
-      an := R_PointToAngle2(actor.x, actor.y, player.mo.x, player.mo.y) - actor.angle;
+      an := P_PointToAngle(actor.x, actor.y, player.mo.x, player.mo.y) - actor.angle;
 
       if (an > ANG90) and (an < ANG270) then
       begin
@@ -995,7 +996,7 @@ begin
       if dist < 64 * 10 * FRACUNIT then
         if P_Random < 100 then
         begin
-          ang := R_PointToAngle2(actor.x, actor.y, actor.target.x, actor.target.y);
+          ang := P_PointToAngle(actor.x, actor.y, actor.target.x, actor.target.y);
           if P_Random < 128 then
             ang := ang + ANG90
           else
@@ -1030,7 +1031,7 @@ begin
   actor.flags := actor.flags and (not MF_AMBUSH);
 
   actor.angle :=
-    R_PointToAngle2(actor.x, actor.y, actor.target.x, actor.target.y);
+    P_PointToAngle(actor.x, actor.y, actor.target.x, actor.target.y);
 
   if actor.target.flags and MF_SHADOW <> 0 then
     actor.angle := actor.angle + _SHLW(P_Random - P_Random, 21);
@@ -1279,7 +1280,7 @@ begin
     exit;
 
   // change angle
-  exact := R_PointToAngle2(actor.x, actor.y, dest.x, dest.y);
+  exact := P_PointToAngle(actor.x, actor.y, dest.x, dest.y);
 
   if exact <> actor.angle then
   begin
@@ -1889,7 +1890,7 @@ begin
   // scan the remaining thinkers to see
   // if all bosses are dead
   th := thinkercap.Next;
-  while Pointer(th) <> Pointer(@thinkercap) do
+  while th <> @thinkercap do
   begin
     if @th._function.acp1 = @P_MobjThinker then
     begin
@@ -2003,7 +2004,7 @@ begin
   braintargeton := 0;
 
   thinker := thinkercap.Next;
-  while Pointer(thinker) <> Pointer(@thinkercap) do
+  while thinker <> @thinkercap do
   begin
     if @thinker._function.acp1 = @P_MobjThinker then // is a mobj
     begin

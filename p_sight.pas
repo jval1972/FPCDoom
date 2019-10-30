@@ -1,6 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
 //  Copyright (C) 2017-2018 by Jim Valavanis
 //
@@ -62,8 +63,6 @@ var
   strace: divline_t; // from t1 to t2
   t2x: fixed_t;
   t2y: fixed_t;
-
-  sightcounts: array[0..1] of integer;
 
 //
 // P_DivlineSide
@@ -357,8 +356,6 @@ begin
   // Check in REJECT table.
   if rejectmatrix[bytenum] and bitnum <> 0 then
   begin
-    sightcounts[0] := sightcounts[0] + 1;
-
     // can't possibly be connected
     result := false;
     exit;
@@ -366,8 +363,6 @@ begin
 
   // An unobstructed LOS is possible.
   // Now look from eyes of t1 to any part of t2.
-  sightcounts[1] := sightcounts[1] + 1;
-
   inc(validcount);
 
   sightzstart := t1.z + t1.height - _SHR2(t1.height);
@@ -402,8 +397,6 @@ begin
   
   // An unobstructed LOS is possible.
   // Now look from eyes of t1 to any part of t2.
-  sightcounts[1] := sightcounts[1] + 1;
-
   inc(validcount);
 
   sightzstart := camz + mo.height - _SHR2(mo.height);

@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -248,7 +249,7 @@ begin
     if Raster_Pad > 0 then
       BlockWrite (Outfile, Zero_Array, Raster_Pad);
   end;
-  memfree(pointer(buf2), (X2 - X1) * 3);
+  memfree(buf2, (X2 - X1) * 3);
 
   (*----------------------------------------------------------*)
   (* Close the file, ignoring any I/O errors.                 *)
@@ -263,7 +264,7 @@ end;
 
 procedure M_ScreenShot(const filename: string = ''; const silent: boolean = false);
 var
-  tganame: string;
+  imgname: string;
   ret: boolean;
   dir: string;
   date: TDateTime;
@@ -273,17 +274,17 @@ begin
     dir := M_SaveFileName('') + 'SCREENSHOTS';
     MakeDir(dir);
     date := NowTime;
-    tganame := dir + '\Doom_' + formatDateTimeAsString('yyyymmdd_hhnnsszzz', date) + '.bmp';
+    imgname := dir + '\Doom_' + formatDateTimeAsString('yyyymmdd_hhnnsszzz', date) + '.bmp';
   end
   else
   begin
     if Pos('.', filename) = 0 then
-      tganame := filename + '.bmp'
+      imgname := filename + '.bmp'
     else
-      tganame := filename;
+      imgname := filename;
   end;
 
-  ret := M_DoScreenShot(tganame);
+  ret := M_DoScreenShot(imgname);
   if not silent then
   begin
     if ret then
@@ -302,7 +303,7 @@ begin
   src := malloc(bufsize);
   I_ReadScreen32(src);
   result := Save_24_Bit_BMP(filename, src, SCREENWIDTH, SCREENHEIGHT);
-  memfree(pointer(src), bufsize);
+  memfree(src, bufsize);
 end;
 
 procedure Cmd_Set(const name: string; const value: string);
@@ -684,7 +685,6 @@ var
   pd: Pdefault_t;
   s: TDStringList;
   n: string;
-  verstr: string;
 begin
   // set everything to base values
   for i := 0 to NUMDEFAULTS - 1 do
@@ -717,8 +717,7 @@ begin
 
     if s.Count > 1 then
     begin
-      sprintf(verstr, VERFMT, [VERSION div 100, VERSION mod 100]);
-      if Pos(verstr, s[0]) > 0 then
+      if Pos(AppTitle, s[0]) > 0 then // Ignore old version config
       begin
         confignotfound := False;
 
