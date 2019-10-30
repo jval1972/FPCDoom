@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -87,11 +88,11 @@ function R_PointOnSide(const x: fixed_t; const y: fixed_t; const node: Pnode_t):
 
 function R_PointOnSegSide(x: fixed_t; y: fixed_t; line: Pseg_t): boolean;
 
-function R_PointToAngle(x: fixed_t; y: fixed_t): angle_t;
+function R_PointToAngle(x: fixed_t; y: fixed_t): angle_t; overload;
 
-function R_PointToAngle2(const x1: fixed_t; const y1: fixed_t; const x2: fixed_t; const y2: fixed_t): angle_t;
+function R_PointToAngle(x1, y1: fixed_t; x2, y2: fixed_t): angle_t; overload;
 
-function R_PointToDist(const x: fixed_t; const y: fixed_t): fixed_t;
+function P_PointToAngle(const x1: fixed_t; const y1: fixed_t; const x2: fixed_t; const y2: fixed_t): angle_t;
 
 function R_ScaleFromGlobalAngle(const visangle: angle_t): fixed_t;
 
@@ -123,22 +124,21 @@ procedure R_SetViewAngleOffset(const angle: angle_t);
 function R_FullStOn: boolean;
 
 var
-  colfunc: PProcedure;
-  wallcolfunc: PProcedure;
-  skycolfunc: PProcedure;
-  transcolfunc: PProcedure;
-  averagecolfunc: PProcedure;
-  alphacolfunc: PProcedure;
-  maskedcolfunc: PProcedure;
-  maskedcolfunc2: PProcedure; // For hi res textures
-  fuzzcolfunc: PProcedure;
-  lightcolfunc: PProcedure;
-  whitelightcolfunc: PProcedure;
-  redlightcolfunc: PProcedure;
-  greenlightcolfunc: PProcedure;
-  bluelightcolfunc: PProcedure;
-  yellowlightcolfunc: PProcedure;
-  spanfunc: PProcedure;
+  colfunc: PPointerParmProcedure;
+  wallcolfunc: PPointerParmProcedure;
+  skycolfunc: PPointerParmProcedure;
+  transcolfunc: PPointerParmProcedure;
+  averagecolfunc: PPointerParmProcedure;
+  alphacolfunc: PPointerParmProcedure;
+  maskedcolfunc: PPointerParmProcedure;
+  maskedcolfunc2: PPointerParmProcedure; // For hi res textures
+  fuzzcolfunc: PPointerParmProcedure;
+  spanfunc: PPointerParmProcedure;
+  lightcolfunc: PPointerParmProcedure;
+  lightmapflashfunc: PPointerParmProcedure;
+  mirrorfunc: PPointerParmProcedure;
+  grayscalefunc: PPointerParmProcedure;
+  subsamplecolorfunc: PPointerParmProcedure;
 
   centerxfrac: fixed_t;
   centeryfrac: fixed_t;
@@ -224,9 +224,13 @@ function R_GetColormap32(const cmap: PByteArray): PLongWordArray;
 
 procedure R_Ticker;
 
+var
+  rendervalidcount: integer = 0; // Don't bother reseting this
+
 implementation
 
 uses
+  math,
   doomdata,
   c_cmds,
   d_net,
@@ -236,26 +240,29 @@ uses
   p_sight,
   p_map,
   r_aspect,
+  r_depthbuffer,
   r_draw,
   r_bsp,
   r_things,
   r_plane,
+  r_render,
   r_sky,
   r_segs,
   r_hires,
   r_trans8,
   r_externaltextures,
   r_lights,
+  r_lightmap,
   r_intrpl,
+  r_mirror,
+  r_grayscale,
+  r_colorsubsampling,
   r_draw_column,
   r_draw_span,
+  r_draw_light,
   v_video,
   st_stuff,
   z_memory;
-
-var
-// just for profiling purposes
-  framecount: integer;
 
 procedure R_ApplyColormap(const ofs, count: integer; const scrn: integer; const cmap: integer);
 var
@@ -351,11 +358,11 @@ var
   left: fixed_t;
   right: fixed_t;
 begin
-  lx := line.v1.x;
-  ly := line.v1.y;
+  lx := line.v1.r_x;
+  ly := line.v1.r_y;
 
-  ldx := line.v2.x - lx;
-  ldy := line.v2.y - ly;
+  ldx := line.v2.r_x - lx;
+  ldy := line.v2.r_y - ly;
 
   if ldx = 0 then
   begin
@@ -404,8 +411,20 @@ end;
 //
 function R_PointToAngle(x: fixed_t; y: fixed_t): angle_t;
 begin
-  x := x - viewx;
-  y := y - viewy;
+  result := round(683565275 * (arctan2(y - viewy, x - viewx)));
+end;
+
+function R_PointToAngle(x1, y1: fixed_t; x2, y2: fixed_t): angle_t;
+begin
+  result := R_PointToAngle(x2 - x1 + viewx, y2 - y1 + viewy);
+end;
+
+function P_PointToAngle(const x1: fixed_t; const y1: fixed_t; const x2: fixed_t; const y2: fixed_t): angle_t;
+var
+  x, y: fixed_t;
+begin
+  x := x2 - x1;
+  y := y2 - y1;
 
   if (x = 0) and (y = 0) then
   begin
@@ -490,43 +509,6 @@ begin
   end;
 
   result := 0;
-end;
-
-function R_PointToAngle2(const x1: fixed_t; const y1: fixed_t; const x2: fixed_t; const y2: fixed_t): angle_t;
-begin
-  result := R_PointToAngle(x2 - x1 + viewx, y2 - y1 + viewy);
-end;
-
-function R_PointToDist(const x: fixed_t; const y: fixed_t): fixed_t;
-var
-  angle: integer;
-  dx: fixed_t;
-  dy: fixed_t;
-  temp: fixed_t;
-begin
-  dx := abs(x - viewx);
-  dy := abs(y - viewy);
-  if dx = 0 then
-  begin
-    result := dy;
-    exit;
-  end;
-  if dy = 0 then
-  begin
-    result := dx;
-    exit;
-  end;
-
-  if dy > dx then
-  begin
-    temp := dx;
-    dx := dy;
-    dy := temp;
-  end;
-
-  angle := _SHRW(tantoangle[FixedDiv(dy, dx) shr DBITS], ANGLETOFINESHIFT);
-
-  result := FixedDiv(dx, finecosine[angle]);
 end;
 
 //
@@ -764,45 +746,45 @@ begin
   case setdetail of
     DL_MEDIUM:
       begin
-        colfunc := R_DrawColumnMedium;
-        wallcolfunc := R_DrawColumnMedium;
-        transcolfunc := R_DrawTranslatedColumn;
-        averagecolfunc := R_DrawColumnAverageMedium;
-        alphacolfunc := R_DrawColumnAlphaMedium;
-        maskedcolfunc := R_DrawColumnMedium;
-        maskedcolfunc2 := R_DrawColumnMedium;
-        spanfunc := R_DrawSpanMedium;
-        fuzzcolfunc := R_DrawFuzzColumn;
-        lightcolfunc := R_DrawFuzzColumn;
-        whitelightcolfunc := R_DrawFuzzColumn;
-        redlightcolfunc := R_DrawFuzzColumn;
-        greenlightcolfunc := R_DrawFuzzColumn;
-        bluelightcolfunc := R_DrawFuzzColumn;
-        yellowlightcolfunc := R_DrawFuzzColumn;
-        skycolfunc := R_DrawSkyColumn;
+        colfunc := @R_DrawColumnMedium;
+        wallcolfunc := @R_DrawColumnMedium;
+        transcolfunc := @R_DrawTranslatedColumn;
+        averagecolfunc := @R_DrawColumnAverageMedium;
+        alphacolfunc := @R_DrawColumnAlphaMedium;
+        maskedcolfunc := @R_DrawColumnMedium;
+        maskedcolfunc2 := @R_DrawColumnMedium;
+        spanfunc := @R_DrawSpanMedium;
+        fuzzcolfunc := @R_DrawFuzzColumn;
+        skycolfunc := @R_DrawSkyColumn;
+        lightcolfunc := @R_DrawColumnLightmap;
+        lightmapflashfunc := @R_FlashSpanLightmap8;
+        mirrorfunc := @R_MirrorBuffer8;
+        grayscalefunc := @R_GrayScaleBuffer8;
+        subsamplecolorfunc := @R_SubSamplingBuffer8;
+
         videomode := vm8bit;
       end;
     DL_NORMAL:
       begin
-        colfunc := R_DrawColumnHi;
-        wallcolfunc := R_DrawColumnHi;
-        transcolfunc := R_DrawTranslatedColumnHi;
-        averagecolfunc := R_DrawColumnAverageHi;
-        alphacolfunc := R_DrawColumnAlphaHi;
-        maskedcolfunc := R_DrawMaskedColumnNormal;
-        maskedcolfunc2 := R_DrawMaskedColumnHi32;
-        spanfunc := R_DrawSpanNormal;
+        colfunc := @R_DrawColumnHi;
+        wallcolfunc := @R_DrawColumnHi;
+        transcolfunc := @R_DrawTranslatedColumnHi;
+        averagecolfunc := @R_DrawColumnAverageHi;
+        alphacolfunc := @R_DrawColumnAlphaHi;
+        maskedcolfunc := @R_DrawMaskedColumnNormal;
+        maskedcolfunc2 := @R_DrawMaskedColumnHi32;
+        spanfunc := @R_DrawSpanNormal;
         if use32bitfuzzeffect then
-          fuzzcolfunc := R_DrawFuzzColumn32
+          fuzzcolfunc := @R_DrawFuzzColumn32
         else
-          fuzzcolfunc := R_DrawFuzzColumnHi;
-        lightcolfunc := R_DrawWhiteLightColumnHi;
-        whitelightcolfunc := R_DrawWhiteLightColumnHi;
-        redlightcolfunc := R_DrawRedLightColumnHi;
-        greenlightcolfunc := R_DrawGreenLightColumnHi;
-        bluelightcolfunc := R_DrawBlueLightColumnHi;
-        yellowlightcolfunc := R_DrawYellowLightColumnHi;
-        skycolfunc := R_DrawSkyColumnHi;
+          fuzzcolfunc := @R_DrawFuzzColumnHi;
+        skycolfunc := @R_DrawSkyColumnHi;
+        lightcolfunc := @R_DrawColumnLightmap;
+        lightmapflashfunc := @R_FlashSpanLightmap32;
+        mirrorfunc := @R_MirrorBuffer32;
+        grayscalefunc := @R_GrayScaleBuffer32;
+        subsamplecolorfunc := @R_SubSamplingBuffer32;
+
         videomode := vm32bit;
       end;
   end;
@@ -1011,8 +993,6 @@ begin
   printf(#13#10 + 'R_SetViewSize');
   // viewwidth / viewheight / detailLevel are set by the defaults
   R_SetViewSize;
-  printf(#13#10 + 'R_InitPlanes');
-  R_InitPlanes;
   printf(#13#10 + 'R_InitLightTables');
   R_InitLightTables;
   printf(#13#10 + 'R_InitSkyMap');
@@ -1021,8 +1001,16 @@ begin
   R_InitTranslationTables;
   printf(#13#10 + 'R_InitTransparency8Tables');
   R_InitTransparency8Tables;
-
-  framecount := 0;
+  printf(#13#10 + 'R_InitDepthBuffer');
+  R_InitDepthBuffer;
+  printf(#13#10 + 'R_InitLightTexture');
+  R_InitLightTexture;
+  printf(#13#10 + 'R_InitDynamicLights');
+  R_InitDynamicLights;
+  printf(#13#10 + 'R_InitLightmap');
+  R_InitLightmap;
+  printf(#13#10 + 'R_InitRender');
+  R_InitRender;
 
   C_AddCmd('zaxisshift', @R_CmdZAxisShift);
   C_AddCmd('mediumres, mediumresolution', @R_CmdMediumRes);
@@ -1033,23 +1021,29 @@ begin
   C_AddCmd('32bittexturepaletteeffects, use32bittexturepaletteeffects', @R_Cmd32bittexturepaletteeffects);
   C_AddCmd('useexternaltextures', @R_CmdUseExternalTextures);
   C_AddCmd('use32bitfuzzeffect', @R_CmdUse32boitfuzzeffect);
-  C_AddCmd('lightboostfactor', @R_CmdLightBoostFactor);
   C_AddCmd('clearcache, cleartexturecache', @R_CmdClearCache);
   C_AddCmd('resetcache, resettexturecache', @R_CmdResetCache);
 end;
 
 procedure R_ShutDown;
 begin
-  printf(#13#10 + 'R_ShutDownLightBoost');
-  R_ShutDownLightBoost;
   printf(#13#10 + 'R_ShutDown32Cache');
   R_ShutDown32Cache;
   printf(#13#10 + 'R_ShutDownInterpolation');
   R_ResetInterpolationBuffer;
   printf(#13#10 + 'R_FreeTransparency8Tables');
   R_FreeTransparency8Tables;
+  printf(#13#10 + 'R_ShutDownDepthBuffer');
+  R_ShutDownDepthBuffer;
+  printf(#13#10 + 'R_ShutDownLightTexture');
+  R_ShutDownLightTexture;
+  printf(#13#10 + 'R_ShutDownDynamicLights');
+  R_ShutDownDynamicLights;
+  printf(#13#10 + 'R_ShutDownLightmap');
+  R_ShutDownLightmap;
+  printf(#13#10 + 'R_ShutDownRender');
+  R_ShutDownRender;
   printf(#13#10);
-
 end;
 
 //
@@ -1099,7 +1093,6 @@ var
   sec: Psector_t;
   ceilz, floorz: fixed_t;
 begin
-
   if chasecamera then
   begin
     sec := Psubsector_t(viewplayer.mo.subsector).sector;
@@ -1113,7 +1106,6 @@ begin
       if cz < floorz then
         cz := floorz
     end;
-
 
     c_an := (viewangle + ANG180) shr ANGLETOFINESHIFT;
     dx := chasecamera_viewxy * finecosine[c_an];
@@ -1206,7 +1198,6 @@ begin
   else
     fixedcolormap := nil;
 
-  inc(framecount);
   inc(validcount);
 end;
 
@@ -1242,8 +1233,16 @@ end;
 
 procedure R_RenderPlayerView(player: Pplayer_t);
 begin
+  // Wait for running threads to finish
+  R_WaitTasks;
+
+  // new render validcount
+  Inc(rendervalidcount);
+
+  // Calculate hi-resolution tables
   R_CalcHiResTables;
 
+  // Player setup
   R_SetupFrame(player);
 
   // Clear buffers.
@@ -1251,28 +1250,118 @@ begin
   R_ClearDrawSegs;
   R_ClearPlanes;
   R_ClearSprites;
+  R_ClearDynamicLights;
+  R_ClearRender;
 
   // check for new console commands.
   NetUpdate;
 
-  // The head node is the last node output.
-  R_RenderBSPNode(numnodes - 1);
+  // Render the BSP - Add walls to pool
+  R_RenderBSP;
 
   // Check for new console commands.
   NetUpdate;
 
+  // Add floors, ceilings & sky to pool
   R_DrawPlanes;
 
   // Check for new console commands.
   NetUpdate;
 
+  // Render walls, flats & sky from pool using multiple CPU cores
+  R_RenderItemsMT(RI_WALL, RIF_WAIT);
+  R_RenderItemsMT(RI_SPAN, RIF_WAIT);
+
+  // Sort sprites
+  R_SortVisSprites;
+
+  // Add sprites to pool
   R_DrawMasked;
 
+  // Render sprites and masked mid walls from pool using multiple CPU cores
+  if lightmapaccuracymode = MAXLIGHTMAPACCURACYMODE then
+    R_RenderItemsMT(RI_MASKED, RIF_WAIT);
+
+  if uselightmap then
+  begin
+    // Setup depth buffer
+    R_StartDepthBuffer;
+
+    // Render the depthbuffer
+    R_RenderItemsMT(RI_DEPTHBUFFERSPAN, RIF_WAIT);
+    R_RenderItemsMT(RI_DEPTHBUFFERWALL, RIF_WAIT);
+    if lightmapaccuracymode = MAXLIGHTMAPACCURACYMODE then
+      R_RenderItemsMT(RI_DEPTHBUFFERMASKED, RIF_WAIT);
+
+    // Extra depthbuffer calculations
+    R_CalcDepthBuffer;
+
+    // Wake up the lightmap
+    R_StartLightMap;
+
+    // Mark lights
+    R_MarkLights;
+
+    // Add lights to pool
+    R_CalcLights;
+
+    // Render lights from pool using multiple CPU cores
+    R_RenderItemsMT(RI_LIGHT, RIF_WAIT);
+
+    // Flash lightmap
+    R_FlashLightmap;
+
+    // Render lightmap from pool using multiple CPU cores
+    R_RenderItemsMT(RI_LIGHTMAP, RIF_WAIT);
+
+    // Stop lightmap - Schedule task in future
+    R_ScheduleTask(@R_StopLightmap);
+
+    // Stop depth buffer - Schedule task in future
+    R_ScheduleTask(@R_StopDepthBuffer);
+  end;
+
+  // Render sprites and masked mid walls from pool using multiple CPU cores
+  if lightmapaccuracymode <> MAXLIGHTMAPACCURACYMODE then
+    R_RenderItemsMT(RI_MASKED, RIF_WAIT);
+
+  if mirrormode and MR_ENVIROMENT <> 0 then
+  begin
+    // Generate mirror tasks
+    R_MirrorBuffer;
+
+    // Execute mirror tasks using multiple CPU cores
+    R_RenderItemsMT(RI_MIRRORBUFFER, RIF_WAIT);
+  end;
+
+  // Draw Player
   R_DrawPlayer;
-  
+
+  if grayscalemode <> 0 then
+  begin
+    // Generate grayscale tasks
+    R_GrayScaleBuffer;
+
+    // Execute grayscale tasks using multiple CPU cores
+    R_RenderItemsMT(RI_GRAYSCALE, RIF_WAIT);
+  end;
+
+
+  if colorsubsamplingmode <> 0 then
+  begin
+    // Generate color subsubling tasks
+    R_SubsamplingBuffer;
+
+    // Execute color subsubling tasks using multiple CPU cores
+    R_RenderItemsMT(RI_COLORSUBSAMPLING, RIF_WAIT);
+  end;
+
+
   // Check for new console commands.
   NetUpdate;
 
+  // Execute all pending tasks
+  R_ExecutePendingTasks;
 end;
 
 procedure R_Ticker;

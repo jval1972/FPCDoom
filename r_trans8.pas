@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -52,9 +53,15 @@ var
   trans8tables: array[0..NUMTRANS8TABLES] of Ptrans8table_t;
   trans8tablescalced: boolean = false;
   averagetrans8table: Ptrans8table_t = nil;
-  curtrans8table: Ptrans8table_t = nil;
+  coloraddtrans8table: Ptrans8table_t = nil;
+  grayscale8tables: array[1..4] of array[0..$FF] of byte;
+  subsampling8tables: array[1..4] of array[0..$FF] of byte;
 
 function R_GetTransparency8table(const factor: fixed_t = FRACUNIT div 2): Ptrans8table_t;
+
+function R_FastApproxColorIndex(const c: LongWord): byte; overload;
+
+function R_FastApproxColorIndex(const r, g, b: byte): byte; overload;
 
 implementation
 
@@ -62,6 +69,9 @@ uses
   r_hires,
   v_video,
   z_memory;
+
+var
+  approxcolorindexarray: array[0..4095] of byte;
 
 procedure R_InitTransparency8Tables;
 var
@@ -73,7 +83,10 @@ var
   factor: fixed_t;
   c: LongWord;
   c1: LongWord;
+  r, g, b: LongWord;
+  r1, g1, b1: LongWord;
   ptrans8: PByte;
+  gray1, gray2, gray3, gray4: LongWord;
 begin
   if trans8tablescalced then
     exit;
@@ -109,9 +122,107 @@ begin
     end;
   end;
 
+  ptrans8 := @approxcolorindexarray[0];
+  for r := 0 to 15 do
+    for g := 0 to 15 do
+      for b := 0 to 15 do
+      begin
+        ptrans8^ := V_FindAproxColorIndex(@palL, r shl 20 + g shl 12 + b shl 4) and $FF;
+        inc(ptrans8);
+      end;
+
   averagetrans8table := trans8tables[NUMTRANS8TABLES div 2];
 
+  coloraddtrans8table := malloc(SizeOf(trans8table_t));
+  ptrans8 := @coloraddtrans8table[0];
+  for j := 0 to 255 do
+  begin
+    c1 := palL[j];
+    r := (c1 shr 16) and $ff;
+    g := (c1 shr 8) and $ff;
+    b := c1 and $ff;
+    for k := 0 to 255 do
+    begin
+      c := R_ColorLightAdd(palL[k], r, g, b);
+      ptrans8^ := V_FindAproxColorIndex(@palL, c) and $FF;
+      inc(ptrans8);
+    end;
+  end;
+
+  // Grayscale
+  for j := 0 to 255 do
+  begin
+    c1 := palL[j];
+    r := (c1 shr 16) and $ff;
+    g := (c1 shr 8) and $ff;
+    b := c1 and $ff;
+
+    gray1 := (r + g + b) div 3;  // Average
+    if gray1 > 255 then gray1 := 255;
+    gray2 := trunc(r * 0.299 + g * 0.587 + b * 0.114); // Human perceive
+    if gray2 > 255 then gray2 := 255;
+    gray3 := trunc(r * 0.2126 + g * 0.7152 + b * 0.0722); // Luma
+    if gray3 > 255 then gray3 := 255;
+    gray4 := (min3b(r, g, b) + max3b(r, g, b)) div 2; // Desaturation
+    if gray4 > 255 then gray4 := 255;
+
+    grayscale8tables[1, j] := V_FindAproxColorIndex(@palL, gray1 + gray1 shl 8 + gray1 shl 16);
+    grayscale8tables[2, j] := V_FindAproxColorIndex(@palL, gray2 + gray2 shl 8 + gray2 shl 16);
+    grayscale8tables[3, j] := V_FindAproxColorIndex(@palL, gray3 + gray3 shl 8 + gray3 shl 16);
+    grayscale8tables[4, j] := V_FindAproxColorIndex(@palL, gray4 + gray4 shl 8 + gray4 shl 16);
+  end;
+
+  // Color subsampling
+  for j := 0 to 255 do
+  begin
+    c1 := palL[j];
+    r := (c1 shr 16) and $ff;
+    g := (c1 shr 8) and $ff;
+    b := c1 and $ff;
+
+    r1 := (r shr 4) shl 4 + 8;
+    g1 := (g shr 4) shl 4 + 8;
+    b1 := (b shr 4) shl 4 + 8;
+    subsampling8tables[1, j] := V_FindAproxColorIndex(@palL, r1 shl 16 + g1 shl 8 + b1);
+
+    r1 := (r shr 5) shl 5 + 16;
+    g1 := (g shr 5) shl 5 + 16;
+    b1 := (b shr 5) shl 5 + 16;
+    subsampling8tables[2, j] := V_FindAproxColorIndex(@palL, r1 shl 16 + g1 shl 8 + b1);
+
+    r1 := (r shr 6) shl 6 + 32;
+    g1 := (g shr 6) shl 6 + 32;
+    b1 := (b shr 6) shl 6 + 32;
+    subsampling8tables[3, j] := V_FindAproxColorIndex(@palL, r1 shl 16 + g1 shl 8 + b1);
+
+    r1 := (r div 85) * 85 + 42;
+    g1 := (g div 85) * 85 + 42;
+    b1 := (b div 85) * 85 + 42;
+    subsampling8tables[4, j] := V_FindAproxColorIndex(@palL, r1 shl 16 + g1 shl 8 + b1);
+  end;
+
+
   trans8tablescalced := true;
+end;
+
+function R_FastApproxColorIndex(const c: LongWord): byte;
+var
+  r, g, b: LongWord;
+begin
+  b := (c shr 4) and $F;
+  g := (c shr 12) and $F;
+  r := (c shr 20) and $F;
+  result := approxcolorindexarray[r shl 8 + g shl 4 + b];
+end;
+
+function R_FastApproxColorIndex(const r, g, b: byte): byte; overload;
+var
+  r1, g1, b1: LongWord;
+begin
+  b1 := r shr 4;
+  g1 := g shr 4;
+  r1 := r shr 4;
+  result := approxcolorindexarray[r1 shl 8 + g1 shl 4 + b1];
 end;
 
 procedure R_FreeTransparency8Tables;
@@ -119,7 +230,9 @@ var
   i: integer;
 begin
   for i := 0 to NUMTRANS8TABLES do
-    memfree(pointer(trans8tables[i]), SizeOf(trans8table_t));
+    memfree(trans8tables[i], SizeOf(trans8table_t));
+
+  memfree(coloraddtrans8table, SizeOf(trans8table_t));
 
   averagetrans8table := nil;
 
@@ -130,7 +243,7 @@ function R_GetTransparency8table(const factor: fixed_t = FRACUNIT div 2): Ptrans
 var
   idx: integer;
 begin
-  idx := (factor {+ (FRACUNIT div (NUMTRANS8TABLES * 2)) }* NUMTRANS8TABLES) div FRACUNIT;
+  idx := (factor * NUMTRANS8TABLES) div FRACUNIT;
   if idx < 0 then
     idx := 0
   else if idx > NUMTRANS8TABLES then

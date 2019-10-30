@@ -1,6 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
 //  Copyright (C) 2017-2019 by Jim Valavanis
 //
@@ -117,6 +118,7 @@ uses
   m_rnd,
   m_misc,
   p_mobj_h,
+  r_mirror,
   sounds,
   z_memory,
   w_wad,
@@ -178,7 +180,7 @@ var
 function S_GetChannel(origin: pointer; sfxinfo: Psfxinfo_t): integer; forward;
 
 function S_AdjustSoundParams(listener: Pmobj_t; source:Pmobj_t;
-  vol: Pinteger; sep: Pinteger; pitch:Pinteger): boolean; forward;
+  vol: Pinteger; sep: Pinteger; pitch: Pinteger): boolean; forward;
 
 procedure S_StopChannel(cnum: integer); forward;
 
@@ -328,7 +330,7 @@ var
   cnum: integer;
   origin: Pmobj_t;
 begin
-  origin := Pmobj_t(origin_p);
+  origin := origin_p;
 
   // check for bogus sound #
   if (sfx_id < 1) or (sfx_id > numsfx) then
@@ -488,7 +490,6 @@ end;
 //
 procedure S_UpdateSounds(listener_p: pointer);
 var
-  audible: boolean;
   cnum: integer;
   volume: integer;
   sep: integer;
@@ -523,31 +524,23 @@ begin
             continue;
           end
           else if volume > snd_SfxVolume then
-          begin
             volume := snd_SfxVolume;
-          end;
         end;
 
         // check non-local sounds for distance clipping
         //  or modify their params
         if (c.origin <> nil) and (integer(listener_p) <> integer(c.origin)) then
         begin
-          audible := S_AdjustSoundParams(listener, c.origin, @volume, @sep, @pitch);
-
-          if not audible then
-          begin
-            S_StopChannel(cnum);
-          end
+          if S_AdjustSoundParams(listener, c.origin, @volume, @sep, @pitch) then
+            I_UpdateSoundParams(c.handle, volume, sep, pitch)
           else
-            I_UpdateSoundParams(c.handle, volume, sep, pitch);
+            S_StopChannel(cnum);
         end
       end
       else
-      begin
         // if channel is allocated but sound has stopped,
         //  free it
         S_StopChannel(cnum);
-      end;
     end;
   end;
 end;
@@ -708,7 +701,7 @@ end;
 // Otherwise, modifies parameters and returns 1.
 //
 function S_AdjustSoundParams(listener: Pmobj_t; source:Pmobj_t;
-  vol: Pinteger; sep: Pinteger; pitch:Pinteger): boolean;
+  vol: Pinteger; sep: Pinteger; pitch: Pinteger): boolean;
 var
   approx_dist: fixed_t;
   adx: fixed_t;
@@ -737,7 +730,7 @@ begin
   end;
 
   // angle of source to listener
-  angle := R_PointToAngle2(listener.x, listener.y, source.x, source.y);
+  angle := P_PointToAngle(listener.x, listener.y, source.x, source.y);
 
   langle := listener.angle + listener.viewangle;
   if angle > langle then
@@ -748,13 +741,14 @@ begin
   angle := angle div ANGLETOFINEUNIT;
 
   // stereo separation
-  sep^ := NORM_SEP - (FixedMul(S_STEREO_SWING, finesine[angle]) div FRACUNIT);
+  if mirrormode and MR_ENVIROMENT <> 0 then
+    sep^ := NORM_SEP + (FixedMul(S_STEREO_SWING, finesine[angle]) div FRACUNIT)
+  else
+    sep^ := NORM_SEP - (FixedMul(S_STEREO_SWING, finesine[angle]) div FRACUNIT);
 
   // volume calculation
   if approx_dist < S_CLOSE_DIST then
-  begin
-    vol^ := snd_SfxVolume;
-  end
+    vol^ := snd_SfxVolume
   else if gamemap = 8 then
   begin
     if approx_dist > S_CLIPPING_DIST then
@@ -764,11 +758,7 @@ begin
       ((S_CLIPPING_DIST - approx_dist) div FRACUNIT)) div S_ATTENUATOR;
   end
   else
-  begin
-    // distance effect
-    vol^ := (snd_SfxVolume * ((S_CLIPPING_DIST - approx_dist) div FRACUNIT)) div
-              S_ATTENUATOR;
-  end;
+    vol^ := (snd_SfxVolume * ((S_CLIPPING_DIST - approx_dist) div FRACUNIT)) div S_ATTENUATOR; // distance effect
 
   result := vol^ > 0;
 end;
@@ -816,10 +806,7 @@ begin
       exit;
     end
     else
-    begin
-      // Otherwise, kick out lower priority.
-      S_StopChannel(cnum);
-    end;
+      S_StopChannel(cnum); // Otherwise, kick out lower priority.
   end;
 
   c := @channels[cnum];

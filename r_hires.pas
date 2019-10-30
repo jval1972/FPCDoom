@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -71,12 +72,16 @@ procedure R_CmdUseExternalTextures(const parm1: string = '');
 
 function R_ColorAdd(const c1, c2: LongWord): LongWord; register;
 
-function R_ColorAverage(const c1, c2: LongWord; const factor: fixed_t): LongWord; register;
+function R_ColorLightAdd(const c1, r, g, b: LongWord): LongWord; register;
+
+function R_ColorAverage(const c1, c2: LongWord; const factor: fixed_t): LongWord;
 
 function R_ColorLightAverage(const c1, c2: LongWord; const factor, lfactor: fixed_t): LongWord;
 function R_InverseLightAverage(const c1, c2: LongWord; const factor: fixed_t): LongWord;
 
-function R_ColorMidAverage(const c1, c2: LongWord): LongWord;
+function R_ColorMidAverage(const c1, c2: LongWord): LongWord; overload;
+
+function R_ColorMidAverage(const A: array of const): LongWord; overload;
 
 function R_ColorLight(const c: LongWord; const lfactor: fixed_t): LongWord;
 function R_ColorBoost(const c: LongWord; const lfactor: fixed_t): LongWord;
@@ -100,8 +105,6 @@ var
   hirestable: hirestable_t;
   recalctablesneeded: boolean = true;
 
-procedure R_InitHiRes;
-
 procedure R_SetPalette(palette: integer);
 
 var
@@ -118,7 +121,6 @@ uses
   r_main,
   r_data,
   r_externaltextures,
-  r_lights,
   v_video,
   w_wad;
 
@@ -326,6 +328,25 @@ begin
   result := r + g shl 8 + b shl 16;
 end;
 
+function R_ColorLightAdd(const c1, r, g, b: LongWord): LongWord; register;
+var
+  r1, g1, b1: word;
+begin
+  b1 := c1 and $ff;
+  if b > 0 then
+    b1 := b1 + ((255 - b1) * b) div 256;
+
+  g1 := (c1 shr 8) and $ff;
+  if g > 0 then
+    g1 := g1 + ((255 - g1) * g) div 256;
+
+  r1 := (c1 shr 16) and $ff;
+  if r > 0 then
+    r1 := r1 + ((255 - r1) * r) div 256;
+
+  result := b1 + g1 shl 8 + r1 shl 16;
+end;
+
 //
 // R_ColorAverage
 //
@@ -419,6 +440,30 @@ begin
   g := (g1 + g2) shr 1;
   b := (b1 + b2) shr 1;
   result := r + g shl 8 + b shl 16;
+end;
+
+function R_ColorMidAverage(const A: array of const): LongWord; overload;
+var
+  i: integer;
+  c: LongWord;
+  r, g, b: LongWord;
+  numitems: integer;
+begin
+  r := 0;
+  g := 0;
+  b := 0;
+  numitems := High(A) - Low(A) + 1;
+  for i := Low(A) to High(A) do
+  begin
+    c := A[i].VInteger;
+    r := r + (c shr 16) and $FF;
+    g := g + (c shr 8) and $FF;
+    b := b + c and $FF;
+  end;
+  r := r div numitems;
+  g := g div numitems;
+  b := b div numitems;
+  result := r shl 16 + g shl 8 + b;
 end;
 
 //
@@ -594,12 +639,6 @@ begin
   end;
 
   recalctablesneeded := false;
-end;
-
-procedure R_InitHiRes;
-begin
-  R_InitLightBoost;
-  R_InitSpanTables;
 end;
 
 procedure R_SetPalette(palette: integer);

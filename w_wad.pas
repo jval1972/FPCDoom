@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -309,7 +310,7 @@ begin
 
 
   // Fill in lumpinfo
-  realloc(pointer(lumpinfo), startlump * SizeOf(lumpinfo_t), numlumps * SizeOf(lumpinfo_t));
+  realloc(lumpinfo, startlump * SizeOf(lumpinfo_t), numlumps * SizeOf(lumpinfo_t));
 
   if lumpinfo = nil then
     I_Error('W_AddFile(): Couldn''t realloc lumpinfo');
@@ -339,7 +340,7 @@ begin
     handle.Free;
 
   if len > 0 then
-    memfree(pointer(fileinfo), len);
+    memfree(fileinfo, len);
 
 end;
 
@@ -440,8 +441,8 @@ end;
 
 procedure W_ShutDown;
 begin
-  memfree(pointer(lumpcache), numlumps * SizeOf(pointer));
-  memfree(pointer(lumpinfo), numlumps * SizeOf(lumpinfo_t));
+  memfree(lumpcache, numlumps * SizeOf(pointer));
+  memfree(lumpinfo, numlumps * SizeOf(lumpinfo_t));
 end;
 
 //

@@ -1,6 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
 //  Copyright (C) 2017-2018 by Jim Valavanis
 //
@@ -34,7 +35,7 @@ uses
   d_fpc;
 
 const
-  LIGHTBOOSTSIZE = 256;
+  LIGHTBOOSTSIZE = 128;
 
 type
   lpost_t = record
@@ -48,87 +49,55 @@ const
   LFACTORMAX = 1024;
 
 var
-  lightboostfactor: LongWord = 128;
-  lighboostlookup: array[0..LIGHTBOOSTSIZE - 1] of lpost_t;
-  lightboost: PLongWordArray = nil;
-  uselightboost: boolean;
+  lightexturelookup: array[0..LIGHTBOOSTSIZE - 1] of lpost_t;
+  lighttexture: PLongWordArray = nil;
 
-procedure R_InitLightBoost;
+procedure R_InitLightTexture;
 
-procedure R_ShutDownLightBoost;
-
-procedure R_CmdLightBoostFactor(const parm1: string = '');
+procedure R_ShutDownLightTexture;
 
 implementation
 
 //
-// R_InitLightBoost
+// R_InitLights
 //
-procedure R_InitLightBoost;
+procedure R_InitLightTexture;
 var
   i, j: integer;
   dist: double;
-  c: longword;
+  c: LongWord;
 begin
-  if lightboost = nil then
-    lightboost := PLongWordArray(malloc(LIGHTBOOSTSIZE * LIGHTBOOSTSIZE * SizeOf(LongWord)));
+  if lighttexture = nil then
+    lighttexture := PLongWordArray(malloc(LIGHTBOOSTSIZE * LIGHTBOOSTSIZE * SizeOf(LongWord)));
   for i := 0 to LIGHTBOOSTSIZE - 1 do
   begin
-    lighboostlookup[i].topdelta := MAXINT;
-    lighboostlookup[i].length := 0;
+    lightexturelookup[i].topdelta := MAXINT;
+    lightexturelookup[i].length := 0;
     for j := 0 to LIGHTBOOSTSIZE - 1 do
     begin
       dist := sqrt(sqr(i - (LIGHTBOOSTSIZE shr 1)) + sqr(j - (LIGHTBOOSTSIZE shr 1)));
       if dist <= (LIGHTBOOSTSIZE shr 1) then
       begin
-        inc(lighboostlookup[i].length);
-        c := round(dist * 2);
+        inc(lightexturelookup[i].length);
+        c := round(dist * 4);
         if c > 255 then
           c := 0
         else
           c := 255 - c;
-        lightboost[i * LIGHTBOOSTSIZE + j] := $10000 + c * lightboostfactor;
-        if j < lighboostlookup[i].topdelta then
-          lighboostlookup[i].topdelta := j;
+        lighttexture[i * LIGHTBOOSTSIZE + j] := c * 255;
+        if j < lightexturelookup[i].topdelta then
+          lightexturelookup[i].topdelta := j;
       end
       else
-        lightboost[i * LIGHTBOOSTSIZE + j] := $10000;
+        lighttexture[i * LIGHTBOOSTSIZE + j] := 0;
     end;
   end;
 end;
 
-procedure R_ShutDownLightBoost;
+procedure R_ShutDownLightTexture;
 begin
-  if lightboost <> nil then
-    memfree(pointer(lightboost), LIGHTBOOSTSIZE * LIGHTBOOSTSIZE * SizeOf(LongWord));
-end;
-
-procedure R_CmdLightBoostFactor(const parm1: string = '');
-var
-  newfactor: LongWord;
-begin
-  if parm1 = '' then
-  begin
-    printf('Current setting: lightboostfactor = %d'#13#10, [lightboostfactor]);
-    exit;
-  end;
-
-  newfactor := atoi(parm1, lightboostfactor);
-  if newfactor <> lightboostfactor then
-  begin
-    if (newfactor >= LFACTORMIN) and (newfactor <= LFACTORMAX) then
-    begin
-      lightboostfactor := newfactor;
-      R_InitLightBoost;
-    end
-    else
-    begin
-      printf('Please specify a value in range [%d..%d]'#13#10, [LFACTORMIN, LFACTORMAX]);
-      exit;
-    end;
-  end;
-
-  R_CmdLightBoostFactor;
+  if lighttexture <> nil then
+    memfree(lighttexture, LIGHTBOOSTSIZE * LIGHTBOOSTSIZE * SizeOf(LongWord));
 end;
 
 end.

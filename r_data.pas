@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -307,7 +308,7 @@ begin
       texturecompositesize[texnum] := texturecompositesize[texnum] + texture.height;
     end;
   end;
-  memfree(pointer(patchcount), texture.width);
+  memfree(patchcount, texture.width);
 end;
 
 //
@@ -341,8 +342,8 @@ begin
   if videomode = vm8bit then
   begin
     lump := R_GetLumpForFlat(flat);
-    ds_source := W_CacheLumpNum(lump, PU_STATIC);
-    ds_scale := R_FlatScaleFromSize(W_LumpLength(lump));
+    rspan.ds_source := W_CacheLumpNum(lump, PU_STATIC);
+    rspan.ds_scale := R_FlatScaleFromSize(W_LumpLength(lump));
   end
   else
     R_ReadDS32Cache(flat);
@@ -356,8 +357,8 @@ end;
 procedure R_GetDCs(const tex: integer; const col: integer);
 begin
   if videomode = vm8bit then
-    dc_source := R_GetColumn(tex, col)
-  else 
+    rcolumn.dc_source := R_GetColumn(tex, col)
+  else
     R_ReadDC32Cache(tex, col);
 end;
 
@@ -666,7 +667,6 @@ end;
 //
 procedure R_InitData;
 begin
-  R_InitHiRes;
   R_InitTextures;
   R_InitFlats;
   R_InitSpriteLumps;
@@ -827,8 +827,8 @@ begin
   allocmemory := AllocMemSize;
 
   printf(' Precaching textures'#13#10);
-  dc_mod := 0;
-  dc_texturemod := 0;
+  rcolumn.dc_mod := 0;
+  rcolumn.dc_texturemod := 0;
   for i := 0 to numtextures - 1 do
   begin
     if texturepresent[i] = 0 then
@@ -881,9 +881,9 @@ begin
   allocmemory := AllocMemSize - allocmemory;
   printf('%6d KB memory usage for sprites'#13#10, [(spritememory + allocmemory) div 1024]);
 
-  memfree(pointer(flatpresent), numflats);
-  memfree(pointer(texturepresent), numtextures);
-  memfree(pointer(sprpresent), numspritespresent);
+  memfree(flatpresent, numflats);
+  memfree(texturepresent, numtextures);
+  memfree(sprpresent, numspritespresent);
 end;
 
 procedure R_SetupLevel;

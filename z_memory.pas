@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -111,8 +112,8 @@ var
   i: integer;
 begin
   for i := fnumitems - 1 downto 0 do
-    memfree(Pointer(fitems[i]), fitems[i].size + SizeOf(memmanageritem_t));
-  memfree(pointer(fitems), realsize * SizeOf(Pmemmanageritem_t));
+    memfree(fitems[i], fitems[i].size + SizeOf(memmanageritem_t));
+  memfree(fitems, realsize * SizeOf(Pmemmanageritem_t));
   inherited;
 end;
 
@@ -133,7 +134,7 @@ begin
   i := ptr2item(ptr);
   if fitems[i].user <> nil then
     fitems[i].user^ := nil;
-  memfree(pointer(fitems[i]), fitems[i].size + SizeOf(memmanageritem_t));
+  memfree(fitems[i], fitems[i].size + SizeOf(memmanageritem_t));
   if i < fnumitems - 1 then
   begin
     fitems[i] := fitems[fnumitems - 1];
@@ -166,7 +167,7 @@ begin
   if realsize <= fnumitems then
   begin
     realsize := (realsize * 4 div 3 + 64) and (not 7);
-    realloc(pointer(fitems), fnumitems * SizeOf(Pmemmanageritem_t), realsize * SizeOf(Pmemmanageritem_t));
+    realloc(fitems, fnumitems * SizeOf(Pmemmanageritem_t), realsize * SizeOf(Pmemmanageritem_t));
     for i := fnumitems + 1 to realsize - 1 do
       fitems[i] := nil;
   end;

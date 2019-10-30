@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -40,68 +41,16 @@ procedure R_Init32Cache;
 
 procedure R_ShutDown32Cache;
 
-const
-// Columns cache
-  COL32CACHESIZE = $4000;
-  CACHECOLSHIFT = 15;
-  CACHETEXTMASK = 1 shl CACHECOLSHIFT - 1;
-  CACHECOLBITS = 10;
-  CACHECOLMASK = 1 shl CACHECOLBITS - 1;
-
 procedure R_ReadDC32Cache(const rtex, rcol: integer);
 
 procedure R_Precache32bittexture(const rtex: integer);
-
-const
-  MAXTEXTUREHEIGHT = 1024;
-  MAXTEXTUREWIDTH = 1 shl CACHECOLBITS;
-  MAXEQUALHASH = 2; // Allow 2 same hash values to increase performance.
-
-type
-  dc32_t = array[0..MAXTEXTUREHEIGHT] of LongWord;
-  Pdc32_t = ^dc32_t;
-
-  dc32cacheitem_t = record
-    dc32: Pdc32_t;
-    columnsize: integer;
-    texture: integer;
-    column: integer;
-    texturemod: integer;
-  end;
-  Pdc32cacheitem_t = ^dc32cacheitem_t;
-
-  dc32cacheinfo_t = array[0..MAXEQUALHASH - 1] of Pdc32cacheitem_t;
-  Pdc32cacheinfo_t = ^dc32cacheinfo_t;
-
-  dc32cacheinfo_tArray = array[0..COL32CACHESIZE - 1] of dc32cacheinfo_t;
-  dc32cacheinfo_tPArray = array[0..COL32CACHESIZE - 1] of Pdc32cacheinfo_t;
 
 procedure R_ClearDC32Cache;
 procedure R_ResetDC32Cache;
 procedure R_InitDC32Cache;
 procedure R_ShutDownDC32Cache;
 
-const
-// Flat cache
-  FLAT32CACHESIZE = 256;
-  CACHEFLATMASK = FLAT32CACHESIZE - 1;
-
 procedure R_ReadDS32Cache(const flat: integer);
-
-type
-  ds32_t = array[0..512 * 512 - 1] of LongWord;
-  Pds32_t = ^ds32_t;
-
-  ds32cacheinfo_t = record
-    ds32: array[0..Ord(NUMDSSCALES) - 1] of Pds32_t;
-    lump: integer;
-    scale: dsscale_t;
-  end;
-  Pds32cacheinfo_t = ^ds32cacheinfo_t;
-  ds32cacheinfo_tArray = array[0..FLAT32CACHESIZE - 1] of ds32cacheinfo_t;
-  ds32cacheinfo_tPArray = array[0..FLAT32CACHESIZE - 1] of Pds32cacheinfo_t;
-
-function R_Get_ds32(p: Pds32cacheinfo_t): Pds32_t;
 
 function R_FlatScaleFromSize(const size: integer): dsscale_t;
 
@@ -109,8 +58,6 @@ procedure R_ClearDS32Cache;
 procedure R_ResetDS32Cache;
 procedure R_InitDS32Cache;
 procedure R_ShutDownDS32Cache;
-
-procedure R_InitSpanTables;
 
 implementation
 
@@ -127,6 +74,31 @@ uses
   v_video,
   w_wad,
   z_memory;
+
+const
+// Columns cache
+  COL32CACHESIZE = $4000;
+
+const
+  MAXTEXTUREHEIGHT32 = 1024;
+  MAXTEXTUREHEIGHT8 = 128;
+
+type
+  dc32_t = array[0..MAXTEXTUREHEIGHT32] of LongWord;
+  Pdc32_t = ^dc32_t;
+
+  Pdc32cacheitem_t = ^dc32cacheitem_t;
+  dc32cacheitem_t = record
+    dc32: Pdc32_t;
+    columnsize32: integer;
+    texture: integer;
+    column: integer;
+    texturemod: integer;
+    next: Pdc32cacheitem_t;
+  end;
+
+  dc32cacheitem_tArray = array[0..COL32CACHESIZE - 1] of dc32cacheitem_t;
+  dc32cacheitem_tPArray = array[0..COL32CACHESIZE - 1] of Pdc32cacheitem_t;
 
 procedure R_Reset32Cache;
 begin
@@ -163,21 +135,39 @@ begin
 end;
 
 var
-  dc32cache: dc32cacheinfo_tPArray;
+  dc32cache: dc32cacheitem_tPArray;
 
 function R_Get_dc32(p: Pdc32cacheitem_t; columnsize: integer): Pdc32_t;
 begin
   if p.dc32 = nil then
   begin
     p.dc32 := malloc((columnsize + 1) * SizeOf(LongWord));
-    p.columnsize := columnsize;
+    p.columnsize32 := columnsize;
   end
-  else if p.columnsize <> columnsize then
+  else if p.columnsize32 <> columnsize then
   begin
-    realloc(pointer(p.dc32), (p.columnsize + 1) * SizeOf(LongWord), (columnsize + 1) * SizeOf(LongWord));
-    p.columnsize := columnsize;
+    realloc(p.dc32, (p.columnsize32 + 1) * SizeOf(LongWord), (columnsize + 1) * SizeOf(LongWord));
+    p.columnsize32 := columnsize;
   end;
   result := p.dc32;
+end;
+
+function R_FindDC32Rover(const hash, rtex, rcol, rtexturemod: integer): Pdc32cacheitem_t;
+begin
+  result := dc32cache[hash];
+  while result <> nil do
+  begin
+    if (result.texture = rtex) and (result.column = rcol) and (result.texturemod = rtexturemod) then
+       exit;
+    result := result.next;
+  end;
+end;
+
+function R_NewDC32Rover(const hash: integer): Pdc32cacheitem_t;
+begin
+  result := mallocz(SizeOf(dc32cacheitem_t));
+  result.next := dc32cache[hash];
+  dc32cache[hash] := result;
 end;
 
 //
@@ -210,8 +200,8 @@ var
   hash: integer;
   curgamma: PByteArray;
   pb: PByte;
-  index: integer;
   ptex: Ptexture_t;
+  rover: Pdc32cacheitem_t;
 begin
   if not useexternaltextures then
   begin
@@ -220,27 +210,11 @@ begin
   end;
 
   // Cache read of the caclulated dc_source32, 98-99% propability not to recalc...
-  hash := R_GetHash(rtex, rcol, dc_texturemod);
-  index := 0;
-  cachemiss := true;
-  if dc32cache[hash] <> nil then
-  begin
-    while dc32cache[hash][index] <> nil do
-    begin
-      if dc32cache[hash][index].texture = -1 then
-        break;
-      cachemiss := (dc32cache[hash][index].texture <> rtex) or
-                   (dc32cache[hash][index].column <> rcol) or
-                   (dc32cache[hash][index].texturemod <> dc_texturemod);
-      if not cachemiss then
-        break;
-      if index = MAXEQUALHASH - 1 then
-        break;
-      inc(index);
-    end;
-  end
-  else
-    dc32cache[hash] := mallocz(SizeOf(dc32cacheinfo_t));
+  hash := R_GetHash(rtex, rcol, rcolumn.dc_texturemod);
+  rover := R_FindDC32Rover(hash, rtex, rcol, rcolumn.dc_texturemod);
+  cachemiss := rover = nil;
+  if cachemiss then
+    rover := R_NewDC32Rover(hash);
 
   ptex := textures[rtex];
   if cachemiss then
@@ -268,7 +242,7 @@ begin
         // JVAL Final adjustment of hi resolution textures
         twidth := (1 shl i) * ptex.width;
         theight := (1 shl i) * ptex.height;
-        while (twidth > MAXTEXTUREHEIGHT) or (theight > MAXTEXTUREHEIGHT) do
+        while (twidth > MAXTEXTUREHEIGHT32) or (theight > MAXTEXTUREHEIGHT32) do
         begin
           dec(i);
           twidth := (1 shl i) * ptex.width;
@@ -281,12 +255,9 @@ begin
 
     if LongWord(t) > $1 then // if we have a hi resolution texture
     begin
-      if dc32cache[hash][index] = nil then
-        dc32cache[hash][index] := mallocz(SizeOf(dc32cacheitem_t));
-
-      dc32cache[hash][index].texture := rtex;
-      dc32cache[hash][index].column := rcol;
-      dc32cache[hash][index].texturemod := dc_texturemod;
+      rover.texture := rtex;
+      rover.column := rcol;
+      rover.texturemod := rcolumn.dc_texturemod;
 
       // JVAL
       // Does not use [and (t.GetWidth - 1)] but [mod (t.GetWidth - 1)] because
@@ -300,18 +271,19 @@ begin
       // JVAL: Handle hi resolution texture
         tfactor := 1 shl ptex.factorbits;
         columnsize := 128 * tfactor;
-        mod_c := (dc_texturemod  * tfactor) shr DC_HIRESBITS;
-        mod_d := dc_texturemod - mod_c * (1 shl (DC_HIRESBITS - ptex.factorbits));
+        mod_c := (rcolumn.dc_texturemod  * tfactor) shr DC_HIRESBITS;
+        mod_d := rcolumn.dc_texturemod - mod_c * (1 shl (DC_HIRESBITS - ptex.factorbits));
         col := col * tfactor + mod_c;
-        dc_texturemod := mod_d;
+        rcolumn.dc_texturemod := mod_d;
       end
       else
       begin
-        dc_texturemod := dc_mod;
+        tfactor := 1;
+        rcolumn.dc_texturemod := rcolumn.dc_mod;
         columnsize := 128;
       end;
 
-      pdc32 := R_Get_dc32(dc32cache[hash][index], columnsize);
+      pdc32 := R_Get_dc32(rover, columnsize);
       plw := @pdc32[0];
 
       curgamma := @gammatable[usegamma]; // To Adjust gamma
@@ -329,14 +301,14 @@ begin
         t.GetColumn32(col, columnsize, plw);
 
       // Texture filtering if dc_texturemod <> 0
-      if dc_texturemod <> 0 then
+      if rcolumn.dc_texturemod <> 0 then
       begin
         if t.GetBytesPerPixel = 1 then
           t.GetPalettedColumn32(col + 1, columnsize, @dc32_a, c)
         else
           t.GetColumn32(col + 1, columnsize, @dc32_a);
         plw2 := @dc32_a;
-        cfrac2 := dc_texturemod shl (FRACBITS - DC_HIRESBITS);
+        cfrac2 := rcolumn.dc_texturemod shl (FRACBITS - DC_HIRESBITS);
         for i := 0 to columnsize - 1 do
         begin
           plw^ := R_ColorAverage(plw^, plw2^, cfrac2);
@@ -347,12 +319,11 @@ begin
 
       if t.GetBytesPerPixel <> 1 then
       begin
-        pdc32 := R_Get_dc32(dc32cache[hash][index], columnsize);
+        pdc32 := R_Get_dc32(rover, columnsize);
         plw := @pdc32[0];
         // Simutate palette changes
         if dc_32bittexturepaletteeffects and (pal_color <> 0) then
         begin
-          dc_palcolor := pal_color; // JVAL: needed for transparent textures.
           r1 := pal_color;
           g1 := pal_color shr 8;
           b1 := pal_color shr 16;
@@ -419,7 +390,6 @@ begin
         end
         else
         begin
-          dc_palcolor := 0;
           if usegamma > 0 then
           begin
             pb := PByte(plw);
@@ -450,13 +420,13 @@ begin
     end;
 
     if rtex = skytexture then
-      dc32cache[hash][index].dc32[columnsize] := dc32cache[hash][index].dc32[columnsize - 1]
+      rover.dc32[columnsize] := rover.dc32[columnsize - 1]
     else
-      dc32cache[hash][index].dc32[columnsize] := dc32cache[hash][index].dc32[0];
+      rover.dc32[columnsize] := rover.dc32[0];
   end;
-  dc_mod := dc_texturemod;
-  dc_texturefactorbits := ptex.factorbits;
-  dc_source32 := PLongWordArray(dc32cache[hash][index].dc32);
+  rcolumn.dc_mod := rcolumn.dc_texturemod;
+  rcolumn.dc_texturefactorbits := ptex.factorbits;
+  rcolumn.dc_source32 := PLongWordArray(rover.dc32);
   result := true;
 end;
 
@@ -469,52 +439,36 @@ end;
 procedure R_ReadDC32InternalCache(const rtex, rcol: integer);
 var
   plw: PLongWord;
+  plb: PByte;
   pdc32: Pdc32_t;
   src1, src2: PByte;
   tbl: Phiresmodtable_t;
   cachemiss: boolean;
   hash: integer;
-  i, index: integer;
+  i: integer;
   dc_source2: PByteArray;
+  rover: Pdc32cacheitem_t;
 begin
   // Cache read of the caclulated dc_source32, 98-99% propability not to recalc...
-  hash := R_GetHash(rtex, rcol, dc_mod);
-  index := 0;
-  cachemiss := true;
-  if dc32cache[hash] <> nil then
-  begin
-    while dc32cache[hash][index] <> nil do
-    begin
-      if dc32cache[hash][index].texture = -1 then
-        break;
-      cachemiss := (dc32cache[hash][index].texture <> rtex) or
-                   (dc32cache[hash][index].column <> rcol) or
-                   (dc32cache[hash][index].texturemod <> dc_mod);
-      if not cachemiss then
-        break;
-      if index = MAXEQUALHASH - 1 then
-        break;
-      inc(index);
-    end;
-  end
-  else
-    dc32cache[hash] := mallocz(SizeOf(dc32cacheinfo_t));
+  hash := R_GetHash(rtex, rcol, rcolumn.dc_mod);
+  rover := R_FindDC32Rover(hash, rtex, rcol, rcolumn.dc_texturemod);
+  cachemiss := rover = nil;
+  if cachemiss then
+    rover := R_NewDC32Rover(hash);
 
   if cachemiss then
   begin
-    if dc32cache[hash][index] = nil then
-      dc32cache[hash][index] := mallocz(SizeOf(dc32cacheitem_t));
-    dc32cache[hash][index].texture := rtex;
-    dc32cache[hash][index].column := rcol;
-    dc32cache[hash][index].texturemod := dc_mod;
+    rover.texture := rtex;
+    rover.column := rcol;
+    rover.texturemod := rcolumn.dc_mod;
 
-    pdc32 := R_Get_dc32(dc32cache[hash][index], 128);
+    pdc32 := R_Get_dc32(rover, 128);
     plw := @pdc32[0];
     textures[rtex].factorbits := 0;
-    if dc_mod = 0 then
+    if rcolumn.dc_mod = 0 then
     begin
-      dc_source := R_GetColumn(rtex, rcol);
-      src1 := @dc_source[0];
+      rcolumn.dc_source := R_GetColumn(rtex, rcol);
+      src1 := @rcolumn.dc_source[0];
       for i := 0 to 127 do
       begin
         plw^ := videopal[src1^];
@@ -524,9 +478,9 @@ begin
     end
     else
     begin
-      tbl := @hirestable[dc_mod];
-      dc_source := R_GetColumn(rtex, rcol);
-      src1 := @dc_source[0];
+      tbl := @hirestable[rcolumn.dc_mod];
+      rcolumn.dc_source := R_GetColumn(rtex, rcol);
+      src1 := @rcolumn.dc_source[0];
       dc_source2 := R_GetColumn(rtex, rcol + 1);
       src2 := @dc_source2[0];
       for i := 0 to 127 do
@@ -537,13 +491,14 @@ begin
         inc(src2);
       end;
     end;
+
     if rtex = skytexture then
-      plw^ := dc32cache[hash][index].dc32[127]
+      plw^ := rover.dc32[127]
     else
-      plw^ := dc32cache[hash][index].dc32[0];
+      plw^ := rover.dc32[0];
   end;
-  dc_texturefactorbits := 0;
-  dc_source32 := PLongWordArray(dc32cache[hash][index].dc32);
+  rcolumn.dc_texturefactorbits := 0;
+  rcolumn.dc_source32 := PLongWordArray(rover.dc32);
 end;
 
 procedure R_ReadDC32Cache(const rtex, rcol: integer);
@@ -559,18 +514,24 @@ end;
 
 procedure R_ResetDC32Cache;
 var
-  i, j: integer;
+  i: integer;
+  rover: Pdc32cacheitem_t;
 begin
   for i := 0 to COL32CACHESIZE - 1 do
-    if dc32cache[i] <> nil then
-      for j := 0 to MAXEQUALHASH - 1 do
-        if dc32cache[i][j] <> nil then
-          dc32cache[i][j].texture := -1;
+  begin
+    rover := dc32cache[i];
+    while rover <> nil do
+    begin
+      rover.texture := -1;
+      rover := rover.next;
+    end;
+  end;
 end;
 
 procedure R_ClearDC32Cache;
 var
-  i, j: integer;
+  i: integer;
+  rover, next: Pdc32cacheitem_t;
 begin
   for i := 0 to numtextures - 1 do
   begin
@@ -580,17 +541,18 @@ begin
   end;
 
   for i := 0 to COL32CACHESIZE - 1 do
-    if dc32cache[i] <> nil then
+  begin
+    rover := dc32cache[i];
+    while rover <> nil do
     begin
-      for j := 0 to MAXEQUALHASH - 1 do
-        if dc32cache[i][j] <> nil then
-        begin
-          if dc32cache[i][j].dc32 <> nil then
-            memfree(pointer(dc32cache[i][j].dc32), (dc32cache[i][j].columnsize + 1) * SizeOf(LongWord));
-          memfree(pointer(dc32cache[i][j]), SizeOf(dc32cacheitem_t));
-        end;
-      memfree(pointer(dc32cache[i]), SizeOf(dc32cacheinfo_t));
+      next := rover.next;
+      if rover.dc32 <> nil then
+        memfree(rover.dc32, (rover.columnsize32 + 1) * SizeOf(LongWord));
+      memfree(rover, SizeOf(dc32cacheitem_t));
+      rover := next;
     end;
+    dc32cache[i] := nil;
+  end;
 end;
 
 procedure R_InitDC32Cache;
@@ -602,86 +564,110 @@ begin
 end;
 
 procedure R_ShutDownDC32Cache;
-var
-  i: integer;
 begin
   R_ClearDC32Cache;
-  for i := 0 to COL32CACHESIZE - 1 do
-    if dc32cache[i] <> nil then
-      memfree(pointer(dc32cache[i]), SizeOf(dc32cacheinfo_t));
 end;
 
-var
-  spanpixels_left: array[0..4095] of integer;
-  spanpixels_down: array[0..4095] of integer;
-  spanpixels_leftdown: array[0..4095] of integer;
+const
+// Flat cache
+  FLAT32CACHESIZE = 256;
+  CACHEFLATMASK = FLAT32CACHESIZE - 1;
 
-//
-// R_InitSpanTables
-//
-procedure R_InitSpanTables;
-var
-  i: integer;
+
+type
+  ds32_t = array[0..512 * 512 - 1] of LongWord;
+  Pds32_t = ^ds32_t;
+
+  Pds32cacheitem_t = ^ds32cacheitem_t;
+  ds32cacheitem_t = record
+    ds32: array[0..Ord(NUMDSSCALES) - 1] of Pds32_t;
+    lump: integer;
+    scale: dsscale_t;
+    next: Pds32cacheitem_t;
+  end;
+  ds32cacheitem_tArray = array[0..FLAT32CACHESIZE - 1] of ds32cacheitem_t;
+  ds32cacheitem_tPArray = array[0..FLAT32CACHESIZE - 1] of Pds32cacheitem_t;
+
+function R_Get_ds32(p: Pds32cacheitem_t): Pds32_t;
 begin
-  for i := 0 to 4095 do
-    if (i + 1) mod 64 = 0 then
-      spanpixels_left[i] := (i - 63) and 4095
-    else
-      spanpixels_left[i] := (i + 1) and 4095;
-
-  for i := 0 to 4095 do
-    spanpixels_down[i] := (i + 64) and 4095;
-
-  for i := 0 to 4095 do
-    if (i + 65) mod 64 = 0 then
-      spanpixels_leftdown[i] := (i + 1) and 4095
-    else
-      spanpixels_leftdown[i] := (i + 65) and 4095;
+  result := p.ds32[Ord(p.scale)];
+  if result = nil then
+  begin
+    result := malloc(dsscalesize[Ord(p.scale)] * SizeOf(LongWord));
+    p.ds32[Ord(p.scale)] := result;
+  end;
 end;
 
-procedure R_GrowSpan64to128(const p: Pds32cacheinfo_t);
+type
+  span64x64_t = packed array[0..63, 0..63] of LongWord;
+  Pspan64x64_t = ^span64x64_t;
+
+  span128x128_t = packed array[0..127, 0..127] of LongWord;
+  Pspan128x128_t = ^span128x128_t;
+
+procedure R_GrowSpan64to128(const p: Pds32cacheitem_t);
 var
-  i: integer;
-  dest: PLongWord;
-  cA, cB, cC, cD: LongWord;
+  i, j: integer;
   p1, p2: Pds32_t;
+  pspan64: Pspan64x64_t;
+  pspan128: Pspan128x128_t;
+  outspan128: Pspan128x128_t;
+  c: LongWord;
 begin
   if p.scale <> ds64x64 then
     exit;
   p1 := R_Get_ds32(p);
   p.scale := ds128x128;
   p2 := R_Get_ds32(p);
-  dest := @p2[0];
-  for i := 0 to 4095 do
-  begin
-    cA := p1[i];
-    cB := p1[spanpixels_left[i]];
-    cC := p1[spanpixels_down[i]];
-    cD := p1[spanpixels_leftdown[i]];
-    dest^ := cA;
-    inc(dest);
-    dest^ := R_ColorMidAverage(cA, cB);
-    inc(dest, 127);
-    dest^ := R_ColorMidAverage(cA, cC);
-    cA := dest^;
-    inc(dest);
-    dest^ := R_ColorMidAverage(cA, R_ColorMidAverage(cB, cD));
-    if i and 63 = 63 then
-      inc(dest)
-    else
-      dec(dest, 127);
-  end;
+
+  pspan64 := @p1[0];
+  pspan128 := malloc(SizeOf(span128x128_t));
+  for i := 0 to 127 do
+    for j := 0 to 127 do
+      pspan128[i, j] := pspan64[i div 2, j div 2];
+
+  outspan128 := @p2[0];
+  for i := 0 to 127 do
+    for j := 0 to 127 do
+    begin
+      c := pspan128[i, j];
+      outspan128[i, j] := R_ColorMidAverage(
+        [pspan128[(i - 1) and 127, j], c, pspan128[(i + 1) and 127, j],
+         pspan128[i, (j - 1) and 127], c, pspan128[i, (j + 1) and 127]]);
+    end;
+
+  memfree(pspan128, SizeOf(span128x128_t));
 end;
 
 var
-  ds32cache: ds32cacheinfo_tPArray;
+  ds32cache: ds32cacheitem_tPArray;
+
+function R_FindDS32Rover(const hash, lump: integer): Pds32cacheitem_t;
+begin
+  result := ds32cache[hash];
+  while result <> nil do
+  begin
+    if result.lump = lump then
+      exit;
+    result := result.next;
+  end;
+end;
+
+function R_NewDS32Rover(const hash: integer): Pds32cacheitem_t;
+begin
+  result := mallocz(SizeOf(ds32cacheitem_t));
+  result.lump := -1;
+  result.next := ds32cache[hash];
+  ds32cache[hash] := result;
+end;
+
 
 procedure R_ReadDS32Cache(const flat: integer);
 var
   cachemiss: boolean;
   hash: integer;
   t: PTexture;
-  pds: Pds32cacheinfo_t;
+  rover: Pds32cacheitem_t;
   pds32: Pds32_t;
   plw: PLongWord;
   src1: PByte;
@@ -701,19 +687,17 @@ var
   numpixels: integer;
   flatname: string;
 begin
-  ds_source := nil;
-  cachemiss := false;
+  rspan.ds_source := nil;
   hash := flat and CACHEFLATMASK;
-  if ds32cache[hash] = nil then
-  begin
-    ds32cache[hash] := mallocz(SizeOf(ds32cacheinfo_t));
-    cachemiss := true;
-  end;
-  pds := ds32cache[hash];
   lump := R_GetLumpForFlat(flat);
-  if cachemiss or (pds.lump <> lump) then
+  rover := R_FindDS32Rover(hash, lump);
+  cachemiss := rover = nil;
+  if cachemiss then
+    rover := R_NewDS32Rover(hash);
+
+  if cachemiss or (rover.lump <> lump) then
   begin
-    pds.lump := lump;
+    rover.lump := lump;
     t := flats[flats[flat].translation].flat32;
     if useexternaltextures and (t = nil) then
     begin
@@ -742,14 +726,14 @@ begin
     begin
       fsize := t.GetWidth;
       if fsize = 512 then
-        pds.scale := ds512x512
+        rover.scale := ds512x512
       else if fsize = 256 then
-        pds.scale := ds256x256
+        rover.scale := ds256x256
       else if fsize = 128 then
-        pds.scale := ds128x128
+        rover.scale := ds128x128
       else
-        pds.scale := ds64x64;
-      pds32 := R_Get_ds32(pds);
+        rover.scale := ds64x64;
+      pds32 := R_Get_ds32(rover);
       numpixels := fsize * fsize;
       curgamma := @gammatable[usegamma]; // To Adjust gamma
 
@@ -859,60 +843,58 @@ begin
     end
     else
     begin
-      ds_source := W_CacheLumpNum(lump, PU_STATIC);
+      rspan.ds_source := W_CacheLumpNum(lump, PU_STATIC);
       lumplen := W_LumpLength(lump);
-      pds.scale := R_FlatScaleFromSize(lumplen);
+      rover.scale := R_FlatScaleFromSize(lumplen);
 
-      src1 := @ds_source[0];
-      pds32 := R_Get_ds32(pds);
+      src1 := @rspan.ds_source[0];
+      pds32 := R_Get_ds32(rover);
       plw := @pds32[0];
       if lumplen < $1000 then
         loops := 0
       else
-        loops := dsscalesize[Ord(pds.scale)];
+        loops := dsscalesize[Ord(rover.scale)];
       for i := 0 to loops - 1 do
       begin
         plw^ := videopal[src1^];
         inc(plw);
         inc(src1);
       end;
-      Z_ChangeTag(ds_source, PU_CACHE);
+      Z_ChangeTag(rspan.ds_source, PU_CACHE);
     end;
-    if (detailLevel >= DL_NORMAL) and (pds.scale = ds64x64) then
+    if (detailLevel >= DL_NORMAL) and (rover.scale = ds64x64) then
     begin
       if extremeflatfiltering then
-        R_GrowSpan64to128(pds);
-      pds32 := R_Get_ds32(pds);
+        R_GrowSpan64to128(rover);
+      pds32 := R_Get_ds32(rover);
     end;
   end
   else
-    pds32 := R_Get_ds32(pds);
-  ds_source32 := PLongWordArray(pds32);
-  ds_scale := pds.scale;
-end;
-
-function R_Get_ds32(p: Pds32cacheinfo_t): Pds32_t;
-begin
-  result := p.ds32[Ord(p.scale)];
-  if result = nil then
-  begin
-    result := malloc(dsscalesize[Ord(p.scale)] * SizeOf(LongWord));
-    p.ds32[Ord(p.scale)] := result;
-  end;
+    pds32 := R_Get_ds32(rover);
+  rspan.ds_source32 := PLongWordArray(pds32);
+  rspan.ds_scale := rover.scale;
 end;
 
 procedure R_ResetDS32Cache;
 var
   i: integer;
+  rover: Pds32cacheitem_t;
 begin
   for i := 0 to FLAT32CACHESIZE - 1 do
-    if ds32cache[i] <> nil then
-      ds32cache[i].lump := -1;
+  begin
+    rover := ds32cache[i];
+    while rover <> nil do
+    begin
+      rover.lump := -1;
+      rover := rover.next;
+    end;
+  end;
 end;
 
 procedure R_ClearDS32Cache;
 var
   i, j: integer;
+  rover, next: Pds32cacheitem_t;
 begin
   for i := 0 to numflats - 1 do
   begin
@@ -922,13 +904,19 @@ begin
   end;
 
   for i := 0 to FLAT32CACHESIZE - 1 do
-    if ds32cache[i] <> nil then
+  begin
+    rover := ds32cache[i];
+    while rover <> nil do
     begin
+      next := rover.next;
       for j := 0 to Ord(NUMDSSCALES) - 1 do
-        if ds32cache[i].ds32[j] <> nil then
-          memfree(pointer(ds32cache[i].ds32[j]), dsscalesize[j] * SizeOf(LongWord));
-      memfree(pointer(ds32cache[i]), SizeOf(ds32cacheinfo_t));
-    end
+        if rover.ds32[j] <> nil then
+          memfree(rover.ds32[j], dsscalesize[j] * SizeOf(LongWord));
+      memfree(rover, SizeOf(ds32cacheitem_t));
+      rover := next;
+    end;
+    ds32cache[i] := nil;
+  end;
 end;
 
 function R_FlatScaleFromSize(const size: integer): dsscale_t;
@@ -956,13 +944,8 @@ begin
 end;
 
 procedure R_ShutDownDS32Cache;
-var
-  i: integer;
 begin
   R_ClearDS32Cache;
-  for i := 0 to FLAT32CACHESIZE - 1 do
-    if ds32cache[i] <> nil then
-      memfree(pointer(ds32cache[i]), SizeOf(ds32cacheinfo_t));
 end;
 
 end.

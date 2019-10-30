@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -257,7 +258,7 @@ begin
   if NumEntries > MaxEntries then
   begin
     newentries := MaxEntries + 512;
-    realloc(pointer(Entries), MaxEntries * Sizeof(TPakentry), newentries * SizeOf(TPakentry));
+    realloc(Entries, MaxEntries * Sizeof(TPakentry), newentries * SizeOf(TPakentry));
     MaxEntries := newentries;
   end;
 end;
@@ -523,7 +524,7 @@ begin
   if list <> nil then
   begin
     recourcefreememlist(list.next);
-    memfree(pointer(list), SizeOf(pref_rec));
+    memfree(list, SizeOf(pref_rec));
   end;
 end;
 
@@ -687,7 +688,7 @@ destructor TPakManager.Destroy;
 var
   i: integer;
 begin
-  realloc(pointer(Entries), MaxEntries * Sizeof(TPakentry), 0);
+  memfree(Entries, MaxEntries * Sizeof(TPakentry));
 
   for i := 0 to PAKS.Count - 1 do
     if PAKS.Objects[i] <> nil then

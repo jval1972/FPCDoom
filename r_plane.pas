@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -36,12 +37,7 @@ uses
   r_data, 
   r_defs;
 
-procedure R_InitPlanes;
 procedure R_ClearPlanes;
-
-procedure R_MapPlane(const y: integer; const x1, x2: integer);
-
-procedure R_MakeSpans(x: integer; t1: integer; b1: integer; t2: integer; b2: integer);
 
 procedure R_DrawPlanes;
 
@@ -90,6 +86,7 @@ uses
   r_hires,
   r_draw_span,
   r_draw_column,
+  r_render,
   z_memory,
   w_wad;
 
@@ -118,22 +115,12 @@ var
 // texture mapping
 //
   planezlight: PBytePArray;
-  planeheight: fixed_t;
 
   cachedheight: array[0..MAXHEIGHT - 1] of fixed_t;
   cacheddistance: array[0..MAXHEIGHT -1] of fixed_t;
   cachedxstep: array[0..MAXHEIGHT - 1] of fixed_t;
   cachedystep: array[0..MAXHEIGHT - 1] of fixed_t;
 
-
-//
-// R_InitPlanes
-// Only at game startup.
-//
-procedure R_InitPlanes;
-begin
-  // Doh!
-end;
 
 //
 // R_MapPlane
@@ -146,50 +133,52 @@ end;
 //
 // BASIC PRIMITIVE
 //
-procedure R_MapPlane(const y: integer; const x1, x2: integer);
+procedure R_MapPlane(const y: integer; x1, x2: integer);
 var
   distance: fixed_t;
   index: LongWord;
   ncolornum: integer;
   slope: double;
 begin
-  if x2 - x1 < 0 then
-    exit;
-
   if y >= viewheight then
     exit;
 
-  if planeheight <> cachedheight[y] then
+  if x2 >= viewwidth then
+    x2 := viewwidth - 1;
+
+  if x2 - x1 < 0 then
+    exit;
+
+  if rspan.ds_planeheight <> cachedheight[y] then
   begin
-    cachedheight[y] := planeheight;
-    cacheddistance[y] := FixedMul(planeheight, yslope[y]);
+    cachedheight[y] := rspan.ds_planeheight;
+    cacheddistance[y] := FixedMul(rspan.ds_planeheight, yslope[y]);
     distance := cacheddistance[y];
-    slope := (planeheight / abs(centery - y)) * planerelativeaspect;
-    ds_xstep := round(dviewsin * slope);
-    ds_ystep := round(dviewcos * slope);
-    cachedxstep[y] := ds_xstep;
-    cachedystep[y] := ds_ystep;
+    slope := (rspan.ds_planeheight / abs(centery - y)) * planerelativeaspect;
+    rspan.ds_xstep := round(dviewsin * slope);
+    rspan.ds_ystep := round(dviewcos * slope);
+    cachedxstep[y] := rspan.ds_xstep;
+    cachedystep[y] := rspan.ds_ystep;
   end
   else
   begin
     distance := cacheddistance[y];
-    ds_xstep := cachedxstep[y];
-    ds_ystep := cachedystep[y];
+    rspan.ds_xstep := cachedxstep[y];
+    rspan.ds_ystep := cachedystep[y];
   end;
 
-  ds_xfrac :=  viewx + FixedMul(viewcos, distance) + (x1 - centerx) * ds_xstep;
-  ds_yfrac := -viewy - FixedMul(viewsin, distance) + (x1 - centerx) * ds_ystep;
+  rspan.ds_xfrac :=  viewx + FixedMul(viewcos, distance) + (x1 - centerx) * rspan.ds_xstep;
+  rspan.ds_yfrac := -viewy - FixedMul(viewsin, distance) + (x1 - centerx) * rspan.ds_ystep;
 
   if fixedcolormap <> nil then
   begin
-    ds_colormap := fixedcolormap;
+    rspan.ds_colormap := fixedcolormap;
     if videomode = vm32bit then
     begin
-      ds_colormap32 := R_GetColormap32(ds_colormap);
       if fixedcolormapnum = INVERSECOLORMAP then
-        ds_lightlevel := -1  // Negative value -> Use colormaps
+        rspan.ds_lightlevel := -1  // Negative value -> Use colormaps
       else
-        ds_lightlevel := R_GetColormapLightLevel(ds_colormap);
+        rspan.ds_lightlevel := R_GetColormapLightLevel(rspan.ds_colormap);
     end;
   end
   else
@@ -199,30 +188,29 @@ begin
     if index >= MAXLIGHTZ then
       index := MAXLIGHTZ - 1;
 
-    ds_colormap := planezlight[index];
+    rspan.ds_colormap := planezlight[index];
     if videomode = vm32bit then
     begin
-      ds_colormap32 := R_GetColormap32(ds_colormap);
       if not forcecolormaps then
       begin
          ncolornum := _SHR(distance, HLL_ZDISTANCESHIFT);
          if ncolornum >= HLL_MAXLIGHTZ then
           ncolornum := HLL_MAXLIGHTZ - 1;
-        ds_lightlevel := zlightlevels[ds_llzindex, ncolornum];
+        rspan.ds_lightlevel := zlightlevels[ds_llzindex, ncolornum];
       end
       else
       begin
-        ds_lightlevel := R_GetColormapLightLevel(ds_colormap);
+        rspan.ds_lightlevel := R_GetColormapLightLevel(rspan.ds_colormap);
       end;
     end;
   end;
 
-  ds_y := y;
-  ds_x1 := x1;
-  ds_x2 := x2;
+  rspan.ds_y := y;
+  rspan.ds_x1 := x1;
+  rspan.ds_x2 := x2;
 
   // high or low detail
-  spanfunc;
+  R_AddRenderTask(spanfunc, RF_SPAN or RF_DEPTHBUFFERWRITE, @rspan);
 end;
 
 //
@@ -450,30 +438,30 @@ begin
     if pl.picnum = skyflatnum then
     begin
       if zaxisshift and (viewangleoffset = 0) then
-        dc_iscale := FRACUNIT * 93 div viewheight // JVAL adjust z axis shift also
+        rcolumn.dc_iscale := FRACUNIT * 93 div viewheight // JVAL adjust z axis shift also
       else
-        dc_iscale := FRACUNIT * 200 div viewheight;
+        rcolumn.dc_iscale := FRACUNIT * 200 div viewheight;
 
-      dc_texturemid := skytexturemid;
+      rcolumn.dc_texturemid := skytexturemid;
       for x := pl.minx to pl.maxx do
       begin
-        dc_yl := pl.top[x];
-        dc_yh := pl.bottom[x];
+        rcolumn.dc_yl := pl.top[x];
+        rcolumn.dc_yh := pl.bottom[x];
 
-        if dc_yl < dc_yh then
+        if rcolumn.dc_yl < rcolumn.dc_yh then
         begin
           angle := (viewangle + xtoviewangle[x]) div ANGLETOSKYUNIT;
-          dc_texturemod := 0;
-          dc_mod := 0;
-          dc_x := x;
+          rcolumn.dc_texturemod := 0;
+          rcolumn.dc_mod := 0;
+          rcolumn.dc_x := x;
           R_GetDCs(skytexture, angle);
-        // Sky is allways drawn full bright,
-        //  i.e. colormaps[0] is used.
-        //  Because of this hack, sky is not affected
-        //  by INVUL inverse mapping.
-        // JVAL
-        //  call skycolfunc(), not colfunc(), does not use colormaps!
-          skycolfunc;
+          // Sky is allways drawn full bright,
+          //  i.e. colormaps[0] is used.
+          //  Because of this hack, sky is not affected
+          //  by INVUL inverse mapping.
+          // JVAL
+          //  call skycolfunc(), not colfunc(), does not use colormaps!
+          R_AddRenderTask(skycolfunc, RF_WALL, @rcolumn);
         end;
       end;
       continue;
@@ -482,7 +470,7 @@ begin
     // regular flat
     R_GetDSs(pl.picnum);
 
-    planeheight := abs(pl.height - viewz);
+    rspan.ds_planeheight := abs(pl.height - viewz);
     light := _SHR(pl.lightlevel, LIGHTSEGSHIFT) + extralight;
 
     if light >= LIGHTLEVELS then
@@ -504,8 +492,8 @@ begin
       R_MakeSpans(x, pl.top[x - 1], pl.bottom[x - 1], pl.top[x], pl.bottom[x]);
     end;
 
-    if ds_source <> nil then
-      Z_ChangeTag(ds_source, PU_CACHE);
+    if rspan.ds_source <> nil then
+      Z_ChangeTag(rspan.ds_source, PU_CACHE);
   end;
 end;
 

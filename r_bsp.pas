@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -37,8 +38,7 @@ uses
 procedure R_ClearClipSegs;
 procedure R_ClearDrawSegs;
 
-
-procedure R_RenderBSPNode(const bspnum: integer);
+procedure R_RenderBSP;
 
 type
   drawfunc_t = procedure(start: integer; stop: integer);
@@ -281,8 +281,8 @@ begin
   curline := line;
 
   // OPTIMIZE: quickly reject orthogonal back sides.
-  angle1 := R_PointToAngle(line.v1.x, line.v1.y);
-  angle2 := R_PointToAngle(line.v2.x, line.v2.y);
+  angle1 := R_PointToAngle(line.v1.r_x, line.v1.r_y);
+  angle2 := R_PointToAngle(line.v2.r_x, line.v2.r_y);
 
   // Clip to view edges.
   span := angle1 - angle2;
@@ -611,5 +611,10 @@ begin
   end
 end;
 
+procedure R_RenderBSP;
+begin
+  // The head node is the last node output.
+  R_RenderBSPNode(numnodes - 1);
+end;
 
 end.

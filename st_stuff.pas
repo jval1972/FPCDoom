@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -1087,7 +1088,7 @@ begin
       else
       begin
         badguyangle :=
-          R_PointToAngle2(plyr.mo.x, plyr.mo.y, plyr.attacker.x, plyr.attacker.y);
+          P_PointToAngle(plyr.mo.x, plyr.mo.y, plyr.attacker.x, plyr.attacker.y);
 
         if badguyangle > plyr.mo.angle then
         begin
@@ -1408,7 +1409,7 @@ begin
   ST_doPaletteStuff;
   if dopt <> stdo_small then
   begin
-    if firstinterpolation or (menuactive and shademenubackground) then
+    if firstinterpolation or (menuactive and (shademenubackground >= 1)) then
     begin
       ST_Refresh(st_firsttime);
       // If just after ST_Start(), refresh all

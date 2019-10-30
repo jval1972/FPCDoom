@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -80,7 +81,7 @@ var
 
 var
   ylookup: array[0..MAXHEIGHT - 1] of PByteArray;
-  ylookupl: array[0..MAXHEIGHT - 1] of PLongWordArray;
+  ylookup32: array[0..MAXHEIGHT - 1] of PLongWordArray;
   columnofs: array[0..MAXWIDTH - 1] of integer;
 
   
@@ -162,7 +163,7 @@ begin
   for i := 0 to height - 1 do
   begin
     ylookup[i] := PByteArray(integer(screens[SCN_FG]) + (i + viewwindowy) * SCREENWIDTH);
-    ylookupl[i] := PLongWordArray(@screen32[(i + viewwindowy) * SCREENWIDTH]);
+    ylookup32[i] := PLongWordArray(@screen32[(i + viewwindowy) * SCREENWIDTH]);
   end;
 end;
 

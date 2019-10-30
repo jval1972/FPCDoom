@@ -2,7 +2,7 @@
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -340,6 +340,6 @@ initialization
 finalization
   memfree(oVID_ITable24, size24);
   memfree(oVID_ITable8, size8);
-  memfree(pointer(VID_Color12to8), 4096);
+  memfree(VID_Color12to8, 4096);
 
 end.

@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -45,8 +46,8 @@ const
 var
   maxvissprite: integer;
 
-procedure R_DrawMaskedColumn(column: Pcolumn_t);
-procedure R_DrawMaskedColumn2(const mc2h: integer); // Use dc_source32
+procedure R_DrawMaskedColumn(const col: Pcolumn_t; flags: LongWord);
+procedure R_DrawMaskedColumn32(const mc2h: integer; flags: LongWord); // Use dc_source32
 
 
 procedure R_SortVisSprites;
@@ -55,6 +56,7 @@ procedure R_AddSprites(sec: Psector_t);
 procedure R_InitSprites(namelist: PIntegerArray);
 procedure R_ClearSprites;
 procedure R_DrawMasked;
+procedure R_MarkLights;
 procedure R_DrawPlayer;
 
 var
@@ -86,18 +88,21 @@ uses
   tables,
   info_h,
   i_system,
-  p_mobj_h, 
+  p_mobj_h,
   p_pspr, 
   p_pspr_h,
+  p_tick,
   r_data, 
   r_draw, 
   r_main, 
   r_bsp, 
-  r_segs, 
+  r_segs,
+  r_lightmap,
   r_draw_column,
+  r_mirror,
+  r_render,
   r_hires,
   r_trans8,
-  r_lights,
   z_memory,
   w_wad,
   doomstat;
@@ -378,18 +383,20 @@ end;
 // Masked means: partly transparent, i.e. stored
 //  in posts/runs of opaque pixels.
 //
-
-procedure R_DrawMaskedColumn(column: Pcolumn_t);
+procedure R_DrawMaskedColumn(const col: Pcolumn_t; flags: LongWord);
 var
   topscreen: int64;
   bottomscreen: int64;
   basetexturemid: fixed_t;
   fc_x, cc_x: integer;
+  column: Pcolumn_t;
 begin
-  basetexturemid := dc_texturemid;
+  basetexturemid := rcolumn.dc_texturemid;
 
-  fc_x := mfloorclip[dc_x];
-  cc_x := mceilingclip[dc_x];
+  fc_x := mfloorclip[rcolumn.dc_x];
+  cc_x := mceilingclip[rcolumn.dc_x];
+
+  column := col;
   while column.topdelta <> $ff do
   begin
     // calculate unclipped screen coordinates
@@ -397,69 +404,116 @@ begin
     topscreen := sprtopscreen + int64(spryscale) * int64(column.topdelta);
     bottomscreen := topscreen + int64(spryscale) * int64(column.length);
 
-    dc_yl := FixedInt64(topscreen + (FRACUNIT - 1));
-    dc_yh := FixedInt64(bottomscreen - 1);
+    rcolumn.dc_yl := FixedInt64(topscreen + (FRACUNIT - 1));
+    rcolumn.dc_yh := FixedInt64(bottomscreen - 1);
 
-    if dc_yh >= fc_x then
-      dc_yh := fc_x - 1;
-    if dc_yl <= cc_x then
-      dc_yl := cc_x + 1;
+    if rcolumn.dc_yh >= fc_x then
+      rcolumn.dc_yh := fc_x - 1;
+    if rcolumn.dc_yl <= cc_x then
+      rcolumn.dc_yl := cc_x + 1;
 
-    if dc_yl <= dc_yh then
+    if rcolumn.dc_yl <= rcolumn.dc_yh then
     begin
-      dc_source := PByteArray(integer(column) + 3);
-      dc_texturemid := basetexturemid - (column.topdelta * FRACUNIT);
+      rcolumn.dc_source := PByteArray(integer(column) + 3);
+      rcolumn.dc_texturemid := basetexturemid - (column.topdelta * FRACUNIT);
       // Drawn by either R_DrawColumn
       //  or (SHADOW) R_DrawFuzzColumn
       //  or R_DrawColumnAverage
       //  or R_DrawTranslatedColumn
-      colfunc;
+      R_AddRenderTask(colfunc, flags, @rcolumn);
     end;
     column := Pcolumn_t(integer(column) + column.length + 4);
   end;
 
-  dc_texturemid := basetexturemid;
+  rcolumn.dc_texturemid := basetexturemid;
 end;
 
-procedure R_DrawMaskedColumn2(const mc2h: integer); // Use dc_source32
+procedure R_DrawPlayerColumn(const col: Pcolumn_t; flags: LongWord);
+var
+  topscreen: int64;
+  bottomscreen: int64;
+  basetexturemid: fixed_t;
+  fc_x, cc_x: integer;
+  column: Pcolumn_t;
+begin
+  basetexturemid := rcolumn.dc_texturemid;
+
+  fc_x := mfloorclip[rcolumn.dc_x];
+  cc_x := mceilingclip[rcolumn.dc_x];
+  column := col;
+  while column.topdelta <> $ff do
+  begin
+    // calculate unclipped screen coordinates
+    // for post
+    topscreen := sprtopscreen + int64(spryscale) * int64(column.topdelta);
+    bottomscreen := topscreen + int64(spryscale) * int64(column.length);
+
+    rcolumn.dc_yl := FixedInt64(topscreen + (FRACUNIT - 1));
+    rcolumn.dc_yh := FixedInt64(bottomscreen - 1);
+
+    if rcolumn.dc_yh >= fc_x then
+      rcolumn.dc_yh := fc_x - 1;
+    if rcolumn.dc_yl <= cc_x then
+      rcolumn.dc_yl := cc_x + 1;
+
+    if rcolumn.dc_yl <= rcolumn.dc_yh then
+    begin
+      rcolumn.dc_source := PByteArray(integer(column) + 3);
+      rcolumn.dc_texturemid := basetexturemid - (column.topdelta * FRACUNIT);
+      // Drawn by either R_DrawColumn
+      //  or (SHADOW) R_DrawFuzzColumn
+      //  or R_DrawColumnAverage
+      //  or R_DrawTranslatedColumn
+      colfunc(@rcolumn);
+    end;
+    column := Pcolumn_t(integer(column) + column.length + 4);
+  end;
+
+  rcolumn.dc_texturemid := basetexturemid;
+end;
+
+procedure R_DrawMaskedColumn32(const mc2h: integer; flags: LongWord); // Use dc_source32
 var
   topscreen: int64;
   bottomscreen: int64;
   basetexturemid: fixed_t;
   fc_x, cc_x: integer;
 begin
-  basetexturemid := dc_texturemid;
+  basetexturemid := rcolumn.dc_texturemid;
 
-  fc_x := mfloorclip[dc_x];
-  cc_x := mceilingclip[dc_x];
+  fc_x := mfloorclip[rcolumn.dc_x];
+  cc_x := mceilingclip[rcolumn.dc_x];
 
   topscreen := sprtopscreen;
   bottomscreen := topscreen + int64(spryscale) * int64(mc2h);
 
-  dc_yl := FixedInt64(topscreen + (FRACUNIT - 1));
-  dc_yh := FixedInt64(bottomscreen - 1);
+  rcolumn.dc_yl := FixedInt64(topscreen + (FRACUNIT - 1));
+  rcolumn.dc_yh := FixedInt64(bottomscreen - 1);
 
-  if dc_yh >= fc_x then
-    dc_yh := fc_x - 1;
-  if dc_yl <= cc_x then
-    dc_yl := cc_x + 1;
+  if rcolumn.dc_yh >= fc_x then
+    rcolumn.dc_yh := fc_x - 1;
+  if rcolumn.dc_yl <= cc_x then
+    rcolumn.dc_yl := cc_x + 1;
 
-  if dc_yl <= dc_yh then
+  if rcolumn.dc_yl <= rcolumn.dc_yh then
   begin
       // Drawn by either R_DrawColumn
       //  or (SHADOW) R_DrawFuzzColumn
       //  or R_DrawColumnAverage
       //  or R_DrawTranslatedColumn
-    colfunc;
+    R_AddRenderTask(colfunc, flags, @rcolumn);
   end;
 
-  dc_texturemid := basetexturemid;
+  rcolumn.dc_texturemid := basetexturemid;
 end;
+
+type
+  thingdrawer_t = procedure (const col: Pcolumn_t; flags: LongWord);
 
 // R_DrawVisSprite
 //  mfloorclip and mceilingclip should also be set.
 //
-procedure R_DrawVisSprite(vis: Pvissprite_t);
+procedure R_DrawVisSprite(vis: Pvissprite_t; proc: thingdrawer_t);
 var
   column: Pcolumn_t;
   texturecolumn: integer;
@@ -469,18 +523,20 @@ var
 begin
   patch := W_CacheLumpNum(vis.patch + firstspritelump, PU_STATIC);
 
-  dc_colormap := vis.colormap;
+  rcolumn.dc_colormap := vis.colormap;
+  rcolumn.seg := nil;
+  rcolumn.rendertype := RIT_SPRITE;
 
   if videomode = vm32bit then
   begin
-    dc_colormap32 := R_GetColormap32(dc_colormap);
+    rcolumn.dc_colormap32 := R_GetColormap32(rcolumn.dc_colormap);
     if fixedcolormapnum = INVERSECOLORMAP then
-      dc_lightlevel := -1
+      rcolumn.dc_lightlevel := -1
     else
-      dc_lightlevel := R_GetColormapLightLevel(dc_colormap);
+      rcolumn.dc_lightlevel := R_GetColormapLightLevel(rcolumn.dc_colormap);
   end;
 
-  if dc_colormap = nil then
+  if rcolumn.dc_colormap = nil then
   begin
     // NULL colormap = shadow draw
     colfunc := fuzzcolfunc;
@@ -493,116 +549,34 @@ begin
   end
   else if usetransparentsprites and (vis.mobjflags_ex and MF_EX_TRANSPARENT <> 0) then
   begin
-    curtrans8table := R_GetTransparency8table;
+    rcolumn.curtrans8table := R_GetTransparency8table;
     colfunc := averagecolfunc
   end
   else if usetransparentsprites and (vis.mo <> nil) and (vis.mo.renderstyle = mrs_translucent) then
   begin
-    dc_alpha := vis.mo.alpha;
-    curtrans8table := R_GetTransparency8table(dc_alpha);
+    rcolumn.dc_alpha := vis.mo.alpha;
+    rcolumn.curtrans8table := R_GetTransparency8table(rcolumn.dc_alpha);
     colfunc := alphacolfunc;
   end
   else
     colfunc := maskedcolfunc;
 
-  dc_iscale := FixedDivEx(FRACUNIT, vis.scale);
-  dc_texturemid := vis.texturemid;
+  rcolumn.dc_iscale := FixedDivEx(FRACUNIT, vis.scale);
+  rcolumn.dc_texturemid := vis.texturemid;
   frac := vis.startfrac;
   spryscale := vis.scale;
-  sprtopscreen := centeryfrac - FixedMul(dc_texturemid, spryscale);
+  sprtopscreen := centeryfrac - FixedMul(rcolumn.dc_texturemid, spryscale);
 
   xiscale := vis.xiscale;
-  dc_x := vis.x1;
-  while dc_x <= vis.x2 do
+  rcolumn.dc_x := vis.x1;
+  while rcolumn.dc_x <= vis.x2 do
   begin
     texturecolumn := LongWord(frac) shr FRACBITS;
 
     column := Pcolumn_t(integer(patch) + patch.columnofs[texturecolumn]);
-    R_DrawMaskedColumn(column);
+    proc(column, RF_MASKED or RF_DEPTHBUFFERWRITE);
     frac := frac + xiscale;
-    inc(dc_x);
-  end;
-
-  Z_ChangeTag(patch, PU_CACHE);
-end;
-
-//
-// R_DrawLightColumn
-// Used for sprites that emits light
-//
-
-var
-  ltopdelta: integer;
-  llength: integer;
-
-procedure R_DrawLightColumn;
-var
-  topscreen: int64;
-  bottomscreen: int64;
-  basetexturemid: fixed_t;
-begin
-  basetexturemid := dc_texturemid;
-
-  topscreen := sprtopscreen + int64(spryscale) * int64(ltopdelta);
-  bottomscreen := topscreen + int64(spryscale) * int64(llength);
-
-  dc_yl := FixedInt64(topscreen + (FRACUNIT - 1));
-  dc_yh := FixedInt64(bottomscreen - 1);
-  dc_texturemid := (centery - dc_yl) * dc_iscale;
-
-  if dc_yh >= mfloorclip[dc_x] then
-    dc_yh := mfloorclip[dc_x] - 1;
-  if dc_yl <= mceilingclip[dc_x] then
-    dc_yl := mceilingclip[dc_x] + 1;
-
-  if dc_yl <= dc_yh then
-    lightcolfunc;
-
-  dc_texturemid := basetexturemid;
-end;
-
-//
-// R_DrawVisSpriteLight
-//
-
-procedure R_DrawVisSpriteLight(vis: Pvissprite_t; x1: integer; x2: integer);
-var
-  texturecolumn: integer;
-  frac: fixed_t;
-  fracstep: fixed_t;
-  patch: Ppatch_t;
-begin
-  patch := W_CacheLumpNum(vis.patch + firstspritelump, PU_STATIC);
-
-  frac := vis.startfrac * LIGHTBOOSTSIZE div patch.width;
-  fracstep := vis.xiscale * (LIGHTBOOSTSIZE shr 1) div patch.width;
-  spryscale := vis.scale * patch.height div (LIGHTBOOSTSIZE shr 1);
-  dc_iscale := FixedDivEx(FRACUNIT, spryscale);
-  sprtopscreen := centeryfrac - FixedMul(vis.texturemid2, vis.scale);
-
-  if fixedcolormapnum = INVERSECOLORMAP then // JVAL: if in invulnerability mode use white color
-    lightcolfunc := whitelightcolfunc
-  else if vis.mobjflags_ex and MF_EX_REDLIGHT <> 0 then
-    lightcolfunc := redlightcolfunc
-  else if vis.mobjflags_ex and MF_EX_GREENLIGHT <> 0 then
-    lightcolfunc := greenlightcolfunc
-  else if vis.mobjflags_ex and MF_EX_BLUELIGHT <> 0 then
-    lightcolfunc := bluelightcolfunc
-  else if vis.mobjflags_ex and MF_EX_YELLOWLIGHT <> 0 then
-    lightcolfunc := yellowlightcolfunc
-  else
-    lightcolfunc := whitelightcolfunc;
-
-  dc_x := x1;
-  while dc_x <= x2 do
-  begin
-    texturecolumn := LongWord(frac) shr FRACBITS;
-    ltopdelta := lighboostlookup[texturecolumn].topdelta;
-    llength := lighboostlookup[texturecolumn].length;
-    dc_source32 := @lightboost[texturecolumn * LIGHTBOOSTSIZE + ltopdelta];
-    R_DrawLightColumn;
-    frac := frac + fracstep;
-    inc(dc_x);
+    inc(rcolumn.dc_x);
   end;
 
   Z_ChangeTag(patch, PU_CACHE);
@@ -866,7 +840,7 @@ begin
     vis.x2 := x2;
   vis.scale := pspriteyscale;
 
-  if flip then
+  if flip xor (mirrormode and MR_WEAPON <> 0) then
   begin
     vis.xiscale := -pspriteiscalep;
     vis.startfrac := spritewidth[lump] - 1;
@@ -903,7 +877,14 @@ begin
     vis.colormap := spritelights[MAXLIGHTSCALE - 1];
   end;
 
-  R_DrawVisSprite(vis);
+  if mirrormode and MR_WEAPON <> 0 then
+  begin
+    x2 := viewwidth - 1 - vis.x1;
+    x1 := viewwidth - 1 - vis.x2;
+    vis.x1 := x1;
+    vis.x2 := x2;
+  end;
+  R_DrawVisSprite(vis, @R_DrawPlayerColumn);
 end;
 
 //
@@ -935,6 +916,8 @@ begin
     centerxshift := shiftangle * FRACUNIT div 40 * viewwidth
   else
     centerxshift := - (255 - shiftangle) * FRACUNIT div 40 * viewwidth;
+  if mirrormode in [MR_WEAPON, MR_ENVIROMENT] then
+    centerxshift := -centerxshift;
   for i := 0 to Ord(NUMPSPRITES) - 1 do
   begin
     if viewplayer.psprites[i].state <> nil then
@@ -1129,134 +1112,7 @@ begin
   mfloorclip := @clipbot;
   mceilingclip := @cliptop;
 
-  R_DrawVisSprite(spr);
-end;
-
-procedure R_DrawSpriteLight(spr: Pvissprite_t);
-var
-  ds: Pdrawseg_t;
-  x: integer;
-  r1: integer;
-  r2: integer;
-  scale: fixed_t;
-  lowscale: fixed_t;
-  silhouette: integer;
-  i: integer;
-  x1, x2: integer;
-begin
-  x := (spr.x2 - spr.x1) div 2;
-  x1 := spr.x1 - x;
-  x2 := spr.x2 + x;
-
-  if x1 < 0 then
-    x1 := 0;
-  if x2 >= viewwidth then
-    x2 := viewwidth - 1;
-
-  for x := x1 to x2 do
-  begin
-    clipbot[x] := -2;
-    cliptop[x] := -2;
-  end;
-
-  // Scan drawsegs from end to start for obscuring segs.
-  // The first drawseg that has a greater scale
-  //  is the clip seg.
-  for i := ds_p - 1 downto 0 do
-  begin
-    ds := drawsegs[i];
-    // determine if the drawseg obscures the sprite
-    if (ds.x1 > x2) or
-       (ds.x2 < x1) or
-       ((ds.silhouette = 0) and (ds.maskedtexturecol = nil)) then
-    begin
-      // does not cover sprite
-      continue;
-    end;
-
-    if ds.x1 <= x1 then
-      r1 := x1
-    else
-      r1 := ds.x1;
-    if ds.x2 >= x2 then
-      r2 := x2
-    else
-      r2 := ds.x2;
-
-    if ds.scale1 > ds.scale2 then
-    begin
-      lowscale := ds.scale2;
-      scale := ds.scale1;
-    end
-    else
-    begin
-      lowscale := ds.scale1;
-      scale := ds.scale2;
-    end;
-
-    if (scale < spr.scale) or
-       ((lowscale < spr.scale) and (not R_PointOnSegSide(spr.gx, spr.gy, ds.curline))) then
-    begin
-      // masked mid texture?
-      if ds.maskedtexturecol <> nil then
-        R_RenderMaskedSegRange(ds, r1, r2);
-      // seg is behind sprite
-      continue;
-    end;
-
-    // clip this piece of the sprite
-    silhouette := ds.silhouette;
-
-    if spr.gz >= ds.bsilheight then
-      silhouette := silhouette and (not SIL_BOTTOM);
-
-    if spr.gzt <= ds.tsilheight then
-      silhouette := silhouette and (not SIL_TOP);
-
-    if silhouette = 1 then
-    begin
-      // bottom sil
-      for x := r1 to r2 do
-        if clipbot[x] = -2 then
-          clipbot[x] := ds.sprbottomclip[x];
-    end
-    else if silhouette = 2 then
-    begin
-      // top sil
-      for x := r1 to r2 do
-        if cliptop[x] = -2 then
-          cliptop[x] := ds.sprtopclip[x];
-    end
-    else if silhouette = 3 then
-    begin
-      // both
-      for x := r1 to r2 do
-      begin
-        if clipbot[x] = -2 then
-          clipbot[x] := ds.sprbottomclip[x];
-        if cliptop[x] = -2 then
-          cliptop[x] := ds.sprtopclip[x];
-      end;
-    end;
-  end;
-
-  // all clipping has been performed, so draw the sprite
-
-  // check for unclipped columns
-  for x := x1 to x2 do
-  begin
-    if clipbot[x] = -2 then
-      clipbot[x] := viewheight;
-
-    if cliptop[x] = -2 then
-      cliptop[x] := -1;
-  end;
-
-  mfloorclip := @clipbot;
-  mceilingclip := @cliptop;
-
-  R_DrawVisSpriteLight(spr, x1, x2);
-
+  R_DrawVisSprite(spr, @R_DrawMaskedColumn);
 end;
 
 //
@@ -1268,16 +1124,12 @@ var
   ds: Pdrawseg_t;
   i: integer;
 begin
-  R_SortVisSprites;
-
   if vissprite_p > 0 then
   begin
     // draw all vissprites back to front
     spr := vsprsortedhead.next;
     while spr <> @vsprsortedhead do
     begin
-      if uselightboost and (videomode = vm32bit) and (spr.mobjflags_ex and MF_EX_LIGHT <> 0) then
-        R_DrawSpriteLight(spr);
       R_DrawSprite(spr);
       spr := spr.next;
     end;
@@ -1291,6 +1143,23 @@ begin
     if ds.maskedtexturecol <> nil then
       R_RenderMaskedSegRange(ds, ds.x1, ds.x2);
   end;
+end;
+
+procedure R_MarkLights;
+var
+  spr: Pvissprite_t;
+begin
+  if vissprite_p > 0 then
+  begin
+    // draw all vissprites back to front
+    spr := vsprsortedhead.next;
+    while spr <> @vsprsortedhead do
+    begin
+      R_MarkDLights(spr.mo);
+      spr := spr.next;
+    end;
+  end;
+  R_AddAdditionalLights;
 end;
 
 procedure R_DrawPlayer;

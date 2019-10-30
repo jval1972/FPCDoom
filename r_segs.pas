@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -64,13 +65,15 @@ uses
   doomdata,
   r_main,
   r_data, 
-  r_bsp, 
+  r_bsp,
+  r_render,
   r_sky, 
   r_things, 
-  r_draw, 
-  r_plane, 
-  r_hires, 
+  r_draw,
+  r_plane,
+  r_hires,
   r_draw_column,
+  r_mirror,
   z_memory;
 
 procedure R_CalcSeg(const seg: Pseg_t);
@@ -78,23 +81,24 @@ var
   dx, dy: double;
   sq: double;
 begin
-  dx := seg.v2.x - seg.v1.x;
-  dy := seg.v2.y - seg.v1.y;
+  dx := seg.v2.r_x - seg.v1.r_x;
+  dy := seg.v2.r_y - seg.v1.r_y;
   sq := dx * dx + dy * dy;
   if sq = 0.0 then
     seg.inv_length := 10000000000.0
   else
     seg.inv_length := 1 / sqrt(sq);
+  seg.r_normalangle := R_PointToAngle(seg.v1.r_x, seg.v1.r_y, seg.v2.r_x, seg.v2.r_y) + ANG90;
 end;
 
 function R_CalcSegOffset(const seg: Pseg_t): fixed_t;
 var
   dx, dy, dx1, dy1: double;
 begin
-  dx := seg.v2.x - seg.v1.x;
-  dy := seg.v2.y - seg.v1.y;
-  dx1 := viewx - seg.v1.x;
-  dy1 := viewy - seg.v1.y;
+  dx := seg.v2.r_x - seg.v1.r_x;
+  dy := seg.v2.r_y - seg.v1.r_y;
+  dx1 := viewx - seg.v1.r_x;
+  dy1 := viewy - seg.v1.r_y;
   result := round((dx * dx1 + dy * dy1) * seg.inv_length);
   if result < 0 then
     result := -result;
@@ -108,26 +112,26 @@ function R_DistToSeg(const seg: Pseg_t): fixed_t;
 var
   dx, dy, dx1, dy1: double;
 begin
-  if seg.v1.y = seg.v2.y then
+  if seg.v1.r_y = seg.v2.r_y then
   begin
-    result := viewy - seg.v1.y;
+    result := viewy - seg.v1.r_y;
     if result < 0 then
       result := -result;
     exit;
   end;
 
-  if seg.v1.x = seg.v2.x then
+  if seg.v1.r_x = seg.v2.r_x then
   begin
-    result := viewx - seg.v1.x;
+    result := viewx - seg.v1.r_x;
     if result < 0 then
       result := -result;
     exit;
   end;
 
-  dx := seg.v2.x - seg.v1.x;
-  dy := seg.v2.y - seg.v1.y;
-  dx1 := viewx - seg.v1.x;
-  dy1 := viewy - seg.v1.y;
+  dx := seg.v2.r_x - seg.v1.r_x;
+  dy := seg.v2.r_y - seg.v1.r_y;
+  dx1 := viewx - seg.v1.r_x;
+  dy1 := viewy - seg.v1.r_y;
   result := round((dy * dx1 - dx * dy1) * seg.inv_length);
   if result < 0 then
     result := -result;
@@ -184,7 +188,6 @@ var
   bottomfrac_dbl: double;
   bottomstep_dbl: double;
 
-
 // OPTIMIZE: closed two sided lines as single sided
 
 //
@@ -210,6 +213,8 @@ begin
   backsector := curline.backsector;
   texnum := texturetranslation[curline.sidedef.midtexture];
 
+  rcolumn.seg := curline; // we do not need it
+  rcolumn.rendertype := RIT_MASKEDWALL;
   R_GetDCs(texnum, 0); // JVAL Also precache external texture if not loaded
   use32 := (videomode = vm32bit) and (integer(textures[texnum].texture32) > $1);
   if use32 then
@@ -225,9 +230,9 @@ begin
 
   lightnum := _SHR(frontsector.lightlevel, LIGHTSEGSHIFT) + extralight;
 
-  if curline.v1.y = curline.v2.y then
+  if curline.v1.r_y = curline.v2.r_y then
     dec(lightnum)
-  else if curline.v1.x = curline.v2.x then
+  else if curline.v1.r_x = curline.v2.r_x then
     inc(lightnum);
 
   if lightnum < 0 then
@@ -250,39 +255,39 @@ begin
   if curline.linedef.flags and ML_DONTPEGBOTTOM <> 0 then
   begin
     if frontsector.floorheight > backsector.floorheight then
-      dc_texturemid := frontsector.floorheight
+      rcolumn.dc_texturemid := frontsector.floorheight
     else
-      dc_texturemid := backsector.floorheight;
-    dc_texturemid := dc_texturemid + textureheight[texnum] - viewz;
+      rcolumn.dc_texturemid := backsector.floorheight;
+    rcolumn.dc_texturemid := rcolumn.dc_texturemid + textureheight[texnum] - viewz;
   end
   else
   begin
     if frontsector.ceilingheight < backsector.ceilingheight then
-      dc_texturemid := frontsector.ceilingheight
+      rcolumn.dc_texturemid := frontsector.ceilingheight
     else
-      dc_texturemid := backsector.ceilingheight;
-    dc_texturemid := dc_texturemid - viewz;
+      rcolumn.dc_texturemid := backsector.ceilingheight;
+    rcolumn.dc_texturemid := rcolumn.dc_texturemid - viewz;
   end;
-  dc_texturemid := dc_texturemid + curline.sidedef.rowoffset;
+  rcolumn.dc_texturemid := rcolumn.dc_texturemid + curline.sidedef.rowoffset;
 
   if fixedcolormap <> nil then
-    dc_colormap := fixedcolormap;
+    rcolumn.dc_colormap := fixedcolormap;
 
   if videomode = vm32bit then
   begin
-    dc_colormap32 := R_GetColormap32(dc_colormap);
+    rcolumn.dc_colormap32 := R_GetColormap32(rcolumn.dc_colormap);
     if fixedcolormapnum = INVERSECOLORMAP then
-      dc_lightlevel := -1
+      rcolumn.dc_lightlevel := -1
     else
-      dc_lightlevel := R_GetColormapLightLevel(dc_colormap);
+      rcolumn.dc_lightlevel := R_GetColormapLightLevel(rcolumn.dc_colormap);
   end;
 
   // draw the columns
   for i := x1 to x2 do
   begin
-    dc_x := i;
+    rcolumn.dc_x := i;
     // calculate lighting
-    if maskedtexturecol[dc_x] <> MAXSHORT then
+    if maskedtexturecol[rcolumn.dc_x] <> MAXSHORT then
     begin
       if fixedcolormap = nil then
       begin
@@ -291,37 +296,37 @@ begin
           index := _SHR(spryscale, HLL_LIGHTSCALESHIFT + 2) * 320 div SCREENWIDTH;
           if index >= HLL_MAXLIGHTSCALE then
             index := HLL_MAXLIGHTSCALE - 1;
-          dc_lightlevel := scalelightlevels[dc_llindex, index];
+          rcolumn.dc_lightlevel := scalelightlevels[dc_llindex, index];
         end;
         index := _SHR(spryscale, LIGHTSCALESHIFT) * 320 div SCREENWIDTH;
 
         if index >=  MAXLIGHTSCALE then
           index := MAXLIGHTSCALE - 1;
 
-        dc_colormap := walllights[index];
+        rcolumn.dc_colormap := walllights[index];
         if videomode = vm32bit then
-          dc_colormap32 := R_GetColormap32(dc_colormap);
+          rcolumn.dc_colormap32 := R_GetColormap32(rcolumn.dc_colormap);
       end;
 
-      sprtopscreen := centeryfrac - FixedMul(dc_texturemid, spryscale);
-      dc_iscale := LongWord($ffffffff) div LongWord(spryscale);
+      sprtopscreen := centeryfrac - FixedMul(rcolumn.dc_texturemid, spryscale);
+      rcolumn.dc_iscale := LongWord($ffffffff) div LongWord(spryscale);
 
-      texturecolumn := maskedtexturecol[dc_x] shr DC_HIRESBITS;
+      texturecolumn := maskedtexturecol[rcolumn.dc_x] shr DC_HIRESBITS;
+
       if use32 then
       begin
-        dc_mod := 0;
-        dc_texturemod := maskedtexturecol[dc_x] and (DC_HIRESFACTOR - 1);
+        rcolumn.dc_mod := 0;
+        rcolumn.dc_texturemod := maskedtexturecol[rcolumn.dc_x] and (DC_HIRESFACTOR - 1);
         R_GetDCs(texnum, texturecolumn);
-        R_DrawMaskedColumn2(mc2height);
+        R_DrawMaskedColumn32(mc2height, RF_MASKED or RF_DEPTHBUFFERWRITE);
       end
       else
       begin
         // draw the texture
         col := Pcolumn_t(integer(R_GetColumn(texnum, texturecolumn)) - 3);
-        R_DrawMaskedColumn(col);
+        R_DrawMaskedColumn(col, RF_MASKED or RF_DEPTHBUFFERWRITE);
       end;
-
-      maskedtexturecol[dc_x] := MAXSHORT;
+      maskedtexturecol[rcolumn.dc_x] := MAXSHORT;
     end;
     spryscale := spryscale + rw_scalestep;
   end;
@@ -340,6 +345,25 @@ const
   HEIGHTUNIT = 1 shl HEIGHTBITS;
   WORLDBIT = 16 - HEIGHTBITS;
   WORLDUNIT = 1 shl WORLDBIT;
+
+function R_MirrorTextureColumn(const seg: Pseg_t; const tc: fixed_t): fixed_t;
+var
+  offs: fixed_t;
+  dx, dy: double;
+  len: integer;
+begin
+  if mirrormode and MR_ENVIROMENT = 0 then
+    result := tc
+  else
+  begin
+    offs := seg.sidedef.textureoffset;
+{    dx := seg.linedef.dx / FRACUNIT;
+    dy := seg.linedef.dy / FRACUNIT;
+    len := trunc(sqrt(dx * dx + dy * dy) * FRACUNIT);}
+    len := seg.linedef.len;
+    result := (len + 2 * offs) div FRACUNIT - tc;
+  end;
+end;
 
 procedure R_RenderSegLoop;
 var
@@ -362,6 +386,8 @@ begin
   rwstopx := rw_stopx;
   pceilingclip := @ceilingclip[rwx];
   pfloorclip := @floorclip[rwx];
+  rcolumn.seg := curline;
+  rcolumn.rendertype := RIT_WALL;
   while rwx < rwstopx do
   begin
     // mark floor / ceiling areas
@@ -414,8 +440,8 @@ begin
       // calculate texture offset
       angle := _SHRW(rw_centerangle + xtoviewangle[rwx], ANGLETOFINESHIFT);
       texturecolumn := rw_offset - FixedMul(finetangent[angle], rw_distance);
-      dc_texturemod := 0;
-      dc_mod := 0;
+      rcolumn.dc_texturemod := 0;
+      rcolumn.dc_mod := 0;
 
       texturecolumnhi := texturecolumn shr (FRACBITS - DC_HIRESBITS);
       texturecolumn := texturecolumn shr FRACBITS;
@@ -425,10 +451,10 @@ begin
       if index >=  MAXLIGHTSCALE then
         index := MAXLIGHTSCALE - 1;
 
-      dc_colormap := walllights[index];
+      rcolumn.dc_colormap := walllights[index];
       if videomode = vm32bit then
       begin
-        dc_colormap32 := R_GetColormap32(dc_colormap);
+        rcolumn.dc_colormap32 := R_GetColormap32(rcolumn.dc_colormap);
         if (not forcecolormaps) and (fixedcolormap = nil) then
         begin
           index := Round(rw_scale_dbl * 320 / (1 shl (HLL_LIGHTSCALESHIFT + 2)) / SCREENWIDTH);
@@ -436,36 +462,36 @@ begin
             index := HLL_MAXLIGHTSCALE - 1
           else if index < 0 then
             index := 0;
-          dc_lightlevel := scalelightlevels[dc_llindex, index];
+          rcolumn.dc_lightlevel := scalelightlevels[dc_llindex, index];
         end
         else if fixedcolormapnum = INVERSECOLORMAP then
-          dc_lightlevel := -1
+          rcolumn.dc_lightlevel := -1
         else
-          dc_lightlevel := R_GetColormapLightLevel(dc_colormap);
+          rcolumn.dc_lightlevel := R_GetColormapLightLevel(rcolumn.dc_colormap);
       end;
 
-      dc_x := rwx;
+      rcolumn.dc_x := rwx;
       if (rw_scale_dbl < 4) and (rw_scale_dbl > -4) then
       begin
         if rw_scale_dbl > 0 then
-          dc_iscale := MAXINT div 2
+          rcolumn.dc_iscale := MAXINT div 2
         else
-          dc_iscale := - MAXINT div 2
+          rcolumn.dc_iscale := -MAXINT div 2
       end
       else
       begin
-        dc_iscale := round($100000000 / rw_scale_dbl);
-        if dc_iscale > MAXINT div 2 then
-          dc_iscale := MAXINT div 2
-        else if dc_iscale < -MAXINT div 2 then
-          dc_iscale := -MAXINT div 2
+        rcolumn.dc_iscale := round($100000000 / rw_scale_dbl);
+        if rcolumn.dc_iscale > MAXINT div 2 then
+          rcolumn.dc_iscale := MAXINT div 2
+        else if rcolumn.dc_iscale < -MAXINT div 2 then
+          rcolumn.dc_iscale := -MAXINT div 2
       end;
-      if (dc_iscale < 4) and (dc_iscale > -4) then
+      if (rcolumn.dc_iscale < 4) and (rcolumn.dc_iscale > -4) then
       begin
-        if dc_iscale > 0 then
-          dc_iscale := 4
+        if rcolumn.dc_iscale > 0 then
+          rcolumn.dc_iscale := 4
         else
-          dc_iscale := -4
+          rcolumn.dc_iscale := -4
       end;
     end;
 
@@ -473,11 +499,11 @@ begin
     if midtexture <> 0 then
     begin
       // single sided line
-      dc_yl := yl;
-      dc_yh := yh;
-      dc_texturemid := rw_midtexturemid;
-      R_GetDCs(midtexture, texturecolumn);
-      wallcolfunc;
+      rcolumn.dc_yl := yl;
+      rcolumn.dc_yh := yh;
+      rcolumn.dc_texturemid := rw_midtexturemid;
+      R_GetDCs(midtexture, R_MirrorTextureColumn(curline, texturecolumn));
+      R_AddRenderTask(wallcolfunc, RF_WALL or RF_DEPTHBUFFERWRITE, @rcolumn);
       pceilingclip^ := viewheight;
       pfloorclip^ := -1;
     end
@@ -495,11 +521,11 @@ begin
 
         if mid >= yl then
         begin
-          dc_yl := yl;
-          dc_yh := mid;
-          dc_texturemid := rw_toptexturemid;
-          R_GetDCs(toptexture, texturecolumn);
-          wallcolfunc;
+          rcolumn.dc_yl := yl;
+          rcolumn.dc_yh := mid;
+          rcolumn.dc_texturemid := rw_toptexturemid;
+          R_GetDCs(toptexture, R_MirrorTextureColumn(curline, texturecolumn));
+          R_AddRenderTask(wallcolfunc, RF_WALL or RF_DEPTHBUFFERWRITE, @rcolumn);
           pceilingclip^ := mid;
         end
         else
@@ -524,11 +550,11 @@ begin
 
         if mid <= yh then
         begin
-          dc_yl := mid;
-          dc_yh := yh;
-          dc_texturemid := rw_bottomtexturemid;
-          R_GetDCs(bottomtexture, texturecolumn);
-          wallcolfunc;
+          rcolumn.dc_yl := mid;
+          rcolumn.dc_yh := yh;
+          rcolumn.dc_texturemid := rw_bottomtexturemid;
+          R_GetDCs(bottomtexture, R_MirrorTextureColumn(curline, texturecolumn));
+          R_AddRenderTask(wallcolfunc, RF_WALL or RF_DEPTHBUFFERWRITE, @rcolumn);
           pfloorclip^ := mid;
         end
         else
@@ -594,7 +620,7 @@ begin
   linedef.flags := linedef.flags or ML_MAPPED;
 
   // calculate rw_distance for scale calculation
-  rw_normalangle := curline.angle + ANG90;
+  rw_normalangle := curline.r_normalangle;
 
   rw_distance := R_DistToSeg(curline);
 
@@ -798,9 +824,9 @@ begin
     begin
       lightnum := _SHR(frontsector.lightlevel, LIGHTSEGSHIFT) + extralight;
 
-      if curline.v1.y = curline.v2.y then
+      if curline.v1.r_y = curline.v2.r_y then
         dec(lightnum)
-      else if curline.v1.x = curline.v2.x then
+      else if curline.v1.r_x = curline.v2.r_x then
         inc(lightnum);
 
       if lightnum < 0 then

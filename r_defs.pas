@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -75,6 +76,8 @@ type
   vertex_t = packed record
     x: fixed_t;
     y: fixed_t;
+    r_x: fixed_t;
+    r_y: fixed_t;
   end;
   Pvertex_t = ^vertex_t;
   vertex_tArray = packed array[0..$FFFF] of vertex_t;
@@ -184,6 +187,9 @@ type
     dx: fixed_t;
     dy: fixed_t;
 
+    // Precalculated length for mirror mode
+    len: fixed_t;
+
     // Animation related.
     flags: smallint;
     special: smallint;
@@ -251,6 +257,7 @@ type
     // backsector is NULL for one sided lines
     frontsector: Psector_t;
     backsector: Psector_t;
+    r_normalangle: angle_t;
     inv_length: double;
   end;
   Pseg_t = ^seg_t;
@@ -558,6 +565,15 @@ var
 //  will have new column_ts generated.
 //
 
+//
+// Render item types
+//
+const
+  RIT_SKY = 0;
+  RIT_FLAT = 1;
+  RIT_WALL = 2;
+  RIT_MASKEDWALL = 3;
+  RIT_SPRITE = 4;
 
 implementation
 

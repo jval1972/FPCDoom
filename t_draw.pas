@@ -2,7 +2,7 @@
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -80,7 +80,7 @@ begin
     end;
   end;
 
-  realloc(pointer(drawtextures), numdrawtextures * SizeOf(drawtexture_t), (numdrawtextures + 1) * SizeOf(drawtexture_t));
+  realloc(drawtextures, numdrawtextures * SizeOf(drawtexture_t), (numdrawtextures + 1) * SizeOf(drawtexture_t));
   result := numdrawtextures;
   drawtextures[result].texture32 := nil;
   drawtextures[result].lump := lump;
@@ -181,7 +181,7 @@ begin
     inc(fracrow, fracrowstep);
   end;
 
-  memfree(pointer(src), twidth * 4);
+  memfree(src, twidth * 4);
   result := true;
 end;
 
@@ -199,7 +199,7 @@ begin
     if LongWord(drawtextures[i].texture32) > 1 then
       dispose(drawtextures[i].texture32, destroy);
 
-  realloc(pointer(drawtextures), numdrawtextures * SizeOf(drawtexture_t), 0);
+  realloc(drawtextures, numdrawtextures * SizeOf(drawtexture_t), 0);
 end;
 
 end.

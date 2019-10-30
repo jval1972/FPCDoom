@@ -1,8 +1,9 @@
 //------------------------------------------------------------------------------
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
+//  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -140,7 +141,7 @@ end;
 
 procedure R_ResetInterpolationBuffer;
 begin
-  memfree(pointer(istruct.items), istruct.realsize * SizeOf(iitem_t));
+  memfree(istruct.items, istruct.realsize * SizeOf(iitem_t));
   istruct.numitems := 0;
   istruct.realsize := 0;
   numismobjs := 0;
@@ -249,7 +250,7 @@ begin
   if istruct.realsize <= istruct.numitems then
   begin
     newrealsize := istruct.realsize + IGROWSTEP;
-    realloc(pointer(istruct.items), istruct.realsize * SizeOf(iitem_t), newrealsize * SizeOf(iitem_t));
+    realloc(istruct.items, istruct.realsize * SizeOf(iitem_t), newrealsize * SizeOf(iitem_t));
     ZeroMemory(@istruct.items[istruct.realsize], IGROWSTEP * SizeOf(iitem_t));
     istruct.realsize := newrealsize;
   end;
