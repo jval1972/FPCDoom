@@ -377,7 +377,6 @@ type
     colormap: PByteArray;
 
     mobjflags: integer;
-    mobjflags2: integer;
     mobjflags_ex: integer;
     mobjflags2_ex: integer;
     mo: Pmobj_t;
@@ -449,10 +448,10 @@ type
     maxx: integer;
 
     // leave pads for [minx-1] and [maxx+1]
-    top: Pvisindex_tArray;    // Now allocated dinamically!
+    top: Pvisindex_tArray;    // Now allocated dynamically!
 
     // See above.
-    bottom: Pvisindex_tArray; // Now allocated dinamically!
+    bottom: Pvisindex_tArray; // Now allocated dynamically!
   end;
   Pvisplane_t = ^visplane_t;
 

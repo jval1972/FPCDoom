@@ -1,5 +1,5 @@
 {$MODE DELPHI}
-{$A+,B-,C+,D+,E-,H+,I+,J+,M-,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Z1}
+{$A+,B-,C+,D+,H+,I+,J+,M-,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Z1}
 {$MINSTACKSIZE $00004000}
 {$MAXSTACKSIZE $00100000}
 {$IMAGEBASE $00400000}

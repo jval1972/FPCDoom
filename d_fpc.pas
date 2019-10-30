@@ -2530,7 +2530,7 @@ function GetEnvironmentVariable(lpName: PChar; lpBuffer: PChar; nSize: DWORD): D
 
 function AllocMemSize: integer;
 begin
-  result := 0;
+  result := memoryusage;
 end;
 
 function NowTime: TDateTime;

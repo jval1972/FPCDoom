@@ -64,7 +64,9 @@ type
   dc32cacheitem_t = record
     dc32: Pdc32_t;
     columnsize: integer;
-    UID: LongWord;
+    texture: integer;
+    column: integer;
+    texturemod: integer;
   end;
   Pdc32cacheitem_t = ^dc32cacheitem_t;
 
@@ -160,24 +162,6 @@ begin
   result := (97 * tex + col * 3833 + dmod * 7867) and (COL32CACHESIZE - 1);
 end;
 
-function R_GetUID(const tex, col, dmod: integer): LongWord;
-// JVAL
-// In addition the UID depending on tex, col and dc_mod
-// gives 100% correct hit to cache (of course we can't afford
-// a table of some billions elements for direct addressing :)
-// bits  0-14 -> texture (larger than safe limit...)  (32768 textures max)
-// bits 15-24 -> column (1024 columns max) (=MAXTEXTUREWIDTH)
-// next bits -> dc_mod
-// NOTE: In order to have a unique ID, DC_HIRESBITS can not be
-// greater than 8, but considering that a value of DC_HIRESBITS of 8 gives
-// all the range of 3 byte color (~16M different colors)
-// it's meaningless to set DC_HIRESBITS in a higher value
-// In fact a value of DC_HIRESBITS equal to 5 is far beyond the eye can see.
-// ->  UID := tex + _SHL(col and 1023, 15) + _SHL(dc_mod, 25);
-begin
-  result := tex + _SHL(col, CACHECOLSHIFT) + _SHL(dmod, CACHECOLSHIFT + CACHECOLBITS);
-end;
-
 var
   dc32cache: dc32cacheinfo_tPArray;
 
@@ -223,7 +207,6 @@ var
   columnsize: integer;
   mod_c, mod_d: integer;
   loops: integer;
-  UID: LongWord;
   hash: integer;
   curgamma: PByteArray;
   pb: PByte;
@@ -238,16 +221,17 @@ begin
 
   // Cache read of the caclulated dc_source32, 98-99% propability not to recalc...
   hash := R_GetHash(rtex, rcol, dc_texturemod);
-  UID := R_GetUID(rtex, rcol, dc_texturemod);
   index := 0;
   cachemiss := true;
   if dc32cache[hash] <> nil then
   begin
     while dc32cache[hash][index] <> nil do
     begin
-      if dc32cache[hash][index].UID = $FFFFFFFF then
+      if dc32cache[hash][index].texture = -1 then
         break;
-      cachemiss := dc32cache[hash][index].UID <> UID;
+      cachemiss := (dc32cache[hash][index].texture <> rtex) or
+                   (dc32cache[hash][index].column <> rcol) or
+                   (dc32cache[hash][index].texturemod <> dc_texturemod);
       if not cachemiss then
         break;
       if index = MAXEQUALHASH - 1 then
@@ -297,6 +281,13 @@ begin
 
     if LongWord(t) > $1 then // if we have a hi resolution texture
     begin
+      if dc32cache[hash][index] = nil then
+        dc32cache[hash][index] := mallocz(SizeOf(dc32cacheitem_t));
+
+      dc32cache[hash][index].texture := rtex;
+      dc32cache[hash][index].column := rcol;
+      dc32cache[hash][index].texturemod := dc_texturemod;
+
       // JVAL
       // Does not use [and (t.GetWidth - 1)] but [mod (t.GetWidth - 1)] because
       // we don't require textures to have width as power of 2.
@@ -320,8 +311,6 @@ begin
         columnsize := 128;
       end;
 
-      if dc32cache[hash][index] = nil then
-        dc32cache[hash][index] := mallocz(SizeOf(dc32cacheitem_t));
       pdc32 := R_Get_dc32(dc32cache[hash][index], columnsize);
       plw := @pdc32[0];
 
@@ -464,8 +453,6 @@ begin
       dc32cache[hash][index].dc32[columnsize] := dc32cache[hash][index].dc32[columnsize - 1]
     else
       dc32cache[hash][index].dc32[columnsize] := dc32cache[hash][index].dc32[0];
-
-    dc32cache[hash][index].UID := UID;
   end;
   dc_mod := dc_texturemod;
   dc_texturefactorbits := ptex.factorbits;
@@ -486,23 +473,23 @@ var
   src1, src2: PByte;
   tbl: Phiresmodtable_t;
   cachemiss: boolean;
-  UID: LongWord;
   hash: integer;
   i, index: integer;
   dc_source2: PByteArray;
 begin
   // Cache read of the caclulated dc_source32, 98-99% propability not to recalc...
   hash := R_GetHash(rtex, rcol, dc_mod);
-  UID := R_GetUID(rtex, rcol, dc_mod);
   index := 0;
   cachemiss := true;
   if dc32cache[hash] <> nil then
   begin
     while dc32cache[hash][index] <> nil do
     begin
-      if dc32cache[hash][index].UID = $FFFFFFFF then
+      if dc32cache[hash][index].texture = -1 then
         break;
-      cachemiss := dc32cache[hash][index].UID <> UID;
+      cachemiss := (dc32cache[hash][index].texture <> rtex) or
+                   (dc32cache[hash][index].column <> rcol) or
+                   (dc32cache[hash][index].texturemod <> dc_mod);
       if not cachemiss then
         break;
       if index = MAXEQUALHASH - 1 then
@@ -517,6 +504,9 @@ begin
   begin
     if dc32cache[hash][index] = nil then
       dc32cache[hash][index] := mallocz(SizeOf(dc32cacheitem_t));
+    dc32cache[hash][index].texture := rtex;
+    dc32cache[hash][index].column := rcol;
+    dc32cache[hash][index].texturemod := dc_mod;
 
     pdc32 := R_Get_dc32(dc32cache[hash][index], 128);
     plw := @pdc32[0];
@@ -551,7 +541,6 @@ begin
       plw^ := dc32cache[hash][index].dc32[127]
     else
       plw^ := dc32cache[hash][index].dc32[0];
-    dc32cache[hash][index].UID := UID;
   end;
   dc_texturefactorbits := 0;
   dc_source32 := PLongWordArray(dc32cache[hash][index].dc32);
@@ -576,7 +565,7 @@ begin
     if dc32cache[i] <> nil then
       for j := 0 to MAXEQUALHASH - 1 do
         if dc32cache[i][j] <> nil then
-          dc32cache[i][j].UID := $FFFFFFFF;
+          dc32cache[i][j].texture := -1;
 end;
 
 procedure R_ClearDC32Cache;
@@ -794,7 +783,7 @@ begin
           r1 := pal_color;
           g1 := pal_color shr 8;
           b1 := pal_color shr 16;
-          loops := (numpixels div 64) * 64;
+          loops := numpixels;
           if usegamma > 0 then
           begin
             for i := 0 to loops - 1 do

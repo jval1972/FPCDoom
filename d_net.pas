@@ -883,9 +883,7 @@ begin
     if not demoplayback and not demorecording then
       if I_GetTime div ticdup - entertic >= 10 then
       begin
-        {$IFNDEF OPENGL}
         E_Ticker;
-        {$ENDIF}
         M_Ticker;
         exit;
       end;

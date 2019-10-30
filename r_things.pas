@@ -106,17 +106,6 @@ const
   MINZ = FRACUNIT * 4;
   BASEYCENTER = 100;
 
-type
-  maskdraw_t = record
-    x1: integer;
-    x2: integer;
-
-    column: integer;
-    topclip: integer;
-    bottomclip: integer;
-  end;
-  Pmaskdraw_t = ^maskdraw_t;
-
 //
 // Sprite rotation 0 is facing the viewer,
 //  rotation 1 is one angle turn CLOCKWISE around the axis.
@@ -476,10 +465,9 @@ var
   texturecolumn: integer;
   frac: fixed_t;
   patch: Ppatch_t;
-  i: integer;
   xiscale: integer;
 begin
-  patch := W_CacheLumpNum(vis.patch + firstspritelump, PU_CACHE);
+  patch := W_CacheLumpNum(vis.patch + firstspritelump, PU_STATIC);
 
   dc_colormap := vis.colormap;
 
@@ -517,7 +505,7 @@ begin
   else
     colfunc := maskedcolfunc;
 
-  dc_iscale := FixedDiv(FRACUNIT, vis.scale);
+  dc_iscale := FixedDivEx(FRACUNIT, vis.scale);
   dc_texturemid := vis.texturemid;
   frac := vis.startfrac;
   spryscale := vis.scale;
@@ -525,7 +513,7 @@ begin
 
   xiscale := vis.xiscale;
   dc_x := vis.x1;
-  for i := vis.x1 to vis.x2 do
+  while dc_x <= vis.x2 do
   begin
     texturecolumn := LongWord(frac) shr FRACBITS;
 
@@ -535,6 +523,7 @@ begin
     inc(dc_x);
   end;
 
+  Z_ChangeTag(patch, PU_CACHE);
 end;
 
 //
@@ -582,14 +571,13 @@ var
   frac: fixed_t;
   fracstep: fixed_t;
   patch: Ppatch_t;
-  i: integer;
 begin
-  patch := W_CacheLumpNum(vis.patch + firstspritelump, PU_CACHE);
+  patch := W_CacheLumpNum(vis.patch + firstspritelump, PU_STATIC);
 
   frac := vis.startfrac * LIGHTBOOSTSIZE div patch.width;
   fracstep := vis.xiscale * (LIGHTBOOSTSIZE shr 1) div patch.width;
   spryscale := vis.scale * patch.height div (LIGHTBOOSTSIZE shr 1);
-  dc_iscale := FixedDiv(FRACUNIT, spryscale);
+  dc_iscale := FixedDivEx(FRACUNIT, spryscale);
   sprtopscreen := centeryfrac - FixedMul(vis.texturemid2, vis.scale);
 
   if fixedcolormapnum = INVERSECOLORMAP then // JVAL: if in invulnerability mode use white color
@@ -605,16 +593,19 @@ begin
   else
     lightcolfunc := whitelightcolfunc;
 
-  for i := x1 to x2 do
+  dc_x := x1;
+  while dc_x <= x2 do
   begin
-    dc_x := i;
     texturecolumn := LongWord(frac) shr FRACBITS;
     ltopdelta := lighboostlookup[texturecolumn].topdelta;
     llength := lighboostlookup[texturecolumn].length;
     dc_source32 := @lightboost[texturecolumn * LIGHTBOOSTSIZE + ltopdelta];
     R_DrawLightColumn;
     frac := frac + fracstep;
+    inc(dc_x);
   end;
+
+  Z_ChangeTag(patch, PU_CACHE);
 end;
 
 //
@@ -644,7 +635,6 @@ var
   ang: angle_t;
   iscale: fixed_t;
 begin
-
   if (thing.player = viewplayer) and not chasecamera then
     exit;
 

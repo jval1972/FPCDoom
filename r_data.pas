@@ -198,8 +198,7 @@ begin
   patch := @texture.patches[0];
   for i := 0 to texture.patchcount - 1 do
   begin
-
-    realpatch := W_CacheLumpNum(patch.patch, PU_CACHE);
+    realpatch := W_CacheLumpNum(patch.patch, PU_STATIC);
     x1 := patch.originx;
     x2 := x1 + realpatch.width;
 
@@ -223,6 +222,7 @@ begin
       inc(x);
     end;
     inc(patch);
+    Z_ChangeTag(realpatch, PU_CACHE);
   end;
 
   // Now that the texture has been built in column cache,
@@ -264,7 +264,7 @@ begin
 
   for i := 0 to texture.patchcount - 1 do
   begin
-    realpatch := W_CacheLumpNum(patch.patch, PU_CACHE);
+    realpatch := W_CacheLumpNum(patch.patch, PU_STATIC);
     x1 := patch.originx;
     x2 := x1 + realpatch.width;
 
@@ -283,6 +283,7 @@ begin
       inc(x);
     end;
     inc(patch);
+    Z_ChangeTag(realpatch, PU_CACHE);
   end;
 
   for x := 0 to texture.width - 1 do
@@ -323,7 +324,7 @@ begin
 
   if lump > 0 then
   begin
-    result := PByteArray(integer(W_CacheLumpNum(lump, PU_CACHE)) + ofs);
+    result := PByteArray(integer(W_CacheLumpNum(lump, PU_LEVEL)) + ofs);
     exit;
   end;
 

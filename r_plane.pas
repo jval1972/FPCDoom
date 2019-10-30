@@ -82,7 +82,6 @@ implementation
 uses
   d_fpc,
   doomstat,
-  tables,
   i_system,
   r_sky,
   r_draw,
@@ -233,7 +232,6 @@ end;
 procedure R_ClearPlanes;
 var
   i: integer;
-  angle: angle_t;
 begin
   // opening / clipping determination
   for i := 0 to viewwidth - 1 do
@@ -247,9 +245,6 @@ begin
 
   // texture calculation
   ZeroMemory(@cachedheight, SizeOf(cachedheight));
-
-  // left to right mapping
-  angle := _SHRW(viewangle - ANG90, ANGLETOFINESHIFT);
 end;
 
 //

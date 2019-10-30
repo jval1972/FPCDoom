@@ -472,7 +472,7 @@ begin
   begin
     // frame syncronous IO operations
     I_StartFrame;
-                      
+
     // process one or more tics
     if singletics then
       D_RunSingleTick // will run only one tick
@@ -1520,6 +1520,21 @@ begin
     Info_Init(false);
   end;
 
+  for p := 1 to myargc do
+    if (strupper(fext(myargv[p])) = '.WAD') or (strupper(fext(myargv[p])) = '.OUT') then
+      D_AddFile(myargv[p]);
+
+  for p := 1 to myargc do
+    if (strupper(fext(myargv[p])) = '.PK3') or
+       (strupper(fext(myargv[p])) = '.PK4') or
+       (strupper(fext(myargv[p])) = '.ZIP') or
+       (strupper(fext(myargv[p])) = '.PAK') then
+    begin
+      modifiedgame := true;
+      externalpakspresent := true;
+      PAK_AddFile(myargv[p]);
+    end;
+
   printf('W_Init: Init WADfiles.'#13#10);
   if (W_InitMultipleFiles(wadfiles) = 0) or (W_CheckNumForName('playpal') = -1) then
   begin
@@ -1734,7 +1749,7 @@ begin
   printf('ST_Init: Init status bar.'#13#10);
   ST_Init;
 
-//    // check for a driver that wants intermission stats
+// check for a driver that wants intermission stats
   p := M_CheckParm('-statcopy');
   if (p > 0) and (p < myargc - 1) then
   begin
@@ -1838,3 +1853,4 @@ begin
 end;
 
 end.
+

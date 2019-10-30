@@ -579,11 +579,6 @@ begin
   result := (Code <> -1) and (FILE_ATTRIBUTE_DIRECTORY and Code <> 0);
 end;
 
-var
-  hThread: THandle;
-  iPriority: integer = THREAD_PRIORITY_ERROR_RETURN;
-  prioritycheck: integer = 0;
-
 procedure I_DetectOS;
 var
   info: TOSVersionInfo;
@@ -734,8 +729,6 @@ initialization
 
   if not QueryPerformanceFrequency(Freq) then
     Freq := 1000;
-
-  hThread := GetCurrentThread;
 
 end.
 

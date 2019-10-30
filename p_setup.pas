@@ -41,7 +41,7 @@ uses
 function P_GetMapName(const episode, map: integer): string;
 
 // NOT called by W_Ticker. Fixme.
-procedure P_SetupLevel(episode, map, playermask: integer; skill: skill_t);
+procedure P_SetupLevel(episode, map, playermask: integer);
 
 // Called by startup code.
 procedure P_Init;
@@ -740,7 +740,7 @@ end;
 //
 // P_SetupLevel
 //
-procedure P_SetupLevel(episode, map, playermask: integer; skill: skill_t);
+procedure P_SetupLevel(episode, map, playermask: integer);
 var
   i: integer;
   lumpname: string;

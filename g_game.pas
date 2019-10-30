@@ -742,7 +742,7 @@ begin
     skytexture := R_TextureNumForName('SKY' + Chr(Ord('0') + gameepisode));
 
   if wipegamestate = Ord(GS_LEVEL) then
-    wipegamestate := -1;             // force a wipe
+    wipegamestate := -1;  // force a wipe
 
   gamestate := GS_LEVEL;
 
@@ -753,7 +753,7 @@ begin
     ZeroMemory(@players[i].frags, SizeOf(players[i].frags));
   end;
 
-  P_SetupLevel(gameepisode, gamemap, 0, gameskill);
+  P_SetupLevel(gameepisode, gamemap, 0);
   displayplayer := consoleplayer;    // view the guy you are playing
   starttime := I_GetTime;
   gameaction := ga_nothing;
@@ -1491,7 +1491,7 @@ const
 procedure G_DoLoadGame;
 var
   len: integer;
-  i, j: integer;
+  i: integer;
   a, b, c: integer;
   vcheck: string;
   vsaved: string;

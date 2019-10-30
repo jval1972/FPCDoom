@@ -208,7 +208,6 @@ var
 // fixed_t*    finecosine = &finesine[FINEANGLES/4]; // JVAL -> moved to tables.pas
 
 
-  sscount: integer;
   linecount: integer;
   loopcount: integer;
 
@@ -231,7 +230,6 @@ uses
   doomdata,
   c_cmds,
   d_net,
-  i_io,
   m_bbox,
   m_misc,
   p_setup,
@@ -868,10 +866,6 @@ begin
   R_InitTextureMapping;
 
   // psprite scales
-  pspritescale := FRACUNIT * viewwidth div 320;
-  pspriteiscale := FRACUNIT * 320 div viewwidth;
-  pspriteyscale := (((SCREENHEIGHT * viewwidth) div SCREENWIDTH) * FRACUNIT) div 200;
-
   // JVAL: Widescreen support
   pspritescale := Round((centerx / monitor_relative_aspect * FRACUNIT) / 160);
   pspriteyscale := Round((((SCREENHEIGHT * viewwidth) / SCREENWIDTH) * FRACUNIT) / 200);
@@ -1197,8 +1191,6 @@ begin
   dviewcos := Cos(viewangle / $FFFFFFFF * 2 * pi);
   // JVAL: Widescreen support
   relativeaspect := 320 / 200 * 65536.0 * SCREENHEIGHT / SCREENWIDTH * monitor_relative_aspect;
-
-  sscount := 0;
 
   fixedcolormapnum := player.fixedcolormap;
   if fixedcolormapnum <> 0 then

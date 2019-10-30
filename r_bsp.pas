@@ -533,7 +533,6 @@ var
   i_line: integer;
   sub: Psubsector_t;
 begin
-  inc(sscount);
   sub := @subsectors[num];
   frontsector := sub.sector;
   count := sub.numlines;

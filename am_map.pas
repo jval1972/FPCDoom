@@ -1449,7 +1449,7 @@ begin
   end;
 end;
 
-procedure AM_drawThings(colors: integer; colorrange: integer);
+procedure AM_drawThings(colors: integer);
 var
   i: integer;
   t: Pmobj_t;
@@ -1519,7 +1519,7 @@ begin
   AM_drawWalls;
   AM_drawPlayers;
   if am_cheating = 2 then
-    AM_drawThings(THINGCOLORS, THINGRANGE);
+    AM_drawThings(THINGCOLORS);
 
   AM_drawMarks;
 end;
