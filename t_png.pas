@@ -240,8 +240,8 @@ uses
   paszlib;
 
 const
-  pngtransparentcolor: integer = $FF00FF;
-  pngtransparentcolor2: integer = $FFFF;
+  pngtransparentcolor: integer = $000000;
+  pngtransparentcolor2: integer = $000000;
   assumecommontranspantcolors: boolean = True;
 
 const

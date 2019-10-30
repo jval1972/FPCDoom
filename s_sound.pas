@@ -125,13 +125,7 @@ uses
   tables,
   doomstat;
 
-// Purpose?
 const
-  snd_prefixen: array[0..11] of char =
-    ('P', 'P', 'A', 'S', 'S', 'S', 'M', 'M', 'M', 'S', 'S', 'S' );
-
-  S_MAX_VOLUME = 127;
-
 // when to clip out sounds
 // Does not fit the large outdoor areas.
   S_CLIPPING_DIST = 1200 * $10000;
@@ -151,7 +145,6 @@ const
   NORM_PRIORITY = 64;
   NORM_SEP = 128;
 
-  S_PITCH_PERTURB = 1;
   S_STEREO_SWING = 96 * $10000;
 
 type
@@ -619,11 +612,7 @@ end;
 
 procedure S_DoChangeMusic(music: Pmusicinfo_t; looping: boolean);
 var
-  i: integer;
   namebuf: char8_t;
-  mp3filename: string;
-  aliases: TDStringList;
-  mp3error: boolean;
 begin
   // shutdown old music
   S_StopMusic;

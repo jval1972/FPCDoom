@@ -826,7 +826,6 @@ begin
 
       AM_MSGEXITED:
         begin
-          //  fprintf(stderr, "AM exited\n");
           st_gamestate := st_firstpersonstate;
         end;
     end;
@@ -1255,10 +1254,9 @@ end;
 procedure ST_doPaletteStuff;
 var
   palette: integer;
-  pal: PByteArray;
+  pal, lpal: PByteArray;
   cnt: integer;
   bzc: integer;
-  p: pointer;
 begin
   if plyr = nil then
     exit;
@@ -1302,12 +1300,11 @@ begin
   begin
     st_palette := palette;
     R_SetPalette(palette);
-    pal := PByteArray(integer(W_CacheLumpNum(lu_palette, PU_CACHE)) + palette * 768);
-    p := W_CacheLumpNum(lu_palette, PU_STATIC);
-    pal := PByteArray(integer(p) + palette * 768);
+    lpal := W_CacheLumpNum(lu_palette, PU_STATIC);
+    pal := PByteArray(integer(lpal) + palette * 768);
     I_SetPalette(pal);
     V_SetPalette(pal);
-    Z_ChangeTag(p, PU_CACHE);
+    Z_ChangeTag(lpal, PU_CACHE);
   end;
 end;
 
