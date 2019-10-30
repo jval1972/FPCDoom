@@ -174,8 +174,6 @@ var
   mus_playing: Pmusicinfo_t = nil;
   looping_playing: boolean;
 
-  nextcleanup: integer;
-
 //
 // Internals.
 //
@@ -320,8 +318,6 @@ begin
   end;
 
   S_ChangeMusic(mnum, true);
-
-  nextcleanup := 15;
 end;
 
 procedure S_StartSoundAtVolume(origin_p: pointer; sfx_id: integer; volume: integer);

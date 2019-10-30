@@ -2,7 +2,7 @@
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -725,7 +725,7 @@ type
     ZLIB: TZStream;
     {Additional info}
     Data: Pointer;
-    fStream   : TStream;
+    fStream: TStream;
   end;
 
   {Palette chunk}
@@ -989,7 +989,6 @@ var
   c: Cardinal;
   n, k: Integer;
 begin
-
   {fill the crc table}
   for n := 0 to 255 do
   begin
@@ -1056,7 +1055,8 @@ function ByteSwap(const a: integer): integer;
 asm
   bswap eax
 end;
-function ByteSwap16(inp:word): word;
+
+function ByteSwap16(inp: word): word;
 asm
   bswap eax
   shr   eax, 16
@@ -1121,7 +1121,7 @@ begin
 end;
 
 {Registering of common chunk classes}
-procedure RegisterCommonChunks;
+procedure RegisterCommonChunks(const onlyimportant: boolean);
 begin
   {Important chunks}
   RegisterChunk(TChunkIEND);
@@ -1131,11 +1131,14 @@ begin
   RegisterChunk(TChunkgAMA);
   RegisterChunk(TChunktRNS);
 
-  {Not so important chunks}
-  RegisterChunk(TChunkpHYs);
-  RegisterChunk(TChunktIME);
-  RegisterChunk(TChunktEXt);
-  RegisterChunk(TChunkzTXt);
+  if not onlyimportant then
+  begin
+    {Not so important chunks}
+    RegisterChunk(TChunkpHYs);
+    RegisterChunk(TChunktIME);
+    RegisterChunk(TChunktEXt);
+    RegisterChunk(TChunkzTXt);
+  end;
 end;
 
 {Creates a new chunk of this class}
@@ -4626,7 +4629,6 @@ begin
     Exit;
   end;
 
-
   HasIDAT := false;
   Chunks.Count := 10;
 
@@ -5247,7 +5249,6 @@ begin
   else
     {The new size provided is invalid}
     RaiseError(EInvalidNewSize)
-
 end;
 
 {Sets a pixel}
@@ -5378,7 +5379,7 @@ begin
   {crc table has not being computed yet}
   crc_table_computed := false;
   {Register the necessary chunks for png}
-  RegisterCommonChunks;
+  RegisterCommonChunks(true);
   SetFileExt('.PNG');
   png := TPngObject.Create;
 end;
@@ -5500,5 +5501,4 @@ begin
 end;
 
 end.
-
 
