@@ -2,7 +2,7 @@
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -129,14 +129,12 @@ const
 // when to clip out sounds
 // Does not fit the large outdoor areas.
   S_CLIPPING_DIST = 1200 * $10000;
-//  S_CLIPPING_DIST = 2000 * $10000;
 
 // Distance tp origin when sounds should be maxed out.
 // This should relate to movement clipping resolution
 // (see BLOCKMAP handling).
 // Originally: (200*0x10000).
   S_CLOSE_DIST = 160 * $10000;
-//  S_CLOSE_DIST = 200 * $10000;
 
   S_ATTENUATOR = (S_CLIPPING_DIST - S_CLOSE_DIST) div FRACUNIT;
 
