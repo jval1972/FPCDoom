@@ -68,7 +68,6 @@ procedure C_UnknowCommandMsg;
 implementation
 
 uses
-  c_con,
   i_system;
 
 const

@@ -209,7 +209,7 @@ begin
       MidiFileNames.Delete(MidiFileNames.IndexOf(MidiFile))
     else
     begin
-      for i := 0 to MidiFileNames.Count - 1 do
+      for i := MidiFileNames.Count - 1 downto 0 do
         if strupper(MidiFileNames[i]) = strupper(MidiFile) then
         begin
           MidiFileNames.Delete(i);

@@ -2062,11 +2062,15 @@ end;
 const
   DEMOHDR: integer = $4F4D4544; // JVAL: DEMO in hex
 
+var
+  demoversion: byte;
+
 procedure G_BeginRecording;
 var
   i: integer;
 begin
   demo_p := demobuffer;
+  demoversion := VERSION;
 
   PInteger(demo_p)^ := DEMOHDR;
   demo_p := @demo_p[4];
@@ -2203,9 +2207,6 @@ begin
   if G_DeferedPlayDemo(name) then
     C_ExecuteCmd('closeconsole', '1');
 end;
-
-var
-  demoversion: byte;
 
 procedure G_DoPlayDemo;
 var

@@ -211,7 +211,6 @@ var
   f_w: integer;
   f_h: integer;
 
-  lightlev: integer;      // used for funky strobing effect
   fb: PByteArray;         // pseudo-frame buffer
   fb32: PLongWordArray;   // pseudo-frame buffer
   amclock: integer;
@@ -534,7 +533,6 @@ begin
 
   f_oldloc.x := MAXINT;
   amclock := 0;
-  lightlev := 0;
 
   m_paninc.x := 0;
   m_paninc.y := 0;
@@ -890,28 +888,6 @@ begin
   end;
 end;
 
-//
-//
-//
-const
-  NUMLITELEVELS = 8;
-
-var
-  nexttic: integer = 0;
-  litelevels: array[0..NUMLITELEVELS - 1] of integer = (0, 4, 7, 10, 12, 14, 15, 15);
-  litelevelscnt: integer = 0;
-
-procedure AM_updateLightLev;
-begin
-  // Change light level
-  if amclock > nexttic then
-  begin
-    lightlev := litelevels[litelevelscnt];
-    litelevelscnt := (litelevelscnt + 1) mod NUMLITELEVELS;
-    nexttic := amclock + 6 - (amclock mod 6);
-  end;
-end;
-
 procedure AM_Ticker;
 begin
   if amstate = am_inactive then
@@ -929,9 +905,6 @@ begin
   // Change x,y location
   if (m_paninc.x <> 0) or (m_paninc.y <> 0) then
     AM_changeWindowLoc;
-
-    // Update light level
-    // AM_updateLightLev();
 
 end;
 
@@ -1310,7 +1283,7 @@ begin
       end;
       if pl.backsector = nil then
       begin
-        AM_drawMline(@l, WALLCOLORS + lightlev);
+        AM_drawMline(@l, WALLCOLORS);
       end
       else
       begin
@@ -1321,21 +1294,21 @@ begin
         else if pl.flags and ML_SECRET <> 0 then // secret door
         begin
           if am_cheating <> 0 then
-            AM_drawMline(@l, SECRETWALLCOLORS + lightlev)
+            AM_drawMline(@l, SECRETWALLCOLORS)
           else
-            AM_drawMline(@l, WALLCOLORS + lightlev);
+            AM_drawMline(@l, WALLCOLORS);
         end
         else if pl.backsector.floorheight <> pl.frontsector.floorheight then
         begin
-          AM_drawMline(@l, FDWALLCOLORS + lightlev); // floor level change
+          AM_drawMline(@l, FDWALLCOLORS); // floor level change
         end
         else if pl.backsector.ceilingheight <> pl.frontsector.ceilingheight then
         begin
-          AM_drawMline(@l, CDWALLCOLORS + lightlev); // ceiling level change
+          AM_drawMline(@l, CDWALLCOLORS); // ceiling level change
         end
         else if am_cheating <> 0 then
         begin
-          AM_drawMline(@l, TSWALLCOLORS + lightlev);
+          AM_drawMline(@l, TSWALLCOLORS);
         end;
       end;
     end
@@ -1468,7 +1441,7 @@ begin
 
       AM_drawLineCharacter
         (@thintriangle_guy, NUMTHINTRIANGLEGUYLINES,
-        16 * FRACUNIT, t.angle, colors + lightlev, x, y);
+        16 * FRACUNIT, t.angle, colors, x, y);
       t := t.snext;
     end;
   end;

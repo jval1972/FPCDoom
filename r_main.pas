@@ -157,7 +157,7 @@ var
 
   dviewsin: double;
   dviewcos: double;
-  relativeaspect: Double;
+  planerelativeaspect: Double;
 
   projection: fixed_t;
   projectiony: fixed_t; // JVAL For correct aspect
@@ -1190,7 +1190,7 @@ begin
   dviewsin := Sin(viewangle / $FFFFFFFF * 2 * pi);
   dviewcos := Cos(viewangle / $FFFFFFFF * 2 * pi);
   // JVAL: Widescreen support
-  relativeaspect := 320 / 200 * 65536.0 * SCREENHEIGHT / SCREENWIDTH * monitor_relative_aspect;
+  planerelativeaspect := 320 / 200 * SCREENHEIGHT / SCREENWIDTH * monitor_relative_aspect;
 
   fixedcolormapnum := player.fixedcolormap;
   if fixedcolormapnum <> 0 then
