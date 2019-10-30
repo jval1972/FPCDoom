@@ -97,7 +97,6 @@ type
   conline_t = record
     line: string;
   end;
-  Pconline_t = ^conline_t;
 
   consolestate_t = (
     CST_UP,
