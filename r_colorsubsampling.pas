@@ -20,9 +20,6 @@
 //  Foundation, inc., 59 Temple Place - Suite 330, Boston, MA
 //  02111-1307, USA.
 //
-// DESCRIPTION:
-//   Menu widget stuff, episode selection and such.
-//
 //------------------------------------------------------------------------------
 //  E-Mail: jimmyvalavanis@yahoo.gr
 //  Site  : https://sourceforge.net/projects/fpcdoom/

@@ -104,7 +104,7 @@ type
   Plightmapbuffer_t = ^lightmapbuffer_t;
 
 const
-  LM_STOREBITS = 5;
+  LM_STOREBITS = 6;
   LM_RESTOREBITS = FRACBITS - LM_STOREBITS;
 
 var
@@ -116,7 +116,6 @@ var
   ylookuplm: array[0..MAXHEIGHT] of Plightmapbuffer_t;
   LMWIDTH, LMHEIGHT: integer;
   lightmapactive: boolean = false;
-  oldlmaccuracymode: integer = 0;
   lm_spartspan: integer = MAXWIDTH + 1;
   lm_stopspan: integer = -1;
 
@@ -160,7 +159,6 @@ var
   seg: Pseg_t;
   rendertype: LongWord;
   renderskip: boolean;
-  r_add, g_add, b_add: LongWord;
 begin
   if parms.dl_x mod LM_ACCURACY <> LM_MOD then
     Exit;
@@ -222,17 +220,12 @@ begin
             dfactor := FRACUNIT - FixedDiv(dfactor, dbdmax);
           if dfactor > 0 then
           begin
-            factor := FixedMul(dls, dfactor);
-            r_add := (parms.r * factor) shr LM_STOREBITS;
-            g_add := (parms.g * factor) shr LM_STOREBITS;
-            b_add := (parms.b * factor) shr LM_STOREBITS;
-
+            factor := FixedMul(dls, dfactor) shr LM_STOREBITS;
             li := R_LightmapBufferAt(parms.dl_x, y);
-            li.r := li.r + r_add;
-            li.g := li.g + g_add;
-            li.b := li.b + b_add;
+            li.r := li.r + parms.r * factor;
+            li.g := li.g + parms.g * factor;
+            li.b := li.b + parms.b * factor;
             inc(li.numitems);
-
           end;
         end;
       end;
@@ -245,10 +238,10 @@ procedure R_CheckLightmapParams;
 begin
   if (lightmapaccuracymode < 0) or (lightmapaccuracymode >= NUMLIGHTMAPACCURACYMODES) then
     lightmapaccuracymode := 0;
-  if (lightmapcolorintensity < 32) or (lightmapcolorintensity > 160) then
-    lightmapcolorintensity := 64;
-  if (lightwidthfactor < 0) or (lightwidthfactor > 10) then
-    lightwidthfactor := 5;
+  if (lightmapcolorintensity < MINLMCOLORSENSITIVITY) or (lightmapcolorintensity > MAXLMCOLORSENSITIVITY) then
+    lightmapcolorintensity := DEFLMCOLORSENSITIVITY;
+  if (lightwidthfactor < MINLIGHTWIDTHFACTOR) or (lightwidthfactor > MAXLIGHTWIDTHFACTOR) then
+    lightwidthfactor := DEFLIGHTWIDTHFACTOR;
 end;
 
 procedure R_InitLightmap;
@@ -266,9 +259,32 @@ begin
   memfree(lightmapbuffer, (LMWIDTH + 1) * (LMHEIGHT + 1) * SizeOf(lightmapitem_t));
 end;
 
+const
+  LM_INTENSITYPRECALCSIZE = FRACUNIT div MAXLMCOLORSENSITIVITY;
+
 var
-  llastviewwindowy: Integer = -1;
-  llastviewheight: Integer = -1;
+  lmintensitytable: array[0..LM_INTENSITYPRECALCSIZE - 1] of byte;
+
+procedure R_ComputeLightmapIntensityTable;
+var
+  i: integer;
+  x: LongWord;
+begin
+  for i := 0 to LM_INTENSITYPRECALCSIZE - 1 do
+  begin
+    x := (i * lightmapcolorintensity) div 256;
+    if x < 255 then
+      lmintensitytable[i] := x
+    else
+      lmintensitytable[i] := 255;
+  end;
+end;
+
+var
+  llastviewwindowy: integer = -1;
+  llastviewheight: integer = -1;
+  llastaccuracymode: integer = -1;
+  llastcolorintensity: integer = -1;
 
   // Called in each render tic before we start lightmap
 procedure R_StartLightMap;
@@ -280,14 +296,20 @@ begin
 
   R_CheckLightmapParams;
 
+  if llastcolorintensity <> lightmapcolorintensity then
+  begin
+    llastcolorintensity := lightmapcolorintensity;
+    R_ComputeLightmapIntensityTable;
+  end;
+
   lm_spartspan := MAXWIDTH + 1;
   lm_stopspan := -1;
-  if (llastviewwindowy <> viewwindowy) or (llastviewheight <> viewheight) or (oldlmaccuracymode <> lightmapaccuracymode) then
+  if (llastviewwindowy <> viewwindowy) or (llastviewheight <> viewheight) or (llastaccuracymode <> lightmapaccuracymode) then
   begin
-    if oldlmaccuracymode <> lightmapaccuracymode then
+    if llastaccuracymode <> lightmapaccuracymode then
     begin
       lightmapaccuracymode := lightmapaccuracymode mod NUMLIGHTMAPACCURACYMODES;
-      oldlmaccuracymode := lightmapaccuracymode;
+      llastaccuracymode := lightmapaccuracymode;
       case lightmapaccuracymode of
         0: LM_ACCURACY := 5;
         1: LM_ACCURACY := 3;
@@ -329,12 +351,12 @@ begin
   begin
     if li.numitems > 0 then
     begin
-      r := (((li.r div (LM_ACCURACY)) shr LM_RESTOREBITS) * lightmapcolorintensity) div 256;
-      if r > 255 then r := 255;
-      g := (((li.g div (LM_ACCURACY)) shr LM_RESTOREBITS) * lightmapcolorintensity) div 256;
-      if g > 255 then g := 255;
-      b := (((li.b div (LM_ACCURACY)) shr LM_RESTOREBITS) * lightmapcolorintensity) div 256;
-      if b > 255 then b := 255;
+      r := (li.r div LM_ACCURACY) shr LM_RESTOREBITS;
+      if r < LM_INTENSITYPRECALCSIZE then r := lmintensitytable[r] else r := 255;
+      g := (li.g div LM_ACCURACY) shr LM_RESTOREBITS;
+      if g < LM_INTENSITYPRECALCSIZE then g := lmintensitytable[g] else g := 255;
+      b := (li.b div LM_ACCURACY) shr LM_RESTOREBITS;
+      if b < LM_INTENSITYPRECALCSIZE then b := lmintensitytable[b] else b := 255;
       color8 := R_FastApproxColorIndex(r, g, b);
       for i := 0 to LM_ACCURACY - 1 do
       begin
@@ -362,12 +384,12 @@ begin
   begin
     if li.numitems > 0 then
     begin
-      r := (((li.r div (LM_ACCURACY)) shr LM_RESTOREBITS) * lightmapcolorintensity) div 256;
-      if r > 255 then r := 255;
-      g := (((li.g div (LM_ACCURACY)) shr LM_RESTOREBITS) * lightmapcolorintensity) div 256;
-      if g > 255 then g := 255;
-      b := (((li.b div (LM_ACCURACY)) shr LM_RESTOREBITS) * lightmapcolorintensity) div 256;
-      if b > 255 then b := 255;
+      r := (li.r div LM_ACCURACY) shr LM_RESTOREBITS;
+      if r < LM_INTENSITYPRECALCSIZE then r := lmintensitytable[r] else r := 255;
+      g := (li.g div LM_ACCURACY) shr LM_RESTOREBITS;
+      if g < LM_INTENSITYPRECALCSIZE then g := lmintensitytable[g] else g := 255;
+      b := (li.b div LM_ACCURACY) shr LM_RESTOREBITS;
+      if b < LM_INTENSITYPRECALCSIZE then b := lmintensitytable[b] else b := 255;
       for i := 0 to LM_ACCURACY - 1 do
       begin
         destl^ := R_ColorLightAdd(destl^, r, g, b);

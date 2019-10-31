@@ -1823,25 +1823,25 @@ const
     ('LOW', 'MEDIUM', 'HIGH', 'VERY HIGH & VERY SLOW');
 
 var
-  lightmapcolorintensityidx: integer = 5;
+  lightmapcolorintensityidx: integer = DEFLMCOLORSENSITIVITY div 8;
 
 procedure M_ChangeLightmapColorIntensity(choice: integer);
 begin
   case choice of
     0: if lightmapcolorintensityidx > 0 then
          dec(lightmapcolorintensityidx);
-    1: if lightmapcolorintensityidx < 16 then
+    1: if lightmapcolorintensityidx < (MAXLMCOLORSENSITIVITY - MINLMCOLORSENSITIVITY) div 8 then
          inc(lightmapcolorintensityidx);
   end;
-  lightmapcolorintensity := 32 + lightmapcolorintensityidx * 8;
+  lightmapcolorintensity := MINLMCOLORSENSITIVITY + lightmapcolorintensityidx * 8;
 end;
 
 procedure M_ChangeLightmapLightWidthFactor(choice: integer);
 begin
   case choice of
-    0: if lightwidthfactor > 0 then
+    0: if lightwidthfactor > MINLIGHTWIDTHFACTOR then
          dec(lightwidthfactor);
-    1: if lightwidthfactor < 10 then
+    1: if lightwidthfactor < MAXLIGHTWIDTHFACTOR then
          inc(lightwidthfactor);
   end;
 end;
@@ -1849,8 +1849,8 @@ end;
 procedure M_LightmapDefaults(choice: integer);
 begin
   lightmapaccuracymode := 0;
-  lightmapcolorintensity := 64;
-  lightwidthfactor := 5;
+  lightmapcolorintensity := DEFLMCOLORSENSITIVITY;
+  lightwidthfactor := DEFLIGHTWIDTHFACTOR;
 end;
 
 procedure M_DrawOptionsLightmap;
@@ -1867,11 +1867,11 @@ begin
   lightmapcolorintensityidx := (lightmapcolorintensity - 32) div 8;
   offs := M_StringWidth(OptionsLightmapMenu[Ord(ol_colorintensity)].name + ' ');
   M_DrawThermo(
-    (OptionsLightmapDef.x + offs) and not 7, OptionsLightmapDef.y + OptionsLightmapDef.itemheight * Ord(ol_colorintensity), 17, lightmapcolorintensityidx);
+    (OptionsLightmapDef.x + offs) and not 7, OptionsLightmapDef.y + OptionsLightmapDef.itemheight * Ord(ol_colorintensity), (MAXLMCOLORSENSITIVITY - MINLMCOLORSENSITIVITY) div 8 + 1, lightmapcolorintensityidx);
 
   offs := M_StringWidth(OptionsLightmapMenu[Ord(ol_lightwidthfactor)].name + ' ');
   M_DrawThermo(
-    (OptionsLightmapDef.x + offs) and not 7, OptionsLightmapDef.y + OptionsLightmapDef.itemheight * Ord(ol_lightwidthfactor), 11, lightwidthfactor);
+    (OptionsLightmapDef.x + offs) and not 7, OptionsLightmapDef.y + OptionsLightmapDef.itemheight * Ord(ol_lightwidthfactor), MAXLIGHTWIDTHFACTOR + 1, lightwidthfactor);
 end;
 
 procedure M_SwitchMirrorMode(choice: integer);

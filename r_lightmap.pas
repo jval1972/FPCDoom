@@ -56,6 +56,14 @@ var
   lightwidthfactor: integer = 5;
 
 const
+  MINLIGHTWIDTHFACTOR = 0;
+  DEFLIGHTWIDTHFACTOR = 5;
+  MAXLIGHTWIDTHFACTOR = 10;
+  MINLMCOLORSENSITIVITY = 32;
+  DEFLMCOLORSENSITIVITY = 64;
+  MAXLMCOLORSENSITIVITY = 160;
+
+const
   NUMLIGHTMAPACCURACYMODES = 4;
   MAXLIGHTMAPACCURACYMODE = NUMLIGHTMAPACCURACYMODES - 1;
 
@@ -1031,7 +1039,7 @@ var
   bottomscreen: int64;
 begin
   vis := psl.vis;
-  w := 2 * psl.l.radius * lightwidthfactor / 5;
+  w := 2 * psl.l.radius * lightwidthfactor / DEFLIGHTWIDTHFACTOR;
   frac := trunc(vis.startfrac * LIGHTBOOSTSIZE / w);
   fracstep := trunc(vis.xiscale * LIGHTBOOSTSIZE / w);
   spryscale := trunc(vis.scale * w / LIGHTBOOSTSIZE);
