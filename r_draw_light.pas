@@ -56,6 +56,8 @@ type
   end;
   Plightparams_t = ^lightparams_t;
 
+function R_ValidLightColumn(const x: integer): boolean;
+
 // Draw column to the lightmap
 procedure R_DrawColumnLightmap(const parms: Plightparams_t);
 
@@ -69,6 +71,8 @@ procedure R_ShutDownLightmap;
 procedure R_StartLightmap;
 
 procedure R_StopLightmap;
+
+procedure R_CalcLightmap;
 
 // Flash one lightmap span (8 bit)
 procedure R_FlashSpanLightmap8(const pls_y: PInteger);
@@ -86,7 +90,7 @@ uses
   p_setup,
   r_defs,
   r_draw,
-  r_depthbuffer,
+  r_zbuffer,
   r_lightmap,
   r_main,
   r_trans8,
@@ -104,16 +108,17 @@ type
   Plightmapbuffer_t = ^lightmapbuffer_t;
 
 const
-  LM_STOREBITS = 6;
-  LM_RESTOREBITS = FRACBITS - LM_STOREBITS;
+  LM_STORESHIFT = 5;
+  LM_RESTORESHIFT = FRACBITS - LM_STORESHIFT;
 
 var
-  LM_ACCURACY: integer = 5;
-  LM_MOD: integer = 2;
+  LM_YACCURACY: integer = 5;
+  LM_YMOD: integer = 2;
 
 var
   lightmapbuffer: Plightmapbuffer_t;
   ylookuplm: array[0..MAXHEIGHT] of Plightmapbuffer_t;
+  xcolumnsteplm: array[0..MAXWIDTH] of integer;
   LMWIDTH, LMHEIGHT: integer;
   lightmapactive: boolean = false;
   lm_spartspan: integer = MAXWIDTH + 1;
@@ -121,7 +126,7 @@ var
 
 function LM_Screen2LMx(const screenx: integer): integer; inline;
 begin
-  result := (screenx + LM_MOD) div LM_ACCURACY;
+  result := screenx;
   if result < 0 then
     result := 0
   else if result >= LMWIDTH then
@@ -130,7 +135,7 @@ end;
 
 function LM_Screen2LMy(const screeny: integer): integer; inline;
 begin
-  result := (screeny + LM_MOD) div LM_ACCURACY;
+  result := (screeny + LM_YMOD) div LM_YACCURACY;
   if result < 0 then
     result := 0
   else if result >= LMHEIGHT then
@@ -142,12 +147,17 @@ begin
   result := Plightmapitem_t(@((ylookuplm[LM_Screen2LMy(y)]^)[columnofs[LM_Screen2LMx(x)]]));
 end;
 
+function R_ValidLightColumn(const x: integer): boolean;
+begin
+  result := xcolumnsteplm[x] > 0;
+end;
+
 procedure R_DrawColumnLightmap(const parms: Plightparams_t);
 var
   count, y: integer;
   frac: fixed_t;
   fracstep: fixed_t;
-  db: Pdepthbufferitem_t;
+  db: Pzbufferitem_t;
   depth: LongWord;
   dbmin, dbmax: LongWord;
   dbdmin, dbdmax: LongWord;
@@ -158,10 +168,11 @@ var
   dls: fixed_t;
   seg: Pseg_t;
   rendertype: LongWord;
-  renderskip: boolean;
+  skip: boolean;
+  sameseg: boolean;
 begin
-  if parms.dl_x mod LM_ACCURACY <> LM_MOD then
-    Exit;
+  if xcolumnsteplm[parms.dl_x] <= 0 then
+    exit;
 
   count := parms.dl_yh - parms.dl_yl;
 
@@ -178,7 +189,9 @@ begin
   scale := parms.dl_scale;
   seg := nil;
   rendertype := 0;
-  renderskip := false;
+  dfactor := 0;
+  skip := false;
+  sameseg := false;
 
   if parms.dl_yl < lm_spartspan then
     lm_spartspan := parms.dl_yl;
@@ -187,45 +200,51 @@ begin
 
   for y := parms.dl_yl to parms.dl_yh do
   begin
-    dls := parms.dl_source32[(LongWord(frac) shr FRACBITS) and 127];
-    if dls <> 0 then
+    if y mod LM_YACCURACY = LM_YMOD then
     begin
-      db := R_DepthBufferAt(parms.dl_x, y);
-      if (seg <> db.seg) or (rendertype <> db.rendertype) then
+      dls := parms.dl_source32[(LongWord(frac) shr FRACBITS) and 127];
+      if dls <> 0 then
       begin
-        seg := db.seg;
-        rendertype := db.rendertype;
-        if rendertype = RIT_SPRITE then
-          renderskip := true // we do not cast lights to sprites (why ?)
-        else if seg <> nil then
+        db := R_ZBufferAt(parms.dl_x, y);
+        if ((seg <> db.seg) or (rendertype <> db.rendertype)) and (db.depth >= dbmin) and (db.depth <= dbmax) then
         begin
-          if rendertype = RIT_MASKEDWALL then
-            renderskip := R_PointOnSegSide(parms.lightsourcex, parms.lightsourcey, seg) <> R_PointOnSegSide(viewx, viewy, seg)
-          else
-            renderskip := R_PointOnSegSide(parms.lightsourcex, parms.lightsourcey, seg);
-        end
-        else
-          renderskip := false; // we always draw light on spans, wrong! ?
-      end;
-      if not renderskip then
-      begin
-        depth := db.depth;
-        factor := 0;
-        if (depth >= dbmin) and (depth <= dbmax) then
-        begin
-          dfactor := depth - scale;
-          if dfactor < 0 then
-            dfactor := FRACUNIT - FixedDiv(-dfactor, dbdmin)
-          else
-            dfactor := FRACUNIT - FixedDiv(dfactor, dbdmax);
-          if dfactor > 0 then
+          sameseg := (seg = db.seg) and (seg <> nil);
+          seg := db.seg;
+          rendertype := db.rendertype;
+          if rendertype = RIT_SPRITE then
+            skip := true // we do not cast lights to sprites (why ?)
+          else if seg <> nil then
           begin
-            factor := FixedMul(dls, dfactor) shr LM_STOREBITS;
-            li := R_LightmapBufferAt(parms.dl_x, y);
-            li.r := li.r + parms.r * factor;
-            li.g := li.g + parms.g * factor;
-            li.b := li.b + parms.b * factor;
-            inc(li.numitems);
+            if rendertype = RIT_MASKEDWALL then
+              skip := R_PointOnSegSide(parms.lightsourcex, parms.lightsourcey, seg) <> R_PointOnSegSide(viewx, viewy, seg)
+            else
+              skip := R_PointOnSegSide(parms.lightsourcex, parms.lightsourcey, seg);
+          end
+          else
+            skip := false; // we always draw light on spans, wrong! - eg Light source below floor should not cast light
+        end;
+        if not skip then
+        begin
+          depth := db.depth;
+          if (depth >= dbmin) and (depth <= dbmax) then
+          begin
+            if not sameseg then
+            begin
+              dfactor := depth - scale;
+              if dfactor < 0 then
+                dfactor := FRACUNIT - FixedDiv(-dfactor, dbdmin)
+              else
+                dfactor := FRACUNIT - FixedDiv(dfactor, dbdmax);
+            end;
+            if dfactor > 0 then
+            begin
+              li := R_LightmapBufferAt(parms.dl_x, y);
+              factor := FixedMul(dls, dfactor);
+              li.r := li.r + (parms.r * factor) shr LM_STORESHIFT;
+              li.g := li.g + (parms.g * factor) shr LM_STORESHIFT;
+              li.b := li.b + (parms.b * factor) shr LM_STORESHIFT;
+              inc(li.numitems);
+            end;
           end;
         end;
       end;
@@ -248,8 +267,8 @@ procedure R_InitLightmap;
 begin
   R_CheckLightmapParams;
 
-  LMWIDTH := SCREENWIDTH div LM_ACCURACY;
-  LMHEIGHT := SCREENHEIGHT div LM_ACCURACY;
+  LMWIDTH := SCREENWIDTH;
+  LMHEIGHT := SCREENHEIGHT div LM_YACCURACY;
   lightmapbuffer := mallocz((LMWIDTH + 1) * (LMHEIGHT + 1) * SizeOf(lightmapitem_t));
   lightmapactive := false;
 end;
@@ -259,32 +278,10 @@ begin
   memfree(lightmapbuffer, (LMWIDTH + 1) * (LMHEIGHT + 1) * SizeOf(lightmapitem_t));
 end;
 
-const
-  LM_INTENSITYPRECALCSIZE = FRACUNIT div MAXLMCOLORSENSITIVITY;
-
 var
-  lmintensitytable: array[0..LM_INTENSITYPRECALCSIZE - 1] of byte;
-
-procedure R_ComputeLightmapIntensityTable;
-var
-  i: integer;
-  x: LongWord;
-begin
-  for i := 0 to LM_INTENSITYPRECALCSIZE - 1 do
-  begin
-    x := (i * lightmapcolorintensity) div 256;
-    if x < 255 then
-      lmintensitytable[i] := x
-    else
-      lmintensitytable[i] := 255;
-  end;
-end;
-
-var
-  llastviewwindowy: integer = -1;
+  llastviewwidth: integer = -1;
   llastviewheight: integer = -1;
   llastaccuracymode: integer = -1;
-  llastcolorintensity: integer = -1;
 
   // Called in each render tic before we start lightmap
 procedure R_StartLightMap;
@@ -296,33 +293,22 @@ begin
 
   R_CheckLightmapParams;
 
-  if llastcolorintensity <> lightmapcolorintensity then
-  begin
-    llastcolorintensity := lightmapcolorintensity;
-    R_ComputeLightmapIntensityTable;
-  end;
-
   lm_spartspan := MAXWIDTH + 1;
   lm_stopspan := -1;
-  if (llastviewwindowy <> viewwindowy) or (llastviewheight <> viewheight) or (llastaccuracymode <> lightmapaccuracymode) then
+  if (llastviewwidth <> viewwidth) or (llastviewheight <> viewheight) or (llastaccuracymode <> lightmapaccuracymode) then
   begin
     if llastaccuracymode <> lightmapaccuracymode then
     begin
       lightmapaccuracymode := lightmapaccuracymode mod NUMLIGHTMAPACCURACYMODES;
       llastaccuracymode := lightmapaccuracymode;
-      case lightmapaccuracymode of
-        0: LM_ACCURACY := 5;
-        1: LM_ACCURACY := 3;
-        2: LM_ACCURACY := 1;
-      else LM_ACCURACY := 1;
-      end;
-      LM_MOD := LM_ACCURACY div 2;
+      LM_YACCURACY := R_CalcLigmapYAccuracy;
+      LM_YMOD := LM_YACCURACY div 2;
     end;
     memfree(lightmapbuffer, (LMWIDTH + 1) * (LMHEIGHT + 1) * SizeOf(lightmapitem_t));
-    LMWIDTH := viewwidth div LM_ACCURACY;
-    LMHEIGHT := viewheight div LM_ACCURACY;
+    LMWIDTH := viewwidth;
+    LMHEIGHT := viewheight div LM_YACCURACY;
     lightmapbuffer := mallocz((LMWIDTH + 1) * (LMHEIGHT + 1) * SizeOf(lightmapitem_t));
-    llastviewwindowy := viewwindowy;
+    llastviewwidth := viewwidth;
     llastviewheight := viewheight;
     for i := 0 to LMHEIGHT do
       ylookuplm[i] := Plightmapbuffer_t(@lightmapbuffer[i * LMWIDTH]);
@@ -336,6 +322,56 @@ begin
   ZeroMemory(lightmapbuffer, (LMWIDTH + 1) * (LMHEIGHT + 1) * SizeOf(lightmapitem_t));
 end;
 
+//
+// R_CalcLightmap
+//
+// JVAL:
+//   Calculate the ranges in x/width space of lightmap accuracy
+//   depending on zbuffer content (R_ZGetCriticalX) and quality step
+//
+procedure R_CalcLightmap;
+var
+  x: integer;
+  x1: integer;
+  xstep: integer;
+begin
+  for x := 0 to LMWIDTH - LM_YACCURACY - 1 do
+  begin
+    if R_ZGetCriticalX(x) then
+      xcolumnsteplm[x] := 1
+    else
+      xcolumnsteplm[x] := 0;
+  end;
+
+  for x := LMWIDTH - LM_YACCURACY to LMWIDTH do
+    xcolumnsteplm[x] := 1;
+
+  for x := 1 to LMWIDTH - LM_YACCURACY - 1 do
+  begin
+    if xcolumnsteplm[x] = 0 then
+    begin
+      xstep := 1;
+      for x1 := x + 1 to x + LM_YACCURACY - 1 do
+      begin
+        if xcolumnsteplm[x1] = 0 then
+        begin
+          xcolumnsteplm[x1] := -1;
+          inc(xstep);
+        end
+        else
+          break;
+      end;
+      if xcolumnsteplm[x - 1] = 1 then
+      begin
+        xcolumnsteplm[x - 1] := xcolumnsteplm[x - 1] + xstep;
+        xcolumnsteplm[x] := -1;
+      end
+      else
+        xcolumnsteplm[x] := xstep;
+    end;
+  end;
+end;
+
 // Flash lightmap span to screen - 8 bit
 procedure R_FlashSpanLightmap8(const pls_y: PInteger);
 var
@@ -344,29 +380,43 @@ var
   r, g, b: LongWord;
   dest: PByte;
   color8: word;
+  nsteps: integer;
 begin
   dest := @((ylookup[pls_y^]^)[columnofs[0]]);
   li := R_LightmapBufferAt(0, pls_y^);
-  for x := 0 to LMWIDTH - 1 do
+
+  x := 0;
+  while x < LMWIDTH do
   begin
-    if li.numitems > 0 then
+    nsteps := xcolumnsteplm[x];
+    if (nsteps > 0) and (li.numitems > 0) then
     begin
-      r := (li.r div LM_ACCURACY) shr LM_RESTOREBITS;
-      if r < LM_INTENSITYPRECALCSIZE then r := lmintensitytable[r] else r := 255;
-      g := (li.g div LM_ACCURACY) shr LM_RESTOREBITS;
-      if g < LM_INTENSITYPRECALCSIZE then g := lmintensitytable[g] else g := 255;
-      b := (li.b div LM_ACCURACY) shr LM_RESTOREBITS;
-      if b < LM_INTENSITYPRECALCSIZE then b := lmintensitytable[b] else b := 255;
+      r := ((li.r shr LM_RESTORESHIFT) * lightmapcolorintensity) div 256;
+      if r > 255 then r := 255;
+      g := ((li.g shr LM_RESTORESHIFT) * lightmapcolorintensity) div 256;
+      if g > 255 then g := 255;
+      b := ((li.b shr LM_RESTORESHIFT) * lightmapcolorintensity) div 256;
+      if b > 255 then b := 255;
       color8 := R_FastApproxColorIndex(r, g, b);
-      for i := 0 to LM_ACCURACY - 1 do
+      for i := 0 to nsteps - 1 do
       begin
         dest^ := coloraddtrans8table[dest^ * 256 + color8];
         inc(dest);
       end;
     end
     else
-      inc(dest, LM_ACCURACY);
-    inc(li);
+      inc(dest, nsteps);
+
+    if nsteps > 0 then
+    begin
+      inc(x, nsteps);
+      inc(li, nsteps);
+    end
+    else
+    begin
+      inc(x);
+      inc(li);
+    end;
   end;
 end;
 
@@ -377,28 +427,43 @@ var
   li: Plightmapitem_t;
   r, g, b: LongWord;
   destl: PLongWord;
+  nsteps: integer;
 begin
   destl := @((ylookup32[pls_y^]^)[columnofs[0]]);
   li := R_LightmapBufferAt(0, pls_y^);
-  for x := 0 to LMWIDTH - 1 do
+
+  x := 0;
+  while x < LMWIDTH do
   begin
-    if li.numitems > 0 then
+    nsteps := xcolumnsteplm[x];
+    if (nsteps > 0) and (li.numitems > 0) then
     begin
-      r := (li.r div LM_ACCURACY) shr LM_RESTOREBITS;
-      if r < LM_INTENSITYPRECALCSIZE then r := lmintensitytable[r] else r := 255;
-      g := (li.g div LM_ACCURACY) shr LM_RESTOREBITS;
-      if g < LM_INTENSITYPRECALCSIZE then g := lmintensitytable[g] else g := 255;
-      b := (li.b div LM_ACCURACY) shr LM_RESTOREBITS;
-      if b < LM_INTENSITYPRECALCSIZE then b := lmintensitytable[b] else b := 255;
-      for i := 0 to LM_ACCURACY - 1 do
+      r := ((li.r shr LM_RESTORESHIFT) * lightmapcolorintensity) div 256;
+      if r > 255 then r := 255;
+      g := ((li.g shr LM_RESTORESHIFT) * lightmapcolorintensity) div 256;
+      if g > 255 then g := 255;
+      b := ((li.b shr LM_RESTORESHIFT) * lightmapcolorintensity) div 256;
+      if b > 255 then b := 255;
+      for i := 0 to nsteps - 1 do
       begin
+       // if R_ZBufferAt(x + i, pls_y^).rendertype <> RIT_SPRITE then
         destl^ := R_ColorLightAdd(destl^, r, g, b);
         inc(destl);
       end;
     end
     else
-      inc(destl, LM_ACCURACY);
-    inc(li);
+      inc(destl, nsteps);
+
+    if nsteps > 0 then
+    begin
+      inc(x, nsteps);
+      inc(li, nsteps);
+    end
+    else
+    begin
+      inc(x);
+      inc(li);
+    end;
   end;
 end;
 

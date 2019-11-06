@@ -124,7 +124,7 @@ var
   dest: PByte;
   frac: fixed_t;
   fracstep: fixed_t;
-  fraclimit: fixed_t;
+  fracstop: fixed_t;
 begin
   count := parms.dc_yh - parms.dc_yl;
 
@@ -141,12 +141,12 @@ begin
   //  which is the only mapping to be done.
   fracstep := parms.dc_iscale;
   frac := parms.dc_texturemid + (parms.dc_yl - centery) * fracstep;
-  fraclimit := frac + count * fracstep;
+  fracstop := frac + count * fracstep;
 
   // Inner loop that does the actual texture mapping,
   //  e.g. a DDA-lile scaling.
   // This is as fast as it gets.
-  while frac <= fraclimit do
+  while frac <= fracstop do
   begin
   // Re-map color indices from wall texture column
   //  using a lighting/special effects LUT.
@@ -163,7 +163,7 @@ var
   destl: PLongWord;
   frac: fixed_t;
   fracstep: fixed_t;
-  fraclimit: fixed_t;
+  fracstop: fixed_t;
   and_mask: integer;
 begin 
   count := parms.dc_yh - parms.dc_yl;
@@ -184,9 +184,9 @@ begin
   end
   else
     and_mask := 127;
-  fraclimit := frac + count * fracstep;
+  fracstop := frac + count * fracstep;
 
-  while frac <= fraclimit do
+  while frac <= fracstop do
   begin
     destl^ := R_ColorLightEx(parms.dc_source32[(LongWord(frac) shr FRACBITS) and and_mask], parms.dc_lightlevel);
     inc(destl, SCREENWIDTH);
@@ -200,7 +200,7 @@ var
   destl: PLongWord;
   frac: fixed_t;
   fracstep: fixed_t;
-  fraclimit: fixed_t;
+  fracstop: fixed_t;
 begin
   count := parms.dc_yh - parms.dc_yl;
 
@@ -211,9 +211,9 @@ begin
 
   fracstep := parms.dc_iscale;
   frac := parms.dc_texturemid + (parms.dc_yl - centery) * fracstep;
-  fraclimit := frac + count * fracstep;
+  fracstop := frac + count * fracstep;
 
-  while frac <= fraclimit do
+  while frac <= fracstop do
   begin
     destl^ := R_ColorLightEx(curpal[parms.dc_source[(LongWord(frac) shr FRACBITS) and 127]], parms.dc_lightlevel);
     inc(destl, SCREENWIDTH);
@@ -227,7 +227,7 @@ var
   destl: PLongWord;
   frac: fixed_t;
   fracstep: fixed_t;
-  fraclimit: fixed_t;
+  fracstop: fixed_t;
   and_mask: integer;
   c: LongWord;
 begin
@@ -250,8 +250,8 @@ begin
   else
     and_mask := 127;
 
-  fraclimit := frac + count * fracstep;
-  while frac <= fraclimit do
+  fracstop := frac + count * fracstep;
+  while frac <= fracstop do
   begin
     c := parms.dc_source32[(LongWord(frac) shr FRACBITS) and and_mask];
     if c <> 0 then
@@ -267,7 +267,7 @@ var
   dest: PByte;
   frac: fixed_t;
   fracstep: fixed_t;
-  fraclimit: fixed_t;
+  fracstop: fixed_t;
 begin
   count := parms.dc_yh - parms.dc_yl;
 
@@ -278,9 +278,9 @@ begin
 
   fracstep := parms.dc_iscale;
   frac := parms.dc_texturemid + (parms.dc_yl - centery) * fracstep;
-  fraclimit := frac + count * fracstep;
+  fracstop := frac + count * fracstep;
 
-  while frac <= fraclimit do
+  while frac <= fracstop do
   begin
     dest^ := parms.curtrans8table[(dest^ shl 8) + parms.dc_colormap[parms.dc_source[(LongWord(frac) shr FRACBITS) and 127]]];
     inc(dest, SCREENWIDTH);
@@ -294,7 +294,7 @@ var
   destl: PLongWord;
   frac: fixed_t;
   fracstep: fixed_t;
-  fraclimit: fixed_t;
+  fracstop: fixed_t;
 begin
   count := parms.dc_yh - parms.dc_yl;
 
@@ -305,9 +305,9 @@ begin
 
   fracstep := parms.dc_iscale;
   frac := parms.dc_texturemid + (parms.dc_yl - centery) * fracstep;
-  fraclimit := frac + fracstep * count;
+  fracstop := frac + fracstep * count;
 
-  while frac <= fraclimit do
+  while frac <= fracstop do
   begin
     destl^ := R_ColorAverage(destl^, parms.dc_colormap32[parms.dc_source[(LongWord(frac) shr FRACBITS) and 127]], parms.dc_alpha);
     inc(destl, SCREENWIDTH);
@@ -321,7 +321,7 @@ var
   dest: PByte;
   frac: fixed_t;
   fracstep: fixed_t;
-  fraclimit: fixed_t;
+  fracstop: fixed_t;
 begin
   count := parms.dc_yh - parms.dc_yl;
 
@@ -332,9 +332,9 @@ begin
 
   fracstep := parms.dc_iscale;
   frac := parms.dc_texturemid + (parms.dc_yl - centery) * fracstep;
-  fraclimit := frac + count * fracstep;
+  fracstop := frac + count * fracstep;
 
-  while frac <= fraclimit do
+  while frac <= fracstop do
   begin
     dest^ := averagetrans8table[(dest^ shl 8) + parms.dc_colormap[parms.dc_source[(LongWord(frac) shr FRACBITS) and 127]]];
     inc(dest, SCREENWIDTH);
@@ -348,7 +348,7 @@ var
   destl: PLongWord;
   frac: fixed_t;
   fracstep: fixed_t;
-  fraclimit: fixed_t;
+  fracstop: fixed_t;
 begin
   count := parms.dc_yh - parms.dc_yl;
 
@@ -359,9 +359,9 @@ begin
 
   fracstep := parms.dc_iscale;
   frac := parms.dc_texturemid + (parms.dc_yl - centery) * fracstep;
-  fraclimit := frac + count * fracstep;
+  fracstop := frac + count * fracstep;
 
-  while frac <= fraclimit do
+  while frac <= fracstop do
   begin
     destl^ := R_ColorMidAverage(destl^, parms.dc_colormap32[parms.dc_source[(LongWord(frac) shr FRACBITS) and 127]]);
     inc(destl, SCREENWIDTH);
@@ -514,7 +514,7 @@ var
   dest: PByte;
   frac: fixed_t;
   fracstep: fixed_t;
-  fraclimit: fixed_t;
+  fracstop: fixed_t;
   spot: integer;
 begin
   count := parms.dc_yh - parms.dc_yl;
@@ -526,9 +526,9 @@ begin
 
   fracstep := parms.dc_iscale;
   frac := parms.dc_texturemid + (parms.dc_yl - centery) * fracstep;
-  fraclimit := frac + count * fracstep;
+  fracstop := frac + count * fracstep;
 
-  while frac <= fraclimit do
+  while frac <= fracstop do
   begin
     // Invert Sky Texture if below horizont level
     spot := LongWord(frac) shr FRACBITS;
@@ -548,7 +548,7 @@ var
   destl: PLongWord;
   frac: fixed_t;
   fracstep: fixed_t;
-  fraclimit: fixed_t;
+  fracstop: fixed_t;
   spot: integer;
   and_mask: integer;
 begin
@@ -564,10 +564,10 @@ begin
 
   fracstep := fracstep * (1 shl parms.dc_texturefactorbits);
   frac := frac * (1 shl parms.dc_texturefactorbits);
-  fraclimit := frac + count * fracstep;
+  fracstop := frac + count * fracstep;
   and_mask := 128 * (1 shl parms.dc_texturefactorbits) - 1;
 
-  while frac <= fraclimit do
+  while frac <= fracstop do
   begin
     // Invert Sky Texture if below horizont level
     spot := LongWord(frac) shr FRACBITS;
@@ -595,7 +595,7 @@ var
   dest: PByte;
   frac: fixed_t;
   fracstep: fixed_t;
-  i: integer;
+  fracstop: fixed_t;
 begin
   count := parms.dc_yh - parms.dc_yl;
 
@@ -608,9 +608,10 @@ begin
   // Looks familiar.
   fracstep := parms.dc_iscale;
   frac := parms.dc_texturemid + (parms.dc_yl - centery) * fracstep;
+  fracstop := frac + count * fracstep;
 
   // Here we do an additional index re-mapping.
-  for i := 0 to count do
+  while frac <= fracstop do
   begin
     // Translation tables are used
     //  to map certain colorramps to other ones,
@@ -630,7 +631,7 @@ var
   destl: PLongWord;
   frac: fixed_t;
   fracstep: fixed_t;
-  i: integer;
+  fracstop: fixed_t;
 begin
   count := parms.dc_yh - parms.dc_yl;
 
@@ -643,9 +644,10 @@ begin
   // Looks familiar.
   fracstep := parms.dc_iscale;
   frac := parms.dc_texturemid + (parms.dc_yl - centery) * fracstep;
+  fracstop := frac + count * fracstep;
 
   // Here we do an additional index re-mapping.
-  for i := 0 to count do
+  while frac <= fracstop do
   begin
     // Translation tables are used
     //  to map certain colorramps to other ones,

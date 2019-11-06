@@ -41,6 +41,8 @@ procedure I_SynchronizeInput(active: boolean);
 
 procedure I_SetMouseClicks(val: integer);
 
+procedure I_IgnoreInput(const ticks: integer);
+
 var
   usedirectinput: boolean = false;
 
@@ -166,8 +168,8 @@ end;
 
 procedure I_ResetMouse;
 begin
-  mlastx := SCREENWIDTH div 2;
-  mlasty := SCREENHEIGHT div 2;
+  mlastx := WINDOWWIDTH div 2;
+  mlasty := WINDOWHEIGHT div 2;
   setcursorposfunc(mlastx, mlasty);
   mflags := 0;
 end;
@@ -550,6 +552,11 @@ begin
     else
       g_pdidKeyboard.Unacquire;
   end;
+end;
+
+procedure I_IgnoreInput(const ticks: integer);
+begin
+  ignoretics := ticks;
 end;
 
 end.

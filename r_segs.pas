@@ -73,6 +73,7 @@ uses
   r_plane,
   r_hires,
   r_draw_column,
+  r_lightmap,
   r_mirror,
   z_memory;
 
@@ -99,7 +100,7 @@ begin
   dy := seg.v2.r_y - seg.v1.r_y;
   dx1 := viewx - seg.v1.r_x;
   dy1 := viewy - seg.v1.r_y;
-  result := round((dx * dx1 + dy * dy1) * seg.inv_length);
+  result := trunc((dx * dx1 + dy * dy1) * seg.inv_length);
   if result < 0 then
     result := -result;
 end;
@@ -132,7 +133,7 @@ begin
   dy := seg.v2.r_y - seg.v1.r_y;
   dx1 := viewx - seg.v1.r_x;
   dy1 := viewy - seg.v1.r_y;
-  result := round((dy * dx1 - dx * dy1) * seg.inv_length);
+  result := trunc((dy * dx1 - dx * dy1) * seg.inv_length);
   if result < 0 then
     result := -result;
 end;
@@ -203,6 +204,7 @@ var
   use32: boolean;
   mc2height: integer;
   texturecolumn: integer;
+  flags: Longword;
 begin
   // Calculate light table.
   // Use different light tables
@@ -282,6 +284,12 @@ begin
       rcolumn.dc_lightlevel := R_GetColormapLightLevel(rcolumn.dc_colormap);
   end;
 
+  // set draw flags
+  if lightmapaccuracymode = MAXLIGHTMAPACCURACYMODE then
+    flags := RF_MASKED or RF_DEPTHBUFFERWRITE
+  else
+    flags := RF_MASKED;
+
   // draw the columns
   for i := x1 to x2 do
   begin
@@ -318,13 +326,13 @@ begin
         rcolumn.dc_mod := 0;
         rcolumn.dc_texturemod := maskedtexturecol[rcolumn.dc_x] and (DC_HIRESFACTOR - 1);
         R_GetDCs(texnum, texturecolumn);
-        R_DrawMaskedColumn32(mc2height, RF_MASKED or RF_DEPTHBUFFERWRITE);
+        R_DrawMaskedColumn32(mc2height, flags);
       end
       else
       begin
         // draw the texture
         col := Pcolumn_t(integer(R_GetColumn(texnum, texturecolumn)) - 3);
-        R_DrawMaskedColumn(col, RF_MASKED or RF_DEPTHBUFFERWRITE);
+        R_DrawMaskedColumn(col, flags);
       end;
       maskedtexturecol[rcolumn.dc_x] := MAXSHORT;
     end;
@@ -346,10 +354,10 @@ const
   WORLDBIT = 16 - HEIGHTBITS;
   WORLDUNIT = 1 shl WORLDBIT;
 
+// Find the column if we are in mirror mode
 function R_MirrorTextureColumn(const seg: Pseg_t; const tc: fixed_t): fixed_t;
 var
   offs: fixed_t;
-  dx, dy: double;
   len: integer;
 begin
   if mirrormode and MR_ENVIROMENT = 0 then
@@ -357,9 +365,6 @@ begin
   else
   begin
     offs := seg.sidedef.textureoffset;
-{    dx := seg.linedef.dx / FRACUNIT;
-    dy := seg.linedef.dy / FRACUNIT;
-    len := trunc(sqrt(dx * dx + dy * dy) * FRACUNIT);}
     len := seg.linedef.len;
     result := (len + 2 * offs) div FRACUNIT - tc;
   end;
@@ -446,7 +451,7 @@ begin
       texturecolumnhi := texturecolumn shr (FRACBITS - DC_HIRESBITS);
       texturecolumn := texturecolumn shr FRACBITS;
       // calculate lighting
-      index := _SHR(Round(rw_scale_dbl * 320 / SCREENWIDTH), LIGHTSCALESHIFT);
+      index := _SHR(trunc(rw_scale_dbl * 320 / SCREENWIDTH), LIGHTSCALESHIFT);
 
       if index >=  MAXLIGHTSCALE then
         index := MAXLIGHTSCALE - 1;
@@ -457,7 +462,7 @@ begin
         rcolumn.dc_colormap32 := R_GetColormap32(rcolumn.dc_colormap);
         if (not forcecolormaps) and (fixedcolormap = nil) then
         begin
-          index := Round(rw_scale_dbl * 320 / (1 shl (HLL_LIGHTSCALESHIFT + 2)) / SCREENWIDTH);
+          index := trunc(rw_scale_dbl * 320 / (1 shl (HLL_LIGHTSCALESHIFT + 2)) / SCREENWIDTH);
           if index >= HLL_MAXLIGHTSCALE then
             index := HLL_MAXLIGHTSCALE - 1
           else if index < 0 then
@@ -480,7 +485,7 @@ begin
       end
       else
       begin
-        rcolumn.dc_iscale := round($100000000 / rw_scale_dbl);
+        rcolumn.dc_iscale := trunc($100000000 / rw_scale_dbl);
         if rcolumn.dc_iscale > MAXINT div 2 then
           rcolumn.dc_iscale := MAXINT div 2
         else if rcolumn.dc_iscale < -MAXINT div 2 then
@@ -632,15 +637,15 @@ begin
 
   // calculate scale at both ends and step
   rw_scale_dbl := R_ScaleFromGlobalAngle_DBL(viewangle + xtoviewangle[start]);
-  rw_scale := Round(rw_scale_dbl);
+  rw_scale := trunc(rw_scale_dbl);
   pds.scale1 := rw_scale;
 
   if stop > start then
   begin
     rw_scale_dbl2 := R_ScaleFromGlobalAngle_DBL(viewangle + xtoviewangle[stop]);
     rw_scalestep_dbl := (rw_scale_dbl2 - rw_scale_dbl) / (stop - start);
-    pds.scale2 := Round(rw_scale_dbl2);
-    rw_scalestep := Round(rw_scalestep_dbl);
+    pds.scale2 := trunc(rw_scale_dbl2);
+    rw_scalestep := trunc(rw_scalestep_dbl);
     pds.scalestep := rw_scalestep;
   end
   else

@@ -624,18 +624,18 @@ const
 
 procedure D_AddSystemWAD;
 var
-  ddsyswad: string;
+  fsyswad: string;
   doomwaddir: string;
 begin
   doomwaddir := getenv('DOOMWADDIR');
   if doomwaddir = '' then
     doomwaddir := '.';
 
-  sprintf(ddsyswad, '%s\%s', [doomwaddir, SYSWAD]);
-  if fexists(ddsyswad) then
-    D_AddFile(ddsyswad)
+  sprintf(fsyswad, '%s\%s', [doomwaddir, SYSWAD]);
+  if fexists(fsyswad) then
+    D_AddFile(fsyswad)
   else
-    I_Error('D_AddSystemWAD(): System WAD %s not found.'#13#10, [ddsyswad]);
+    I_Error('D_AddSystemWAD(): System WAD %s not found.'#13#10, [fsyswad]);
 end;
 
 //
@@ -1362,14 +1362,24 @@ begin
   if (p <> 0) and (p <= myargc - 1) then
     usejoystick := true;
 
-  SCREENWIDTH := WINDOWWIDTH;
+  p := M_CheckParm('-windowwidth');
+  if (p <> 0) and (p < myargc - 1) then
+    WINDOWWIDTH := atoi(myargv[p + 1]);
+  if WINDOWWIDTH > MAXWIDTH then
+    WINDOWWIDTH := MAXWIDTH;
+
+  p := M_CheckParm('-windowheight');
+  if (p <> 0) and (p < myargc - 1) then
+    WINDOWHEIGHT := atoi(myargv[p + 1]);
+  if WINDOWHEIGHT > MAXHEIGHT then
+    WINDOWHEIGHT := MAXHEIGHT;
+
   p := M_CheckParm('-screenwidth');
   if (p <> 0) and (p < myargc - 1) then
     SCREENWIDTH := atoi(myargv[p + 1]);
   if SCREENWIDTH > MAXWIDTH then
     SCREENWIDTH := MAXWIDTH;
 
-  SCREENHEIGHT := WINDOWHEIGHT;
   p := M_CheckParm('-screenheight');
   if (p <> 0) and (p < myargc - 1) then
     SCREENHEIGHT := atoi(myargv[p + 1]);
@@ -1457,16 +1467,27 @@ begin
   if SCREENHEIGHT <= 0 then
     SCREENHEIGHT := I_ScreenHeight;
   if SCREENHEIGHT > MAXHEIGHT then
-    SCREENHEIGHT := MAXHEIGHT;
+    SCREENHEIGHT := MAXHEIGHT
+  else if SCREENHEIGHT < MINHEIGHT then
+    SCREENHEIGHT := MINHEIGHT;
 
   if SCREENWIDTH <= 0 then
     SCREENWIDTH := I_ScreenWidth;
   if SCREENWIDTH > MAXWIDTH then
-    SCREENWIDTH := MAXWIDTH;
+    SCREENWIDTH := MAXWIDTH
+  else if SCREENHEIGHT < MINHEIGHT then
+    SCREENWIDTH := MINWIDTH;
+
+  SCREENWIDTH := SCREENWIDTH and not 1;
+  SCREENHEIGHT := SCREENHEIGHT and not 1;
+
+  if SCREENWIDTH < SCREENHEIGHT then
+    SCREENWIDTH := SCREENHEIGHT;
+
+  I_RestoreWindowPos;
 
   singletics := M_CheckParm('-singletics') > 0;
 
-  I_RestoreWindowPos;
 
   nodrawers := M_CheckParm('-nodraw') <> 0;
   noblit := M_CheckParm('-noblit') <> 0;

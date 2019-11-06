@@ -330,7 +330,7 @@ end;
 
 function R_ColorLightAdd(const c1, r, g, b: LongWord): LongWord; register;
 var
-  r1, g1, b1: word;
+  r1, g1, b1: LongWord;
 begin
   b1 := c1 and $ff;
   if b > 0 then

@@ -569,6 +569,7 @@ var
 // Render item types
 //
 const
+  RIT_NONE = 0;
   RIT_SKY = 0;
   RIT_FLAT = 1;
   RIT_WALL = 2;

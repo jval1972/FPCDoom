@@ -125,6 +125,7 @@ uses
   r_colorsubsampling,
   t_main,
   z_memory,
+  v_screenresolution,
   v_video,
   w_wad,
   hu_stuff,
@@ -235,7 +236,7 @@ var
 //
 //      Menu Functions
 //
-procedure M_DrawThermo(x, y, thermWidth, thermDot: integer);
+procedure M_DrawThermo(x, y, thermWidth, thermDot: integer); overload;
 var
   xx: integer;
   i: integer;
@@ -251,6 +252,25 @@ begin
   V_DrawPatch(xx, y, SCN_TMP, 'M_THERMR', false);
 
   V_DrawPatch((x + 8) + thermDot * 8, y, SCN_TMP,
+    'M_THERMO', false);
+end;
+
+procedure M_DrawThermo(x, y, thermWidth, thermDot, numdots: integer); overload;
+var
+  xx: integer;
+  i: integer;
+begin
+  xx := x;
+  V_DrawPatch(xx, y, SCN_TMP, 'M_THERML', false);
+  xx := xx + 8;
+  for i := 0 to thermWidth - 1 do
+  begin
+    V_DrawPatch(xx, y, SCN_TMP, 'M_THERMM', false);
+    xx := xx + 8;
+  end;
+  V_DrawPatch(xx, y, SCN_TMP, 'M_THERMR', false);
+
+  V_DrawPatch((x + 8) + (thermDot * 8 * thermWidth) div numdots, y, SCN_TMP,
     'M_THERMO', false);
 end;
 
@@ -553,8 +573,6 @@ type
     messages,
     scrnsize,
     option_empty1,
-    mousesens,
-    option_empty2,
     optgen_end
   );
 
@@ -582,7 +600,11 @@ var
 // DISPLAY DETAIL MENU
 type
   optionsdisplaydetail_e = (
-    od_detaillevel,
+    odd_detaillevel,
+    odd_screensize,
+    odd_filler1,
+    odd_filler2,
+    odd_setvideomode,
     optdispdetail_end
   );
 
@@ -759,10 +781,7 @@ type
     ctrl_usemouse,
     ctrl_invertmouselook,
     ctrl_invertmouseturn,
-    cttl_mousesensitivityx,
-    cttl_empty1,
-    cttl_mousesensitivityy,
-    cttl_empty2,
+    cttl_mousesensitivity,
     ctrl_usejoystic,
     ctrl_autorun,
     ctrl_keyboardmode,
@@ -773,6 +792,28 @@ type
 var
   ControlsMenu: array[0..Ord(ctrl_end) - 1] of menuitem_t;
   ControlsDef: menu_t;
+
+type
+//
+// MOUSE SENSITIVITY MENU
+//
+  sensitivity_e = (
+    sens_mousesensitivity,
+    sens_empty1,
+    sens_empty2,
+    sens_mousesensitivityx,
+    sens_empty3,
+    sens_empty4,
+    sens_mousesensitivityy,
+    sens_empty5,
+    sens_empty6,
+    sens_end
+  );
+
+var
+  SensitivityMenu: array[0..Ord(sens_end) - 1] of menuitem_t;
+  SensitivityDef: menu_t;
+
 
 type
 //
@@ -1495,31 +1536,6 @@ begin
     M_SetKeyboardMode(2);
 end;
 
-procedure M_ChangeSensitivityX(choice: integer);
-begin
-  case choice of
-    0:
-      if mouseSensitivityX > 0 then
-        dec(mouseSensitivityX);
-    1:
-      if mouseSensitivityX < 10 then
-        inc(mouseSensitivityX);
-  end;
-end;
-
-procedure M_ChangeSensitivityY(choice: integer);
-begin
-  case choice of
-    0:
-      if mouseSensitivityY > 0 then
-        dec(mouseSensitivityY);
-    1:
-      if mouseSensitivityY < 10 then
-        inc(mouseSensitivityY);
-  end;
-end;
-
-
 procedure M_KeyBindings(choice: integer);
 begin
   M_SetupNextMenu(@KeyBindingsDef);
@@ -1528,18 +1544,9 @@ end;
 procedure M_DrawControls;
 var
   ppos: menupos_t;
-  offs: integer;
 begin
   V_DrawPatch(108, 15, SCN_TMP, 'M_OPTTTL', false);
   V_DrawPatch(20, 48, SCN_TMP, 'MENU_CON', false);
-
-  offs := M_StringWidth(ControlsMenu[Ord(cttl_mousesensitivityx)].name + ' ');
-  M_DrawThermo(
-    (ControlsDef.x + offs) and not 7, ControlsDef.y + ControlsDef.itemheight * Ord(cttl_mousesensitivityx), 10, mouseSensitivityX);
-
-  offs := M_StringWidth(ControlsMenu[Ord(cttl_mousesensitivityy)].name + ' ');
-  M_DrawThermo(
-    (ControlsDef.x + offs) and not 7, ControlsDef.y + ControlsDef.itemheight * Ord(cttl_mousesensitivityy), 10, mouseSensitivityY);
 
   ppos := M_WriteText(ControlsDef.x, ControlsDef.y + ControlsDef.itemheight * Ord(ctrl_keyboardmode), 'Keyboard movement: ');
   M_WriteColorText(ppos.x, ppos.y, mkeyboardmodes[M_GetKeyboardMode], 'CRGRAY');
@@ -1572,6 +1579,11 @@ begin
   M_SetupNextMenu(@ControlsDef);
 end;
 
+procedure M_OptionsSensitivity(choice: integer);
+begin
+  M_SetupNextMenu(@SensitivityDef);
+end;
+
 procedure M_OptionsCompatibility(choice: integer);
 begin
   M_SetupNextMenu(@CompatibilityDef);
@@ -1592,8 +1604,16 @@ begin
   M_SetupNextMenu(@OptionsDisplayDef);
 end;
 
+var
+  mdisplaymode_idx: integer = 0;
+
 procedure M_OptionsDisplayDetail(choice: integer);
+var
+  idx: integer;
 begin
+  idx := I_NearestDisplayModeIndex(SCREENWIDTH, SCREENHEIGHT);
+  if idx >= 0 then
+    mdisplaymode_idx := idx;
   M_SetupNextMenu(@OptionsDisplayDetailDef);
 end;
 
@@ -1754,10 +1774,22 @@ begin
     msgNames[showMessages], false);
 
   M_DrawThermo(
-    OptionsGeneralDef.x, OptionsGeneralDef.y + OptionsGeneralDef.itemheight * (Ord(mousesens) + 1), 20, mouseSensitivity);
+    OptionsGeneralDef.x, OptionsGeneralDef.y + OptionsGeneralDef.itemheight * (Ord(scrnsize) + 1), 9, m_screensize);
+end;
+
+procedure M_DrawSensitivity;
+begin
+  V_DrawPatch(108, 15, SCN_TMP, 'M_OPTTTL', false);
+  V_DrawPatch(20, 48, SCN_TMP, 'M_MSENS', false);
 
   M_DrawThermo(
-    OptionsGeneralDef.x, OptionsGeneralDef.y + OptionsGeneralDef.itemheight * (Ord(scrnsize) + 1), 9, m_screensize);
+    SensitivityDef.x, SensitivityDef.y + SensitivityDef.itemheight * (Ord(sens_mousesensitivity) + 1), 20, mouseSensitivity);
+
+  M_DrawThermo(
+    SensitivityDef.x, SensitivityDef.y + SensitivityDef.itemheight * (Ord(sens_mousesensitivityx) + 1), 11, mouseSensitivityX);
+
+  M_DrawThermo(
+    SensitivityDef.x, SensitivityDef.y + SensitivityDef.itemheight * (Ord(sens_mousesensitivityy) + 1), 11, mouseSensitivityY);
 end;
 
 procedure M_DrawDisplayOptions;
@@ -1782,9 +1814,26 @@ begin
   M_DrawDisplayOptions;
   V_DrawPatch(20, 48, SCN_TMP, 'MENU_DET', false);
 
-  ppos := M_WriteText(OptionsDisplayDetailDef.x, OptionsDisplayDetailDef.y + OptionsDisplayDetailDef.itemheight * Ord(od_detaillevel), 'Detail level: ');
-  sprintf(stmp, '%s (%dx%dx%s)', [detailStrings[detailLevel], WINDOWWIDTH, WINDOWHEIGHT, colordepths[videomode = vm32bit]]);
+  ppos := M_WriteText(OptionsDisplayDetailDef.x, OptionsDisplayDetailDef.y + OptionsDisplayDetailDef.itemheight * Ord(odd_detaillevel), 'Detail level: ');
+  sprintf(stmp, '%s (%s)', [detailStrings[detailLevel], colordepths[videomode = vm32bit]]);
   M_WriteColorText(ppos.x, ppos.y, stmp, 'CRGRAY');
+
+  if mdisplaymode_idx < 0 then
+    mdisplaymode_idx := 0
+  else if mdisplaymode_idx >= numdisplaymodes then
+    mdisplaymode_idx := numdisplaymodes - 1;
+  ppos := M_WriteText(OptionsDisplayDetailDef.x, OptionsDisplayDetailDef.y + OptionsDisplayDetailDef.itemheight * Ord(odd_screensize), 'Screen Size: ');
+  sprintf(stmp, '(%dx%d)', [displaymodes[mdisplaymode_idx].width, displaymodes[mdisplaymode_idx].height]);
+  M_WriteColorText(ppos.x, ppos.y, stmp, 'CRGRAY');
+
+  M_DrawThermo(
+    OptionsDisplayDetailDef.x, OptionsDisplayDetailDef.y + OptionsDisplayDetailDef.itemheight * (Ord(odd_screensize) + 1), 30, mdisplaymode_idx, numdisplaymodes);
+
+  if (displaymodes[mdisplaymode_idx].width = SCREENWIDTH) and (displaymodes[mdisplaymode_idx].height = SCREENHEIGHT) then
+    stmp := 'No change to screen size'
+  else
+    sprintf(stmp, 'Select to set screen size to %dx%d...', [displaymodes[mdisplaymode_idx].width, displaymodes[mdisplaymode_idx].height]);
+  M_WriteText(OptionsDisplayDetailDef.x, OptionsDisplayDetailDef.y + OptionsDisplayDetailDef.itemheight * Ord(odd_setvideomode), stmp);
 end;
 
 procedure M_SwitchShadeMode(choice: integer);
@@ -2084,6 +2133,31 @@ begin
   end;
 end;
 
+procedure M_ChangeSensitivityX(choice: integer);
+begin
+  case choice of
+    0:
+      if mouseSensitivityX > 0 then
+        dec(mouseSensitivityX);
+    1:
+      if mouseSensitivityX < 10 then
+        inc(mouseSensitivityX);
+  end;
+end;
+
+procedure M_ChangeSensitivityY(choice: integer);
+begin
+  case choice of
+    0:
+      if mouseSensitivityY > 0 then
+        dec(mouseSensitivityY);
+    1:
+      if mouseSensitivityY < 10 then
+        inc(mouseSensitivityY);
+  end;
+end;
+
+
 procedure M_ChangeDetail(choice: integer);
 begin
   detailLevel := (detailLevel + 1) mod DL_NUMRESOLUTIONS;
@@ -2097,6 +2171,28 @@ begin
       players[consoleplayer]._message := DETAILNORM;
   end;
 
+end;
+
+procedure M_ChangeScreenSize(choice: integer);
+begin
+  case choice of
+    0:
+      if mdisplaymode_idx > 0 then
+        dec(mdisplaymode_idx);
+    1:
+      if mdisplaymode_idx < numdisplaymodes - 1 then
+        inc(mdisplaymode_idx);
+  end;
+end;
+
+procedure M_ApplyScreenSize(choice: integer);
+begin
+  if mdisplaymode_idx < 0 then
+    mdisplaymode_idx := 0
+  else if mdisplaymode_idx >= numdisplaymodes then
+    mdisplaymode_idx := numdisplaymodes - 1;
+
+  V_SetScreenResolution(displaymodes[mdisplaymode_idx].width, displaymodes[mdisplaymode_idx].height);
 end;
 
 procedure M_ChangeFlatFiltering(choice: integer);
@@ -2474,6 +2570,7 @@ begin
           if m_altdown then
           begin
             I_ChangeFullScreen;
+            mousewait := I_GetTime + 15;
             result := true;
             exit;
           end;
@@ -2548,7 +2645,7 @@ begin
           S_StartSound(nil, Ord(sfx_stnmov));
           currentMenu.menuitems[itemOn].routine(0);
         end
-        else if currentMenu.leftMenu <> nil then
+        else if (currentMenu.leftMenu <> nil) and not (ev._type in [ev_mouse, ev_joystick]) then
         begin
           currentMenu.lastOn := itemOn;
           currentMenu := currentMenu.leftMenu;
@@ -2566,7 +2663,7 @@ begin
           S_StartSound(nil, Ord(sfx_stnmov));
           currentMenu.menuitems[itemOn].routine(1);
         end
-        else if currentMenu.rightMenu <> nil then
+        else if (currentMenu.rightMenu <> nil) and not (ev._type in [ev_mouse, ev_joystick]) then
         begin
           currentMenu.lastOn := itemOn;
           currentMenu := currentMenu.rightMenu;
@@ -3283,22 +3380,6 @@ begin
   pmi.pBoolVal := nil;
   pmi.alphaKey := #0;
 
-  inc(pmi);
-  pmi.status := 2;
-  pmi.name := 'M_MSENS';
-  pmi.cmd := '';
-  pmi.routine := @M_ChangeSensitivity;
-  pmi.pBoolVal := nil;
-  pmi.alphaKey := 'm';
-
-  inc(pmi);
-  pmi.status := -1;
-  pmi.name := '';
-  pmi.cmd := '';
-  pmi.routine := nil;
-  pmi.pBoolVal := nil;
-  pmi.alphaKey := #0;
-
 ////////////////////////////////////////////////////////////////////////////////
 //OptionsGeneralDef
   OptionsGeneralDef.title := 'General';
@@ -3389,7 +3470,39 @@ begin
   pmi.cmd := '';
   pmi.routine := @M_ChangeDetail;
   pmi.pBoolVal := nil;
-  pmi.alphaKey := 'd';
+  pmi.alphaKey := 'c';
+
+  inc(pmi);
+  pmi.status := 2;
+  pmi.name := '';
+  pmi.cmd := '';
+  pmi.routine := @M_ChangeScreenSize;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := 's';
+
+  inc(pmi);
+  pmi.status := -1;
+  pmi.name := '';
+  pmi.cmd := '';
+  pmi.routine := nil;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := #0;
+
+  inc(pmi);
+  pmi.status := -1;
+  pmi.name := '';
+  pmi.cmd := '';
+  pmi.routine := nil;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := #0;
+
+  inc(pmi);
+  pmi.status := 1;
+  pmi.name := '';
+  pmi.cmd := '';
+  pmi.routine := @M_ApplyScreenSize;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := 'a';
 
 ////////////////////////////////////////////////////////////////////////////////
 //OptionsDisplayDetailDef
@@ -3965,36 +4078,12 @@ begin
   pmi.alphaKey := 'i';
 
   inc(pmi);
-  pmi.status := 2;
-  pmi.name := '!Mouse X Axis sensitivity';
+  pmi.status := 1;
+  pmi.name := '!Mouse sensitivity...';
   pmi.cmd := '';
-  pmi.routine := @M_ChangeSensitivityX;
+  pmi.routine := @M_OptionsSensitivity;
   pmi.pBoolVal := nil;
-  pmi.alphaKey := 'x';
-
-  inc(pmi);
-  pmi.status := -1;
-  pmi.name := '';
-  pmi.cmd := '';
-  pmi.routine := nil;
-  pmi.pBoolVal := nil;
-  pmi.alphaKey := #0;
-
-  inc(pmi);
-  pmi.status := 2;
-  pmi.name := '!Mouse Y Axis sensitivity';
-  pmi.cmd := '';
-  pmi.routine := @M_ChangeSensitivityY;
-  pmi.pBoolVal := nil;
-  pmi.alphaKey := 'y';
-
-  inc(pmi);
-  pmi.status := -1;
-  pmi.name := '';
-  pmi.cmd := '';
-  pmi.routine := nil;
-  pmi.pBoolVal := nil;
-  pmi.alphaKey := #0;
+  pmi.alphaKey := 's';
 
   inc(pmi);
   pmi.status := 1;
@@ -4042,6 +4131,93 @@ begin
   ControlsDef.lastOn := 0; // last item user was on in menu
   ControlsDef.itemheight := LINEHEIGHT2;
   ControlsDef.texturebk := true;
+
+////////////////////////////////////////////////////////////////////////////////
+//SensitivityMenu
+  pmi := @SensitivityMenu[0];
+  pmi.status := 2;
+  pmi.name := '!Global sensitivity';
+  pmi.cmd := '';
+  pmi.routine := @M_ChangeSensitivity;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := 'x';
+
+  inc(pmi);
+  pmi.status := -1;
+  pmi.name := '';
+  pmi.cmd := '';
+  pmi.routine := nil;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := #0;
+
+  inc(pmi);
+  pmi.status := -1;
+  pmi.name := '';
+  pmi.cmd := '';
+  pmi.routine := nil;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := #0;
+
+  inc(pmi);
+  pmi.status := 2;
+  pmi.name := '!X Axis sensitivity';
+  pmi.cmd := '';
+  pmi.routine := @M_ChangeSensitivityX;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := 'x';
+
+  inc(pmi);
+  pmi.status := -1;
+  pmi.name := '';
+  pmi.cmd := '';
+  pmi.routine := nil;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := #0;
+
+  inc(pmi);
+  pmi.status := -1;
+  pmi.name := '';
+  pmi.cmd := '';
+  pmi.routine := nil;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := #0;
+
+  inc(pmi);
+  pmi.status := 2;
+  pmi.name := '!Y Axis sensitivity';
+  pmi.cmd := '';
+  pmi.routine := @M_ChangeSensitivityY;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := 'y';
+
+  inc(pmi);
+  pmi.status := -1;
+  pmi.name := '';
+  pmi.cmd := '';
+  pmi.routine := nil;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := #0;
+
+  inc(pmi);
+  pmi.status := -1;
+  pmi.name := '';
+  pmi.cmd := '';
+  pmi.routine := nil;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := #0;
+
+////////////////////////////////////////////////////////////////////////////////
+//SensitivityDef
+  SensitivityDef.title := 'Mouse sensitivity';
+  SensitivityDef.numitems := Ord(sens_end); // # of menu items
+  SensitivityDef.prevMenu := @ControlsDef; // previous menu
+  SensitivityDef.menuitems := Pmenuitem_tArray(@SensitivityMenu);  // menu items
+  SensitivityDef.drawproc := @M_DrawSensitivity;  // draw routine
+  SensitivityDef.x := 32;
+  SensitivityDef.y := 68; // x,y of menu
+  SensitivityDef.lastOn := 0; // last item user was on in menu
+  SensitivityDef.itemheight := LINEHEIGHT2;
+  SensitivityDef.texturebk := true;
 
 ////////////////////////////////////////////////////////////////////////////////
 //SystemMenu

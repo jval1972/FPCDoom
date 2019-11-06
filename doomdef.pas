@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -78,9 +78,14 @@ type
   );
 
 const
-// ?
+  // MAX RENDERING DIMENTIONS
   MAXWIDTH = 2048;
   MAXHEIGHT = 1536;
+
+const
+  // MIN RENDERING DIMENTIONS
+  MINWIDTH = 160;
+  MINHEIGHT = 100;
 
 var
 // Rendering Engine Screen Dimentions

@@ -42,6 +42,8 @@ procedure C_Init;
 
 procedure C_ShutDown;
 
+procedure C_AdjustScreenSize;
+
 procedure C_AddLine(const line: string; len: integer = -1);
 
 procedure C_AddText(const txt: string);
@@ -315,9 +317,7 @@ begin
   for i := 0 to MAX_CONSOLE_LINES - 1 do
     ConsoleText[i].line := '';
   C_ResetInputBuff;
-  ConsoleYFrac := V_GetScreenHeight(SCN_CON) div 20;
-  MaxConsolePos := ConsoleYFrac * 11;
-  ConsoleWidth := V_GetScreenWidth(SCN_CON) div C_FONTWIDTH - 2;
+  C_AdjustScreenSize;
   divideline := '';
   for i := 1 to ConsoleWidth do
     divideline := divideline + '-';
@@ -347,6 +347,14 @@ begin
   C_AddCmd('commandlineparams', @M_CmdShowCommandLineParams);
   C_AddCmd('cmdline', @M_CmdShowCmdline);
   C_AddCmd('use', @Cmd_Use);
+end;
+
+procedure C_AdjustScreenSize;
+begin
+  ConsoleYFrac := V_GetScreenHeight(SCN_CON) div 20;
+  MaxConsolePos := ConsoleYFrac * 11;
+  ConsoleWidth := V_GetScreenWidth(SCN_CON) div C_FONTWIDTH - 2;
+  ConsolePos := 0;
 end;
 
 procedure C_ShutDown;

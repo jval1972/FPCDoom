@@ -67,6 +67,10 @@ const
   NUMLIGHTMAPACCURACYMODES = 4;
   MAXLIGHTMAPACCURACYMODE = NUMLIGHTMAPACCURACYMODES - 1;
 
+function R_CalcLigmapYAccuracy: integer;
+
+function R_CastLightmapOnMasked: boolean;
+
 implementation
 
 uses
@@ -82,7 +86,7 @@ uses
   p_maputl,
   p_setup,
   tables,
-  r_depthbuffer,
+  r_zbuffer,
   r_draw,
   r_draw_light,
   r_main,
@@ -136,9 +140,6 @@ type
   GLDLightArray = array[0..$FFFF] of GLDLight;
   PGLDLightArray = ^GLDLightArray;
 
-const
-  DLIGHTSDRAWRANGE = 2048 * FRACUNIT;
-
 type
   Pvislight_t = ^vislight_t;
   vislight_t = record
@@ -162,8 +163,6 @@ type
     dbmax: LongWord;
     dbdmin: LongWord;
     dbdmax: LongWord;
-
-//    radius, tz, tzmin, tzmax: fixed_t;
 
     texturemid: fixed_t;
 
@@ -600,7 +599,7 @@ begin
   numdlights := 0;
   realnumdlights := 0;
   dlightslist := nil;
-  printf('SC_ParceDynamicLights: Parsing LIGHTDEF lumps.'#13#10);
+  printf(#13#10'SC_ParceDynamicLights: Parsing LIGHTDEF lumps.');
   SC_ParceDynamicLights;
 end;
 
@@ -859,7 +858,7 @@ begin
 end;
 
 const
-  MAXLIGHTRADIUS = 512 * FRACUNIT;
+  MAXLIGHTRADIUS = 256 * FRACUNIT;
 
 procedure R_AddAdditionalLights;
 var
@@ -1054,32 +1053,41 @@ begin
   lcolumn.db_max := vis.dbmax;
   lcolumn.db_dmin := vis.dbdmin;
   lcolumn.db_dmax := vis.dbdmax;
+
+  lcolumn.r := (vis.color32 shr 16) and $FF;
+  lcolumn.g := (vis.color32 shr 8) and $FF;
+  lcolumn.b := vis.color32 and $FF;
+
   lcolumn.dl_x := vis.x1;
+
+  R_ZSetCriticalX(vis.x1 - 1, true);
+  R_ZSetCriticalX(vis.x1, true);
+  R_ZSetCriticalX(vis.x2, true);
+  R_ZSetCriticalX(vis.x2 + 1, true);
+
   while lcolumn.dl_x <= vis.x2 do
   begin
-    texturecolumn := (LongWord(frac) shr FRACBITS) and (LIGHTBOOSTSIZE - 1);
-    ltopdelta := lightexturelookup[texturecolumn].topdelta;
-    llength := lightexturelookup[texturecolumn].length;
-    lcolumn.dl_source32 := @lighttexture[texturecolumn * LIGHTBOOSTSIZE + ltopdelta];
-    topscreen := ltopscreen + int64(spryscale) * int64(ltopdelta);
-    bottomscreen := topscreen + int64(spryscale) * int64(llength);
+    if R_ValidLightColumn(lcolumn.dl_x) then
+    begin
+      texturecolumn := (LongWord(frac) shr FRACBITS) and (LIGHTBOOSTSIZE - 1);
+      ltopdelta := lightexturelookup[texturecolumn].topdelta;
+      llength := lightexturelookup[texturecolumn].length;
+      lcolumn.dl_source32 := @lighttexture[texturecolumn * LIGHTBOOSTSIZE + ltopdelta];
+      topscreen := ltopscreen + int64(spryscale) * int64(ltopdelta);
+      bottomscreen := topscreen + int64(spryscale) * int64(llength);
 
-    lcolumn.dl_yl := FixedInt64(topscreen + (FRACUNIT - 1));
-    lcolumn.dl_yh := FixedInt64(bottomscreen - 1);
-    lcolumn.dl_texturemid := (centery - lcolumn.dl_yl) * lcolumn.dl_iscale;
+      lcolumn.dl_yl := FixedInt64(topscreen + (FRACUNIT - 1));
+      lcolumn.dl_yh := FixedInt64(bottomscreen - 1);
+      lcolumn.dl_texturemid := (centery - lcolumn.dl_yl) * lcolumn.dl_iscale;
 
-    if lcolumn.dl_yh >= viewheight then
-      lcolumn.dl_yh := viewheight - 1;
-    if lcolumn.dl_yl < 0 then
-      lcolumn.dl_yl := 0;
+      if lcolumn.dl_yh >= viewheight then
+        lcolumn.dl_yh := viewheight - 1;
+      if lcolumn.dl_yl < 0 then
+        lcolumn.dl_yl := 0;
 
-    lcolumn.r := (vis.color32 shr 16) and $FF;
-    lcolumn.g := (vis.color32 shr 8) and $FF;
-    lcolumn.b := vis.color32 and $FF;
-
-    if lcolumn.dl_yl <= lcolumn.dl_yh then
-      R_AddRenderTask(lightcolfunc, RF_LIGHT, @lcolumn);
-
+      if lcolumn.dl_yl <= lcolumn.dl_yh then
+        R_AddRenderTask(lightcolfunc, RF_LIGHT, @lcolumn);
+    end;
     frac := frac + fracstep;
     inc(lcolumn.dl_x);
   end;
@@ -1161,6 +1169,48 @@ begin
   R_SortDlights;
   for i := 0 to numdlitems - 1 do
     R_CalcLight(@dlbuffer[i]);
+end;
+
+type
+  dropoffitem_t = record
+    maxwidth: integer;
+    laccuraccy: array[0..NUMLIGHTMAPACCURACYMODES - 1] of integer;
+  end;
+
+const
+  NUMDROPOFFARRAYITEMS = 7;
+
+var
+  dropoffarray: array[0..NUMDROPOFFARRAYITEMS - 1] of dropoffitem_t = (
+    (maxwidth: 320;        laccuraccy: (3, 2, 1, 1)),
+    (maxwidth: 640;        laccuraccy: (4, 3, 2, 1)),
+    (maxwidth: 1024;       laccuraccy: (5, 4, 3, 2)),
+    (maxwidth: 1280;       laccuraccy: (6, 5, 4, 3)),
+    (maxwidth: 1366;       laccuraccy: (6, 5, 4, 3)),
+    (maxwidth: 1600;       laccuraccy: (7, 6, 5, 4)),
+    (maxwidth: 2147483647; laccuraccy: (8, 7, 6, 5))
+  );
+
+function R_CalcLigmapYAccuracy: integer;
+var
+  i, idx: integer;
+begin
+  lightmapaccuracymode := lightmapaccuracymode mod NUMLIGHTMAPACCURACYMODES;
+
+  idx := 0;
+  for i := 0 to NUMDROPOFFARRAYITEMS - 1 do
+    if viewwidth <= dropoffarray[i].maxwidth then
+    begin
+      idx := i;
+      break;
+    end;
+
+  result := dropoffarray[idx].laccuraccy[lightmapaccuracymode];
+end;
+
+function R_CastLightmapOnMasked: boolean;
+begin
+  result := lightmapaccuracymode = MAXLIGHTMAPACCURACYMODE;
 end;
 
 end.

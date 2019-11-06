@@ -87,7 +87,7 @@ var
   firstflat: integer;
   lastflat: integer;
   numflats: integer;
-  maxvisplane: integer;
+  maxvisplane: integer = -1;
 
 procedure R_SetupLevel;
 

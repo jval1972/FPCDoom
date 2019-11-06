@@ -47,7 +47,6 @@ const
   // Tags >= 100 are purgable whenever needed.
   PU_PURGELEVEL = 100;
   PU_CACHE = 101;
-  PU_HITAG = 101;
 
 procedure Z_Init;
 procedure Z_ShutDown;
@@ -134,7 +133,8 @@ begin
   i := ptr2item(ptr);
   if fitems[i].user <> nil then
     fitems[i].user^ := nil;
-  memfree(fitems[i], fitems[i].size + SizeOf(memmanageritem_t));
+  if fitems[i] <> nil then
+    memfree(fitems[i], fitems[i].size + SizeOf(memmanageritem_t));
   if i < fnumitems - 1 then
   begin
     fitems[i] := fitems[fnumitems - 1];

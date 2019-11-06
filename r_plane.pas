@@ -39,6 +39,8 @@ uses
 
 procedure R_ClearPlanes;
 
+procedure R_ClearVisPlanes;
+
 procedure R_DrawPlanes;
 
 function R_FindPlane(height: fixed_t; picnum: integer; lightlevel: integer): Pvisplane_t;
@@ -155,8 +157,8 @@ begin
     cacheddistance[y] := FixedMul(rspan.ds_planeheight, yslope[y]);
     distance := cacheddistance[y];
     slope := (rspan.ds_planeheight / abs(centery - y)) * planerelativeaspect;
-    rspan.ds_xstep := round(dviewsin * slope);
-    rspan.ds_ystep := round(dviewcos * slope);
+    rspan.ds_xstep := trunc(dviewsin * slope);
+    rspan.ds_ystep := trunc(dviewcos * slope);
     cachedxstep[y] := rspan.ds_xstep;
     cachedystep[y] := rspan.ds_ystep;
   end
@@ -233,6 +235,23 @@ begin
 
   // texture calculation
   ZeroMemory(@cachedheight, SizeOf(cachedheight));
+end;
+
+//
+// R_ClearVisPlanes
+//
+// JVAL
+//   Free zone memory of visplanes
+procedure R_ClearVisPlanes;
+var
+  i: integer;
+begin
+  for i := 0 to maxvisplane do
+  begin
+    Z_Free(visplanes[i].top);
+    Z_Free(visplanes[i].bottom);
+  end;
+  maxvisplane := -1;
 end;
 
 //

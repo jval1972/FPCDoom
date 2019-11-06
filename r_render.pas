@@ -37,29 +37,32 @@ uses
 const
   RF_WALL = 1;
   RF_SPAN = 2;
-  RF_MASKED = 4;
-  RF_DEPTHBUFFERWRITE = 8;
-  RF_CALCDEPTHBUFFERCOLUMNS = 16;
-  RF_LIGHT = 32;
-  RF_LIGHTMAP = 64;
-  RF_MIRRORBUFFER = 128;
-  RF_GRAYSCALE = 256;
-  RF_COLORSUBSAMPLING = 512;
+  RF_SPRITE = 4;
+  RF_MASKED = 8;
+  RF_DEPTHBUFFERWRITE = 16;
+  RF_CALCDEPTHBUFFERCOLUMNS = 32;
+  RF_LIGHT = 64;
+  RF_LIGHTMAP = 128;
+  RF_MIRRORBUFFER = 256;
+  RF_GRAYSCALE = 512;
+  RF_COLORSUBSAMPLING = 1024;
 
 const
   RI_WALL = 0;
   RI_DEPTHBUFFERWALL = 1;
   RI_SPAN = 2;
   RI_DEPTHBUFFERSPAN = 3;
-  RI_MASKED = 4;
-  RI_DEPTHBUFFERMASKED = 5;
-  RI_CALCDEPTHBUFFERCOLUMNS = 6;
-  RI_LIGHT = 7;
-  RI_LIGHTMAP = 8;
-  RI_MIRRORBUFFER = 9;
-  RI_GRAYSCALE = 10;
-  RI_COLORSUBSAMPLING = 11;
-  RI_MAX = 12;
+  RI_SPRITE = 4;
+  RI_DEPTHBUFFERSPRITE = 5;
+  RI_MASKED = 6;
+  RI_DEPTHBUFFERMASKED = 7;
+  RI_CALCDEPTHBUFFERCOLUMNS = 8;
+  RI_LIGHT = 9;
+  RI_LIGHTMAP = 10;
+  RI_MIRRORBUFFER = 11;
+  RI_GRAYSCALE = 12;
+  RI_COLORSUBSAMPLING = 13;
+  RI_MAX = 14;
 
 const
   RIF_WAIT = 0;
@@ -97,7 +100,7 @@ implementation
 uses
   i_threads,
   i_system,
-  r_depthbuffer,
+  r_zbuffer,
   r_draw,
   r_draw_column,
   r_draw_span,
@@ -160,8 +163,12 @@ begin
   ritems[RI_DEPTHBUFFERWALL].pint := nil;
   ritems[RI_SPAN].intoffset := -1;
   ritems[RI_SPAN].pint := nil;
-  ritems[RI_DEPTHBUFFERSPAN].intoffset := -1;
-  ritems[RI_DEPTHBUFFERSPAN].pint := nil;
+  ritems[RI_DEPTHBUFFERSPAN].intoffset :=integer(@(r0^.spanparams.ds_y));
+  ritems[RI_DEPTHBUFFERSPAN].pint := @viewheight;
+  ritems[RI_SPRITE].intoffset := integer(@(r0^.columnparams.dc_x));
+  ritems[RI_SPRITE].pint := @viewwidth;
+  ritems[RI_DEPTHBUFFERSPRITE].intoffset := integer(@(r0^.columnparams.dc_x));
+  ritems[RI_DEPTHBUFFERSPRITE].pint := @viewwidth;
   ritems[RI_MASKED].intoffset := integer(@(r0^.columnparams.dc_x));
   ritems[RI_MASKED].pint := @viewwidth;
   ritems[RI_DEPTHBUFFERMASKED].intoffset := integer(@(r0^.columnparams.dc_x));
@@ -222,7 +229,7 @@ begin
   item.proc := proc;
   item.flags := flags;
   item.id := id;
-  if flags and (RF_WALL or RF_MASKED) <> 0 then
+  if flags and (RF_WALL or RF_SPRITE or RF_MASKED) <> 0 then
     item.columnparams := Pcolumnparams_t(parms)^
   else if flags and RF_SPAN <> 0 then
     item.spanparams := Pspanparams_t(parms)^
@@ -238,19 +245,25 @@ begin
   begin
     R_AddRenderTaskId(proc, flags, RI_WALL, parms);
     if flags and RF_DEPTHBUFFERWRITE <> 0 then
-      R_AddRenderTaskId(@R_DrawColumnToDepthBuffer, flags, RI_DEPTHBUFFERWALL, parms);
+      R_AddRenderTaskId(@R_DrawColumnToZBuffer, flags, RI_DEPTHBUFFERWALL, parms);
   end
   else if flags and RF_SPAN <> 0 then
   begin
     R_AddRenderTaskId(proc, flags, RI_SPAN, parms);
     if flags and RF_DEPTHBUFFERWRITE <> 0 then
-      R_AddRenderTaskId(@R_DrawSpanToDepthBuffer, flags, RI_DEPTHBUFFERSPAN, parms);
+      R_AddRenderTaskId(@R_DrawSpanToZBuffer, flags, RI_DEPTHBUFFERSPAN, parms);
+  end
+  else if flags and RF_SPRITE <> 0 then
+  begin
+    R_AddRenderTaskId(proc, flags, RI_SPRITE, parms);
+    if flags and RF_DEPTHBUFFERWRITE <> 0 then
+      R_AddRenderTaskId(@R_DrawColumnToZBuffer, flags, RI_DEPTHBUFFERSPRITE, parms);
   end
   else if flags and RF_MASKED <> 0 then
   begin
     R_AddRenderTaskId(proc, flags, RI_MASKED, parms);
     if flags and RF_DEPTHBUFFERWRITE <> 0 then
-      R_AddRenderTaskId(@R_DrawColumnToDepthBuffer, flags, RI_DEPTHBUFFERMASKED, parms);
+      R_AddRenderTaskId(@R_DrawColumnToZBuffer, flags, RI_DEPTHBUFFERMASKED, parms);
   end
   else if flags and RF_LIGHT <> 0 then
   begin

@@ -57,6 +57,22 @@ procedure I_RestoreWindowPos;
 var
   fixstallhack: boolean = true;
 
+type
+  displaymode_t = record
+    width, height: integer;
+    bpp: integer;
+  end;
+  displaymode_tArray = array[0..$FF] of displaymode_t;
+  Pdisplaymode_tArray = ^displaymode_tArray;
+
+var
+  displaymodes: Pdisplaymode_tArray = nil;
+  numdisplaymodes: integer = 0;
+
+function I_DisplayModeIndex(const w, h: integer): integer;
+
+function I_NearestDisplayModeIndex(const w, h: integer): integer;
+
 implementation
 
 uses
@@ -64,6 +80,7 @@ uses
   DirectX,
   i_system,
   i_main,
+  i_input,
   r_hires,
   v_video;
 
@@ -85,7 +102,8 @@ var
 
 procedure I_RestoreWindowPos;
 begin
-  SetWindowPos(hMainWnd, HWND_TOP, 0, 0, SCREENWIDTH, SCREENHEIGHT, SWP_SHOWWINDOW);
+  SetWindowPos(hMainWnd, HWND_TOP, 0, 0, WINDOWWIDTH, WINDOWHEIGHT, SWP_SHOWWINDOW);
+//  SetWindowPos(hMainWnd, HWND_TOP, 0, 0, 0, 0, SWP_SHOWWINDOW);
 end;
 
 procedure I_DisableAltTab;
@@ -137,6 +155,8 @@ begin
   I_ClearInterface(IInterface(g_pDDSPrimary));
   I_ClearInterface(IInterface(g_pDD));
   I_EnableAltTab;
+  realloc(displaymodes, numdisplaymodes * SizeOf(displaymode_t), 0);
+  numdisplaymodes := 0;
   memfree(oscreen, allocscreensize);
   if screen16 <> nil then
     memfree(screen16, SCREENWIDTH * SCREENHEIGHT * 2);
@@ -296,14 +316,14 @@ end;
 function I_AdjustWindowMode: boolean;
 begin
   result := false;
-  if SCREENWIDTH > GetSystemMetrics(SM_CXSCREEN) then
+  if WINDOWWIDTH > GetSystemMetrics(SM_CXSCREEN) then
   begin
-    SCREENWIDTH := GetSystemMetrics(SM_CXSCREEN);
+    WINDOWWIDTH := GetSystemMetrics(SM_CXSCREEN);
     result := true;
   end;
-  if SCREENHEIGHT > GetSystemMetrics(SM_CYSCREEN) then
+  if WINDOWHEIGHT > GetSystemMetrics(SM_CYSCREEN) then
   begin
-    SCREENHEIGHT := GetSystemMetrics(SM_CYSCREEN);
+    WINDOWHEIGHT := GetSystemMetrics(SM_CYSCREEN);
     result := true;
   end;
 end;
@@ -329,6 +349,192 @@ begin
   result := stallhack;
 end;
 
+procedure SortDisplayModes;
+
+  function sortvalue(const idx: integer): double;
+  begin
+    result := displaymodes[idx].width + displaymodes[idx].height / 1000000
+  end;
+
+  procedure qsort(l, r: Integer);
+  var
+    i, j: Integer;
+    tmp: displaymode_t;
+    rover: double;
+  begin
+    repeat
+      i := l;
+      j := r;
+      rover := sortvalue((l + r) shr 1);
+      repeat
+        while sortvalue(i) < rover do
+          inc(i);
+        while sortvalue(j) > rover do
+          dec(j);
+        if i <= j then
+        begin
+          tmp := displaymodes[i];
+          displaymodes[i] := displaymodes[j];
+          displaymodes[j] := tmp;
+          inc(i);
+          dec(j);
+        end;
+      until i > j;
+      if l < j then
+        qsort(l, j);
+      l := i;
+    until i >= r;
+  end;
+
+begin
+  if numdisplaymodes > 0 then
+    qsort(0, numdisplaymodes - 1);
+end;
+
+
+function I_DisplayModeIndex(const w, h: integer): integer;
+var
+  i: integer;
+begin
+  result := -1;
+
+  if displaymodes = nil then
+    exit;
+
+  for i := 0 to numdisplaymodes - 1 do
+    if (displaymodes[i].width = w) and (displaymodes[i].height = h) then
+    begin
+      result := i;
+      exit;
+    end;
+end;
+
+function I_NearestDisplayModeIndex(const w, h: integer): integer;
+var
+  i: integer;
+  dist: double;
+  mindist: double;
+begin
+  result := I_DisplayModeIndex(w, h);
+  if result >= 0 then
+    exit;
+
+  mindist := 1000000000000.0;
+  for i := 0 to numdisplaymodes - 1 do
+  begin
+    dist := sqrt(sqr(displaymodes[i].width - SCREENWIDTH) + sqr(displaymodes[i].height - SCREENHEIGHT));
+    if SCREENWIDTH < displaymodes[i].width then
+      dist := dist + 50.0;
+    if SCREENHEIGHT < displaymodes[i].height then
+      dist := dist + 50.0;
+    if dist < mindist then
+    begin
+      mindist := dist;
+      result := i;
+    end;
+  end;
+end;
+
+function IsAvailableScreenResolution(const w, h: integer): boolean;
+begin
+  result := I_DisplayModeIndex(w, h) >= 0;
+end;
+
+procedure I_EnumDisplayModes;
+var
+  dm: TDevMode;
+  i: integer;
+begin
+  if displaymodes <> nil then
+    memfree(displaymodes, numdisplaymodes * SizeOf(displaymode_t));
+
+  numdisplaymodes := 0;
+  i := 0;
+  while EnumDisplaySettings(nil, i, dm) do
+  begin
+    if (dm.dmPelsWidth >= 320) and (dm.dmPelsHeight >= 200) and (dm.dmBitsPerPel = 32) and not IsAvailableScreenResolution(dm.dmPelsWidth, dm.dmPelsHeight) then
+    begin
+      realloc(displaymodes, numdisplaymodes * SizeOf(displaymode_t), (numdisplaymodes + 1) * SizeOf(displaymode_t));
+      displaymodes[numdisplaymodes].width := dm.dmPelsWidth;
+      displaymodes[numdisplaymodes].height := dm.dmPelsHeight;
+      displaymodes[numdisplaymodes].bpp := dm.dmBitsPerPel;
+      inc(numdisplaymodes);
+    end;
+    Inc(i);
+  end;
+  if numdisplaymodes = 0 then
+  begin
+    while EnumDisplaySettings(nil, i, dm) do
+    begin
+      if (dm.dmPelsWidth >= 640) and (dm.dmPelsHeight >= 400) and (dm.dmBitsPerPel >= 16) and not IsAvailableScreenResolution(dm.dmPelsWidth, dm.dmPelsHeight) then
+      begin
+        realloc(displaymodes, numdisplaymodes * SizeOf(displaymode_t), (numdisplaymodes + 1) * SizeOf(displaymode_t));
+        displaymodes[numdisplaymodes].width := dm.dmPelsWidth;
+        displaymodes[numdisplaymodes].height := dm.dmPelsHeight;
+        displaymodes[numdisplaymodes].bpp := dm.dmBitsPerPel;
+        inc(numdisplaymodes);
+      end;
+      Inc(i);
+    end;
+  end;
+  if numdisplaymodes = 0 then
+  begin
+    displaymodes := malloc(SizeOf(displaymode_t));
+    displaymodes[0].width := 320;
+    displaymodes[0].height := 200;
+    displaymodes[0].bpp := 32;
+    displaymodes[1].width := 640;
+    displaymodes[1].height := 400;
+    displaymodes[1].bpp := 32;
+    numdisplaymodes := 2;
+  end;
+
+  SortDisplayModes;
+end;
+
+procedure I_FindWindowSize;
+var
+  i: integer;
+  dist: double;
+  mindist: double;
+  idx: integer;
+begin
+  for i := 0 to numdisplaymodes - 1 do
+    if displaymodes[i].width = SCREENWIDTH then
+      if displaymodes[i].height = SCREENHEIGHT then
+      begin
+        WINDOWWIDTH := SCREENWIDTH;
+        WINDOWHEIGHT := SCREENHEIGHT;
+        exit;
+      end;
+
+  mindist := 1000000000000.0;
+  idx := -1;
+  for i := 0 to numdisplaymodes - 1 do
+  begin
+    dist := sqrt(sqr(displaymodes[i].width - SCREENWIDTH) + sqr(displaymodes[i].height - SCREENHEIGHT));
+    if SCREENWIDTH < displaymodes[i].width then
+      dist := dist + 50.0;
+    if SCREENHEIGHT < displaymodes[i].height then
+      dist := dist + 50.0;
+    if dist < mindist then
+    begin
+      mindist := dist;
+      idx := i;
+    end;
+  end;
+
+  if idx >= 0 then
+  begin
+    WINDOWWIDTH := displaymodes[idx].width;
+    WINDOWHEIGHT := displaymodes[idx].height;
+    exit;
+  end;
+
+  WINDOWWIDTH := GetSystemMetrics(SM_CXSCREEN);
+  WINDOWHEIGHT := GetSystemMetrics(SM_CYSCREEN);
+end;
+
 const
   ERROR_OFFSET = 20;
 
@@ -351,6 +557,8 @@ begin
 
   printf('I_InitGraphics: Initialize directdraw.' + #13#10);
 
+  I_EnumDisplayModes;
+
 ///////////////////////////////////////////////////////////////////////////
 // Create the main DirectDraw object
 ///////////////////////////////////////////////////////////////////////////
@@ -360,37 +568,38 @@ begin
 
   if fullscreen then
   begin
+    I_FindWindowSize;
+
     // Get exclusive mode
     hres := g_pDD.SetCooperativeLevel(hMainWnd, DDSCL_ALLOWMODEX or DDSCL_EXCLUSIVE or DDSCL_FULLSCREEN);
     if hres <> DD_OK then
       I_ErrorInitGraphics('SetCooperativeLevel');
 
-    // Set the video mode to SCREENWIDTH x SCREENHEIGHT x 32
-    hres := g_pDD.SetDisplayMode(SCREENWIDTH, SCREENHEIGHT, 32, 0, 0);
+    // Set the video mode to WINDOWWIDTH x WINDOWHEIGHT x 32
+    hres := g_pDD.SetDisplayMode(WINDOWWIDTH, WINDOWHEIGHT, 32, 0, 0);
     if hres <> DD_OK then
     begin
     // Fullscreen mode failed, trying window mode
       fullscreen := false;
 
+      I_AdjustWindowMode;
       I_RestoreWindowPos;
 
       printf('SetDisplayMode(): Failed to fullscreen %dx%dx%d, trying window mode...'#13#10,
-        [SCREENWIDTH, SCREENHEIGHT, 32]);
-      if I_AdjustWindowMode then
-        V_ReInit;
-      printf('Window Mode %dx%d' + #13#10, [SCREENWIDTH, SCREENHEIGHT]);
+        [WINDOWWIDTH, WINDOWHEIGHT, 32]);
+      printf('Window Mode %dx%d' + #13#10, [WINDOWWIDTH, WINDOWHEIGHT]);
 
       hres := g_pDD.SetCooperativeLevel(hMainWnd, DDSCL_NORMAL);
       if hres <> DD_OK then
       begin
-        printf('SetDisplayMode(): Failed to window mode %dx%d...' + #13#10, [SCREENWIDTH, SCREENHEIGHT]);
-        SCREENWIDTH := 640;
-        SCREENHEIGHT := 480;
+        printf('SetDisplayMode(): Failed to window mode %dx%d...' + #13#10, [WINDOWWIDTH, WINDOWHEIGHT]);
+        WINDOWWIDTH := 640;
+        WINDOWHEIGHT := 480;
         V_ReInit;
-        hres := g_pDD.SetDisplayMode(SCREENWIDTH, SCREENHEIGHT, 32, 0, 0);
+        hres := g_pDD.SetDisplayMode(WINDOWWIDTH, WINDOWHEIGHT, 32, 0, 0);
         if hres <> DD_OK then
           I_ErrorInitGraphics('SetDisplayMode');
-        printf('SetDisplayMode(): %dx%d...'#13#10, [SCREENWIDTH, SCREENHEIGHT]);
+        printf('SetDisplayMode(): %dx%d...'#13#10, [WINDOWWIDTH, WINDOWHEIGHT]);
       end;
     end
     else
@@ -398,15 +607,14 @@ begin
   end
   else
   begin
-    if I_AdjustWindowMode then
-      V_ReInit;
+    I_FindWindowSize;
+    I_AdjustWindowMode;
+    I_RestoreWindowPos;
     hres := g_pDD.SetCooperativeLevel(hMainWnd, DDSCL_NORMAL);
     if hres <> DD_OK then
       I_ErrorInitGraphics('SetCooperativeLevel');
   end;
 
-  WINDOWWIDTH := SCREENWIDTH;
-  WINDOWHEIGHT := SCREENHEIGHT;
   if I_MemoryStallHack then
     V_ReInit;
 
@@ -423,7 +631,6 @@ begin
     if hres <> DD_OK then
       I_ErrorInitGraphics('CreateSurface');
   end;
-
 
   ZeroMemory(@ddsd, SizeOf(ddsd));
   ZeroMemory(@ddsd.ddpfPixelFormat, SizeOf(ddsd.ddpfPixelFormat));
@@ -469,95 +676,13 @@ begin
     I_ErrorInitGraphics('CreateSurface');
 end;
 
-const
-  NUNSTDRESOLUTIONS = 11;
-  STANDARDSCREENRESOLUTIONS: array[0..NUNSTDRESOLUTIONS - 1, 0..1] of integer = (
-    (1920, 1080), (1366, 768), (1280, 1024), (1280, 800), (1024, 768), (800, 600), (640, 480), (600, 400), (512, 384), (400, 300), (320, 200)
-  );
-
-procedure I_ChangeFullScreen;
-
-  procedure I_ChangeFullScreenError(full: boolean);
-  begin
-    if full then
-      I_Warning('I_ChangeFullScreen(): Can not change to fullscreen mode'#13#10)
-    else
-      I_Warning('I_ChangeFullScreen(): Can not change to window mode'#13#10);
-  end;
-
+procedure I_RecreateSurfaces;
 var
   hres: HRESULT;
   ddsd: DDSURFACEDESC2;
-  i: integer;
-
 begin
-  if fullscreen then
-  begin
-    hres := g_pDD.SetCooperativeLevel(hMainWnd, DDSCL_NORMAL);
-    if hres <> DD_OK then
-    begin
-      I_ChangeFullScreenError(false);
-      exit;
-    end;
-    SetWindowPos(hMainWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
-  end
-  else
-  begin
-    hres := g_pDD.SetCooperativeLevel(hMainWnd, DDSCL_EXCLUSIVE or DDSCL_FULLSCREEN);
-    if hres <> DD_OK then
-    begin
-      I_ChangeFullScreenError(true);
-      exit;
-    end;
-    SetWindowPos(hMainWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
-  end;
-
-  WINDOWWIDTH := SCREENWIDTH;
-  WINDOWHEIGHT := SCREENHEIGHT;
-
-  hres := g_pDD.SetDisplayMode(WINDOWWIDTH, WINDOWHEIGHT, 32, 0, 0);
-  if hres <> DD_OK then
-  begin
-
-    i := 0;
-
-    // Determine a standard screen resolution
-    WINDOWWIDTH := STANDARDSCREENRESOLUTIONS[NUNSTDRESOLUTIONS - 1, 0];
-    WINDOWHEIGHT := STANDARDSCREENRESOLUTIONS[NUNSTDRESOLUTIONS - 1, 1];
-    while i < NUNSTDRESOLUTIONS - 1 do
-    begin
-      if (SCREENWIDTH <= STANDARDSCREENRESOLUTIONS[i, 0]) and
-         (SCREENHEIGHT <= STANDARDSCREENRESOLUTIONS[i, 1]) and
-         (SCREENWIDTH >= STANDARDSCREENRESOLUTIONS[i + 1, 0]) then
-      begin
-        WINDOWWIDTH := STANDARDSCREENRESOLUTIONS[i, 0];
-        WINDOWHEIGHT := STANDARDSCREENRESOLUTIONS[i, 1];
-        break;
-      end;
-      inc(i);
-    end;
-
-    hres := g_pDD.SetDisplayMode(WINDOWWIDTH, WINDOWHEIGHT, 32, 0, 0);
-    if hres <> DD_OK then
-    begin
-      I_ChangeFullScreenError(fullscreen);
-      // Restore original window state
-      if fullscreen then
-        g_pDD.SetCooperativeLevel(hMainWnd, DDSCL_EXCLUSIVE or DDSCL_FULLSCREEN)
-      else
-        g_pDD.SetCooperativeLevel(hMainWnd, DDSCL_NORMAL);
-      exit;
-    end;
-  end;
-
-  if fullscreen then
-  begin
-    g_pDD.RestoreDisplayMode;
-    I_RestoreWindowPos;
-    WINDOWWIDTH := SCREENWIDTH;
-    WINDOWHEIGHT := SCREENHEIGHT;
-  end;
-  fullscreen := not fullscreen;
+  I_ClearInterface(IInterface(g_pDDScreen));
+  I_ClearInterface(IInterface(g_pDDSPrimary));
 
   ZeroMemory(@ddsd, SizeOf(ddsd));
   ddsd.dwSize := SizeOf(ddsd);
@@ -569,7 +694,7 @@ begin
     ddsd.ddsCaps.dwCaps := DDSCAPS_PRIMARYSURFACE;
     hres := g_pDD.CreateSurface(ddsd, g_pDDSPrimary, nil);
     if hres <> DD_OK then
-      I_Error('I_ChangeFullScreen(): CreateSurface failed');
+      I_Error('I_RecreateSurfaces(): CreateSurface failed');
   end;
 
   ZeroMemory(@ddsd, SizeOf(ddsd));
@@ -599,10 +724,10 @@ begin
     ddsd.lPitch := 2 * SCREENWIDTH;
     if screen16 <> nil then
       screen16 := malloc(SCREENWIDTH * SCREENHEIGHT * 2);
-    I_Warning('I_ChangeFullScreen(): using 16 bit color depth desktop in non fullscreen mode reduces performance'#13#10);
+    I_Warning('I_RecreateSurfaces(): using 16 bit color depth desktop in non fullscreen mode reduces performance'#13#10);
   end
   else
-    I_Error('I_ChangeFullScreen(): invalid colordepth = %d, only 16 and 32 bit color depth allowed', [bpp]);
+    I_Error('I_RecreateSurfaces(): invalid colordepth = %d, only 16 and 32 bit color depth allowed', [bpp]);
 
   if bpp = 16 then
     ddsd.lpSurface := screen16
@@ -611,7 +736,100 @@ begin
 
   hres := g_pDD.CreateSurface(ddsd, g_pDDScreen, nil);
   if hres <> DD_OK then
-    I_Error('I_ChangeFullScreen(): CreateSurface failed');
+    I_Error('I_RecreateSurfaces(): CreateSurface failed');
+end;
+
+const
+  NUMSTDRESOLUTIONS = 11;
+  STANDARDSCREENRESOLUTIONS: array[0..NUMSTDRESOLUTIONS - 1, 0..1] of integer = (
+    (1920, 1080), (1366, 768), (1280, 1024), (1280, 800), (1024, 768), (800, 600), (640, 480), (600, 400), (512, 384), (400, 300), (320, 200)
+  );
+
+const
+  s_cfs_descs: array[boolean] of string = ('window', 'fullscreen');
+
+procedure I_DoChangeFullScreen;
+var
+  hres: HRESULT;
+  i: integer;
+begin
+  if fullscreen then
+  begin
+    hres := g_pDD.SetCooperativeLevel(hMainWnd, DDSCL_NORMAL);
+    if hres <> DD_OK then
+    begin
+      I_Warning('I_ChangeFullScreen(): Can not change to %s mode'#13#10, [s_cfs_descs[false]]);
+      exit;
+    end;
+    I_FindWindowSize;
+    I_AdjustWindowMode;
+    I_RestoreWindowPos;
+  end
+  else
+  begin
+    hres := g_pDD.SetCooperativeLevel(hMainWnd, DDSCL_EXCLUSIVE or DDSCL_FULLSCREEN);
+    if hres <> DD_OK then
+    begin
+      I_Warning('I_ChangeFullScreen(): Can not change to %s mode'#13#10, [s_cfs_descs[true]]);
+      exit;
+    end;
+    I_FindWindowSize;
+    I_AdjustWindowMode;
+    I_RestoreWindowPos;
+  end;
+
+
+  hres := g_pDD.SetDisplayMode(WINDOWWIDTH, WINDOWHEIGHT, 32, 0, 0);
+  if hres <> DD_OK then
+  begin
+
+    i := 0;
+
+    // Determine a standard screen resolution
+    WINDOWWIDTH := STANDARDSCREENRESOLUTIONS[NUMSTDRESOLUTIONS - 1, 0];
+    WINDOWHEIGHT := STANDARDSCREENRESOLUTIONS[NUMSTDRESOLUTIONS - 1, 1];
+    while i < NUMSTDRESOLUTIONS - 1 do
+    begin
+      if (WINDOWWIDTH <= STANDARDSCREENRESOLUTIONS[i, 0]) and
+         (WINDOWHEIGHT <= STANDARDSCREENRESOLUTIONS[i, 1]) and
+         (WINDOWWIDTH >= STANDARDSCREENRESOLUTIONS[i + 1, 0]) then
+      begin
+        WINDOWWIDTH := STANDARDSCREENRESOLUTIONS[i, 0];
+        WINDOWHEIGHT := STANDARDSCREENRESOLUTIONS[i, 1];
+        break;
+      end;
+      inc(i);
+    end;
+
+    hres := g_pDD.SetDisplayMode(WINDOWWIDTH, WINDOWHEIGHT, 32, 0, 0);
+    if hres <> DD_OK then
+    begin
+      I_Warning('I_ChangeFullScreen(): Can not change to %s mode'#13#10, [s_cfs_descs[fullscreen]]);
+      // Restore original window state
+      if fullscreen then
+        g_pDD.SetCooperativeLevel(hMainWnd, DDSCL_EXCLUSIVE or DDSCL_FULLSCREEN)
+      else
+        g_pDD.SetCooperativeLevel(hMainWnd, DDSCL_NORMAL);
+      exit;
+    end;
+  end;
+
+  if fullscreen then
+  begin
+    I_FindWindowSize;
+    I_RestoreWindowPos;
+    g_pDD.RestoreDisplayMode;
+  end;
+  fullscreen := not fullscreen;
+
+  I_RecreateSurfaces;
+end;
+
+procedure I_ChangeFullScreen;
+begin
+  I_IgnoreInput(MAXINT);
+  I_DoChangeFullScreen;
+  I_IgnoreInput(15);
 end;
 
 procedure I_ReadScreen32(dest: pointer);
@@ -636,3 +854,4 @@ begin
 end;
 
 end.
+

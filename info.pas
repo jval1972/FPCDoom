@@ -11032,7 +11032,7 @@ const
     nextstate: S_NULL;        // nextstate
     misc1: 0;                 // misc1
     misc2: 0                  // misc2
-   )                         // S_SLUDGESPLASH4
+   )                          // S_SLUDGESPLASH4
 
   );
 
@@ -11052,7 +11052,7 @@ const // Doom Original Sprite Names
     'COL3', 'COL4', 'CAND', 'CBRA', 'COL6', 'TRE1', 'TRE2', 'ELEC', 'CEYE', 'FSKU',
     'COL5', 'TBLU', 'TGRN', 'TRED', 'SMBT', 'SMGT', 'SMRT', 'HDB1', 'HDB2', 'HDB3',
     'HDB4', 'HDB5', 'HDB6', 'POB1', 'POB2', 'BRS1', 'TLMP', 'TLP2',
-    'SPSH', 'LVAS', 'SLDG', ''
+    'SPSH', 'LVAS', 'SLDG', 'NULL', ''
   );
 
 const // Doom Original mobjinfo

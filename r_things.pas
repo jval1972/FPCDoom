@@ -53,6 +53,7 @@ procedure R_DrawMaskedColumn32(const mc2h: integer; flags: LongWord); // Use dc_
 procedure R_SortVisSprites;
 
 procedure R_AddSprites(sec: Psector_t);
+procedure R_InitNegoArray;
 procedure R_InitSprites(namelist: PIntegerArray);
 procedure R_ClearSprites;
 procedure R_DrawMasked;
@@ -330,17 +331,21 @@ var
   vissprites: array[0..MAXVISSPRITES - 1] of Pvissprite_t;
   vissprite_p: integer;
 
-//
-// R_InitSprites
-// Called at program start.
-//
-procedure R_InitSprites(namelist: PIntegerArray);
+procedure R_InitNegoArray;
 var
   i: integer;
 begin
   for i := 0 to SCREENWIDTH - 1 do
     negonearray[i] := -1;
+end;
 
+//
+// R_InitSprites
+// Called at program start.
+//
+procedure R_InitSprites(namelist: PIntegerArray);
+begin
+  R_InitNegoArray;
   R_InitSpriteDefs(namelist);
 end;
 
@@ -520,6 +525,7 @@ var
   frac: fixed_t;
   patch: Ppatch_t;
   xiscale: integer;
+  flags: LongWord;
 begin
   patch := W_CacheLumpNum(vis.patch + firstspritelump, PU_STATIC);
 
@@ -567,6 +573,12 @@ begin
   spryscale := vis.scale;
   sprtopscreen := centeryfrac - FixedMul(rcolumn.dc_texturemid, spryscale);
 
+  // set draw flags
+  if lightmapaccuracymode = MAXLIGHTMAPACCURACYMODE then
+    flags := RF_MASKED or RF_DEPTHBUFFERWRITE
+  else
+    flags := RF_MASKED;
+
   xiscale := vis.xiscale;
   rcolumn.dc_x := vis.x1;
   while rcolumn.dc_x <= vis.x2 do
@@ -574,7 +586,7 @@ begin
     texturecolumn := LongWord(frac) shr FRACBITS;
 
     column := Pcolumn_t(integer(patch) + patch.columnofs[texturecolumn]);
-    proc(column, RF_MASKED or RF_DEPTHBUFFERWRITE);
+    proc(column, flags);
     frac := frac + xiscale;
     inc(rcolumn.dc_x);
   end;
@@ -639,7 +651,13 @@ begin
 
   sprdef := @sprites[thing.sprite];
 
-  sprframe := @sprdef.spriteframes[thing.frame and FF_FRAMEMASK];
+  if sprdef.numframes <= 0 then
+  begin
+    sprdef := @sprites[Ord(SPR_NULL)];
+    sprframe := @sprdef.spriteframes[0];
+  end
+  else
+    sprframe := @sprdef.spriteframes[thing.frame and FF_FRAMEMASK];
 
   if sprframe = nil then
   begin

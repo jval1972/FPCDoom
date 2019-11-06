@@ -81,7 +81,7 @@ type
   Pdefault_t = ^default_t;
 
 const
-  NUMDEFAULTS = 112;
+  NUMDEFAULTS = 114;
 
   defaults: array[0..NUMDEFAULTS - 1] of default_t = (
     (name: 'Display';
@@ -92,7 +92,7 @@ const
      defaultbvalue: false;
      _type: tGroup),
 
-    (name: 'screenwidth';
+    (name: 'windowwidth';
      location: @WINDOWWIDTH;
      setable: DFS_NEVER;
      defaultsvalue: '';
@@ -100,8 +100,24 @@ const
      defaultbvalue: false;
      _type: tInteger),
 
-    (name: 'screenheight';
+    (name: 'windowheight';
      location: @WINDOWHEIGHT;
+     setable: DFS_NEVER;
+     defaultsvalue: '';
+     defaultivalue: -1;
+     defaultbvalue: false;
+     _type: tInteger),
+
+    (name: 'screenwidth';
+     location: @SCREENWIDTH;
+     setable: DFS_NEVER;
+     defaultsvalue: '';
+     defaultivalue: -1;
+     defaultbvalue: false;
+     _type: tInteger),
+
+    (name: 'screenheight';
+     location: @SCREENHEIGHT;
      setable: DFS_NEVER;
      defaultsvalue: '';
      defaultivalue: -1;

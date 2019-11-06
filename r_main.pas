@@ -211,7 +211,7 @@ var
   linecount: integer;
   loopcount: integer;
 
-  viewangleoffset: angle_t = 0; // never a value assigned to this variable!
+  viewangleoffset: angle_t = 0;
 
   setsizeneeded: boolean;
 
@@ -240,7 +240,7 @@ uses
   p_sight,
   p_map,
   r_aspect,
-  r_depthbuffer,
+  r_zbuffer,
   r_draw,
   r_bsp,
   r_things,
@@ -1001,8 +1001,8 @@ begin
   R_InitTranslationTables;
   printf(#13#10 + 'R_InitTransparency8Tables');
   R_InitTransparency8Tables;
-  printf(#13#10 + 'R_InitDepthBuffer');
-  R_InitDepthBuffer;
+  printf(#13#10 + 'R_InitZBuffer');
+  R_InitZBuffer;
   printf(#13#10 + 'R_InitLightTexture');
   R_InitLightTexture;
   printf(#13#10 + 'R_InitDynamicLights');
@@ -1033,8 +1033,8 @@ begin
   R_ResetInterpolationBuffer;
   printf(#13#10 + 'R_FreeTransparency8Tables');
   R_FreeTransparency8Tables;
-  printf(#13#10 + 'R_ShutDownDepthBuffer');
-  R_ShutDownDepthBuffer;
+  printf(#13#10 + 'R_ShutDownZBuffer');
+  R_ShutDownZBuffer;
   printf(#13#10 + 'R_ShutDownLightTexture');
   R_ShutDownLightTexture;
   printf(#13#10 + 'R_ShutDownDynamicLights');
@@ -1279,25 +1279,33 @@ begin
   R_DrawMasked;
 
   // Render sprites and masked mid walls from pool using multiple CPU cores
-  if lightmapaccuracymode = MAXLIGHTMAPACCURACYMODE then
+  if R_CastLightmapOnMasked then
     R_RenderItemsMT(RI_MASKED, RIF_WAIT);
 
   if uselightmap then
   begin
     // Setup depth buffer
-    R_StartDepthBuffer;
+    R_StartZBuffer;
 
     // Render the depthbuffer
-    R_RenderItemsMT(RI_DEPTHBUFFERSPAN, RIF_WAIT);
+{    R_RenderItemsMT(RI_DEPTHBUFFERSPAN, RIF_WAIT);
     R_RenderItemsMT(RI_DEPTHBUFFERWALL, RIF_WAIT);
-    if lightmapaccuracymode = MAXLIGHTMAPACCURACYMODE then
-      R_RenderItemsMT(RI_DEPTHBUFFERMASKED, RIF_WAIT);
+    if R_CastLightmapOnMasked then
+      R_RenderItemsMT(RI_DEPTHBUFFERMASKED, RIF_WAIT);}
+
+    R_RenderItemsST(RI_DEPTHBUFFERSPAN);
+    R_RenderItemsST(RI_DEPTHBUFFERWALL);
+    if R_CastLightmapOnMasked then
+      R_RenderItemsST(RI_DEPTHBUFFERMASKED);
 
     // Extra depthbuffer calculations
-    R_CalcDepthBuffer;
+    R_CalcZBuffer;
 
     // Wake up the lightmap
     R_StartLightMap;
+
+    // Calculate lightmap
+    R_CalcLightmap;
 
     // Mark lights
     R_MarkLights;
@@ -1318,11 +1326,11 @@ begin
     R_ScheduleTask(@R_StopLightmap);
 
     // Stop depth buffer - Schedule task in future
-    R_ScheduleTask(@R_StopDepthBuffer);
+    R_ScheduleTask(@R_StopZBuffer);
   end;
 
   // Render sprites and masked mid walls from pool using multiple CPU cores
-  if lightmapaccuracymode <> MAXLIGHTMAPACCURACYMODE then
+  if not R_CastLightmapOnMasked then
     R_RenderItemsMT(RI_MASKED, RIF_WAIT);
 
   if mirrormode and MR_ENVIROMENT <> 0 then
