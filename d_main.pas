@@ -647,6 +647,63 @@ end;
 var
   doomcwad: string = ''; // Custom main WAD
 
+const
+  PATH_SEPARATOR = ';';
+
+function FileInDoomPath(const fn: string): string;
+var
+  doomwaddir: string;
+  doomwadpath: string;
+  paths: TDStringList;
+  i: integer;
+  tmp: string;
+begin
+  if fexists(fn) then
+  begin
+    result := fn;
+    exit;
+  end;
+
+  doomwaddir := getenv('DOOMWADDIR');
+  doomwadpath := getenv('DOOMWADPATH');
+
+  paths := TDStringList.Create;
+  if doomwaddir <> '' then
+    paths.Add(doomwaddir);
+  if doomwadpath <> '' then
+  begin
+    tmp := '';
+    for i := 1 to length(doomwadpath) do
+    begin
+      if doomwadpath[i] = PATH_SEPARATOR then
+      begin
+        if tmp <> '' then
+        begin
+          paths.Add(tmp);
+          tmp := '';
+        end;
+      end
+      else
+        tmp := tmp + doomwadpath[i];
+    end;
+    if tmp <> '' then
+      paths.Add(tmp);
+  end;
+  result := fname(fn);
+  for i := 0 to paths.Count - 1 do
+  begin
+    tmp := paths.Strings[i];
+    if tmp[length(tmp)] <> '\' then
+      tmp := tmp + '\';
+    if fexists(tmp + result) then
+    begin
+      result := tmp + result;
+      exit;
+    end;
+  end;
+  result := fn;
+end;
+
 procedure IdentifyVersion;
 var
   doom1wad: string;
@@ -694,7 +751,7 @@ begin
   if (p > 0) and (p < myargc - 1) then
   begin
     inc(p);
-    doomcwad := myargv[p];
+    doomcwad := FileInDoomPath(myargv[p]);
     if fexists(doomcwad) then
     begin
       printf(' External main wad in use: %s'#13#10, [doomcwad]);
@@ -753,57 +810,70 @@ begin
     exit;
   end;
 
-  if fexists(doom2wad) then
+  for p := 1 to 2 do
   begin
-    gamemode := commercial;
-    gamemission := doom2;
-    D_AddFile(doom2wad);
-    exit;
-  end;
+    if fexists(doom2wad) then
+    begin
+      gamemode := commercial;
+      gamemission := doom2;
+      D_AddFile(doom2wad);
+      exit;
+    end;
 
-  if fexists(plutoniawad) then
-  begin
-    gamemode := commercial;
-    gamemission := pack_plutonia;
-    D_AddFile(plutoniawad);
-    exit;
-  end;
+    if fexists(plutoniawad) then
+    begin
+      gamemode := commercial;
+      gamemission := pack_plutonia;
+      D_AddFile(plutoniawad);
+      exit;
+    end;
 
-  if fexists(tntwad) then
-  begin
-    gamemode := commercial;
-    gamemission := pack_tnt;
-    D_AddFile(tntwad);
-    exit;
-  end;
+    if fexists(tntwad) then
+    begin
+      gamemode := commercial;
+      gamemission := pack_tnt;
+      D_AddFile(tntwad);
+      exit;
+    end;
 
-  if fexists(doomuwad) then
-  begin
-    gamemode := indetermined; // Will check if retail or register mode later
-    gamemission := doom;
-    D_AddFile(doomuwad);
-    exit;
-  end;
+    if fexists(doomuwad) then
+    begin
+      gamemode := indetermined; // Will check if retail or register mode later
+      gamemission := doom;
+      D_AddFile(doomuwad);
+      exit;
+    end;
 
-  if fexists(doomwad) then
-  begin
-    gamemode := indetermined; // Will check if retail or register mode later
-    gamemission := doom;
-    D_AddFile(doomwad);
-    exit;
-  end;
+    if fexists(doomwad) then
+    begin
+      gamemode := indetermined; // Will check if retail or register mode later
+      gamemission := doom;
+      D_AddFile(doomwad);
+      exit;
+    end;
 
-  if fexists(doom1wad) then
-  begin
-    gamemode := shareware;
-    gamemission := doom;
-    D_AddFile(doom1wad);
-    exit;
+    if fexists(doom1wad) then
+    begin
+      gamemode := shareware;
+      gamemission := doom;
+      D_AddFile(doom1wad);
+      exit;
+    end;
+
+    if p = 1 then
+    begin
+      doom2wad := FileInDoomPath(doom2wad);
+      doomuwad := FileInDoomPath(doomuwad);
+      doomwad := FileInDoomPath(doomwad);
+      doom1wad := FileInDoomPath(doom1wad);
+      plutoniawad := FileInDoomPath(plutoniawad);
+      tntwad := FileInDoomPath(tntwad);
+      doom2fwad := FileInDoomPath(doom2fwad);
+    end;
   end;
 
   printf('Game mode indeterminate.'#13#10);
   gamemode := indetermined;
-
 end;
 
 //
