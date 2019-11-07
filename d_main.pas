@@ -698,10 +698,12 @@ begin
     if fexists(tmp + result) then
     begin
       result := tmp + result;
+      paths.free;
       exit;
     end;
   end;
   result := fn;
+  paths.free;
 end;
 
 procedure IdentifyVersion;
