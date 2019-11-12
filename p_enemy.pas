@@ -217,11 +217,11 @@ const
   opposite: array[0..8] of dirtype_t = (
     DI_WEST, DI_SOUTHWEST, DI_SOUTH, DI_SOUTHEAST,
     DI_EAST, DI_NORTHEAST, DI_NORTH, DI_NORTHWEST, DI_NODIR
-    );
+  );
 
   diags: array[0..3] of dirtype_t = (
     DI_NORTHWEST, DI_NORTHEAST, DI_SOUTHWEST, DI_SOUTHEAST
-    );
+  );
 
 procedure A_Fall(actor: Pmobj_t);
 begin
@@ -232,20 +232,20 @@ begin
   // are meant to be obstacles.
 end;
 
-
+//
 // ENEMY THINKING
 // Enemies are allways spawned
 // with targetplayer = -1, threshold = 0
 // Most monsters are spawned unaware of all players,
 // but some can be made preaware
+//
 
 
-
-
+//
 // Called by P_NoiseAlert.
 // Recursively traverse adjacent sectors,
 // sound blocking lines cut off traversal.
-
+//
 
 var
   soundtarget: Pmobj_t;
@@ -257,7 +257,8 @@ var
   other: Psector_t;
 begin
   // wake up all monsters in this sector
-  if (sec.validcount = validcount) and (sec.soundtraversed <= soundblocks + 1) then
+  if (sec.validcount = validcount) and
+     (sec.soundtraversed <= soundblocks + 1) then
     exit; // already flooded
 
   sec.validcount := validcount;
@@ -290,11 +291,11 @@ begin
   end;
 end;
 
-
+//
 // P_NoiseAlert
 // If a monster yells at a player,
 // it will alert other monsters to the player.
-
+//
 procedure P_NoiseAlert(target: Pmobj_t; emmiter: Pmobj_t);
 begin
   soundtarget := target;
@@ -302,9 +303,9 @@ begin
   P_RecursiveSound(Psubsector_t(emmiter.subsector).sector, 0);
 end;
 
-
+//
 // P_CheckMeleeRange
-
+//
 function P_CheckMeleeRange(actor: Pmobj_t): boolean;
 var
   pl: Pmobj_t;
@@ -328,9 +329,9 @@ begin
   Result := P_CheckSight(actor, actor.target);
 end;
 
-
+//
 // P_CheckMissileRange
-
+//
 function P_CheckMissileRange(actor: Pmobj_t): boolean;
 var
   dist: fixed_t;
@@ -358,7 +359,7 @@ begin
 
   // OPTIMIZE: get this from a global checksight
   dist := P_AproxDistance(actor.x - actor.target.x, actor.y - actor.target.y) -
-    64 * FRACUNIT;
+            64 * FRACUNIT;
 
   if actor.info.meleestate = 0 then
     dist := dist - 128 * FRACUNIT;  // no melee attack, so fire more
@@ -384,8 +385,9 @@ begin
   end;
 
 
-  if (actor._type = Ord(MT_CYBORG)) or (actor._type = Ord(MT_SPIDER)) or
-    (actor._type = Ord(MT_SKULL)) then
+  if (actor._type = Ord(MT_CYBORG)) or
+     (actor._type = Ord(MT_SPIDER)) or
+     (actor._type = Ord(MT_SKULL)) then
     dist := _SHR1(dist);
 
   if dist > 200 then
@@ -400,11 +402,11 @@ begin
     Result := True;
 end;
 
-
+//
 // P_Move
 // Move in the current direction,
 // returns false if the move is blocked.
-
+//
 const
   xspeed: array[0..7] of fixed_t =
     (FRACUNIT, 47000, 0, -47000, -FRACUNIT, -47000, 0, 47000);
@@ -482,7 +484,7 @@ begin
   Result := True;
 end;
 
-
+//
 // TryWalk
 // Attempts to move actor on
 // in its current (ob->moveangle) direction.
@@ -492,7 +494,7 @@ end;
 // returns TRUE and sets...
 // If a door is in the way,
 // an OpenDoor call is made to start it opening.
-
+//
 function P_TryWalk(actor: Pmobj_t): boolean;
 begin
   if not P_Move(actor) then
@@ -624,9 +626,9 @@ begin
 end;
 
 //---------------------------------------------------------------------------
-
+//
 // FUNC P_LookForMonsters
-
+//
 //---------------------------------------------------------------------------
 const
   MONS_LOOK_RANGE = 20 * 64 * FRACUNIT;
@@ -666,11 +668,12 @@ begin
     inher := Info_GetInheritance(mo.info);
     if inher = Info_GetInheritance(actor.info) then
     begin
-      // JVAL
-      // Same monsters does not kill each other,
-      // only humanoids with weapons.
-      if (inher <> Ord(MT_POSSESSED)) and (inher <> Ord(MT_SHOTGUY)) and
-        (inher <> Ord(MT_CHAINGUY)) then
+    // JVAL
+    // Same monsters does not kill each other,
+    // only humanoids with weapons.
+      if (inher <> Ord(MT_POSSESSED)) and
+         (inher <> Ord(MT_SHOTGUY)) and
+         (inher <> Ord(MT_CHAINGUY)) then
       begin
         think := think.Next;
         continue;
@@ -711,11 +714,11 @@ begin
   Result := False;
 end;
 
-
+//
 // P_LookForPlayers
 // If allaround is false, only look 180 degrees in front.
 // Returns true if a player is targeted.
-
+//
 function P_LookForPlayers(actor: Pmobj_t; allaround: boolean): boolean;
 var
   c: integer;
@@ -784,11 +787,11 @@ begin
 end;
 
 
-
+//
 // A_KeenDie
 // DOOM II special, map 32.
 // Uses special tag 666.
-
+//
 procedure A_KeenDie(mo: Pmobj_t);
 var
   th: Pthinker_t;
@@ -816,14 +819,14 @@ begin
   EV_DoDoor(@junk, Open);
 end;
 
-
+//
 // ACTION ROUTINES
+//
 
-
-
+//
 // A_Look
 // Stay in state until a player is sighted.
-
+//
 procedure A_Look(actor: Pmobj_t);
 var
   targ: Pmobj_t;
@@ -839,7 +842,7 @@ begin
 
     if actor.flags and MF_AMBUSH <> 0 then
     begin
-      if P_CheckSight(actor, actor.target) then
+      if P_CheckSight(actor, targ) then
         seeyou := True;
     end
     else
@@ -864,8 +867,8 @@ begin
       sfx_bgsit1,
       sfx_bgsit2:
         sound := Ord(sfx_bgsit1) + P_Random mod 2;
-      else
-        sound := actor.info.seesound;
+    else
+      sound := actor.info.seesound;
     end;
 
     if actor.info.flags_ex and MF_EX_RANDOMSEESOUND <> 0 then
@@ -891,11 +894,11 @@ begin
   P_SetMobjState(actor, statenum_t(actor.info.seestate));
 end;
 
-
+//
 // A_Chase
 // Actor has a melee attack,
 // so it tries to close as fast as possible
-
+//
 procedure P_DoChase(actor: Pmobj_t; const fast: boolean);
 var
   delta: integer;
@@ -1020,9 +1023,9 @@ begin
   P_DoChase(actor, False);
 end;
 
-
+//
 // A_FaceTarget
-
+//
 procedure A_FaceTarget(actor: Pmobj_t);
 begin
   if actor.target = nil then
@@ -1037,9 +1040,9 @@ begin
     actor.angle := actor.angle + _SHLW(P_Random - P_Random, 21);
 end;
 
-
+//
 // A_PosAttack
-
+//
 procedure A_PosAttack(actor: Pmobj_t);
 var
   angle: angle_t;
@@ -1096,6 +1099,7 @@ begin
   S_StartSound(actor, Ord(sfx_shotgn));
   A_FaceTarget(actor);
   bangle := actor.angle;
+
   slope := P_AimLineAttack(actor, bangle, MISSILERANGE);
 
   angle := bangle + _SHLW(P_Random - P_Random, 20);
@@ -1112,7 +1116,7 @@ begin
     exit;
 
   if (actor.target = nil) or (actor.target.health <= 0) or
-    (not P_CheckSight(actor, actor.target)) then
+     (not P_CheckSight(actor, actor.target)) then
     P_SetMobjState(actor, statenum_t(actor.info.seestate));
 end;
 
@@ -1125,7 +1129,7 @@ begin
     exit;
 
   if (actor.target = nil) or (actor.target.health <= 0) or
-    (not P_CheckSight(actor, actor.target)) then
+     (not P_CheckSight(actor, actor.target)) then
     P_SetMobjState(actor, statenum_t(actor.info.seestate));
 end;
 
@@ -1140,9 +1144,9 @@ begin
   P_SpawnMissile(actor, actor.target, Ord(MT_ARACHPLAZ));
 end;
 
-
+//
 // A_TroopAttack
-
+//
 procedure A_TroopAttack(actor: Pmobj_t);
 var
   damage: integer;
@@ -1225,9 +1229,9 @@ begin
   P_SpawnMissile(actor, actor.target, Ord(MT_BRUISERSHOT));
 end;
 
-
+//
 // A_SkelMissile
-
+//
 procedure A_SkelMissile(actor: Pmobj_t);
 var
   mo: Pmobj_t;
@@ -1242,9 +1246,12 @@ begin
 
   actor.z := actor.z - 16 * FRACUNIT; // back to normal
 
-  mo.x := mo.x + mo.momx;
-  mo.y := mo.y + mo.momy;
-  mo.tracer := actor.target;
+  if mo <> nil then
+  begin
+    mo.x := mo.x + mo.momx;
+    mo.y := mo.y + mo.momy;
+    mo.tracer := actor.target;
+  end;
 end;
 
 const
@@ -1343,10 +1350,10 @@ begin
   end;
 end;
 
-
+//
 // PIT_VileCheck
 // Detect a corpse that could be raised.
-
+//
 var
   corpsehit: Pmobj_t;
   viletryx: fixed_t;
@@ -1396,10 +1403,10 @@ begin
     Result := False;  // got one, so stop checking
 end;
 
-
+//
 // A_VileChase
 // Check for ressurecting a body
-
+//
 procedure A_VileChase(actor: Pmobj_t);
 var
   xl: integer;
@@ -1428,12 +1435,12 @@ begin
     begin
       for by := yl to yh do
       begin
-        // Call PIT_VileCheck to check
-        // whether object is a corpse
-        // that canbe raised.
+      // Call PIT_VileCheck to check
+      // whether object is a corpse
+      // that canbe raised.
         if not P_BlockThingsIterator(bx, by, PIT_VileCheck) then
         begin
-          // got one!
+        // got one!
           temp := actor.target;
           actor.target := corpsehit;
           A_FaceTarget(actor);
@@ -1462,18 +1469,18 @@ begin
   A_Chase(actor);
 end;
 
-
+//
 // A_VileStart
-
+//
 procedure A_VileStart(actor: Pmobj_t);
 begin
   S_StartSound(actor, Ord(sfx_vilatk));
 end;
 
-
+//
 // A_Fire
 // Keep fire in front of player unless out of sight
-
+//
 procedure A_Fire(actor: Pmobj_t);
 var
   dest: Pmobj_t;
@@ -1508,10 +1515,10 @@ begin
   A_Fire(actor);
 end;
 
-
+//
 // A_VileTarget
 // Spawn the hellfire
-
+//
 procedure A_VileTarget(actor: Pmobj_t);
 var
   fog: Pmobj_t;
@@ -1529,9 +1536,9 @@ begin
   A_Fire(fog);
 end;
 
-
+//
 // A_VileAttack
-
+//
 procedure A_VileAttack(actor: Pmobj_t);
 var
   fire: Pmobj_t;
@@ -1562,12 +1569,12 @@ begin
   P_RadiusAttack(fire, actor, 70);
 end;
 
-
+//
 // Mancubus attack,
 // firing three missiles (bruisers)
 // in three different directions?
 // Doesn't look like it.
-
+//
 const
   FATSPREAD = ANG90 div 8;
 
@@ -1675,10 +1682,10 @@ begin
   actor.momz := (dest.z + _SHR1(dest.Height) - actor.z) div dist;
 end;
 
-
+//
 // A_PainShootSkull
 // Spawn a lost soul and launch it at the target
-
+//
 procedure A_PainShootSkull(actor: Pmobj_t; angle: angle_t);
 var
   x: fixed_t;
@@ -1768,8 +1775,8 @@ begin
     Ord(sfx_bgdth1),
     Ord(sfx_bgdth2):
       sound := Ord(sfx_bgdth1) + P_Random mod 2;
-    else
-      sound := actor.info.deathsound;
+  else
+    sound := actor.info.deathsound;
   end;
 
   // Check for bosses.
@@ -1791,9 +1798,9 @@ begin
   A_PainSound(actor, actor);
 end;
 
-
+//
 // A_Explode
-
+//
 procedure A_Explode(thingy: Pmobj_t);
 begin
   if thingy.info.flags_ex and MF_EX_CUSTOMEXPLODE <> 0 then
@@ -1809,11 +1816,11 @@ begin
   end;
 end;
 
-
+//
 // A_BossDeath
 // Possibly trigger special effects
 // if on first boss level
-
+//
 procedure A_BossDeath(mo: Pmobj_t);
 var
   th: Pthinker_t;
@@ -1833,41 +1840,41 @@ begin
   begin
     case gameepisode of
       1:
-      begin
-        if gamemap <> 8 then
-          exit;
-        if mo._type <> Ord(MT_BRUISER) then
-          exit;
-      end;
+        begin
+          if gamemap <> 8 then
+            exit;
+          if mo._type <> Ord(MT_BRUISER) then
+            exit;
+        end;
       2:
-      begin
-        if gamemap <> 8 then
-          exit;
-        if mo._type <> Ord(MT_CYBORG) then
-          exit;
-      end;
+        begin
+          if gamemap <> 8 then
+            exit;
+          if mo._type <> Ord(MT_CYBORG) then
+            exit;
+        end;
       3:
-      begin
-        if gamemap <> 8 then
-          exit;
-        if mo._type <> Ord(MT_SPIDER) then
-          exit;
-      end;
+        begin
+          if gamemap <> 8 then
+            exit;
+          if mo._type <> Ord(MT_SPIDER) then
+            exit;
+        end;
       4:
-      begin
-        case gamemap of
-          6: if mo._type <> Ord(MT_CYBORG) then
-              exit;
-          8: if mo._type <> Ord(MT_SPIDER) then
-              exit;
+        begin
+          case gamemap of
+            6: if mo._type <> Ord(MT_CYBORG) then
+                 exit;
+            8: if mo._type <> Ord(MT_SPIDER) then
+                 exit;
           else  // JVAL 21/9/2007 Fixed bug that ended E4M2 after cyberdeamon death
-          begin
-            if not majorbossdeathendsdoom1level then
-              exit;
+            begin
+              if not majorbossdeathendsdoom1level then
+                exit;
+            end;
           end;
         end;
-      end;
-      else
+    else
       begin
         if gamemap <> 8 then
           exit;
@@ -1927,26 +1934,26 @@ begin
   begin
     case gameepisode of
       1:
-      begin
-        junk.tag := 666;
-        EV_DoFloor(@junk, lowerFloorToLowest);
-        exit;
-      end;
-      4:
-      begin
-        if gamemap = 6 then
-        begin
-          junk.tag := 666;
-          EV_DoDoor(@junk, blazeOpen);
-          exit;
-        end
-        else if gamemap = 8 then
         begin
           junk.tag := 666;
           EV_DoFloor(@junk, lowerFloorToLowest);
           exit;
         end;
-      end;
+      4:
+        begin
+          if gamemap = 6 then
+          begin
+            junk.tag := 666;
+            EV_DoDoor(@junk, blazeOpen);
+            exit;
+          end
+          else if gamemap = 8 then
+          begin
+            junk.tag := 666;
+            EV_DoFloor(@junk, lowerFloorToLowest);
+            exit;
+          end;
+        end;
     end;
   end;
   G_ExitLevel;
@@ -2187,7 +2194,6 @@ procedure A_PlayerScream(mo: Pmobj_t);
 var
   sound: integer;
 begin
-
   if (gamemode = commercial) and (mo.health < -50) then
   begin
     // IF THE PLAYER DIES
@@ -2204,11 +2210,11 @@ begin
 end;
 
 //----------------------------------------------------------------------------
-
+//
 // PROC P_Massacre
-
+//
 // Kills all monsters.
-
+//
 //----------------------------------------------------------------------------
 
 procedure P_Massacre;
@@ -2230,8 +2236,9 @@ begin
         P_DamageMobj(mo, nil, nil, 10000);
       end;
     end;
-    think := think.Next;
+    think := think.next;
   end;
 end;
 
 end.
+

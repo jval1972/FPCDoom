@@ -43,6 +43,7 @@ uses
   p_mobj_h, 
   p_terrain, 
   p_enemy,
+  p_saveg,
   i_video, 
   i_system, 
   i_music,
@@ -83,7 +84,7 @@ type
   Pdefault_t = ^default_t;
 
 const
-  NUMDEFAULTS = 117;
+  NUMDEFAULTS = 119;
 
   defaults: array[0..NUMDEFAULTS - 1] of default_t = (
     (name: 'Display';
@@ -475,6 +476,22 @@ const
     (name: 'continueafterplayerdeath';
      location: @continueafterplayerdeath;
      setable: DFS_SINGLEPLAYER;
+     defaultsvalue: '';
+     defaultivalue: 0;
+     defaultbvalue: true;
+     _type: tBoolean),
+
+    (name: 'loadtracerfromsavedgame';
+     location: @loadtracerfromsavedgame;
+     setable: DFS_ALWAYS;
+     defaultsvalue: '';
+     defaultivalue: 0;
+     defaultbvalue: true;
+     _type: tBoolean),
+
+    (name: 'loadtargetfromsavedgame';
+     location: @loadtargetfromsavedgame;
+     setable: DFS_ALWAYS;
      defaultsvalue: '';
      defaultivalue: 0;
      defaultbvalue: true;

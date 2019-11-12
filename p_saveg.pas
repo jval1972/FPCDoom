@@ -56,6 +56,10 @@ var
   save_p: PByteArray;
   savegameversion: integer;
 
+var
+  loadtracerfromsavedgame: boolean = true;
+  loadtargetfromsavedgame: boolean = true;
+
 implementation
 
 uses
@@ -344,8 +348,8 @@ begin
       PADSAVEP(old_p);
       mobj := Pmobj_t(old_p);
       incp(old_p, SizeOf(mobj_t));
-      mobj.tracer := Pmobj_t(lst.IndexOf(mobj.tracer));
-      mobj.target := Pmobj_t(lst.IndexOf(mobj.target));
+      mobj.tracer := Pmobj_t((lst.IndexOf(mobj.tracer) and $FFFF) or (LongWord(mobj.state) shl 16));
+      mobj.target := Pmobj_t((lst.IndexOf(mobj.target) and $FFFF) or (LongWord(mobj.state) shl 16));
     end;
     th := th.next;
   end;
@@ -365,7 +369,7 @@ var
   next: Pthinker_t;
   mobj: Pmobj_t;
   lst: TDPointerList;
-  i, idx: integer;
+  i, idx, idxstate: integer;
 begin
   // remove all the current thinkers
   currentthinker := thinkercap.next;
@@ -432,16 +436,29 @@ begin
   for i := 1 to lst.Count - 1 do
   begin
     mobj := lst.Pointers[i];
-    idx := integer(mobj.tracer);
-    if (idx >= 1) and (idx < lst.Count) then
-      mobj.tracer := lst.Pointers[idx]
+
+    if loadtracerfromsavedgame then
+    begin
+      idx := LongWord(mobj.tracer) and $FFFF;
+      idxstate := LongWord(mobj.tracer) shr 16;
+      mobj.tracer := nil;
+      if (idx >= 1) and (idx < lst.Count) and (@states[idxstate] = mobj.state) then
+        mobj.tracer := lst.Pointers[idx];
+    end
     else
       mobj.tracer := nil;
-    idx := integer(mobj.target);
-    if (idx >= 1) and (idx < lst.Count) then
-      mobj.target := lst.Pointers[idx]
+
+    if loadtargetfromsavedgame then
+    begin
+      idx := LongWord(mobj.target) and $FFFF;
+      idxstate := LongWord(mobj.target) shr 16;
+      mobj.target := nil;
+      if (idx >= 1) and (idx < lst.Count) and (@states[idxstate] = mobj.state) then
+        mobj.target := lst.Pointers[idx];
+    end
     else
-      mobj.tracer := nil;
+      mobj.target := nil;
+
   end;
 
   lst.Free;

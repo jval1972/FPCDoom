@@ -114,6 +114,7 @@ uses
   p_mobj_h,
   p_terrain,
   p_enemy,
+  p_saveg,
   r_aspect,
   r_data,
   r_main,
@@ -767,6 +768,8 @@ type
     cmp_spawnrandommonsters,
     cmp_allowterrainsplashes,
     cmp_continueafterplayerdeath,
+    cmp_loadtracerfromsavedgame,
+    cmp_loadtargetfromsavedgame,
     cmp_end
   );
 
@@ -1854,8 +1857,8 @@ begin
 end;
 
 const
-  wipestyles: array[0..2] of string =
-    ('WIPE', 'FADE', 'SLIDE DOWN');
+  wipestyles: array[0..Ord(NUMWIPESTYLES) - 1] of string =
+    ('WIPE', 'FADE', 'SLIDE DOWN', 'FIZZLE');
 
 
 procedure M_DrawDisplayAppearanceOptions;
@@ -4091,6 +4094,21 @@ begin
   pmi.pBoolVal := @continueafterplayerdeath;
   pmi.alphaKey := 'f';
 
+  inc(pmi);
+  pmi.status := 1;
+  pmi.name := '!Load tracer from saved games';
+  pmi.cmd := 'loadtracerfromsavedgame';
+  pmi.routine := @M_BoolCmd;
+  pmi.pBoolVal := @loadtracerfromsavedgame;
+  pmi.alphaKey := 'l';
+
+  inc(pmi);
+  pmi.status := 1;
+  pmi.name := '!Load target from saved games';
+  pmi.cmd := 'loadtargetfromsavedgame';
+  pmi.routine := @M_BoolCmd;
+  pmi.pBoolVal := @loadtargetfromsavedgame;
+  pmi.alphaKey := 'l';
 
 ////////////////////////////////////////////////////////////////////////////////
 //CompatibilityDef

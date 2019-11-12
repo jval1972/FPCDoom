@@ -45,6 +45,8 @@ type
     wipestyle_Fade,
     // slide down
     wipestyle_SlideDown,
+    // Wolf3D
+    wipestyle_Fizzle,
     NUMWIPESTYLES
   );
 
@@ -56,7 +58,7 @@ implementation
 uses
   d_fpc,
   doomdef,
-  m_rnd,
+  m_rnd, m_misc,
   m_fixed,
   r_hires,
   i_video,
@@ -76,12 +78,23 @@ var
   yy: Pfixed_tArray;
   vy: fixed_t;
 
+type
+  fizzlearray_t = array[0..319, 0..199] of integer;
+  Pfizzlearray_t = ^fizzlearray_t;
+
+var
+  fizzlearray: Pfizzlearray_t;
+
 procedure wipe_initMelt;
 var
   i, r: integer;
   py, py1: Pfixed_t;
   SHEIGHTS: array[0..MAXWIDTH - 1] of integer;
   RANDOMS: array[0..319] of byte;
+  x, y: LongWord;
+  rndval: LongWord;
+  lsb: byte;
+  step: integer;
 begin
   for i := 0 to SCREENWIDTH - 1 do
     SHEIGHTS[i] := trunc(i * 320 / SCREENWIDTH);
@@ -124,7 +137,29 @@ begin
   for i := 1 to SCREENWIDTH - 1 do
     if SHEIGHTS[i - 1] = SHEIGHTS[i] then
       yy[i] := yy[i - 1];
+
+// Setup fizzle table
+// Algorithm by Fabien Sanglard
+// Adapted from http://fabiensanglard.net/fizzlefade/index.php
+  step := 0;
+  fizzlearray := Z_Malloc(SizeOf(fizzlearray_t), PU_STATIC, nil);
+  rndval := 1;
+  repeat
+    y := rndval and $FF;
+    x := (rndval and $1FF00) shr 8;
+    lsb  := rndval and 1;
+    rndval := rndval shr 1;
+    if lsb <> 0 then
+      rndval := rndval xor $12000;
+    if (x < 320) and (y < 200) then
+    begin
+      fizzlearray[x, y] := step;
+      inc(step);
+    end;
+  until rndval = 1;
 end;
+var
+  sshot: integer = 0;
 
 function wipe_doMelt(ticks: integer): integer;
 var
@@ -184,6 +219,8 @@ begin
     end;
     dec(ticks);
   end;
+  M_ScreenShot('melt' + itoa(sshot));
+  inc(sshot);
 end;
 
 function wipe_doFade(ticks: integer): integer;
@@ -204,6 +241,8 @@ begin
 
   if wipefrac > 0 then
     result := 0;
+  M_ScreenShot('fade' + itoa(sshot));
+  inc(sshot);
 end;
 
 function wipe_doSlideDown(ticks: integer): integer;
@@ -229,11 +268,48 @@ begin
 
   if wipefrac > 0 then
     result := 0;
+  M_ScreenShot('slide' + itoa(sshot));
+  inc(sshot);
+end;
+
+function wipe_doFizzle(ticks: integer): integer;
+var
+  x, y: integer;
+  fizzfrac: integer;
+  idx: integer;
+begin
+  result := 1;
+
+  if wipefrac = 0 then
+    exit;
+
+  wipefrac := wipefrac - ticks * 4096;
+
+  if wipefrac < 0 then
+    wipefrac := 0;
+
+  fizzfrac := round(wipefrac / (320 * 200) * FRACUNIT);
+
+  for x := 0 to SCREENWIDTH  - 1 do
+    for y := 0 to SCREENHEIGHT - 1 do
+    begin
+      idx := y * SCREENWIDTH + x;
+      if fizzlearray[trunc(x * 320 / SCREENWIDTH), trunc(y * 200 / SCREENHEIGHT)] > fizzfrac then
+        screen32[idx] := wipe_scr_end[idx]
+      else
+        screen32[idx] := wipe_scr_start[idx]
+    end;
+
+  if wipefrac > 0 then
+    result := 0;
+  M_ScreenShot('fizzle' + itoa(sshot));
+  inc(sshot);
 end;
 
 procedure wipe_exitMelt;
 begin
   Z_Free(yy);
+  Z_Free(fizzlearray);
   memfree(wipe_scr_start, SCREENWIDTH * SCREENHEIGHT * SizeOf(LongWord));
   memfree(wipe_scr_end, SCREENWIDTH * SCREENHEIGHT * SizeOf(LongWord));
 end;
@@ -272,6 +348,7 @@ begin
     Ord(wipestyle_Melt): wipeproc := @wipe_doMelt;
     Ord(wipestyle_Fade): wipeproc := @wipe_doFade;
     Ord(wipestyle_SlideDown): wipeproc := @wipe_doSlideDown;
+    Ord(wipestyle_Fizzle): wipeproc := @wipe_doFizzle;
   else
     wipeproc := @wipe_doMelt;
   end;

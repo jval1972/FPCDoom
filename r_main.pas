@@ -1287,11 +1287,6 @@ begin
     R_StartZBuffer;
 
     // Render the depthbuffer
-{    R_RenderItemsMT(RI_DEPTHBUFFERSPAN, RIF_WAIT);
-    R_RenderItemsMT(RI_DEPTHBUFFERWALL, RIF_WAIT);
-    if R_CastLightmapOnMasked then
-      R_RenderItemsMT(RI_DEPTHBUFFERMASKED, RIF_WAIT);}
-
     R_RenderItemsST(RI_DEPTHBUFFERSPAN);
     R_RenderItemsST(RI_DEPTHBUFFERWALL);
     if R_CastLightmapOnMasked then
