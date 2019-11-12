@@ -86,9 +86,9 @@ uses
 // Pads save_p to a 4-byte boundary
 //  so that the load/save works on SGI&Gecko.
 
-procedure PADSAVEP;
+procedure PADSAVEP(var prt: PByteArray);
 begin
-  save_p := PByteArray(integer(save_p) + ((4 - (integer(save_p) and 3) and 3)));
+  prt := PByteArray(integer(prt) + ((4 - (integer(prt) and 3) and 3)));
 end;
 
 //
@@ -105,7 +105,7 @@ begin
     if not playeringame[i] then
       continue;
 
-    PADSAVEP;
+    PADSAVEP(save_p);
 
     dest := Pplayer_t(save_p);
     memcpy(dest, @players[i], SizeOf(player_t));
@@ -129,7 +129,7 @@ begin
     if not playeringame[i] then
       continue;
 
-    PADSAVEP;
+    PADSAVEP(save_p);
 
     if savegameversion = VERSION then
     begin
@@ -304,16 +304,24 @@ procedure P_ArchiveThinkers;
 var
   th: Pthinker_t;
   mobj: Pmobj_t;
+  lst: TDPointerList;
+  old_p: PByteArray;
 begin
+  // Preserve target & tracer on saved games
+  old_p := save_p;
+  lst := TDPointerList.Create;
+  lst.AddItem(nil);
+
   // save off the current thinkers
   th := thinkercap.next;
   while th <> @thinkercap do
   begin
     if @th._function.acp1 = @P_MobjThinker then
     begin
+      lst.AddItem(th);
       save_p[0] := Ord(tc_mobj);
       save_p := @save_p[1];
-      PADSAVEP;
+      PADSAVEP(save_p);
       mobj := Pmobj_t(save_p);
       memcpy(mobj, th, SizeOf(mobj_t));
       incp(save_p, SizeOf(mobj_t));
@@ -325,6 +333,23 @@ begin
   // I_Error ("P_ArchiveThinkers: Unknown thinker function");
     th := th.next;
   end;
+
+  // Preserve target & tracer on saved games
+  th := thinkercap.next;
+  while th <> @thinkercap do
+  begin
+    if @th._function.acp1 = @P_MobjThinker then
+    begin
+      old_p := @old_p[1];
+      PADSAVEP(old_p);
+      mobj := Pmobj_t(old_p);
+      incp(old_p, SizeOf(mobj_t));
+      mobj.tracer := Pmobj_t(lst.IndexOf(mobj.tracer));
+      mobj.target := Pmobj_t(lst.IndexOf(mobj.target));
+    end;
+    th := th.next;
+  end;
+  lst.Free;
 
   // add a terminating marker
   save_p[0] := Ord(tc_end);
@@ -339,6 +364,8 @@ var
   currentthinker: Pthinker_t;
   next: Pthinker_t;
   mobj: Pmobj_t;
+  lst: TDPointerList;
+  i, idx: integer;
 begin
   // remove all the current thinkers
   currentthinker := thinkercap.next;
@@ -355,6 +382,10 @@ begin
   end;
   P_InitThinkers;
 
+  // Preserve target & tracer on saved games
+  lst := TDPointerList.Create;
+  lst.AddItem(nil);
+
   // read in saved thinkers
   while true do
   begin
@@ -362,12 +393,13 @@ begin
     save_p := @save_p[1];
     case tclass of
       Ord(tc_end):
-        exit; // end of list
+        break; // end of list
 
       Ord(tc_mobj):
         begin
-          PADSAVEP;
+          PADSAVEP(save_p);
           mobj := Z_Malloc(SizeOf(mobj_t), PU_LEVEL, nil);
+          lst.AddItem(mobj);
 
           if savegameversion = VERSION then
           begin
@@ -378,8 +410,6 @@ begin
             I_Error('P_UnArchiveThinkers(): Unsupported saved game version: %d', [savegameversion]);
 
           mobj.state := @states[integer(mobj.state)];
-          mobj.target := nil;
-          mobj.tracer := nil;
           if mobj.player <> nil then
           begin
             mobj.player := @players[integer(mobj.player) - 1];
@@ -397,6 +427,24 @@ begin
         I_Error('P_UnArchiveThinkers(): Unknown tclass %d in savegame', [tclass]);
     end;
   end;
+
+  // Preserve target & tracer on saved games
+  for i := 1 to lst.Count - 1 do
+  begin
+    mobj := lst.Pointers[i];
+    idx := integer(mobj.tracer);
+    if (idx >= 1) and (idx < lst.Count) then
+      mobj.tracer := lst.Pointers[idx]
+    else
+      mobj.tracer := nil;
+    idx := integer(mobj.target);
+    if (idx >= 1) and (idx < lst.Count) then
+      mobj.target := lst.Pointers[idx]
+    else
+      mobj.tracer := nil;
+  end;
+
+  lst.Free;
 end;
 
 //
@@ -462,7 +510,7 @@ begin
       begin
         save_p[0] := Ord(tc_ceiling);
         save_p := @save_p[1];
-        PADSAVEP;
+        PADSAVEP(save_p);
         ceiling := Pceiling_t(save_p);
         memcpy(ceiling, th, SizeOf(ceiling_t));
         incp(save_p, SizeOf(ceiling_t));
@@ -475,7 +523,7 @@ begin
     begin
       save_p[0] := Ord(tc_ceiling);
       save_p := @save_p[1];
-      PADSAVEP;
+      PADSAVEP(save_p);
       ceiling := Pceiling_t(save_p);
       memcpy(ceiling, th, SizeOf(ceiling_t));
       incp(save_p, SizeOf(ceiling_t));
@@ -487,7 +535,7 @@ begin
     begin
       save_p[0] := Ord(tc_door);
       save_p := @save_p[1];
-      PADSAVEP;
+      PADSAVEP(save_p);
       door := Pvldoor_t(save_p);
       memcpy(door, th, SizeOf(vldoor_t));
       incp(save_p, SizeOf(vldoor_t));
@@ -499,7 +547,7 @@ begin
     begin
       save_p[0] := Ord(tc_floor);
       save_p := @save_p[1];
-      PADSAVEP;
+      PADSAVEP(save_p);
       floor := Pfloormove_t(save_p);
       memcpy(floor, th, SizeOf(floormove_t));
       incp(save_p, SizeOf(floormove_t));
@@ -511,7 +559,7 @@ begin
     begin
       save_p[0] := Ord(tc_plat);
       save_p := @save_p[1];
-      PADSAVEP;
+      PADSAVEP(save_p);
       plat := Pplat_t(save_p);
       memcpy(plat, th, SizeOf(plat_t));
       incp(save_p, SizeOf(plat_t));
@@ -523,7 +571,7 @@ begin
     begin
       save_p[0] := Ord(tc_flash);
       save_p := @save_p[1];
-      PADSAVEP;
+      PADSAVEP(save_p);
       flash := Plightflash_t(save_p);
       memcpy(flash, th, SizeOf(lightflash_t));
       incp(save_p, SizeOf(lightflash_t));
@@ -535,7 +583,7 @@ begin
     begin
       save_p[0] := Ord(tc_strobe);
       save_p := @save_p[1];
-      PADSAVEP;
+      PADSAVEP(save_p);
       strobe := Pstrobe_t(save_p);
       memcpy(strobe, th, SizeOf(strobe_t));
       incp(save_p, SizeOf(strobe_t));
@@ -547,7 +595,7 @@ begin
     begin
       save_p[0] := Ord(tc_glow);
       save_p := @save_p[1];
-      PADSAVEP;
+      PADSAVEP(save_p);
       glow := Pglow_t(save_p);
       memcpy(glow, th, SizeOf(glow_t));
       incp(save_p, SizeOf(glow_t));
@@ -559,7 +607,7 @@ begin
     begin
       save_p[0] := Ord(tc_fireflicker);
       save_p := @save_p[1];
-      PADSAVEP;
+      PADSAVEP(save_p);
       flicker := Pfireflicker_t(save_p);
       memcpy(flicker, th, SizeOf(fireflicker_t));
       incp(save_p, SizeOf(fireflicker_t));
@@ -600,7 +648,7 @@ begin
 
       Ord(tc_ceiling):
         begin
-          PADSAVEP;
+          PADSAVEP(save_p);
           ceiling := Z_Malloc(SizeOf(ceiling_t), PU_LEVEL, nil);
           memcpy(ceiling, save_p, SizeOf(ceiling_t));
           incp(save_p, SizeOf(ceiling_t));
@@ -616,7 +664,7 @@ begin
 
       Ord(tc_door):
         begin
-          PADSAVEP;
+          PADSAVEP(save_p);
           door := Z_Malloc(SizeOf(vldoor_t), PU_LEVEL, nil);
           memcpy(door, save_p, SizeOf(vldoor_t));
           incp(save_p, SizeOf(vldoor_t));
@@ -628,7 +676,7 @@ begin
 
       Ord(tc_floor):
         begin
-          PADSAVEP;
+          PADSAVEP(save_p);
           floor := Z_Malloc(SizeOf(floormove_t), PU_LEVEL, nil);
           memcpy(floor, save_p, SizeOf(floormove_t));
           incp(save_p, SizeOf(floormove_t));
@@ -640,7 +688,7 @@ begin
 
       Ord(tc_plat):
         begin
-          PADSAVEP;
+          PADSAVEP(save_p);
           plat := Z_Malloc(SizeOf(plat_t), PU_LEVEL, nil);
           memcpy(plat, save_p, SizeOf(plat_t));
           incp(save_p, SizeOf(plat_t));
@@ -656,7 +704,7 @@ begin
 
       Ord(tc_flash):
         begin
-          PADSAVEP;
+          PADSAVEP(save_p);
           flash := Z_Malloc(Sizeof(lightflash_t), PU_LEVEL, nil);
           memcpy(flash, save_p, SizeOf(lightflash_t));
           incp(save_p, SizeOf(lightflash_t));
@@ -667,7 +715,7 @@ begin
 
       Ord(tc_strobe):
         begin
-          PADSAVEP;
+          PADSAVEP(save_p);
           strobe := Z_Malloc(SizeOf(strobe_t), PU_LEVEL, nil);
           memcpy(strobe, save_p, SizeOf(strobe_t));
           incp(save_p, SizeOf(strobe_t));
@@ -678,7 +726,7 @@ begin
 
       Ord(tc_glow):
         begin
-          PADSAVEP;
+          PADSAVEP(save_p);
           glow := Z_Malloc(SizeOf(glow_t), PU_LEVEL, nil);
           memcpy(glow, save_p, SizeOf(glow_t));
           incp(save_p, SizeOf(glow_t));
@@ -689,7 +737,7 @@ begin
 
       Ord(tc_fireflicker):
         begin
-          PADSAVEP;
+          PADSAVEP(save_p);
           flicker := Z_Malloc(SizeOf(fireflicker_t), PU_LEVEL, nil);
           memcpy(flicker, save_p, SizeOf(fireflicker_t));
           incp(save_p, SizeOf(fireflicker_t));

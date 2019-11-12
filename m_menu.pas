@@ -109,6 +109,7 @@ uses
   i_system,
   i_sound,
   e_endoom,
+  f_wipe,
   i_video,
   p_mobj_h,
   p_terrain,
@@ -615,6 +616,7 @@ type
   optionsdisplayappearance_e = (
     od_drawfps,
     od_shademenubackground,
+    od_wipestyle,
     od_displayendscreen,
     optdispappearance_end
   );
@@ -1846,6 +1848,16 @@ const
   menubackrounds: array[0..2] of string =
     ('NONE', 'SHADOW', 'TEXTURE');
 
+procedure M_SwitchWipeStyle(choice: integer);
+begin
+  wipestyle := (wipestyle + 1) mod Ord(NUMWIPESTYLES);
+end;
+
+const
+  wipestyles: array[0..2] of string =
+    ('WIPE', 'FADE', 'SLIDE DOWN');
+
+
 procedure M_DrawDisplayAppearanceOptions;
 var
   ppos: menupos_t;
@@ -1855,6 +1867,10 @@ begin
 
   ppos := M_WriteText(OptionsDisplayAppearanceDef.x, OptionsDisplayAppearanceDef.y + OptionsDisplayAppearanceDef.itemheight * Ord(od_shademenubackground), 'Menu background: ');
   M_WriteColorText(ppos.x, ppos.y, menubackrounds[shademenubackground mod 3], 'CRGRAY');
+
+  ppos := M_WriteText(OptionsDisplayAppearanceDef.x, OptionsDisplayAppearanceDef.y + OptionsDisplayAppearanceDef.itemheight * Ord(od_wipestyle), 'Wipe Style: ');
+  M_WriteColorText(ppos.x, ppos.y, wipestyles[wipestyle mod Ord(NUMWIPESTYLES)], 'CRGRAY');
+
 end;
 
 procedure M_DrawDisplayAutomapOptions;
@@ -3598,6 +3614,14 @@ begin
   pmi.routine := @M_SwitchShadeMode;
   pmi.pBoolVal := nil;
   pmi.alphaKey := 'b';
+
+  inc(pmi);
+  pmi.status := 1;
+  pmi.name := '!Wipe style';
+  pmi.cmd := 'wipestyle';
+  pmi.routine := @M_SwitchWipeStyle;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := 'w';
 
   inc(pmi);
   pmi.status := 1;

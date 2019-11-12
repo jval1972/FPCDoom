@@ -38,13 +38,18 @@ procedure wipe_EndScreen;
 function wipe_Ticker(ticks: integer): boolean;
 
 type
-  wipe_t = (
-    // simple gradual pixel change for 8-bit only
-    wipe_ColorXForm,
+  wipestyle_t = (
     // weird screen melt
-    wipe_Melt,
-    wipe_NUMWIPES
+    wipestyle_Melt,
+    // fade
+    wipestyle_Fade,
+    // slide down
+    wipestyle_SlideDown,
+    NUMWIPESTYLES
   );
+
+var
+  wipestyle: integer = Ord(wipestyle_Melt);
 
 implementation
 
@@ -53,6 +58,7 @@ uses
   doomdef,
   m_rnd,
   m_fixed,
+  r_hires,
   i_video,
   v_video,
   z_memory;
@@ -64,6 +70,7 @@ uses
 var
   wipe_scr_start: PLongWordArray;
   wipe_scr_end: PLongWordArray;
+  wipefrac: fixed_t = 0;
 
 var
   yy: Pfixed_tArray;
@@ -80,6 +87,8 @@ begin
     SHEIGHTS[i] := trunc(i * 320 / SCREENWIDTH);
   for i := 0 to 319 do
     RANDOMS[i] := I_Random;
+
+  wipefrac := FRACUNIT;
 
   // copy start screen to main screen
   memcpy(screen32, wipe_scr_start, SCREENWIDTH * SCREENHEIGHT * SizeOf(LongWord));
@@ -177,6 +186,51 @@ begin
   end;
 end;
 
+function wipe_doFade(ticks: integer): integer;
+var
+  i: integer;
+begin
+  result := 1;
+
+  if wipefrac = 0 then
+    exit;
+
+  wipefrac := wipefrac - ticks * 4096;
+  if wipefrac < 0 then
+    wipefrac := 0;
+
+  for i := 0 to SCREENWIDTH * SCREENHEIGHT - 1 do
+    screen32[i] := R_ColorAverage(wipe_scr_end[i], wipe_scr_start[i], wipefrac);
+
+  if wipefrac > 0 then
+    result := 0;
+end;
+
+function wipe_doSlideDown(ticks: integer): integer;
+var
+  i: integer;
+  y: integer;
+begin
+  result := 1;
+
+  if wipefrac = 0 then
+    exit;
+
+  wipefrac := wipefrac - ticks * 3121;
+  if wipefrac < 0 then
+    wipefrac := 0;
+
+  y := SCREENHEIGHT - trunc(wipefrac * SCREENHEIGHT / FRACUNIT);
+
+  for i := 0 to y * SCREENWIDTH - 1 do
+    screen32[i] := wipe_scr_end[SCREENWIDTH * (SCREENHEIGHT - y) + i];
+  for i := y * SCREENWIDTH to SCREENWIDTH * SCREENHEIGHT - 1 do
+    screen32[i] := wipe_scr_start[i - y * SCREENWIDTH];
+
+  if wipefrac > 0 then
+    result := 0;
+end;
+
 procedure wipe_exitMelt;
 begin
   Z_Free(yy);
@@ -200,7 +254,12 @@ end;
 var
   wiping: boolean = false;
 
+type
+  wipeproc_t = function (ticks: integer): integer;
+
 function wipe_Ticker(ticks: integer): boolean;
+var
+  wipeproc: wipeproc_t;
 begin
   // initial stuff
   if not wiping then
@@ -209,8 +268,16 @@ begin
     wipe_initMelt;
   end;
 
+  case wipestyle of
+    Ord(wipestyle_Melt): wipeproc := @wipe_doMelt;
+    Ord(wipestyle_Fade): wipeproc := @wipe_doFade;
+    Ord(wipestyle_SlideDown): wipeproc := @wipe_doSlideDown;
+  else
+    wipeproc := @wipe_doMelt;
+  end;
+
   // do a piece of wipe-in
-  if wipe_doMelt(ticks) <> 0 then
+  if wipeproc(ticks) <> 0 then
   begin
     // final stuff
     wiping := false;

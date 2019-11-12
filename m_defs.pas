@@ -37,6 +37,7 @@ uses
   doomdef,
   d_english,
   e_endoom,
+  f_wipe,
   g_game,
   hu_stuff,
   p_mobj_h, 
@@ -82,7 +83,7 @@ type
   Pdefault_t = ^default_t;
 
 const
-  NUMDEFAULTS = 116;
+  NUMDEFAULTS = 117;
 
   defaults: array[0..NUMDEFAULTS - 1] of default_t = (
     (name: 'Display';
@@ -196,6 +197,14 @@ const
      defaultivalue: 0;
      defaultbvalue: true;
      _type: tBoolean),
+
+    (name: 'wipestyle';
+    location: @wipestyle;
+    setable: DFS_ALWAYS;
+    defaultsvalue: '';
+    defaultivalue: 0;
+    defaultbvalue: true;
+    _type: tInteger),
 
     (name: 'shademenubackground';
      location: @shademenubackground;
