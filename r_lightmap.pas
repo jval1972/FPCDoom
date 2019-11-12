@@ -1184,11 +1184,11 @@ var
   dropoffarray: array[0..NUMDROPOFFARRAYITEMS - 1] of dropoffitem_t = (
     (maxwidth: 320;        laccuraccy: (3, 2, 1, 1)),
     (maxwidth: 640;        laccuraccy: (4, 3, 2, 1)),
-    (maxwidth: 1024;       laccuraccy: (5, 4, 3, 2)),
-    (maxwidth: 1280;       laccuraccy: (6, 5, 4, 3)),
-    (maxwidth: 1366;       laccuraccy: (6, 5, 4, 3)),
-    (maxwidth: 1600;       laccuraccy: (7, 6, 5, 4)),
-    (maxwidth: 2147483647; laccuraccy: (8, 7, 6, 5))
+    (maxwidth: 1024;       laccuraccy: (5, 4, 3, 1)),//2)),
+    (maxwidth: 1280;       laccuraccy: (6, 5, 4, 1)),//3)),
+    (maxwidth: 1366;       laccuraccy: (6, 5, 4, 1)),//3)),
+    (maxwidth: 1600;       laccuraccy: (7, 6, 5, 1)),//4)),
+    (maxwidth: 2147483647; laccuraccy: (8, 7, 6, 1)) //5))
   );
 
 function R_CalcLigmapYAccuracy: integer;

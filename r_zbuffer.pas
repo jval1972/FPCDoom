@@ -241,13 +241,11 @@ var
   x: integer;
   A, B: Pzbufferitem_tArray;
   rt: LongWord;
-  seg: Pseg_t;
 begin
   x := px^;
   if zcriticalx[x] then
     exit;
 
-  seg := nil;
   A := Zcolumns[x].items;
   B := Zcolumns[x + 1].items;
   for i := 0 to Zcolumns[x].numitems - 1 do
@@ -274,26 +272,12 @@ begin
       end;
     end;
 
-    if not zcriticalx[x] then
+    if rt = RIT_MASKEDWALL then
     begin
-      // Two different segs in same column
-      if A[i].seg <> nil then
-      begin
-        if seg = nil then
-          seg := A[i].seg
-        else if A[i].seg <> seg then
-        begin
-          zcriticalx[x] := true;
-          continue; // continue search
-        end;
-      end;
-      // Mark masked middle textures as critical
-      if rt = RIT_MASKEDWALL then
-      begin
-        zcriticalx[x] := true;
-        continue; // continue search
-      end;
+      zcriticalx[x] := true;
+      continue; // continue search
     end;
+
   end;
 end;
 

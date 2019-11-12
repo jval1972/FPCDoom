@@ -103,6 +103,11 @@ function D_VersionBuilt: string;
 
 procedure D_ShutDown;
 
+var
+  set_videomodeneeded: boolean = false;
+  set_screenwidth: integer;
+  set_screenheight: integer;
+
 implementation
 
 uses
@@ -140,11 +145,13 @@ uses
   r_intrpl,
   r_data,
   r_lightmap,
+  registry,
   sounds,
   s_sound,
   sc_actordef,
   t_main,
   v_video,
+  v_screenresolution,
   w_wad,
   w_pak,
   z_memory;
@@ -481,6 +488,13 @@ begin
       D_RunMultipleTicks; // will run at least one tick
 
     S_UpdateSounds(players[consoleplayer].mo);// move positional sounds
+
+    if set_videomodeneeded then
+    begin
+      set_videomodeneeded := false;
+      V_SetScreenResolution(set_screenwidth, set_screenheight);
+    end;
+
   end;
 end;
 
@@ -588,7 +602,7 @@ begin
       begin
         G_DeferedPlayDemo('3');
       end;
-        // THE DEFINITIVE DOOM Special Edition demo
+    // THE DEFINITIVE DOOM Special Edition demo
     6:
       begin
         G_DeferedPlayDemo('4');
@@ -619,36 +633,33 @@ begin
       wadfiles.Add(strupper(fname));
 end;
 
-const
-  SYSWAD = 'FPCDoom.wad';
-
-procedure D_AddSystemWAD;
-var
-  fsyswad: string;
-  doomwaddir: string;
-begin
-  doomwaddir := getenv('DOOMWADDIR');
-  if doomwaddir = '' then
-    doomwaddir := '.';
-
-  sprintf(fsyswad, '%s\%s', [doomwaddir, SYSWAD]);
-  if fexists(fsyswad) then
-    D_AddFile(fsyswad)
-  else
-    I_Error('D_AddSystemWAD(): System WAD %s not found.'#13#10, [fsyswad]);
-end;
-
 //
 // IdentifyVersion
 // Checks availability of IWAD files by name,
 // to determine whether registered/commercial features
 // should be executed (notably loading PWAD's).
 //
-var
-  doomcwad: string = ''; // Custom main WAD
-
 const
   PATH_SEPARATOR = ';';
+
+const
+  NUMSTEAMAPPS = 3;
+  steamapps: array[0..NUMSTEAMAPPS - 1] of integer = (2280, 2290, 2300);
+
+function QuerySteamDirectory(const flags, dirid: integer): string;
+var
+  reg: TRegistry;
+begin
+  reg := TRegistry.Create(flags);
+  reg.RootKey := HKEY_LOCAL_MACHINE;
+  if reg.OpenKeyReadOnly('\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App ' + itoa(dirid)) then
+    result := reg.ReadString('InstallLocation')
+  else if reg.OpenKeyReadOnly('\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Steam App ' + itoa(dirid)) then
+    result := reg.ReadString('InstallLocation')
+  else
+    result := '';
+  reg.free;
+end;
 
 function FileInDoomPath(const fn: string): string;
 var
@@ -689,6 +700,22 @@ begin
     if tmp <> '' then
       paths.Add(tmp);
   end;
+
+  for i := 0 to NUMSTEAMAPPS - 1 do
+  begin
+    tmp := QuerySteamDirectory(KEY_READ or KEY_WOW64_64KEY, steamapps[i]);
+    if tmp = '' then
+      tmp := QuerySteamDirectory(KEY_READ, steamapps[i]);
+    if tmp <> '' then
+    begin
+      if tmp[length(tmp)] <> '\' then
+        tmp := tmp + '\';
+      paths.Add(tmp);
+      paths.Add(tmp + 'base\');
+      paths.Add(tmp + 'base\wads');
+    end;
+  end;
+
   result := fname(fn);
   for i := 0 to paths.Count - 1 do
   begin
@@ -705,6 +732,23 @@ begin
   result := fn;
   paths.free;
 end;
+
+const
+  SYSWAD = 'FPCDoom.wad';
+
+procedure D_AddSystemWAD;
+var
+  fsyswad: string;
+begin
+  fsyswad := FileInDoomPath(SYSWAD);
+  if fexists(fsyswad) then
+    D_AddFile(fsyswad)
+  else
+    I_Error('D_AddSystemWAD(): System WAD %s not found.'#13#10, [fsyswad]);
+end;
+
+var
+  doomcwad: string = ''; // Custom main WAD
 
 procedure IdentifyVersion;
 var
@@ -800,20 +844,20 @@ begin
     exit;
   end;
 
-  if fexists(doom2fwad) then
-  begin
-    gamemode := commercial;
-    gamemission := doom2;
-    // C'est ridicule!
-    // Let's handle languages in config files, okay?
-    language := french;
-    printf('French version'#13#10);
-    D_AddFile(doom2fwad);
-    exit;
-  end;
-
   for p := 1 to 2 do
   begin
+    if fexists(doom2fwad) then
+    begin
+      gamemode := commercial;
+      gamemission := doom2;
+      // C'est ridicule!
+      // Let's handle languages in config files, okay?
+      language := french;
+      printf('French version'#13#10);
+      D_AddFile(doom2fwad);
+      exit;
+    end;
+
     if fexists(doom2wad) then
     begin
       gamemode := commercial;

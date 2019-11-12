@@ -158,7 +158,6 @@ end;
 procedure P_MovePlayer(player: Pplayer_t);
 var
   cmd: Pticcmd_t;
-  look: integer;
   look16: integer; // JVAL Smooth Look Up/Down
   look2: integer;
 begin

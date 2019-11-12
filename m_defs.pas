@@ -47,6 +47,7 @@ uses
   i_music,
   i_sound,
   m_menu,
+  m_misc,
   r_aspect,
   r_defs,
   r_lightmap,
@@ -81,7 +82,7 @@ type
   Pdefault_t = ^default_t;
 
 const
-  NUMDEFAULTS = 114;
+  NUMDEFAULTS = 116;
 
   defaults: array[0..NUMDEFAULTS - 1] of default_t = (
     (name: 'Display';
@@ -364,15 +365,23 @@ const
      defaultbvalue: true;
      _type: tBoolean),
 
-    (name: 'allowautomaprotate';
-     location: @allowautomaprotate;
-     setable: DFS_ALWAYS;
-     defaultsvalue: '';
-     defaultivalue: 0;
-     defaultbvalue: true;
-     _type: tBoolean),
+     (name: 'allowautomaprotate';
+      location: @allowautomaprotate;
+      setable: DFS_ALWAYS;
+      defaultsvalue: '';
+      defaultivalue: 0;
+      defaultbvalue: true;
+      _type: tBoolean),
 
-     // Compatibility
+     (name: 'automapgrid';
+      location: @automapgrid;
+      setable: DFS_ALWAYS;
+      defaultsvalue: '';
+      defaultivalue: 0;
+      defaultbvalue: false;
+      _type: tBoolean),
+
+     // Textures
     (name: 'Textures';
      location: nil;
      setable: DFS_NEVER;
@@ -462,7 +471,7 @@ const
      defaultbvalue: true;
      _type: tBoolean),
 
-     // Navigation
+     // Controls
     (name: 'Controls';
      location: nil;
      setable: DFS_NEVER;
@@ -862,13 +871,13 @@ const
      defaultbvalue: true;
      _type: tBoolean),
 
-     (name: 'keepsavegamename';
-      location: @keepsavegamename;
-      setable: DFS_ALWAYS;
-      defaultsvalue: '';
-      defaultivalue: 1;
-      defaultbvalue: true;
-      _type: tBoolean),
+    (name: 'keepsavegamename';
+     location: @keepsavegamename;
+     setable: DFS_ALWAYS;
+     defaultsvalue: '';
+     defaultivalue: 1;
+     defaultbvalue: true;
+     _type: tBoolean),
 
      // Messages
     (name: 'show_messages';
@@ -983,7 +992,8 @@ const
      defaultbvalue: false;
      _type: tBoolean),
 
-    (name: 'Advanced';
+     // System
+    (name: 'System';
      location: nil;
      setable: DFS_NEVER;
      defaultsvalue: '';
@@ -1005,7 +1015,15 @@ const
      defaultsvalue: '';
      defaultivalue: 0;
      defaultbvalue: true;
-     _type: tBoolean)
+     _type: tBoolean),
+
+    (name: 'screenshottype';
+     location: @screenshottype;
+     setable: DFS_ALWAYS;
+     defaultsvalue: 'png';
+     defaultivalue: 0;
+     defaultbvalue: true;
+     _type: tString)
 
   );
 

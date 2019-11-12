@@ -79,18 +79,15 @@ implementation
 
 uses
   d_fpc,
-  doomstat,
   i_system,
   r_sky,
   r_draw,
   r_main,
-  r_things,
   r_hires,
   r_draw_span,
   r_draw_column,
   r_render,
-  z_memory,
-  w_wad;
+  z_memory;
 
 // Here comes the obnoxious "visplane".
 const

@@ -107,7 +107,6 @@ uses
   m_argv,
   m_misc,
   i_system,
-  i_io,
   i_sound,
   e_endoom,
   i_video,
@@ -124,15 +123,14 @@ uses
   r_grayscale,
   r_colorsubsampling,
   t_main,
-  z_memory,
-  v_screenresolution,
   v_video,
   w_wad,
   hu_stuff,
   s_sound,
   doomstat,
 // Data.
-  sounds;
+  sounds,
+  z_memory;
 
 var
 // temp for screenblocks (0-9)
@@ -325,7 +323,7 @@ begin
 end;
 
 //
-//      Find string height from hu_font chars
+// Find string height from hu_font chars
 //
 function M_StringHeight(const str: string): integer;
 var
@@ -340,14 +338,14 @@ begin
       result := result + height;
 end;
 
-//
-//      Write a string using the hu_font
-//
 type
   menupos_t = record
     x, y: integer;
   end;
 
+//
+// Write a string using the hu_font
+//
 function M_WriteText(x, y: integer; const str: string): menupos_t;
 var
   w: integer;
@@ -630,6 +628,7 @@ type
   optionsdisplayautomap_e = (
     od_automapoverlay,
     od_automaprotate,
+    od_automapgrid,
     optdispautomap_end
   );
 
@@ -836,7 +835,6 @@ type
     kb_lookcenter,
     kb_lookleft,
     kb_lookright,
-//    kb_lookforward,
     kb_end
   );
 
@@ -867,8 +865,7 @@ const
     (text: 'Look down'; pkey: @key_lookdown),
     (text: 'Look center'; pkey: @key_lookcenter),
     (text: 'Look left'; pkey: @key_lookleft),
-    (text: 'Look right'; pkey: @key_lookright){,
-    (text: 'Look forward'; pkey: @key_lookforward)}
+    (text: 'Look right'; pkey: @key_lookright)
   );
 
 var
@@ -1016,6 +1013,7 @@ type
   system_e = (
     sys_safemode,
     sys_usemmx,
+    sys_screenshottype,
     sys_end
   );
 
@@ -1536,11 +1534,6 @@ begin
     M_SetKeyboardMode(2);
 end;
 
-procedure M_KeyBindings(choice: integer);
-begin
-  M_SetupNextMenu(@KeyBindingsDef);
-end;
-
 procedure M_DrawControls;
 var
   ppos: menupos_t;
@@ -1559,9 +1552,17 @@ begin
 end;
 
 procedure M_DrawSystem;
+var
+  ppos: menupos_t;
 begin
   V_DrawPatch(108, 15, SCN_TMP, 'M_OPTTTL', false);
   V_DrawPatch(20, 48, SCN_TMP, 'MENU_SYS', false);
+
+  ppos := M_WriteText(SystemDef.x, SystemDef.y + SystemDef.itemheight * Ord(sys_screenshottype), 'Screenshot format: ');
+  if strupper(screenshottype) = 'PNG' then
+    M_WriteColorText(ppos.x, ppos.y, 'PNG', 'CRGRAY')
+  else
+    M_WriteColorText(ppos.x, ppos.y, 'BMP', 'CRGRAY');
 end;
 
 procedure M_OptionsSound(choice: integer);
@@ -1744,7 +1745,7 @@ begin
   // Yet another hack...
   if (gamemode = registered) and (choice > 2) then
   begin
-    I_Warning('M_Episode(): 4th episode requires UltimateDOOM' + #13#10);
+    I_Warning('M_Episode(): 4th episode requires UltimateDOOM'#13#10);
     choice := 0;
   end;
 
@@ -1830,9 +1831,9 @@ begin
     OptionsDisplayDetailDef.x, OptionsDisplayDetailDef.y + OptionsDisplayDetailDef.itemheight * (Ord(odd_screensize) + 1), 30, mdisplaymode_idx, numdisplaymodes);
 
   if (displaymodes[mdisplaymode_idx].width = SCREENWIDTH) and (displaymodes[mdisplaymode_idx].height = SCREENHEIGHT) then
-    stmp := 'No change to screen size'
+    stmp := 'No change'
   else
-    sprintf(stmp, 'Select to set screen size to %dx%d...', [displaymodes[mdisplaymode_idx].width, displaymodes[mdisplaymode_idx].height]);
+    sprintf(stmp, 'Set video mode to %dx%d...', [displaymodes[mdisplaymode_idx].width, displaymodes[mdisplaymode_idx].height]);
   M_WriteText(OptionsDisplayDetailDef.x, OptionsDisplayDetailDef.y + OptionsDisplayDetailDef.itemheight * Ord(odd_setvideomode), stmp);
 end;
 
@@ -2157,6 +2158,10 @@ begin
   end;
 end;
 
+procedure M_KeyBindings(choice: integer);
+begin
+  M_SetupNextMenu(@KeyBindingsDef);
+end;
 
 procedure M_ChangeDetail(choice: integer);
 begin
@@ -2192,7 +2197,9 @@ begin
   else if mdisplaymode_idx >= numdisplaymodes then
     mdisplaymode_idx := numdisplaymodes - 1;
 
-  V_SetScreenResolution(displaymodes[mdisplaymode_idx].width, displaymodes[mdisplaymode_idx].height);
+  set_videomodeneeded := true;
+  set_screenwidth := displaymodes[mdisplaymode_idx].width;
+  set_screenheight := displaymodes[mdisplaymode_idx].height;
 end;
 
 procedure M_ChangeFlatFiltering(choice: integer);
@@ -2208,6 +2215,14 @@ begin
   if length(s) = 0 then
     I_Error('M_BoolCmd(): Unknown option');
   C_ExecuteCmd(s, yesnoStrings[not currentMenu.menuitems[choice].pBoolVal^]);
+end;
+
+procedure M_ScreenShotCmd(choice: integer);
+begin
+  if strupper(screenshottype) = 'PNG' then
+    screenshottype := 'BMP'
+  else
+    screenshottype := 'PNG';
 end;
 
 procedure M_SizeDisplay(choice: integer);
@@ -3183,6 +3198,7 @@ begin
   MainDef.y := 64;
   MainDef.lastOn := 0;
   MainDef.itemheight := LINEHEIGHT;
+  MainDef.texturebk := false;
 
 ////////////////////////////////////////////////////////////////////////////////
 //EpisodeMenu
@@ -3229,6 +3245,7 @@ begin
   EpiDef.y := 63; // x,y of menu
   EpiDef.lastOn := Ord(ep1); // last item user was on in menu
   EpiDef.itemheight := LINEHEIGHT;
+  EpiDef.texturebk := false;
 
 ////////////////////////////////////////////////////////////////////////////////
 //NewGameMenu
@@ -3283,6 +3300,7 @@ begin
   NewDef.y := 63; // x,y of menu
   NewDef.lastOn := Ord(hurtme); // last item user was on in menu
   NewDef.itemheight := LINEHEIGHT;
+  NewDef.texturebk := false;
 
 ////////////////////////////////////////////////////////////////////////////////
 //OptionsMenu
@@ -3345,6 +3363,7 @@ begin
   OptionsDef.y := 48; // x,y of menu
   OptionsDef.lastOn := 0; // last item user was on in menu
   OptionsDef.itemheight := LINEHEIGHT;
+  OptionsDef.texturebk := false;
 
 ////////////////////////////////////////////////////////////////////////////////
 //OptionsGeneralMenu
@@ -3391,6 +3410,7 @@ begin
   OptionsGeneralDef.y := 48; // x,y of menu
   OptionsGeneralDef.lastOn := 0; // last item user was on in menu
   OptionsGeneralDef.itemheight := LINEHEIGHT;
+  OptionsDef.texturebk := false;
 
 ////////////////////////////////////////////////////////////////////////////////
 //OptionsDisplayMenu
@@ -3461,6 +3481,7 @@ begin
   OptionsDisplayDef.y := 48; // x,y of menu
   OptionsDisplayDef.lastOn := 0; // last item user was on in menu
   OptionsDisplayDef.itemheight := LINEHEIGHT;
+  OptionsDisplayDef.texturebk := false;
 
 ////////////////////////////////////////////////////////////////////////////////
 //OptionsDisplayDetailMenu
@@ -3531,11 +3552,19 @@ begin
 
   inc(pmi);
   pmi.status := 1;
-  pmi.name := '!Rotate  Automap';
+  pmi.name := '!Rotate Automap';
   pmi.cmd := 'allowautomaprotate';
   pmi.routine := @M_BoolCmd;
   pmi.pBoolVal := @allowautomaprotate;
   pmi.alphaKey := 'r';
+
+  inc(pmi);
+  pmi.status := 1;
+  pmi.name := '!Display grid';
+  pmi.cmd := 'automapgrid';
+  pmi.routine := @M_BoolCmd;
+  pmi.pBoolVal := @automapgrid;
+  pmi.alphaKey := 'g';
 
 ////////////////////////////////////////////////////////////////////////////////
 //OptionsDisplayAutomapDef
@@ -3877,6 +3906,7 @@ begin
   ReadDef1.y := 165; // x,y of menu
   ReadDef1.lastOn := 0; // last item user was on in menu
   ReadDef1.itemheight := LINEHEIGHT;
+  ReadDef1.texturebk := false;
 
 ////////////////////////////////////////////////////////////////////////////////
 //ReadMenu2
@@ -3898,12 +3928,13 @@ begin
   ReadDef2.y := 165; // x,y of menu
   ReadDef2.lastOn := 0; // last item user was on in menu
   ReadDef2.itemheight := LINEHEIGHT;
+  ReadDef2.texturebk := false;
 
 ////////////////////////////////////////////////////////////////////////////////
 //SoundMenu
   pmi := @SoundMenu[0];
   pmi.status := 1;
-  pmi.name := '!Volume Control';
+  pmi.name := '!Volume Control...';
   pmi.cmd := '';
   pmi.routine := @M_SoundVolume;
   pmi.pBoolVal := nil;
@@ -3984,6 +4015,7 @@ begin
   SoundVolDef.y := 64; // x,y of menu
   SoundVolDef.lastOn := 0; // last item user was on in menu
   SoundVolDef.itemheight := LINEHEIGHT;
+  SoundVolDef.texturebk := false;
 
 ////////////////////////////////////////////////////////////////////////////////
 //CompatibilityMenu
@@ -4111,7 +4143,7 @@ begin
 
   inc(pmi);
   pmi.status := 1;
-  pmi.name := '!Customize...';
+  pmi.name := '!Key bindings...';
   pmi.cmd := '';
   pmi.routine := @M_KeyBindings;
   pmi.pBoolVal := nil;
@@ -4237,6 +4269,14 @@ begin
   pmi.pBoolVal := @usemmx;
   pmi.alphaKey := 'm';
 
+  inc(pmi);
+  pmi.status := 1;
+  pmi.name := '!Screenshot format';
+  pmi.cmd := '';
+  pmi.routine := @M_ScreenShotCmd;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := 's';
+
 ////////////////////////////////////////////////////////////////////////////////
 //SystemDef
   SystemDef.title := 'System';
@@ -4302,6 +4342,7 @@ begin
   LoadDef.y := 34; // x,y of menu
   LoadDef.lastOn := 0; // last item user was on in menu
   LoadDef.itemheight := LINEHEIGHT;
+  LoadDef.texturebk := false;
 
 ////////////////////////////////////////////////////////////////////////////////
 //SaveMenu
@@ -4327,6 +4368,7 @@ begin
   SaveDef.y := 34; // x,y of menu
   SaveDef.lastOn := 0; // last item user was on in menu
   SaveDef.itemheight := LINEHEIGHT;
+  SaveDef.texturebk := false;
 
 ////////////////////////////////////////////////////////////////////////////////
   joywait := 0;

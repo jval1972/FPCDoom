@@ -61,6 +61,7 @@ var
   yesnoStrings: array[boolean] of string = ('NO', 'YES');
   truefalseStrings: array[boolean] of string = ('FALSE', 'TRUE');
   confignotfound: Boolean = true;
+  screenshottype: string = 'png';
 
 implementation
 
@@ -74,6 +75,7 @@ uses
   m_argv,
   m_defs,
   m_menu,
+  t_png,
   i_system,
   i_video,
   z_memory;
@@ -141,7 +143,7 @@ type
     biClrImportant  : LongInt ; (* # of Colors that are Important     *)
  end;
 
-function Save_24_Bit_BMP (const filename: string; const buf: PByteArray; const W, H: integer): boolean;
+function Save_24_Bit_BMP(const filename: string; const buf: PByteArray; const W, H: integer): boolean;
 const Zero_Array: array [1..4] of Byte = (0, 0, 0, 0);
 var
   Outfile: file;
@@ -214,8 +216,8 @@ begin
   (*----------------------------------------------------------*)
 
   {$I-}
-  Assign  (Outfile, Filename) ;
-  Rewrite (Outfile, 1) ;
+  Assign(Outfile, Filename) ;
+  Rewrite(Outfile, 1) ;
   File_OK := (IOresult = 0) ;
   if not File_OK then Exit ;
   {$I+}
@@ -262,6 +264,32 @@ begin
   result := File_OK;
 end;
 
+function Save_24_Bit_PNG(const filename: string; const buf: PByteArray; const W, H: integer): boolean;
+var
+  png: TPngObject;
+  r, c: integer;
+  lpng, lsrc: PByteArray;
+begin
+  png := TPngObject.CreateBlank(COLOR_RGB, 8, W, H);
+  try
+    for r := 0 to H - 1 do
+    begin
+      lpng := png.Scanline[r];
+      lsrc := @buf[r * W * 4];
+      for c := 0 to W - 1 do
+      begin
+        lpng[c * 3] := lsrc[c * 4];
+        lpng[c * 3 + 1] := lsrc[c * 4 + 1];
+        lpng[c * 3 + 2] := lsrc[c * 4 + 2];
+      end;
+    end;
+    png.SaveToFile(filename);
+    result := png.IOresult = '';
+  finally
+    png.Free;
+  end;
+end;
+
 procedure M_ScreenShot(const filename: string = ''; const silent: boolean = false);
 var
   imgname: string;
@@ -269,17 +297,21 @@ var
   dir: string;
   date: TDateTime;
 begin
+  if strupper(screenshottype) = 'PNG' then
+    screenshottype := 'png'
+  else
+    screenshottype := 'bmp';
   if filename = '' then
   begin
     dir := M_SaveFileName('') + 'SCREENSHOTS';
     MakeDir(dir);
     date := NowTime;
-    imgname := dir + '\Doom_' + formatDateTimeAsString('yyyymmdd_hhnnsszzz', date) + '.bmp';
+    imgname := dir + '\Doom_' + formatDateTimeAsString('yyyymmdd_hhnnsszzz', date) + '.' + screenshottype;
   end
   else
   begin
     if Pos('.', filename) = 0 then
-      imgname := filename + '.bmp'
+      imgname := filename + '.' + screenshottype
     else
       imgname := filename;
   end;
@@ -302,7 +334,11 @@ begin
   bufsize := SCREENWIDTH * SCREENHEIGHT * 4;
   src := malloc(bufsize);
   I_ReadScreen32(src);
-  result := Save_24_Bit_BMP(filename, src, SCREENWIDTH, SCREENHEIGHT);
+  if strupper(screenshottype) = 'PNG' then
+    result := Save_24_Bit_PNG(filename, src, SCREENWIDTH, SCREENHEIGHT)
+  else
+    result := Save_24_Bit_BMP(filename, src, SCREENWIDTH, SCREENHEIGHT);
+
   memfree(src, bufsize);
 end;
 

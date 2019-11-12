@@ -1228,9 +1228,8 @@ begin
 end;
 
 //
-// R_RenderView
+// R_RenderPlayerView
 //
-
 procedure R_RenderPlayerView(player: Pplayer_t);
 begin
   // Wait for running threads to finish

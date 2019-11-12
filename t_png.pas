@@ -3997,7 +3997,6 @@ function TChunkPLTE.SaveToStream(Stream: TStream): Boolean;
 var
   J: Integer;
   DataPtr: PByte;
-  BitmapInfo: TMAXBITMAPINFO;
   palEntries: TMaxLogPalette;
 begin
   {Adjust size to hold all the palette items}
@@ -4011,14 +4010,13 @@ begin
   DataPtr := fData;
 
   {Copy palette items}
-  BitmapInfo := Header.BitmapInfo;
   for j := 0 to fCount - 1 do
     with palEntries.palPalEntry[j] do
     begin
       DataPtr^ := Owner.InverseGamma[peRed]; inc(DataPtr);
       DataPtr^ := Owner.InverseGamma[peGreen]; inc(DataPtr);
       DataPtr^ := Owner.InverseGamma[peBlue]; inc(DataPtr);
-    end {with BitmapInfo};
+    end {with};
 
   {Let ancestor do the rest of the work}
   Result := inherited SaveToStream(Stream);
@@ -4362,6 +4360,7 @@ type
   {Access to pixels}
   TPixelLine = array[Word] of TRGBQuad;
   pPixelLine = ^TPixelLine;
+
 const
   {Structure used to create the bitmap}
   BitmapInfoHeader: TBitmapInfoHeader =

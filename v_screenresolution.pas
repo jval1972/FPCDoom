@@ -36,6 +36,7 @@ function V_SetScreenResolution(const newwidth, newheight: integer): boolean;
 implementation
 
 uses
+  am_map,
   doomdef,
   c_con,
   i_video,
@@ -80,16 +81,20 @@ begin
     R_ShutDownLightmap;      // Shut down lightmap
     R_ClearVisPlanes;        // Clear visplanes (free ::top & ::bottom arrays)
     R_Clear32Cache;          // JVAL: unneeded ?
+    AM_Stop;                 // Stop the automap
+
+    I_ShutDownGraphics;      // Shut down graphics
 
     SCREENWIDTH := nwidth;
     SCREENHEIGHT := nheight;
 
-    I_ShutDownGraphics;      // Shut down graphics
     V_ReInit;                // Recreate screens
+
     I_InitGraphics;          // Initialize graphics
 
+    AM_Start;                // Start the automap
     C_AdjustScreenSize;
-    R_ExecuteSetViewSize;    // Set-up new SCREENWIDTH & SCREENHEIGHT
+    setsizeneeded := true;   // Set-up new SCREENWIDTH & SCREENHEIGHT
     R_InitZBuffer;           // Initialize the depth-buffer
     R_InitLightmap;          // Initialize the lightmap
     R_InitFuzzTable;         // Re-calculate fuzz tabble offsets

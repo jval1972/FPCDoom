@@ -60,8 +60,7 @@ implementation
 
 uses
   doomtype, 
-  doomdef, 
-  doomstat, 
+  doomdef,
   doomdata,
   r_main,
   r_data, 

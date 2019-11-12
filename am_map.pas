@@ -118,12 +118,12 @@ function M_ZOOMIN: integer;
 function M_ZOOMOUT: integer;
 
 { translates between frame-buffer and map distances }
-function FTOM(x : integer) : integer;
-function MTOF(x : integer) : integer;
+function FTOM(x: integer): integer;
+function MTOF(x: integer): integer;
 
 { translates between frame-buffer and map coordinates }
-function CXMTOF(x : integer) : integer;
-function CYMTOF(y : integer) : integer;
+function CXMTOF(x: integer): integer;
+function CYMTOF(y: integer): integer;
 
 { the following is crap }
 
@@ -197,7 +197,7 @@ type
 
 var
   am_cheating: integer = 0;
-  grid: boolean = false;
+  automapgrid: boolean = false;
 
   leveljuststarted: integer = 1;   // kluge until AM_LevelInit() is called
 
@@ -292,6 +292,8 @@ procedure AM_Init;
 // if the level is completed while it is up.
 procedure AM_Stop;
 
+procedure AM_Start;
+
 var
   allowautomapoverlay: boolean;
   allowautomaprotate: boolean;
@@ -303,9 +305,9 @@ uses
   c_cmds,
   d_english,
   g_game,
-  r_data, 
-  r_draw, 
+  r_data,
   r_hires,
+  r_draw,
   r_mirror,
   p_mobj_h,
   p_setup,
@@ -545,20 +547,34 @@ begin
   m_w := FTOM(f_w);
   m_h := FTOM(f_h);
 
+  if gamestate =  gs_level then
+  begin
     // find player to center on initially
-  pnum := consoleplayer;
-  if not playeringame[pnum] then
-    for i := 0 to MAXPLAYERS - 1 do
-      if playeringame[i] then
-      begin
-        pnum := i;
-        break;
-      end;
+    pnum := consoleplayer;
+    if not playeringame[pnum] then
+    begin
+      pnum := -1;
+      for i := 0 to MAXPLAYERS - 1 do
+        if playeringame[i] then
+        begin
+          pnum := i;
+          break;
+        end;
+    end;
 
-  plr := @players[pnum];
-  m_x := plr.mo.x - m_w div 2;
-  m_y := plr.mo.y - m_h div 2;
+    if pnum >= 0 then
+    begin
+      plr := @players[pnum];
+      if plr.mo <> nil then
+      begin
+        m_x := plr.mo.x - m_w div 2;
+        m_y := plr.mo.y - m_h div 2;
+      end;
+    end;
+  end;
+
   AM_changeWindowLoc;
+
 
   // for saving & restoring
   //AM_saveScaleAndLoc;
@@ -647,18 +663,23 @@ end;
 var
   lastlevel: integer = -1;
   lastepisode: integer = -1;
+  lastscreenwidth: integer = -1;
+  lastscreenheight: integer = -1;
 
 procedure AM_Start;
 begin
-  if not stopped then
-    AM_Stop;
+  AM_Stop;
+
   stopped := false;
 
-  if (lastlevel <> gamemap) or (lastepisode <> gameepisode) then
+  if (lastlevel <> gamemap) or (lastepisode <> gameepisode) or
+     (lastscreenwidth <> SCREENWIDTH) or (lastscreenheight <> SCREENHEIGHT) then
   begin
     AM_LevelInit;
     lastlevel := gamemap;
     lastepisode := gameepisode;
+    lastscreenwidth := SCREENWIDTH;
+    lastscreenheight := SCREENHEIGHT;
   end;
   AM_initVariables;
   AM_loadPics;
@@ -695,6 +716,10 @@ var
   _message: string;
 begin
   result := false;
+
+  if not allowautomapoverlay then
+    if amstate = am_overlay then
+      amstate := am_inactive;
 
   if amstate = am_inactive then
   begin
@@ -790,8 +815,8 @@ begin
         end;
       Ord(AM_GRIDKEY):
         begin
-          grid := not grid;
-          if grid then
+          automapgrid := not automapgrid;
+          if automapgrid then
             plr._message := AMSTR_GRIDON
           else
             plr._message := AMSTR_GRIDOFF;
@@ -1187,55 +1212,6 @@ begin
 end;
 
 //
-// Draws flat (floor/ceiling tile) aligned grid lines.
-//
-procedure AM_drawGrid(color: integer);
-var
-  x, y: fixed_t;
-  start, finish: fixed_t;
-  ml: mline_t;
-begin
-  // Figure out start of vertical gridlines
-  start := m_x;
-  if ((start - bmaporgx) mod (MAPBLOCKUNITS * FRACUNIT)) <> 0 then
-    start := start + (MAPBLOCKUNITS * FRACUNIT)
-          - ((start - bmaporgx) mod (MAPBLOCKUNITS * FRACUNIT));
-  finish := m_x + m_w;
-
-  // draw vertical gridlines
-  ml.a.y := m_y;
-  ml.b.y := m_y + m_h;
-  x := start;
-  while x < finish do
-  begin
-    ml.a.x := x;
-    ml.b.x := x;
-    AM_drawMline(@ml, color);
-    x := x + (MAPBLOCKUNITS * FRACUNIT);
-  end;
-
-  // Figure out start of horizontal gridlines
-  start := m_y;
-  if ((start - bmaporgy) mod (MAPBLOCKUNITS * FRACUNIT)) <> 0 then
-    start := start + (MAPBLOCKUNITS * FRACUNIT)
-          - ((start - bmaporgy) mod (MAPBLOCKUNITS * FRACUNIT));
-  finish := m_y + m_h;
-
-  // draw horizontal gridlines
-  ml.a.x := m_x;
-  ml.b.x := m_x + m_w;
-  y := start;
-  while y < finish do
-  begin
-    ml.a.y := y;
-    ml.b.y := y;
-    AM_drawMline(@ml, color);
-    y := y + (MAPBLOCKUNITS * FRACUNIT);
-  end;
-end;
-
-
-//
 // Rotation in 2D.
 // Used to rotate player arrow line character.
 //
@@ -1252,6 +1228,82 @@ begin
     FixedMul(y^ - ypos, finecosine[a shr ANGLETOFINESHIFT]);
 
   x^ := tmpx;
+end;
+
+
+//
+// Draws flat (floor/ceiling tile) aligned grid lines.
+//
+procedure AM_drawGrid(color: integer);
+var
+  x, y: fixed_t;
+  start, finish: fixed_t;
+  ml: mline_t;
+  dw, dh: double;
+  minlen, extx, exty: fixed_t;
+  minx, miny: fixed_t;
+begin
+  dw := m_w;
+  dh := m_h;
+
+  minlen := trunc(sqrt(dw * dw + dh * dh));
+  extx := (minlen - m_w) div 2;
+  exty := (minlen - m_h) div 2;
+
+  minx := m_x;
+  miny := m_y;
+
+  // Figure out start of vertical gridlines
+  start := m_x - extx;
+  if ((start - bmaporgx) mod (MAPBLOCKUNITS * FRACUNIT)) <> 0 then
+    start := start {+ (MAPBLOCKUNITS * FRACUNIT)}
+          - ((start - bmaporgx) mod (MAPBLOCKUNITS * FRACUNIT));
+  finish := minx + minlen - extx;
+
+  // draw vertical gridlines
+  x := start;
+  while x < finish do
+  begin
+    ml.a.x := x;
+    ml.b.x := x;
+    ml.a.y := miny - exty;
+    ml.b.y := ml.a.y + minlen;
+
+    if allowautomaprotate then
+    begin
+      AM_rotate(@ml.a.x, @ml.a.y, ANG90 - plr.mo.angle, plr.mo.x, plr.mo.y);
+      AM_rotate(@ml.b.x, @ml.b.y, ANG90 - plr.mo.angle, plr.mo.x, plr.mo.y);
+    end;
+
+    AM_drawMline(@ml, color);
+    x := x + (MAPBLOCKUNITS * FRACUNIT);
+  end;
+
+  // Figure out start of horizontal gridlines
+  start := miny - exty;
+  if ((start - bmaporgy) mod (MAPBLOCKUNITS * FRACUNIT)) <> 0 then
+    start := start {+ (MAPBLOCKUNITS * FRACUNIT)}
+          - ((start - bmaporgy) mod (MAPBLOCKUNITS * FRACUNIT));
+  finish := miny + minlen - exty;
+
+  // draw horizontal gridlines
+  y := start;
+  while y < finish do
+  begin
+    ml.a.x := minx - extx;
+    ml.b.x := ml.a.x + minlen;
+    ml.a.y := y;
+    ml.b.y := y;
+
+    if allowautomaprotate then
+    begin
+      AM_rotate(@ml.a.x, @ml.a.y, ANG90 - plr.mo.angle, plr.mo.x, plr.mo.y);
+      AM_rotate(@ml.b.x, @ml.b.y, ANG90 - plr.mo.angle, plr.mo.x, plr.mo.y);
+    end;
+
+    AM_drawMline(@ml, color);
+    y := y + (MAPBLOCKUNITS * FRACUNIT);
+  end;
 end;
 
 
@@ -1496,7 +1548,7 @@ begin
 
   if amstate = am_only then
     AM_clearFB(aprox_black);
-  if grid then
+  if automapgrid then
     AM_drawGrid(GRIDCOLORS);
   AM_drawWalls;
   AM_drawPlayers;

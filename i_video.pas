@@ -103,7 +103,6 @@ var
 procedure I_RestoreWindowPos;
 begin
   SetWindowPos(hMainWnd, HWND_TOP, 0, 0, WINDOWWIDTH, WINDOWHEIGHT, SWP_SHOWWINDOW);
-//  SetWindowPos(hMainWnd, HWND_TOP, 0, 0, 0, 0, SWP_SHOWWINDOW);
 end;
 
 procedure I_DisableAltTab;
@@ -269,6 +268,7 @@ begin
   stretch := stallhack and fixstallhack and (WINDOWHEIGHT = SCREENHEIGHT);
   if not stretch then
     stretch := (WINDOWWIDTH <> SCREENWIDTH) or (WINDOWHEIGHT <> SCREENHEIGHT);
+
   if stretch then
   begin
     destrect.Left := 0;
@@ -285,6 +285,7 @@ begin
     if g_pDDSPrimary.BltFast(0, 0, g_pDDScreen, srcrect, DDBLTFAST_DONOTWAIT or DDBLTFAST_NOCOLORKEY) = DDERR_SURFACELOST then
       g_pDDSPrimary.Restore;
   end;
+
 end;
 
 //
@@ -631,6 +632,7 @@ begin
     if hres <> DD_OK then
       I_ErrorInitGraphics('CreateSurface');
   end;
+
 
   ZeroMemory(@ddsd, SizeOf(ddsd));
   ZeroMemory(@ddsd.ddpfPixelFormat, SizeOf(ddsd.ddpfPixelFormat));

@@ -732,6 +732,7 @@ begin
             v.r_y := Round((dy2 * y0 + dx2 * y1 + dxy * (x0 - x1)) / s);
       			// [crispy] wait a minute... moved more than 8 map units?
       			// maybe that's a linguortal then, back to the original coordinates
+            // https://www.doomworld.com/vb/doom-editing/74354-stupid-bsp-tricks
       			if (abs(v.r_x - v.x) > 8 * FRACUNIT) or (abs(v.r_y - v.y) > 8 * FRACUNIT) then
       			begin
       			  v.r_x := v.x;

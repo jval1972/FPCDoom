@@ -270,6 +270,7 @@ begin
     // new floor thinker
     result := 1;
     floor := Z_Malloc(SizeOf(floormove_t), PU_LEVSPEC, nil);
+    ZeroMemory(floor, SizeOf(floormove_t));
     P_AddThinker(@floor.thinker);
     sec.specialdata := floor;
     floor.thinker._function.acp1 := @T_MoveFloor;
@@ -447,11 +448,13 @@ begin
     // new floor thinker
     result := 1;
     floor := Z_Malloc(SizeOf(floormove_t), PU_LEVSPEC, nil);
+    ZeroMemory(floor, SizeOf(floormove_t));
     P_AddThinker(@floor.thinker);
     sec.specialdata := floor;
     floor.thinker._function.acp1 := @T_MoveFloor;
     floor.direction := 1;
     floor.sector := sec;
+    floor._type := buildStair;
     case _type of
       build8:
         begin
@@ -506,7 +509,7 @@ begin
         sec := tsec;
         secnum := newsecnum;
         floor := Z_Malloc(SizeOf(floormove_t), PU_LEVSPEC, nil);
-
+        ZeroMemory(floor, SizeOf(floormove_t));
         P_AddThinker(@floor.thinker);
 
         sec.specialdata := floor;
@@ -515,6 +518,8 @@ begin
         floor.sector := sec;
         floor.speed := speed;
         floor.floordestheight := height;
+        floor._type := buildStair;
+
         ok := true;
         break;
       end;

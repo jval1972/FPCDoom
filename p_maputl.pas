@@ -74,7 +74,8 @@ uses
   i_system,
   p_setup,
   p_map,
-  r_main;
+  r_main,
+  z_memory;
 
 //
 // P_AproxDistance
@@ -540,9 +541,23 @@ end;
 // INTERCEPT ROUTINES
 //
 var
-  intercepts: array[0..MAXINTERCEPTS - 1] of intercept_t;
+  intercepts: Pintercept_tArray = nil;
   intercept_p: integer;
+  maxintercepts: integer = 0;
 
+const
+  INTERCEPT_GROW_STEP = 64;
+
+procedure P_GrowIntercepts;
+begin
+  if intercept_p >= maxintercepts then
+  begin
+    maxintercepts := maxintercepts + INTERCEPT_GROW_STEP;
+    intercepts := Z_Realloc(intercepts, maxintercepts * SizeOf(intercept_t), PU_STATIC, nil);
+  end;
+end;
+
+var
   earlyout: boolean;
 
 //
@@ -598,6 +613,7 @@ begin
     exit;
   end;
 
+  P_GrowIntercepts;
   intercepts[intercept_p].frac := frac;
   intercepts[intercept_p].isaline := true;
   intercepts[intercept_p].d.line := ld;
@@ -661,6 +677,7 @@ begin
     exit;
   end;
 
+  P_GrowIntercepts;
   intercepts[intercept_p].frac := frac;
   intercepts[intercept_p].isaline := false;
   intercepts[intercept_p].d.thing := thing;
