@@ -167,9 +167,10 @@
       <Unit19>
         <Filename Value="f_wipe.pas"/>
         <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="16"/>
-        <TopLine Value="287"/>
-        <CursorPos X="44" Y="302"/>
+        <TopLine Value="263"/>
+        <CursorPos Y="297"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit19>
@@ -352,7 +353,6 @@
       <Unit41>
         <Filename Value="m_misc.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="19"/>
         <TopLine Value="433"/>
         <CursorPos X="24" Y="438"/>
@@ -1211,7 +1211,7 @@
         <WindowIndex Value="1"/>
         <TopLine Value="15"/>
         <CursorPos X="24" Y="37"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
       </Unit147>
       <Unit148>
         <Filename Value="v_data.pas"/>
@@ -1247,7 +1247,7 @@
       <Unit152>
         <Filename Value="d_delphi.pas"/>
         <EditorIndex Value="-1"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
       </Unit152>
       <Unit153>
         <Filename Value="r_col_al.pas"/>
@@ -1255,7 +1255,7 @@
         <WindowIndex Value="1"/>
         <TopLine Value="4"/>
         <CursorPos X="25" Y="25"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
       </Unit153>
       <Unit154>
         <Filename Value="r_col_av.pas"/>
@@ -1263,7 +1263,7 @@
         <WindowIndex Value="1"/>
         <TopLine Value="9"/>
         <CursorPos X="41" Y="31"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
       </Unit154>
       <Unit155>
         <Filename Value="r_col_fz.pas"/>
@@ -1271,7 +1271,7 @@
         <WindowIndex Value="1"/>
         <TopLine Value="4"/>
         <CursorPos X="65" Y="9"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
       </Unit155>
       <Unit156>
         <Filename Value="r_col_l.pas"/>
@@ -1279,7 +1279,7 @@
         <WindowIndex Value="1"/>
         <TopLine Value="3"/>
         <CursorPos Y="43"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
       </Unit156>
       <Unit157>
         <Filename Value="r_col_ms.pas"/>
@@ -1287,7 +1287,7 @@
         <WindowIndex Value="1"/>
         <TopLine Value="10"/>
         <CursorPos Y="46"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
       </Unit157>
       <Unit158>
         <Filename Value="r_col_sk.pas"/>
@@ -1295,7 +1295,7 @@
         <WindowIndex Value="1"/>
         <TopLine Value="3"/>
         <CursorPos X="5" Y="43"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
       </Unit158>
       <Unit159>
         <Filename Value="r_col_tr.pas"/>
@@ -1303,7 +1303,7 @@
         <WindowIndex Value="1"/>
         <TopLine Value="3"/>
         <CursorPos Y="43"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
       </Unit159>
       <Unit160>
         <Filename Value="r_column.pas"/>
@@ -1318,7 +1318,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="560"/>
         <CursorPos X="46" Y="569"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
       </Unit161>
       <Unit162>
         <Filename Value="r_span.pas"/>
@@ -1341,7 +1341,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="22"/>
         <CursorPos X="8" Y="34"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
       </Unit164>
       <Unit165>
         <Filename Value="R_CachePaletteSimulation64.inc"/>
@@ -1369,7 +1369,7 @@
         <Filename Value="r_lightmap2.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="4" Y="44"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
       </Unit168>
       <Unit169>
         <Filename Value="C:\lazarus\fpc\3.0.4\source\packages\fcl-registry\src\registry.pp"/>
@@ -1392,127 +1392,122 @@
         <UsageCount Value="4"/>
       </Unit171>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="29">
+    <JumpHistory Count="29" HistoryIndex="28">
       <Position1>
-        <Filename Value="p_saveg.pas"/>
-        <Caret Line="78" TopLine="59"/>
-      </Position1>
-      <Position2>
-        <Filename Value="p_saveg.pas"/>
-        <Caret Line="377" Column="9" TopLine="347"/>
-      </Position2>
-      <Position3>
-        <Filename Value="m_defs.pas"/>
-        <Caret Line="97" Column="20" TopLine="67"/>
-      </Position3>
-      <Position4>
-        <Filename Value="m_defs.pas"/>
-        <Caret Line="498" Column="2" TopLine="474"/>
-      </Position4>
-      <Position5>
-        <Filename Value="m_defs.pas"/>
-        <Caret Line="484" Column="17" TopLine="469"/>
-      </Position5>
-      <Position6>
-        <Filename Value="m_defs.pas"/>
-        <Caret Line="1040" Column="8" TopLine="1012"/>
-      </Position6>
-      <Position7>
-        <Filename Value="m_menu.pas"/>
-        <Caret Line="1884" Column="35" TopLine="1866"/>
-      </Position7>
-      <Position8>
-        <Filename Value="m_menu.pas"/>
-        <Caret Line="559" Column="17" TopLine="543"/>
-      </Position8>
-      <Position9>
         <Filename Value="m_menu.pas"/>
         <Caret Line="769" Column="33" TopLine="750"/>
-      </Position9>
-      <Position10>
+      </Position1>
+      <Position2>
         <Filename Value="m_menu.pas"/>
         <Caret Line="4092" Column="67" TopLine="4084"/>
-      </Position10>
-      <Position11>
+      </Position2>
+      <Position3>
         <Filename Value="m_menu.pas"/>
         <Caret Line="4101" Column="20" TopLine="4086"/>
-      </Position11>
-      <Position12>
+      </Position3>
+      <Position4>
         <Filename Value="m_misc.pas"/>
         <Caret Line="79" Column="95" TopLine="71"/>
-      </Position12>
-      <Position13>
+      </Position4>
+      <Position5>
         <Filename Value="m_misc.pas"/>
         <Caret Line="44" Column="24" TopLine="27"/>
-      </Position13>
-      <Position14>
+      </Position5>
+      <Position6>
         <Filename Value="m_misc.pas"/>
         <Caret Line="320" Column="24" TopLine="295"/>
-      </Position14>
-      <Position15>
+      </Position6>
+      <Position7>
         <Filename Value="m_misc.pas"/>
         <Caret Line="329" Column="22" TopLine="325"/>
-      </Position15>
-      <Position16>
+      </Position7>
+      <Position8>
         <Filename Value="m_misc.pas"/>
         <Caret Line="44" Column="24" TopLine="29"/>
-      </Position16>
-      <Position17>
+      </Position8>
+      <Position9>
         <Filename Value="f_wipe.pas"/>
         <Caret Line="85" Column="63" TopLine="81"/>
-      </Position17>
-      <Position18>
+      </Position9>
+      <Position10>
         <Filename Value="f_wipe.pas"/>
         <Caret Line="153" Column="17" TopLine="124"/>
-      </Position18>
-      <Position19>
-        <Filename Value="r_main.pas"/>
-        <Caret Line="52" Column="20" TopLine="305"/>
-      </Position19>
-      <Position20>
+      </Position10>
+      <Position11>
         <Filename Value="r_main.pas"/>
         <Caret Line="1356" Column="16" TopLine="1340"/>
-      </Position20>
-      <Position21>
+      </Position11>
+      <Position12>
         <Filename Value="r_render.pas"/>
         <Caret Line="88" Column="18" TopLine="77"/>
-      </Position21>
-      <Position22>
+      </Position12>
+      <Position13>
         <Filename Value="r_main.pas"/>
         <Caret Line="1320" Column="5" TopLine="1305"/>
-      </Position22>
-      <Position23>
+      </Position13>
+      <Position14>
         <Filename Value="r_main.pas"/>
         <Caret Line="1285" Column="49" TopLine="1281"/>
-      </Position23>
-      <Position24>
+      </Position14>
+      <Position15>
         <Filename Value="r_plane.pas"/>
         <Caret Line="307" Column="23" TopLine="293"/>
-      </Position24>
-      <Position25>
+      </Position15>
+      <Position16>
         <Filename Value="d_main.pas"/>
         <Caret Line="1508" Column="34" TopLine="1502"/>
-      </Position25>
-      <Position26>
+      </Position16>
+      <Position17>
         <Filename Value="i_system.pas"/>
         <Caret Line="500" Column="22" TopLine="494"/>
-      </Position26>
-      <Position27>
+      </Position17>
+      <Position18>
         <Filename Value="i_system.pas"/>
         <Caret Line="420" Column="24" TopLine="414"/>
-      </Position27>
-      <Position28>
+      </Position18>
+      <Position19>
         <Filename Value="i_system.pas"/>
         <Caret Line="391" Column="14" TopLine="385"/>
-      </Position28>
-      <Position29>
+      </Position19>
+      <Position20>
         <Filename Value="m_misc.pas"/>
         <Caret Line="605" Column="19" TopLine="600"/>
-      </Position29>
-      <Position30>
+      </Position20>
+      <Position21>
         <Filename Value="m_misc.pas"/>
         <Caret Line="519" Column="24" TopLine="514"/>
-      </Position30>
+      </Position21>
+      <Position22>
+        <Filename Value="f_wipe.pas"/>
+        <Caret Line="302" Column="44" TopLine="287"/>
+      </Position22>
+      <Position23>
+        <Filename Value="f_wipe.pas"/>
+      </Position23>
+      <Position24>
+        <Filename Value="f_wipe.pas"/>
+        <Caret Line="82" Column="10" TopLine="43"/>
+      </Position24>
+      <Position25>
+        <Filename Value="f_wipe.pas"/>
+        <Caret Line="223" Column="7" TopLine="201"/>
+      </Position25>
+      <Position26>
+        <Filename Value="f_wipe.pas"/>
+        <Caret Line="161" TopLine="141"/>
+      </Position26>
+      <Position27>
+        <Filename Value="f_wipe.pas"/>
+        <Caret Line="220" TopLine="187"/>
+      </Position27>
+      <Position28>
+        <Filename Value="f_wipe.pas"/>
+        <Caret Line="240" TopLine="206"/>
+      </Position28>
+      <Position29>
+        <Filename Value="f_wipe.pas"/>
+        <Caret Line="265" TopLine="231"/>
+      </Position29>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>

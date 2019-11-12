@@ -58,7 +58,7 @@ implementation
 uses
   d_fpc,
   doomdef,
-  m_rnd, m_misc,
+  m_rnd,
   m_fixed,
   r_hires,
   i_video,
@@ -158,8 +158,6 @@ begin
     end;
   until rndval = 1;
 end;
-var
-  sshot: integer = 0;
 
 function wipe_doMelt(ticks: integer): integer;
 var
@@ -219,8 +217,6 @@ begin
     end;
     dec(ticks);
   end;
-  M_ScreenShot('melt' + itoa(sshot));
-  inc(sshot);
 end;
 
 function wipe_doFade(ticks: integer): integer;
@@ -241,8 +237,6 @@ begin
 
   if wipefrac > 0 then
     result := 0;
-  M_ScreenShot('fade' + itoa(sshot));
-  inc(sshot);
 end;
 
 function wipe_doSlideDown(ticks: integer): integer;
@@ -268,8 +262,6 @@ begin
 
   if wipefrac > 0 then
     result := 0;
-  M_ScreenShot('slide' + itoa(sshot));
-  inc(sshot);
 end;
 
 function wipe_doFizzle(ticks: integer): integer;
@@ -302,8 +294,6 @@ begin
 
   if wipefrac > 0 then
     result := 0;
-  M_ScreenShot('fizzle' + itoa(sshot));
-  inc(sshot);
 end;
 
 procedure wipe_exitMelt;
