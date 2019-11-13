@@ -32,6 +32,7 @@ unit r_plane;
 interface
 
 uses
+  d_fpc,
   m_fixed,
   doomdef, 
   r_data, 
@@ -63,13 +64,8 @@ var
 //
 // opening
 //
-
-// ?
-const
-  MAXOPENINGS = MAXWIDTH * MAXHEIGHT;
-
 var
-  openings: packed array[0..MAXOPENINGS - 1] of smallint; 
+  openings: PSmallIntArray = nil;
   lastopening: integer;
 
   yslope: array[0..MAXHEIGHT - 1] of fixed_t;
@@ -78,7 +74,6 @@ var
 implementation
 
 uses
-  d_fpc,
   i_system,
   r_sky,
   r_draw,
@@ -230,8 +225,10 @@ begin
   lastvisplane := 0;
   lastopening := 0;
 
+  openings := Z_Realloc(openings, SCREENWIDTH * SCREENHEIGHT * SizeOf(smallint), PU_STATIC, nil);
+
   // texture calculation
-  ZeroMemory(@cachedheight, SizeOf(cachedheight));
+  ZeroMemory(@cachedheight, SCREENWIDTH * SizeOf(fixed_t));
 end;
 
 //
