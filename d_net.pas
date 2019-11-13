@@ -39,7 +39,7 @@ uses
 
 const
 // Networking and tick handling related.
-  BACKUPTICS = 12;
+  BACKUPTICS = 64;
 
 type
   Tcmds = packed array[0..BACKUPTICS - 1] of ticcmd_t;
@@ -126,9 +126,9 @@ type
     angleoffset: smallint;
 
     // 1 = drone
-    drone : smallint;
+    drone: smallint;
     // The packet data to be sent.
-    data : doomdata_t;
+    data: doomdata_t;
   end;
   Pdoomcom_t = ^doomcom_t;
 
