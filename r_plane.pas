@@ -204,7 +204,7 @@ begin
   rspan.ds_x2 := x2;
 
   // high or low detail
-  R_AddRenderTask(spanfunc, RF_SPAN or RF_DEPTHBUFFERWRITE, @rspan);
+  R_AddRenderTask(spanfunc, renderflags_span, @rspan);
 end;
 
 //
