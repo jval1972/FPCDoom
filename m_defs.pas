@@ -686,7 +686,7 @@ const
      defaultbvalue: false;
      _type: tInteger),
 
-    (name: 'mouse_sensitivityX';
+    (name: 'mouse_sensitivityx';
      location: @mouseSensitivityX;
      setable: DFS_ALWAYS;
      defaultsvalue: '';
@@ -694,7 +694,7 @@ const
      defaultbvalue: false;
      _type: tInteger),
 
-    (name: 'mouse_sensitivityY';
+    (name: 'mouse_sensitivityy';
      location: @mouseSensitivityY;
      setable: DFS_ALWAYS;
      defaultsvalue: '';
