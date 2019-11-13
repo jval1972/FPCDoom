@@ -524,7 +524,6 @@ var
   frac: fixed_t;
   patch: Ppatch_t;
   xiscale: integer;
-  flags: LongWord;
 begin
   patch := W_CacheLumpNum(vis.patch + firstspritelump, PU_STATIC);
 
@@ -572,12 +571,6 @@ begin
   spryscale := vis.scale;
   sprtopscreen := centeryfrac - FixedMul(rcolumn.dc_texturemid, spryscale);
 
-  // set draw flags
-  if lightmapaccuracymode = MAXLIGHTMAPACCURACYMODE then
-    flags := RF_MASKED or RF_DEPTHBUFFERWRITE
-  else
-    flags := RF_MASKED;
-
   xiscale := vis.xiscale;
   rcolumn.dc_x := vis.x1;
   while rcolumn.dc_x <= vis.x2 do
@@ -585,7 +578,7 @@ begin
     texturecolumn := LongWord(frac) shr FRACBITS;
 
     column := Pcolumn_t(integer(patch) + patch.columnofs[texturecolumn]);
-    proc(column, flags);
+    proc(column, renderflags_masked);
     frac := frac + xiscale;
     inc(rcolumn.dc_x);
   end;

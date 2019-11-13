@@ -1210,7 +1210,7 @@ end;
 
 function R_CastLightmapOnMasked: boolean;
 begin
-  result := lightmapaccuracymode = MAXLIGHTMAPACCURACYMODE;
+  result := uselightmap and (lightmapaccuracymode = MAXLIGHTMAPACCURACYMODE);
 end;
 
 end.

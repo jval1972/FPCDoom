@@ -203,7 +203,6 @@ var
   use32: boolean;
   mc2height: integer;
   texturecolumn: integer;
-  flags: Longword;
 begin
   // Calculate light table.
   // Use different light tables
@@ -283,12 +282,6 @@ begin
       rcolumn.dc_lightlevel := R_GetColormapLightLevel(rcolumn.dc_colormap);
   end;
 
-  // set draw flags
-  if lightmapaccuracymode = MAXLIGHTMAPACCURACYMODE then
-    flags := RF_MASKED or RF_DEPTHBUFFERWRITE
-  else
-    flags := RF_MASKED;
-
   // draw the columns
   for i := x1 to x2 do
   begin
@@ -325,13 +318,13 @@ begin
         rcolumn.dc_mod := 0;
         rcolumn.dc_texturemod := maskedtexturecol[rcolumn.dc_x] and (DC_HIRESFACTOR - 1);
         R_GetDCs(texnum, texturecolumn);
-        R_DrawMaskedColumn32(mc2height, flags);
+        R_DrawMaskedColumn32(mc2height, renderflags_masked);
       end
       else
       begin
         // draw the texture
         col := Pcolumn_t(integer(R_GetColumn(texnum, texturecolumn)) - 3);
-        R_DrawMaskedColumn(col, flags);
+        R_DrawMaskedColumn(col, renderflags_masked);
       end;
       maskedtexturecol[rcolumn.dc_x] := MAXSHORT;
     end;
@@ -507,7 +500,7 @@ begin
       rcolumn.dc_yh := yh;
       rcolumn.dc_texturemid := rw_midtexturemid;
       R_GetDCs(midtexture, R_MirrorTextureColumn(curline, texturecolumn));
-      R_AddRenderTask(wallcolfunc, RF_WALL or RF_DEPTHBUFFERWRITE, @rcolumn);
+      R_AddRenderTask(wallcolfunc, renderflags_wall, @rcolumn);
       pceilingclip^ := viewheight;
       pfloorclip^ := -1;
     end
@@ -529,7 +522,7 @@ begin
           rcolumn.dc_yh := mid;
           rcolumn.dc_texturemid := rw_toptexturemid;
           R_GetDCs(toptexture, R_MirrorTextureColumn(curline, texturecolumn));
-          R_AddRenderTask(wallcolfunc, RF_WALL or RF_DEPTHBUFFERWRITE, @rcolumn);
+          R_AddRenderTask(wallcolfunc, renderflags_wall, @rcolumn);
           pceilingclip^ := mid;
         end
         else
@@ -558,7 +551,7 @@ begin
           rcolumn.dc_yh := yh;
           rcolumn.dc_texturemid := rw_bottomtexturemid;
           R_GetDCs(bottomtexture, R_MirrorTextureColumn(curline, texturecolumn));
-          R_AddRenderTask(wallcolfunc, RF_WALL or RF_DEPTHBUFFERWRITE, @rcolumn);
+          R_AddRenderTask(wallcolfunc, renderflags_wall, @rcolumn);
           pfloorclip^ := mid;
         end
         else

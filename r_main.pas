@@ -227,6 +227,11 @@ procedure R_Ticker;
 var
   rendervalidcount: integer = 0; // Don't bother reseting this
 
+var
+  renderflags_wall: LongWord;
+  renderflags_span: LongWord;
+  renderflags_masked: LongWord;
+
 implementation
 
 uses
@@ -1227,6 +1232,25 @@ begin
     result := @colormaps32[(integer(cmap) - integer(colormaps))];
 end;
 
+procedure R_SetupRenderFlags;
+begin
+  if uselightmap then
+  begin
+    renderflags_wall := RF_WALL or RF_DEPTHBUFFERWRITE;
+    renderflags_span := RF_SPAN or RF_DEPTHBUFFERWRITE;
+  end
+  else
+  begin
+    renderflags_wall := RF_WALL;
+    renderflags_span := RF_SPAN;
+  end;
+
+  if uselightmap and (lightmapaccuracymode = MAXLIGHTMAPACCURACYMODE) then
+    renderflags_masked := RF_MASKED or RF_DEPTHBUFFERWRITE
+  else
+    renderflags_masked := RF_MASKED;
+end;
+
 //
 // R_RenderPlayerView
 //
@@ -1243,6 +1267,9 @@ begin
 
   // Player setup
   R_SetupFrame(player);
+
+  // Set renderflags
+  R_SetupRenderFlags;
 
   // Clear buffers.
   R_ClearClipSegs;
