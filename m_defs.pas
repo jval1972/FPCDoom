@@ -52,6 +52,7 @@ uses
   m_misc,
   r_aspect,
   r_defs,
+  r_draw,
   r_lightmap,
   r_main,
   r_mirror,
@@ -84,7 +85,7 @@ type
   Pdefault_t = ^default_t;
 
 const
-  NUMDEFAULTS = 119;
+  NUMDEFAULTS = 120;
 
   defaults: array[0..NUMDEFAULTS - 1] of default_t = (
     (name: 'Display';
@@ -222,6 +223,14 @@ const
      defaultivalue: 0;
      defaultbvalue: false;
      _type: tString),
+
+    (name: 'displaydiskbusyicon';
+     location: @displaydiskbusyicon;
+     setable: DFS_ALWAYS;
+     defaultsvalue: '';
+     defaultivalue: 0;
+     defaultbvalue: true;
+     _type: tBoolean),
 
     (name: 'displayendscreen';
      location: @displayendscreen;

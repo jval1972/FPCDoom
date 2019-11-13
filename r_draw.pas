@@ -60,6 +60,8 @@ procedure R_DrawViewBorder;
 procedure R_DrawDiskBusy;
 
 var
+  displaydiskbusyicon: boolean = true;
+
   translationtables: PByteArray;
   dc_translation: PByteArray;
 
@@ -363,6 +365,9 @@ var
 
 procedure R_DrawDiskBusy;
 begin
+  if not displaydiskbusyicon then
+    exit;
+
 // Draw disk busy patch
   if disklump = -2 then
   begin

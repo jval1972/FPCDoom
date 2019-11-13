@@ -117,6 +117,7 @@ uses
   p_saveg,
   r_aspect,
   r_data,
+  r_draw,
   r_main,
   r_hires,
   r_intrpl,
@@ -617,6 +618,7 @@ type
   optionsdisplayappearance_e = (
     od_drawfps,
     od_shademenubackground,
+    od_displaydiskbusyicon,
     od_wipestyle,
     od_displayendscreen,
     optdispappearance_end
@@ -3616,6 +3618,14 @@ begin
   pmi.cmd := '';
   pmi.routine := @M_SwitchShadeMode;
   pmi.pBoolVal := nil;
+  pmi.alphaKey := 'b';
+
+  inc(pmi);
+  pmi.status := 1;
+  pmi.name := '!Display disk busy icon';
+  pmi.cmd := 'displaydiskbusyicon';
+  pmi.routine := @M_BoolCmd;
+  pmi.pBoolVal := @displaydiskbusyicon;
   pmi.alphaKey := 'b';
 
   inc(pmi);
