@@ -573,6 +573,7 @@ begin
 
     // Get exclusive mode
     hres := g_pDD.SetCooperativeLevel(hMainWnd, DDSCL_ALLOWMODEX or DDSCL_EXCLUSIVE or DDSCL_FULLSCREEN);
+
     if hres <> DD_OK then
       I_ErrorInitGraphics('SetCooperativeLevel');
 
@@ -808,10 +809,7 @@ begin
     begin
       I_Warning('I_ChangeFullScreen(): Can not change to %s mode'#13#10, [s_cfs_descs[fullscreen]]);
       // Restore original window state
-      if fullscreen then
-        g_pDD.SetCooperativeLevel(hMainWnd, DDSCL_EXCLUSIVE or DDSCL_FULLSCREEN)
-      else
-        g_pDD.SetCooperativeLevel(hMainWnd, DDSCL_NORMAL);
+      g_pDD.SetCooperativeLevel(hMainWnd, DDSCL_EXCLUSIVE or DDSCL_FULLSCREEN);
       exit;
     end;
   end;

@@ -700,7 +700,6 @@ begin
   vis.gz := thing.z;
   vis.gzt := thing.z + spritetopoffset[lump];
   vis.texturemid := vis.gzt - viewz;
-  vis.texturemid2 := thing.z + 2 * spritetopoffset[lump] - viewz;
   if x1 <= 0 then
     vis.x1 := 0
   else

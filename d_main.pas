@@ -1867,6 +1867,8 @@ begin
   printf('ST_Init: Init status bar.'#13#10);
   ST_Init;
 
+  printf('I_DetectNativeScreenResolution: Detect native screen resolution.'#13#10);
+
 // check for a driver that wants intermission stats
   p := M_CheckParm('-statcopy');
   if (p > 0) and (p < myargc - 1) then

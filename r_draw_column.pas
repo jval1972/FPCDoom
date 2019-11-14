@@ -390,6 +390,14 @@ const
 var
   sfuzzoffset: array[0..FUZZTABLE - 1] of integer;
 
+procedure R_InitFuzzTable;
+var
+  i: integer;
+begin
+  for i := 0 to FUZZTABLE - 1 do
+    sfuzzoffset[i] := fuzzoffset[i] * SCREENWIDTH;
+end;
+
 //
 // Framebuffer postprocessing.
 // Creates a fuzzy image by copying pixels
@@ -495,14 +503,6 @@ begin
     destl^ := R_FuzzLight(destl^);
     inc(destl, SCREENWIDTH);
   end;
-end;
-
-procedure R_InitFuzzTable;
-var
-  i: integer;
-begin
-  for i := 0 to FUZZTABLE - 1 do
-    sfuzzoffset[i] := fuzzoffset[i] * SCREENWIDTH;
 end;
 
 //

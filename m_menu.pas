@@ -129,6 +129,7 @@ uses
   v_video,
   w_wad,
   hu_stuff,
+  st_stuff,
   s_sound,
   doomstat,
 // Data.
@@ -616,6 +617,7 @@ var
 // DISPLAY APPEARANCE MENU
 type
   optionsdisplayappearance_e = (
+    od_hud,
     od_drawfps,
     od_shademenubackground,
     od_displaydiskbusyicon,
@@ -627,6 +629,22 @@ type
 var
   OptionsDisplayAppearanceMenu: array[0..Ord(optdispappearance_end) - 1] of menuitem_t;
   OptionsDisplayAppearanceDef: menu_t;
+
+// DISPLAY HUD MENU
+type
+  optionsdisplayhud_e = (
+    od_custom_fullscreenhud,
+    od_custom_fullscreenhud_size,
+    od_custom_helthpos,
+    od_custom_armorpos,
+    od_custom_ammopos,
+    od_custom_keyspos,
+    optdisphud_end
+  );
+
+var
+  OptionsDisplayHudMenu: array[0..Ord(optdisphud_end) - 1] of menuitem_t;
+  OptionsDisplayHudDef: menu_t;
 
 // DISPLAY AUTOMAP MENU
 type
@@ -1635,6 +1653,44 @@ begin
   M_SetupNextMenu(@OptionsDisplayAppearanceDef);
 end;
 
+procedure M_OptionsHUD(choice: integer);
+begin
+  M_SetupNextMenu(@OptionsDisplayHudDef);
+end;
+
+procedure M_ChangeHudFullScreenSize(choice: integer);
+begin
+  custom_fullscreenhud_size := not custom_fullscreenhud_size;
+end;
+
+procedure M_ChangeHudHealthpos(choice: integer);
+begin
+  custom_hudhelthpos := custom_hudhelthpos + 1;
+  if custom_hudhelthpos > 1 then
+    custom_hudhelthpos := -1;
+end;
+
+procedure M_ChangeHudArmorpos(choice: integer);
+begin
+  custom_hudarmorpos := custom_hudarmorpos + 1;
+  if custom_hudarmorpos > 1 then
+    custom_hudarmorpos := -1;
+end;
+
+procedure M_ChangeHudKeyspos(choice: integer);
+begin
+  custom_hudkeyspos := custom_hudkeyspos + 1;
+  if custom_hudkeyspos > 1 then
+    custom_hudkeyspos := -1;
+end;
+
+procedure M_ChangeHudAmmopos(choice: integer);
+begin
+  custom_hudammopos := custom_hudammopos + 1;
+  if custom_hudammopos > 1 then
+    custom_hudammopos := -1;
+end;
+
 procedure M_OptionsDisplayAdvanced(choice: integer);
 begin
   M_SetupNextMenu(@OptionsDisplayAdvancedDef);
@@ -1876,6 +1932,40 @@ begin
   ppos := M_WriteText(OptionsDisplayAppearanceDef.x, OptionsDisplayAppearanceDef.y + OptionsDisplayAppearanceDef.itemheight * Ord(od_wipestyle), 'Wipe Style: ');
   M_WriteColorText(ppos.x, ppos.y, wipestyles[wipestyle mod Ord(NUMWIPESTYLES)], 'CRGRAY');
 
+end;
+
+const
+  strhudsize: array[boolean] of string =
+    ('SMALL', 'BIG');
+
+  strhudpos: array[-1..1] of string =
+      ('LEFT', 'NONE', 'RIGHT');
+
+procedure M_DrawDisplayHUDOptions;
+var
+  ppos: menupos_t;
+begin
+  M_DrawDisplayOptions;
+  V_DrawPatch(20, 48, SCN_TMP, 'MENU_HUD', false);
+
+  ppos := M_WriteText(OptionsDisplayHudDef.x, OptionsDisplayHudDef.y + OptionsDisplayHudDef.itemheight * Ord(od_custom_fullscreenhud_size), 'Size: ');
+  M_WriteColorText(ppos.x, ppos.y, strhudsize[custom_fullscreenhud_size], 'CRGRAY');
+
+  custom_hudhelthpos := ibetween(custom_hudhelthpos, -1, 1);
+  ppos := M_WriteText(OptionsDisplayHudDef.x, OptionsDisplayHudDef.y + OptionsDisplayHudDef.itemheight * Ord(od_custom_helthpos), 'Health position: ');
+  M_WriteColorText(ppos.x, ppos.y, strhudpos[custom_hudhelthpos], 'CRGRAY');
+
+  custom_hudarmorpos := ibetween(custom_hudarmorpos, -1, 1);
+  ppos := M_WriteText(OptionsDisplayHudDef.x, OptionsDisplayHudDef.y + OptionsDisplayHudDef.itemheight * Ord(od_custom_armorpos), 'Armor position: ');
+  M_WriteColorText(ppos.x, ppos.y, strhudpos[custom_hudarmorpos], 'CRGRAY');
+
+  custom_hudammopos := ibetween(custom_hudammopos, -1, 1);
+  ppos := M_WriteText(OptionsDisplayHudDef.x, OptionsDisplayHudDef.y + OptionsDisplayHudDef.itemheight * Ord(od_custom_ammopos), 'Ammo position: ');
+  M_WriteColorText(ppos.x, ppos.y, strhudpos[custom_hudammopos], 'CRGRAY');
+
+  custom_hudkeyspos := ibetween(custom_hudkeyspos, -1, 1);
+  ppos := M_WriteText(OptionsDisplayHudDef.x, OptionsDisplayHudDef.y + OptionsDisplayHudDef.itemheight * Ord(od_custom_keyspos), 'Keys position: ');
+  M_WriteColorText(ppos.x, ppos.y, strhudpos[custom_hudkeyspos], 'CRGRAY');
 end;
 
 procedure M_DrawDisplayAutomapOptions;
@@ -3606,6 +3696,14 @@ begin
 //OptionsDisplayAppearanceMenu
   pmi := @OptionsDisplayAppearanceMenu[0];
   pmi.status := 1;
+  pmi.name := '!HUD...';
+  pmi.cmd := '';
+  pmi.routine := @M_OptionsHUD;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := 'h';
+
+  inc(pmi);
+  pmi.status := 1;
   pmi.name := '!Display fps';
   pmi.cmd := 'drawfps';
   pmi.routine := @M_BoolCmd;
@@ -3658,6 +3756,71 @@ begin
   OptionsDisplayAppearanceDef.lastOn := 0; // last item user was on in menu
   OptionsDisplayAppearanceDef.itemheight := LINEHEIGHT2;
   OptionsDisplayAppearanceDef.texturebk := true;
+
+////////////////////////////////////////////////////////////////////////////////
+//OptionsDisplayHudMenu
+  pmi := @OptionsDisplayHudMenu[0];
+  pmi.status := 1;
+  pmi.name := '!Custom fullscreen HUD';
+  pmi.cmd := 'custom_fullscreenhud';
+  pmi.routine := @M_BoolCmd;
+  pmi.pBoolVal := @custom_fullscreenhud;
+  pmi.alphaKey := 'c';
+
+  inc(pmi);
+  pmi.status := 1;
+  pmi.name := '';
+  pmi.cmd := '';
+  pmi.routine := @M_ChangeHudFullScreenSize;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := 's';
+
+
+  inc(pmi);
+  pmi.status := 1;
+  pmi.name := '';
+  pmi.cmd := '';
+  pmi.routine := @M_ChangeHudHealthpos;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := 'h';
+
+  inc(pmi);
+  pmi.status := 1;
+  pmi.name := '';
+  pmi.cmd := '';
+  pmi.routine := @M_ChangeHudArmorpos;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := 'a';
+
+  inc(pmi);
+  pmi.status := 1;
+  pmi.name := '';
+  pmi.cmd := '';
+  pmi.routine := @M_ChangeHudAmmopos;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := 'a';
+
+  inc(pmi);
+  pmi.status := 1;
+  pmi.name := '';
+  pmi.cmd := '';
+  pmi.routine := @M_ChangeHudKeyspos;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := 'k';
+
+
+////////////////////////////////////////////////////////////////////////////////
+//OptionsDisplayHudDef
+  OptionsDisplayHudDef.title := 'HUD';
+  OptionsDisplayHudDef.numitems := Ord(optdisphud_end); // # of menu items
+  OptionsDisplayHudDef.prevMenu := @OptionsDisplayAppearanceDef; // previous menu
+  OptionsDisplayHudDef.menuitems := Pmenuitem_tArray(@OptionsDisplayHudMenu);  // menu items
+  OptionsDisplayHudDef.drawproc := @M_DrawDisplayHUDOptions;  // draw routine
+  OptionsDisplayHudDef.x := 32;
+  OptionsDisplayHudDef.y := 68; // x,y of menu
+  OptionsDisplayHudDef.lastOn := 0; // last item user was on in menu
+  OptionsDisplayHudDef.itemheight := LINEHEIGHT2;
+  OptionsDisplayHudDef.texturebk := true;
 
 ////////////////////////////////////////////////////////////////////////////////
 //OptionsDisplayAdvancedMenu

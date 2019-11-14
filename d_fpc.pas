@@ -552,6 +552,8 @@ function min3b(const a, b, c: byte): byte;
 
 function max3b(const a, b, c: byte): byte;
 
+function ibetween(const x: integer; const x1, x2: integer): integer;
+
 implementation
 
 uses
@@ -2682,6 +2684,16 @@ begin
     result := b;
   if c > result then
     result := c;
+end;
+
+function ibetween(const x: integer; const x1, x2: integer): integer;
+begin
+  if x <= x1 then
+    result := x1
+  else if x >= x2 then
+    result := x2
+  else
+    result := x;
 end;
 
 end.

@@ -80,6 +80,14 @@ type
   );
 
 
+var
+  custom_fullscreenhud: boolean = false;
+  custom_fullscreenhud_size: boolean = false;
+  custom_hudhelthpos: integer = 1;
+  custom_hudammopos: integer = 1;
+  custom_hudarmorpos: integer = 1;
+  custom_hudkeyspos: integer = 1;
+
 implementation
 
 uses
@@ -382,6 +390,8 @@ var
 
 // medikit
   smedikit: integer;
+// armor
+  sarmor: integer;
 // Weapons ammo for small display
   sammo: array[0..3] of integer;
 
@@ -1400,6 +1410,145 @@ begin
   ST_FinishRefresh;
 end;
 
+procedure ST_DrawTallNumber(num: integer; x, y: integer; stretch: boolean);
+var
+  w: integer;
+  numdigits: integer;
+begin
+  w := tallnum[0].width;
+
+  // in the special case of 0, you draw 0
+  if num = 0 then
+  begin
+    V_DrawPatch(x - w, y, SCN_FG, tallnum[0], stretch);
+    exit;
+  end;
+
+  numdigits := 3;
+  // draw the new number
+  while (num <> 0) and (numdigits <> 0) do
+  begin
+    x := x - w;
+    V_DrawPatch(x, y, SCN_FG, tallnum[num mod 10], stretch);
+    num := num div 10;
+    dec(numdigits);
+  end;
+end;
+
+procedure ST_DrawTallPercent(num: integer; x, y: integer; stretch: boolean);
+begin
+  ST_DrawTallNumber(num, x, y, stretch);
+  V_DrawPatch(x, y, SCN_FG, tallpercent, stretch);
+end;
+
+procedure ST_RefreshCustom;
+var
+  xl, xr, xpl, xpr, yl, yr, ypl, ypr: integer;
+  swidth: integer;
+  sheight: integer;
+  ammo: integer;
+  xkeys, i: integer;
+begin
+  if custom_fullscreenhud_size then
+  begin
+    swidth := 320;
+    sheight := 200;
+  end
+  else
+  begin
+    swidth := SCREENWIDTH;
+    sheight := SCREENHEIGHT;
+  end;
+
+  xl := 60;
+  xpl := 8;
+  xr := swidth - 22;
+  xpr := swidth - 14;
+  yl := sheight - 18;
+  ypl := sheight - 3;
+  yr := sheight - 18;
+  ypr := sheight - 3;
+
+  custom_hudhelthpos := ibetween(custom_hudhelthpos, -1, 1);
+  if custom_hudhelthpos = -1 then
+  begin
+    ST_DrawTallPercent(w_health.n.num^, xl, yl, custom_fullscreenhud_size);
+    V_DrawPatch(xpl, ypl, SCN_FG, smedikit, custom_fullscreenhud_size);
+    yl := yl - 22;
+    ypl := ypl - 22;
+  end
+  else if custom_hudhelthpos = 1 then
+  begin
+    ST_DrawTallPercent(w_health.n.num^, xr - tallpercent.width, yr, custom_fullscreenhud_size);
+    V_DrawPatch(xpr, ypr, SCN_FG, smedikit, custom_fullscreenhud_size);
+    yr := yr - 22;
+    ypr := ypr - 22;
+  end;
+
+  custom_hudarmorpos := ibetween(custom_hudarmorpos, -1, 1);
+  if custom_hudarmorpos = -1 then
+  begin
+    ST_DrawTallPercent(w_armor.n.num^, xl, yl, custom_fullscreenhud_size);
+    V_DrawPatch(xpl, ypl, SCN_FG, sarmor, custom_fullscreenhud_size);
+    yl := yl - 22;
+    ypl := ypl - 22;
+  end
+  else if custom_hudarmorpos = 1 then
+  begin
+    ST_DrawTallPercent(w_armor.n.num^, xr - tallpercent.width, yr, custom_fullscreenhud_size);
+    V_DrawPatch(xpr, ypr, SCN_FG, sarmor, custom_fullscreenhud_size);
+    yr := yr - 22;
+    ypr := ypr - 22;
+  end;
+
+  ammo := Ord(weaponinfo[Ord(plyr.readyweapon)].ammo);
+  if ammo <> Ord(am_noammo) then
+  begin
+    custom_hudammopos := ibetween(custom_hudammopos, -1, 1);
+    if custom_hudammopos = -1 then
+    begin
+      ST_DrawTallNumber(w_ammo2[ammo].num^, xl, yl, custom_fullscreenhud_size);
+      V_DrawPatch(xpl - 2, ypl, SCN_FG, sammo[ammo], custom_fullscreenhud_size);
+      yl := yl - 22;
+      ypl := ypl - 22;
+    end
+    else if custom_hudammopos = 1 then
+    begin
+      ST_DrawTallNumber(w_ammo2[ammo].num^, xr, yr, custom_fullscreenhud_size);
+      V_DrawPatch(xpr + 2, ypr, SCN_FG, sammo[ammo], custom_fullscreenhud_size);
+      yr := yr - 22;
+      ypr := ypr - 22;
+    end;
+  end;
+
+  custom_hudkeyspos := ibetween(custom_hudkeyspos, -1, 1);
+  if custom_hudkeyspos = -1 then
+  begin
+    xkeys := xpl - 2;
+    for i := 0 to Ord(NUMCARDS) - 1 do
+      if plyr.cards[i] then
+      begin
+        V_DrawPatch(xkeys, ypl - keys[i].height, SCN_FG, keys[i], custom_fullscreenhud_size);
+        xkeys := xkeys + keys[i].width + 4;
+      end;
+    yl := yl - keys[0].height - 4;
+    ypl := ypl - keys[0].height - 4;
+  end
+  else if custom_hudkeyspos = 1 then
+  begin
+    xkeys := xpr + 2;
+    for i := 0 to Ord(NUMCARDS) - 1 do
+      if plyr.cards[i] then
+      begin
+        V_DrawPatch(xkeys, ypr - keys[i].height, SCN_FG, keys[i], custom_fullscreenhud_size);
+        xkeys := xkeys - keys[i].width - 4;
+      end;
+    yr := yr - keys[0].height - 4;
+    ypr := ypr - keys[0].height - 4;
+  end;
+
+end;
+
 procedure ST_Drawer(dopt: stdrawoptions_t; refresh: boolean);
 begin
   st_statusbaron := (dopt <> stdo_no) or (amstate = am_only);
@@ -1421,7 +1570,12 @@ begin
     end;
   end
   else
-    ST_RefreshSmall;
+  begin
+    if custom_fullscreenhud then
+      ST_RefreshCustom
+    else
+      ST_RefreshSmall;
+  end;
 end;
 
 procedure ST_LoadGraphics;
@@ -1488,6 +1642,10 @@ begin
 // JVAL
 // Statusbar medikit, use stimpack patch (STIMA0)
   smedikit := W_GetNumForName('STIMA0');
+
+// JVAL
+// Statusbar armor
+  sarmor := W_GetNumForName('BON2A0');
 
 // JVAL
 // Weapons ammo for small display
@@ -1627,6 +1785,7 @@ begin
     @plyr.health,
     @st_statusbaron,
     tallpercent);
+
   STlib_initPercent(
     @w_health2,
     ST_MHEALTHX,

@@ -376,7 +376,6 @@ type
     xiscale: fixed_t;
 
     texturemid: fixed_t;
-    texturemid2: fixed_t; // JVAL For light boost
     patch: integer;
 
     // for color translation and shadow draw,

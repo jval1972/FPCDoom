@@ -60,6 +60,7 @@ uses
   r_colorsubsampling,
   r_hires,
   r_intrpl,
+  st_stuff,
   s_sound,
   t_main,
   v_video;
@@ -85,7 +86,7 @@ type
   Pdefault_t = ^default_t;
 
 const
-  NUMDEFAULTS = 120;
+  NUMDEFAULTS = 127;
 
   defaults: array[0..NUMDEFAULTS - 1] of default_t = (
     (name: 'Display';
@@ -366,6 +367,62 @@ const
      defaultsvalue: '';
      defaultivalue: 0;
      defaultbvalue: false;
+     _type: tInteger),
+
+    (name: 'HUD';
+     location: nil;
+     setable: DFS_NEVER;
+     defaultsvalue: '';
+     defaultivalue: 0;
+     defaultbvalue: false;
+     _type: tGroup),
+
+    (name: 'custom_fullscreenhud';
+     location: @custom_fullscreenhud;
+     setable: DFS_ALWAYS;
+     defaultsvalue: '';
+     defaultivalue: 1;
+     defaultbvalue: true;
+     _type: tBoolean),
+
+    (name: 'custom_fullscreenhud_size';
+     location: @custom_fullscreenhud_size;
+     setable: DFS_ALWAYS;
+     defaultsvalue: '';
+     defaultivalue: 1;
+     defaultbvalue: true;
+     _type: tBoolean),
+
+    (name: 'custom_hudhelthpos';
+     location: @custom_hudhelthpos;
+     setable: DFS_ALWAYS;
+     defaultsvalue: '';
+     defaultivalue: -1;
+     defaultbvalue: true;
+     _type: tInteger),
+
+    (name: 'custom_hudarmorpos';
+     location: @custom_hudarmorpos;
+     setable: DFS_ALWAYS;
+     defaultsvalue: '';
+     defaultivalue: -1;
+     defaultbvalue: true;
+     _type: tInteger),
+
+    (name: 'custom_hudammopos';
+     location: @custom_hudammopos;
+     setable: DFS_ALWAYS;
+     defaultsvalue: '';
+     defaultivalue: 1;
+     defaultbvalue: true;
+     _type: tInteger),
+
+    (name: 'custom_hudkeyspos';
+     location: @custom_hudkeyspos;
+     setable: DFS_ALWAYS;
+     defaultsvalue: '';
+     defaultivalue: 1;
+     defaultbvalue: true;
      _type: tInteger),
 
     (name: 'Automap';
