@@ -501,12 +501,7 @@ begin
     stop := pl.maxx + 1;
 
     for x := pl.minx to stop do
-    begin
       R_MakeSpans(x, pl.top[x - 1], pl.bottom[x - 1], pl.top[x], pl.bottom[x]);
-    end;
-
-    if rspan.ds_source <> nil then
-      Z_ChangeTag(rspan.ds_source, PU_CACHE);
   end;
 end;
 

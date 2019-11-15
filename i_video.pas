@@ -764,9 +764,6 @@ begin
       I_Warning('I_ChangeFullScreen(): Can not change to %s mode'#13#10, [s_cfs_descs[false]]);
       exit;
     end;
-    I_FindWindowSize;
-    I_AdjustWindowMode;
-    I_RestoreWindowPos;
   end
   else
   begin
@@ -776,11 +773,11 @@ begin
       I_Warning('I_ChangeFullScreen(): Can not change to %s mode'#13#10, [s_cfs_descs[true]]);
       exit;
     end;
-    I_FindWindowSize;
-    I_AdjustWindowMode;
-    I_RestoreWindowPos;
   end;
 
+  I_FindWindowSize;
+  I_AdjustWindowMode;
+  I_RestoreWindowPos;
 
   hres := g_pDD.SetDisplayMode(WINDOWWIDTH, WINDOWHEIGHT, 32, 0, 0);
   if hres <> DD_OK then

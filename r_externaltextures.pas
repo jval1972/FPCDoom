@@ -426,7 +426,7 @@ begin
   end;
   rcolumn.dc_mod := rcolumn.dc_texturemod;
   rcolumn.dc_texturefactorbits := ptex.factorbits;
-  rcolumn.dc_source32 := PLongWordArray(rover.dc32);
+  rcolumn.dc_source := rover.dc32;
   result := true;
 end;
 
@@ -439,14 +439,13 @@ end;
 procedure R_ReadDC32InternalCache(const rtex, rcol: integer);
 var
   plw: PLongWord;
-  plb: PByte;
   pdc32: Pdc32_t;
   src1, src2: PByte;
   tbl: Phiresmodtable_t;
   cachemiss: boolean;
   hash: integer;
   i: integer;
-  dc_source2: PByteArray;
+  dc_source1, dc_source2: PByteArray;
   rover: Pdc32cacheitem_t;
 begin
   // Cache read of the caclulated dc_source32, 98-99% propability not to recalc...
@@ -467,8 +466,8 @@ begin
     textures[rtex].factorbits := 0;
     if rcolumn.dc_mod = 0 then
     begin
-      rcolumn.dc_source := R_GetColumn(rtex, rcol);
-      src1 := @rcolumn.dc_source[0];
+      dc_source1 := R_GetColumn(rtex, rcol);
+      src1 := @dc_source1[0];
       for i := 0 to 127 do
       begin
         plw^ := videopal[src1^];
@@ -479,8 +478,8 @@ begin
     else
     begin
       tbl := @hirestable[rcolumn.dc_mod];
-      rcolumn.dc_source := R_GetColumn(rtex, rcol);
-      src1 := @rcolumn.dc_source[0];
+      dc_source1 := R_GetColumn(rtex, rcol);
+      src1 := @dc_source1[0];
       dc_source2 := R_GetColumn(rtex, rcol + 1);
       src2 := @dc_source2[0];
       for i := 0 to 127 do
@@ -498,7 +497,7 @@ begin
       plw^ := rover.dc32[0];
   end;
   rcolumn.dc_texturefactorbits := 0;
-  rcolumn.dc_source32 := PLongWordArray(rover.dc32);
+  rcolumn.dc_source := rover.dc32;
 end;
 
 procedure R_ReadDC32Cache(const rtex, rcol: integer);
@@ -686,8 +685,8 @@ var
   tpal: PLongWordArray;
   numpixels: integer;
   flatname: string;
+  ds_source8: PByteArray;
 begin
-  rspan.ds_source := nil;
   hash := flat and CACHEFLATMASK;
   lump := R_GetLumpForFlat(flat);
   rover := R_FindDS32Rover(hash, lump);
@@ -843,11 +842,11 @@ begin
     end
     else
     begin
-      rspan.ds_source := W_CacheLumpNum(lump, PU_STATIC);
+      ds_source8 := W_CacheLumpNum(lump, PU_STATIC);
       lumplen := W_LumpLength(lump);
       rover.scale := R_FlatScaleFromSize(lumplen);
 
-      src1 := @rspan.ds_source[0];
+      src1 := @ds_source8[0];
       pds32 := R_Get_ds32(rover);
       plw := @pds32[0];
       if lumplen < $1000 then
@@ -860,7 +859,7 @@ begin
         inc(plw);
         inc(src1);
       end;
-      Z_ChangeTag(rspan.ds_source, PU_CACHE);
+      Z_ChangeTag(ds_source8, PU_CACHE);
     end;
     if (detailLevel >= DL_NORMAL) and (rover.scale = ds64x64) then
     begin
@@ -871,7 +870,7 @@ begin
   end
   else
     pds32 := R_Get_ds32(rover);
-  rspan.ds_source32 := PLongWordArray(pds32);
+  rspan.ds_source := PLongWordArray(pds32);
   rspan.ds_scale := rover.scale;
 end;
 

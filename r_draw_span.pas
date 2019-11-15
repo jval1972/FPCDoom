@@ -66,8 +66,7 @@ const
 
 type
   spanparams_t = record
-    ds_source: PByteArray; // start of a 64*64 tile image
-    ds_source32: PLongWordArray; // start of a WxW tile image
+    ds_source: pointer; // start of a 64*64 tile image
     ds_y: integer;
     ds_x1: integer;
     ds_x2: integer;
@@ -123,6 +122,7 @@ var
   dest: PByte;
   count: integer;
   psi: Pdsscaleinfo_t;
+  ds_source8: PByteArray;
 begin
   // We do not check for zero spans here?
   count := parms.ds_x2 - parms.ds_x1;
@@ -134,10 +134,11 @@ begin
   yfrac := parms.ds_yfrac * psi.frac;
   xstep := parms.ds_xstep * psi.frac;
   ystep := parms.ds_ystep * psi.frac;
+  ds_source8 := parms.ds_source;
 
   while count >= 0 do
   begin
-    dest^ := parms.ds_colormap[parms.ds_source[_SHR(yfrac, psi.yshift) and psi.yand + _SHR(xfrac, FRACBITS) and psi.dand]];
+    dest^ := parms.ds_colormap[ds_source8[_SHR(yfrac, psi.yshift) and psi.yand + _SHR(xfrac, FRACBITS) and psi.dand]];
     inc(dest);
 
     // Next step in u,v.
@@ -159,6 +160,7 @@ var
   destl: PLongWord;
   count: integer;
   psi: Pdsscaleinfo_t;
+  ds_source32: PLongWordArray;
 begin
   // We do not check for zero spans here?
   count := parms.ds_x2 - parms.ds_x1;
@@ -169,10 +171,11 @@ begin
   yfrac := parms.ds_yfrac * psi.frac;
   xstep := parms.ds_xstep * psi.frac;
   ystep := parms.ds_ystep * psi.frac;
+  ds_source32 := parms.ds_source;
 
   while count >= 0 do
   begin
-    destl^ := R_ColorLightEx(parms.ds_source32[_SHR(yfrac, psi.yshift) and psi.yand + _SHR(xfrac, FRACBITS) and psi.dand], parms.ds_lightlevel);
+    destl^ := R_ColorLightEx(ds_source32[_SHR(yfrac, psi.yshift) and psi.yand + _SHR(xfrac, FRACBITS) and psi.dand], parms.ds_lightlevel);
     inc(destl);
 
     // Next step in u,v.

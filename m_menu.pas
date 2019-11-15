@@ -202,6 +202,8 @@ type
     pBoolVal: PBoolean;
     // hotkey in menu
     alphaKey: char;
+    // Translation
+    transtbl: string[8];
   end;
   Pmenuitem_t = ^menuitem_t;
   menuitem_tArray = packed array[0..$FFFF] of menuitem_t;
@@ -422,6 +424,12 @@ var
   len: integer;
   oldtranslation: PByteArray;
 begin
+  if clmap = '' then
+  begin
+    result := M_WriteText(x, y, str);
+    exit;
+  end;
+
   len := Length(str);
   if len = 0 then
   begin
@@ -1872,7 +1880,7 @@ var
 
 procedure M_DrawDisplayDetailOptions;
 var
-  stmp: string;
+  stmp, trn: string;
   ppos: menupos_t;
 begin
   M_DrawDisplayOptions;
@@ -1894,10 +1902,16 @@ begin
     OptionsDisplayDetailDef.x, OptionsDisplayDetailDef.y + OptionsDisplayDetailDef.itemheight * (Ord(odd_screensize) + 1), 30, mdisplaymode_idx, numdisplaymodes);
 
   if (displaymodes[mdisplaymode_idx].width = SCREENWIDTH) and (displaymodes[mdisplaymode_idx].height = SCREENHEIGHT) then
-    stmp := 'No change'
+  begin
+    stmp := 'No change';
+    trn := '';
+  end
   else
+  begin
     sprintf(stmp, 'Set video mode to %dx%d...', [displaymodes[mdisplaymode_idx].width, displaymodes[mdisplaymode_idx].height]);
-  M_WriteText(OptionsDisplayDetailDef.x, OptionsDisplayDetailDef.y + OptionsDisplayDetailDef.itemheight * Ord(odd_setvideomode), stmp);
+    trn := 'CRGRAY';
+  end;
+  M_WriteColorText(OptionsDisplayDetailDef.x, OptionsDisplayDetailDef.y + OptionsDisplayDetailDef.itemheight * Ord(odd_setvideomode), stmp, trn);
 end;
 
 procedure M_SwitchShadeMode(choice: integer);
@@ -3195,11 +3209,11 @@ begin
         delete(str, 1, 1);
         if currentMenu.menuitems[i].pBoolVal <> nil then
         begin
-          ppos := M_WriteText(x, y, str + ': ');
+          ppos := M_WriteColorText(x, y, str + ': ', currentMenu.menuitems[i].transtbl);
           M_WriteColorText(ppos.x, ppos.y, yesnoStrings[currentMenu.menuitems[i].pBoolVal^], 'CRGRAY');
         end
         else
-          M_WriteText(x, y, str);
+          M_WriteColorText(x, y, str, currentMenu.menuitems[i].transtbl);
       end
       else
         V_DrawPatch(x, y, SCN_TMP,
@@ -3701,6 +3715,7 @@ begin
   pmi.routine := @M_OptionsHUD;
   pmi.pBoolVal := nil;
   pmi.alphaKey := 'h';
+  pmi.transtbl := 'CRGRAY';
 
   inc(pmi);
   pmi.status := 1;
@@ -4004,6 +4019,7 @@ begin
   pmi.routine := @M_LightmapDefaults;
   pmi.pBoolVal := nil;
   pmi.alphaKey := 'r';
+  pmi.transtbl := 'CRGRAY';
 
 ////////////////////////////////////////////////////////////////////////////////
 //OptionsLightmapDef
@@ -4139,6 +4155,7 @@ begin
   pmi.routine := @M_SoundVolume;
   pmi.pBoolVal := nil;
   pmi.alphaKey := 'v';
+  pmi.transtbl := 'CRGRAY';
 
   inc(pmi);
   pmi.status := 1;
@@ -4331,6 +4348,7 @@ begin
   pmi.routine := @M_OptionsSensitivity;
   pmi.pBoolVal := nil;
   pmi.alphaKey := 's';
+  pmi.transtbl := 'CRGRAY';
 
   inc(pmi);
   pmi.status := 1;
@@ -4363,6 +4381,7 @@ begin
   pmi.routine := @M_KeyBindings;
   pmi.pBoolVal := nil;
   pmi.alphaKey := 'b';
+  pmi.transtbl := 'CRGRAY';
 
 ////////////////////////////////////////////////////////////////////////////////
 //ControlsDef

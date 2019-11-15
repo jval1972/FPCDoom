@@ -539,8 +539,8 @@ begin
   begin
     r := ((r1 * lfactor) shr FRACBITS) and $FF;
     g := ((g1 * lfactor) shr FRACBITS) and $FF;
-    b := ((b1 * lfactor) shr FRACBITS) and $FF;
-    result := r + g shl 8 + b shl 16;
+    b := (b1 * lfactor) and $FF0000;
+    result := r + g shl 8 + b;
   end
   else
   begin
