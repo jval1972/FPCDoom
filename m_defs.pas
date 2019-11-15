@@ -86,7 +86,7 @@ type
   Pdefault_t = ^default_t;
 
 const
-  NUMDEFAULTS = 127;
+  NUMDEFAULTS = 128;
 
   defaults: array[0..NUMDEFAULTS - 1] of default_t = (
     (name: 'Display';
@@ -129,12 +129,20 @@ const
      defaultbvalue: false;
      _type: tInteger),
 
-    (name: 'fullscreen';
-     location: @fullscreen;
+     (name: 'fullscreen';
+      location: @fullscreen;
+      setable: DFS_NEVER;
+      defaultsvalue: '';
+      defaultivalue: 1;
+      defaultbvalue: true;
+      _type: tBoolean),
+
+    (name: 'fullscreenexclusive';
+     location: @fullscreenexclusive;
      setable: DFS_NEVER;
      defaultsvalue: '';
-     defaultivalue: 1;
-     defaultbvalue: true;
+     defaultivalue: 0;
+     defaultbvalue: false;
      _type: tBoolean),
 
     (name: 'interpolate';

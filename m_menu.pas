@@ -611,6 +611,8 @@ var
 type
   optionsdisplaydetail_e = (
     odd_detaillevel,
+    odd_fullscreen,
+    odd_fullscreenexclusive,
     odd_screensize,
     odd_filler1,
     odd_filler2,
@@ -670,7 +672,6 @@ var
 // DISPLAY ADVANCED MENU
 type
   optionsdisplayadvanced_e = (
-    od_fullscreen,
     od_mirror,
     od_usetransparentsprites,
     od_interpolate,
@@ -1878,6 +1879,10 @@ end;
 var
   colordepths: array[boolean] of string = ('8bit', '32bit');
 
+var
+  strfullscreenmodes: array[boolean] of string = ('NORMAL', 'EXCLUSIVE');
+
+
 procedure M_DrawDisplayDetailOptions;
 var
   stmp, trn: string;
@@ -1888,6 +1893,10 @@ begin
 
   ppos := M_WriteText(OptionsDisplayDetailDef.x, OptionsDisplayDetailDef.y + OptionsDisplayDetailDef.itemheight * Ord(odd_detaillevel), 'Detail level: ');
   sprintf(stmp, '%s (%s)', [detailStrings[detailLevel], colordepths[videomode = vm32bit]]);
+  M_WriteColorText(ppos.x, ppos.y, stmp, 'CRGRAY');
+
+  ppos := M_WriteText(OptionsDisplayDetailDef.x, OptionsDisplayDetailDef.y + OptionsDisplayDetailDef.itemheight * Ord(odd_fullscreenexclusive), 'Fullscreen Mode: ');
+  stmp := strfullscreenmodes[fullscreenexclusive];
   M_WriteColorText(ppos.x, ppos.y, stmp, 'CRGRAY');
 
   if mdisplaymode_idx < 0 then
@@ -2303,6 +2312,15 @@ begin
 
 end;
 
+var
+  mousewait: integer;
+
+procedure M_ChangeFullScreenMode(choice: integer);
+begin
+  I_ChangeFullScreen(fullscreen, not fullscreenexclusive);
+  mousewait := I_GetTime + 15;
+end;
+
 procedure M_ChangeScreenSize(choice: integer);
 begin
   case choice of
@@ -2383,7 +2401,6 @@ end;
 //
 var
   joywait: integer;
-  mousewait: integer;
   mmousex: integer;
   mmousey: integer;
   mlastx: integer;
@@ -2709,7 +2726,7 @@ begin
         begin
           if m_altdown then
           begin
-            I_ChangeFullScreen;
+            I_ChangeFullScreen(not fullscreen, fullscreenexclusive);
             mousewait := I_GetTime + 15;
             result := true;
             exit;
@@ -3619,6 +3636,22 @@ begin
   pmi.alphaKey := 'c';
 
   inc(pmi);
+  pmi.status := 1;
+  pmi.name := '!Fullscreen';
+  pmi.cmd := 'fullscreen';
+  pmi.routine := @M_BoolCmd;
+  pmi.pBoolVal := @fullscreen;
+  pmi.alphaKey := 'f';
+
+  inc(pmi);
+  pmi.status := 1;
+  pmi.name := '!Fullscreen Mode';
+  pmi.cmd := '';
+  pmi.routine := @M_ChangeFullScreenMode;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := 'f';
+
+  inc(pmi);
   pmi.status := 2;
   pmi.name := '';
   pmi.cmd := '';
@@ -3840,15 +3873,6 @@ begin
 ////////////////////////////////////////////////////////////////////////////////
 //OptionsDisplayAdvancedMenu
   pmi := @OptionsDisplayAdvancedMenu[0];
-
-  pmi.status := 1;
-  pmi.name := '!Fullscreen';
-  pmi.cmd := 'fullscreen';
-  pmi.routine := @M_BoolCmd;
-  pmi.pBoolVal := @fullscreen;
-  pmi.alphaKey := 'f';
-
-  inc(pmi);
   pmi.status := 1;
   pmi.name := '!Mirror Mode';
   pmi.cmd := '';

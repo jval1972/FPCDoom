@@ -36,12 +36,14 @@ uses
   Windows,
   d_fpc;
 
+procedure I_DetectNativeScreenResolution;
+
 // Called by D_DoomMain,
 // determines the hardware configuration
 // and sets up the video mode
 procedure I_InitGraphics;
 
-procedure I_ChangeFullScreen;
+procedure I_ChangeFullScreen(const dofull, doexclusive: boolean);
 
 procedure I_ShutDownGraphics;
 
@@ -317,14 +319,14 @@ end;
 function I_AdjustWindowMode: boolean;
 begin
   result := false;
-  if WINDOWWIDTH > GetSystemMetrics(SM_CXSCREEN) then
+  if WINDOWWIDTH > NATIVEWIDTH then
   begin
-    WINDOWWIDTH := GetSystemMetrics(SM_CXSCREEN);
+    WINDOWWIDTH := NATIVEWIDTH;
     result := true;
   end;
-  if WINDOWHEIGHT > GetSystemMetrics(SM_CYSCREEN) then
+  if WINDOWHEIGHT > NATIVEHEIGHT then
   begin
-    WINDOWHEIGHT := GetSystemMetrics(SM_CYSCREEN);
+    WINDOWHEIGHT := NATIVEHEIGHT;
     result := true;
   end;
 end;
@@ -493,13 +495,27 @@ begin
   SortDisplayModes;
 end;
 
-procedure I_FindWindowSize;
+procedure I_DoFindWindowSize(const dofull, doexclusive: boolean);
 var
   i: integer;
   dist: double;
   mindist: double;
   idx: integer;
 begin
+  if dofull and not doexclusive then
+  begin
+    WINDOWWIDTH := NATIVEWIDTH;
+    WINDOWHEIGHT := NATIVEHEIGHT;
+    exit;
+  end;
+
+  if not dofull then
+  begin
+    WINDOWWIDTH := SCREENWIDTH;
+    WINDOWHEIGHT := SCREENHEIGHT;
+    exit;
+  end;
+
   for i := 0 to numdisplaymodes - 1 do
     if displaymodes[i].width = SCREENWIDTH then
       if displaymodes[i].height = SCREENHEIGHT then
@@ -532,8 +548,32 @@ begin
     exit;
   end;
 
-  WINDOWWIDTH := GetSystemMetrics(SM_CXSCREEN);
-  WINDOWHEIGHT := GetSystemMetrics(SM_CYSCREEN);
+  WINDOWWIDTH := NATIVEWIDTH;
+  WINDOWHEIGHT := NATIVEHEIGHT;
+end;
+
+procedure I_FindWindowSize(const dofull, doexclusive: boolean);
+begin
+  I_DoFindWindowSize(dofull, doexclusive);
+  printf('I_FindWindowSize(): Set window size at (%d, %d)'#13#10, [WINDOWWIDTH, WINDOWHEIGHT]);
+end;
+
+procedure I_DetectNativeScreenResolution;
+begin
+  NATIVEWIDTH := GetSystemMetrics(SM_CXSCREEN);
+  NATIVEHEIGHT := GetSystemMetrics(SM_CYSCREEN);
+end;
+
+var
+  isexclusive: boolean = false;
+
+function I_SetCooperativeLevel(const exclusive: boolean): HResult;
+begin
+  if exclusive then
+    result := g_pDD.SetCooperativeLevel(hMainWnd, DDSCL_ALLOWMODEX or DDSCL_EXCLUSIVE or DDSCL_FULLSCREEN)
+  else
+    result := g_pDD.SetCooperativeLevel(hMainWnd, DDSCL_NORMAL);
+  isexclusive := exclusive;
 end;
 
 const
@@ -569,50 +609,53 @@ begin
 
   if fullscreen then
   begin
-    I_FindWindowSize;
+    I_FindWindowSize(true, fullscreenexclusive);
 
     // Get exclusive mode
-    hres := g_pDD.SetCooperativeLevel(hMainWnd, DDSCL_ALLOWMODEX or DDSCL_EXCLUSIVE or DDSCL_FULLSCREEN);
+    hres := I_SetCooperativeLevel(fullscreenexclusive);
 
     if hres <> DD_OK then
       I_ErrorInitGraphics('SetCooperativeLevel');
 
-    // Set the video mode to WINDOWWIDTH x WINDOWHEIGHT x 32
-    hres := g_pDD.SetDisplayMode(WINDOWWIDTH, WINDOWHEIGHT, 32, 0, 0);
-    if hres <> DD_OK then
+    if fullscreenexclusive then
     begin
-    // Fullscreen mode failed, trying window mode
-      fullscreen := false;
-
-      I_AdjustWindowMode;
-      I_RestoreWindowPos;
-
-      printf('SetDisplayMode(): Failed to fullscreen %dx%dx%d, trying window mode...'#13#10,
-        [WINDOWWIDTH, WINDOWHEIGHT, 32]);
-      printf('Window Mode %dx%d' + #13#10, [WINDOWWIDTH, WINDOWHEIGHT]);
-
-      hres := g_pDD.SetCooperativeLevel(hMainWnd, DDSCL_NORMAL);
+      // Set the video mode to WINDOWWIDTH x WINDOWHEIGHT x 32
+      hres := g_pDD.SetDisplayMode(WINDOWWIDTH, WINDOWHEIGHT, 32, 0, 0);
       if hres <> DD_OK then
       begin
-        printf('SetDisplayMode(): Failed to window mode %dx%d...' + #13#10, [WINDOWWIDTH, WINDOWHEIGHT]);
-        WINDOWWIDTH := 640;
-        WINDOWHEIGHT := 480;
-        V_ReInit;
-        hres := g_pDD.SetDisplayMode(WINDOWWIDTH, WINDOWHEIGHT, 32, 0, 0);
+      // Fullscreen mode failed, trying window mode
+        fullscreen := false;
+
+        I_AdjustWindowMode;
+        I_RestoreWindowPos;
+
+        printf('SetDisplayMode(): Failed to fullscreen %dx%dx%d, trying window mode...'#13#10,
+          [WINDOWWIDTH, WINDOWHEIGHT, 32]);
+        printf('Window Mode %dx%d' + #13#10, [WINDOWWIDTH, WINDOWHEIGHT]);
+
+        hres := I_SetCooperativeLevel(false);
         if hres <> DD_OK then
-          I_ErrorInitGraphics('SetDisplayMode');
-        printf('SetDisplayMode(): %dx%d...'#13#10, [WINDOWWIDTH, WINDOWHEIGHT]);
-      end;
-    end
-    else
-      I_DisableAltTab;
+        begin
+          printf('SetDisplayMode(): Failed to window mode %dx%d...' + #13#10, [WINDOWWIDTH, WINDOWHEIGHT]);
+          WINDOWWIDTH := 640;
+          WINDOWHEIGHT := 480;
+          V_ReInit;
+          hres := g_pDD.SetDisplayMode(WINDOWWIDTH, WINDOWHEIGHT, 32, 0, 0);
+          if hres <> DD_OK then
+            I_ErrorInitGraphics('SetDisplayMode');
+          printf('SetDisplayMode(): %dx%d...'#13#10, [WINDOWWIDTH, WINDOWHEIGHT]);
+        end;
+      end
+      else
+        I_DisableAltTab;
+    end;
   end
   else
   begin
-    I_FindWindowSize;
+    I_FindWindowSize(false, false);
     I_AdjustWindowMode;
     I_RestoreWindowPos;
-    hres := g_pDD.SetCooperativeLevel(hMainWnd, DDSCL_NORMAL);
+    hres := I_SetCooperativeLevel(false);
     if hres <> DD_OK then
       I_ErrorInitGraphics('SetCooperativeLevel');
   end;
@@ -751,81 +794,86 @@ const
 const
   s_cfs_descs: array[boolean] of string = ('window', 'fullscreen');
 
-procedure I_DoChangeFullScreen;
+procedure I_DoChangeFullScreen(const dofull, doexclusive: boolean);
 var
   hres: HRESULT;
   i: integer;
+  wasexclusive: boolean;
 begin
-  if fullscreen then
-  begin
-    hres := g_pDD.SetCooperativeLevel(hMainWnd, DDSCL_NORMAL);
-    if hres <> DD_OK then
-    begin
-      I_Warning('I_ChangeFullScreen(): Can not change to %s mode'#13#10, [s_cfs_descs[false]]);
+  if dofull = fullscreen then
+    if doexclusive = fullscreenexclusive then
       exit;
-    end;
-  end
-  else
+
+  if not dofull and not fullscreen then
   begin
-    hres := g_pDD.SetCooperativeLevel(hMainWnd, DDSCL_EXCLUSIVE or DDSCL_FULLSCREEN);
-    if hres <> DD_OK then
-    begin
-      I_Warning('I_ChangeFullScreen(): Can not change to %s mode'#13#10, [s_cfs_descs[true]]);
-      exit;
-    end;
+    fullscreenexclusive := doexclusive;
+    exit;
   end;
 
-  I_FindWindowSize;
+  wasexclusive := isexclusive;
+
+  hres := I_SetCooperativeLevel(dofull and doexclusive);
+
+  if hres <> DD_OK then
+  begin
+    I_Warning('I_ChangeFullScreen(): Can not change to %s mode'#13#10, [s_cfs_descs[dofull and doexclusive]]);
+    exit;
+  end;
+
+  I_FindWindowSize(dofull, doexclusive);
   I_AdjustWindowMode;
   I_RestoreWindowPos;
 
-  hres := g_pDD.SetDisplayMode(WINDOWWIDTH, WINDOWHEIGHT, 32, 0, 0);
-  if hres <> DD_OK then
+  if dofull and doexclusive then
   begin
-
-    i := 0;
-
-    // Determine a standard screen resolution
-    WINDOWWIDTH := STANDARDSCREENRESOLUTIONS[NUMSTDRESOLUTIONS - 1, 0];
-    WINDOWHEIGHT := STANDARDSCREENRESOLUTIONS[NUMSTDRESOLUTIONS - 1, 1];
-    while i < NUMSTDRESOLUTIONS - 1 do
-    begin
-      if (WINDOWWIDTH <= STANDARDSCREENRESOLUTIONS[i, 0]) and
-         (WINDOWHEIGHT <= STANDARDSCREENRESOLUTIONS[i, 1]) and
-         (WINDOWWIDTH >= STANDARDSCREENRESOLUTIONS[i + 1, 0]) then
-      begin
-        WINDOWWIDTH := STANDARDSCREENRESOLUTIONS[i, 0];
-        WINDOWHEIGHT := STANDARDSCREENRESOLUTIONS[i, 1];
-        break;
-      end;
-      inc(i);
-    end;
-
     hres := g_pDD.SetDisplayMode(WINDOWWIDTH, WINDOWHEIGHT, 32, 0, 0);
     if hres <> DD_OK then
     begin
-      I_Warning('I_ChangeFullScreen(): Can not change to %s mode'#13#10, [s_cfs_descs[fullscreen]]);
-      // Restore original window state
-      g_pDD.SetCooperativeLevel(hMainWnd, DDSCL_EXCLUSIVE or DDSCL_FULLSCREEN);
-      exit;
+      I_Warning('I_ChangeFullScreen(): Can not change to (%d, %d)'#13#10, [WINDOWWIDTH, WINDOWHEIGHT]);
+
+      i := 0;
+
+      // Determine a standard screen resolution
+      WINDOWWIDTH := STANDARDSCREENRESOLUTIONS[NUMSTDRESOLUTIONS - 1, 0];
+      WINDOWHEIGHT := STANDARDSCREENRESOLUTIONS[NUMSTDRESOLUTIONS - 1, 1];
+      while i < NUMSTDRESOLUTIONS - 1 do
+      begin
+        if (WINDOWWIDTH <= STANDARDSCREENRESOLUTIONS[i, 0]) and
+           (WINDOWHEIGHT <= STANDARDSCREENRESOLUTIONS[i, 1]) and
+           (WINDOWWIDTH >= STANDARDSCREENRESOLUTIONS[i + 1, 0]) then
+        begin
+          WINDOWWIDTH := STANDARDSCREENRESOLUTIONS[i, 0];
+          WINDOWHEIGHT := STANDARDSCREENRESOLUTIONS[i, 1];
+          break;
+        end;
+        inc(i);
+      end;
+
+      hres := g_pDD.SetDisplayMode(WINDOWWIDTH, WINDOWHEIGHT, 32, 0, 0);
+      if hres <> DD_OK then
+      begin
+        I_Warning('I_ChangeFullScreen(): Can not change to %s mode'#13#10, [s_cfs_descs[fullscreen]]);
+        // Restore original window state
+        I_SetCooperativeLevel(false);
+        exit;
+      end;
     end;
   end;
 
-  if fullscreen then
-  begin
-    I_FindWindowSize;
-    I_RestoreWindowPos;
-    g_pDD.RestoreDisplayMode;
-  end;
-  fullscreen := not fullscreen;
+  if wasexclusive then
+    if not isexclusive then
+      g_pDD.RestoreDisplayMode;
+
+  fullscreen := dofull;
+  fullscreenexclusive := doexclusive;
 
   I_RecreateSurfaces;
 end;
 
-procedure I_ChangeFullScreen;
+procedure I_ChangeFullScreen(const dofull, doexclusive: boolean);
 begin
   I_IgnoreInput(MAXINT);
-  I_DoChangeFullScreen;
+  I_DoChangeFullScreen(dofull, doexclusive);
   I_IgnoreInput(15);
 end;
 
@@ -851,4 +899,5 @@ begin
 end;
 
 end.
+
 

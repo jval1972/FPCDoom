@@ -1868,6 +1868,7 @@ begin
   ST_Init;
 
   printf('I_DetectNativeScreenResolution: Detect native screen resolution.'#13#10);
+  I_DetectNativeScreenResolution;
 
 // check for a driver that wants intermission stats
   p := M_CheckParm('-statcopy');

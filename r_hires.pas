@@ -230,7 +230,7 @@ begin
   newfullscreen := C_BoolEval(parm1, fullscreen);
 
   if newfullscreen <> fullscreen then
-    I_ChangeFullScreen;
+    I_ChangeFullScreen(newfullscreen, fullscreenexclusive);
   R_CmdFullScreen;
 end;
 
