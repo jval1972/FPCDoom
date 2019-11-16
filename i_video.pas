@@ -248,6 +248,8 @@ var
   old_letterbox_pct: integer = -1;
   old_windowwidth: integer = -1;
   old_windowheight: integer = -1;
+  old_fullscreen: boolean = false;
+  old_fullscreenexclusive: boolean = false;
 
 procedure I_FinishUpdate;
 var
@@ -291,7 +293,8 @@ begin
   stretch := stallhack and fixstallhack and (WINDOWHEIGHT = SCREENHEIGHT);
   if not stretch then
     stretch := (WINDOWWIDTH <> SCREENWIDTH) or (WINDOWHEIGHT <> SCREENHEIGHT) or
-               (vid_pillarbox_pct <> 0) or (vid_letterbox_pct <> 0);
+               (vid_pillarbox_pct <> 0) or (vid_letterbox_pct <> 0) or
+               (fullscreen <> old_fullscreen) or (fullscreenexclusive <> old_fullscreenexclusive);
 
   if stretch then
   begin
@@ -302,8 +305,9 @@ begin
       (vid_pillarbox_pct <> old_pillarbox_pct) or
       (vid_letterbox_pct <> old_letterbox_pct) or
       (old_windowwidth <> WINDOWWIDTH) or
-      (old_windowheight <> WINDOWHEIGHT) then
-    begin
+      (old_windowheight <> WINDOWHEIGHT) or
+      (fullscreen <> old_fullscreen) or (fullscreenexclusive <> old_fullscreenexclusive) then
+      begin
       if bpp = 16 then
       begin
         oldcolor := screen16[0];
@@ -368,6 +372,8 @@ begin
       old_letterbox_pct := vid_letterbox_pct;
       old_windowwidth := WINDOWWIDTH;
       old_windowheight := WINDOWHEIGHT;
+      old_fullscreen := fullscreen;
+      old_fullscreenexclusive := fullscreenexclusive;
     end;
 
     destrect.Left := hpan;

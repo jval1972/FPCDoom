@@ -181,10 +181,10 @@ begin
   if x < 0 then
   begin
     x2 := -x;
-    result := -PInteger(integer(@x2) + 2)^;
+    result := -PInteger(pOp(@x2, 2))^;
   end
   else
-    result := PInteger(integer(@x) + 2)^;
+    result := PInteger(pOp(@x, 2))^;
 end;
 
 end.

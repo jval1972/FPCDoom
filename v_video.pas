@@ -124,7 +124,9 @@ procedure V_CopyRect(
   destx: integer;
   desty: integer;
   destscrn: integer;
-  preserve: boolean);
+  preserve: boolean;
+  fracxzoom: integer = FRACUNIT;
+  fracyzoom: integer = FRACUNIT);
 
 procedure V_CopyAddRect(
   srcx: integer;
@@ -147,7 +149,9 @@ procedure V_CopyRectTransparent(
   destx: integer;
   desty: integer;
   destscrn: integer;
-  preserve: boolean);
+  preserve: boolean;
+  fracxzoom: integer = FRACUNIT;
+  fracyzoom: integer = FRACUNIT);
 
 procedure V_CopyScreenTransparent(
   srcscrn: integer;
@@ -456,7 +460,9 @@ procedure V_CopyRect8(
   destx: integer;
   desty: integer;
   destscrn: integer;
-  preserve: boolean);
+  preserve: boolean;
+  fracxzoom: integer = FRACUNIT;
+  fracyzoom: integer = FRACUNIT);
 var
   src: PByteArray;
   dest: PByte;
@@ -474,17 +480,17 @@ var
 begin
   swidth := V_GetScreenWidth(srcscrn);
   dwidth := V_GetScreenWidth(destscrn);
-  if V_NeedsPreserve(destscrn, srcscrn, preserve) then
+  if V_NeedsPreserve(destscrn, srcscrn, preserve) or (fracxzoom <> FRACUNIT) or (fracyzoom <> FRACUNIT) then
   begin
-    destw := V_PreserveW(destx, width);
+    destw := V_PreserveW(destx, width) * fracxzoom div FRACUNIT;
 
-    desth := V_PreserveH(desty, height);
+    desth := V_PreserveH(desty, height) * fracyzoom div FRACUNIT;
 
-    if (destw <> 0) and (desth <> 0) then
+    if (destw > 0) and (desth > 0) then
     begin
-      destx := V_PreserveX(destx);
+      destx := V_PreserveX(destx) * fracxzoom div FRACUNIT;
 
-      desty := V_PreserveY(desty);
+      desty := V_PreserveY(desty) * fracyzoom div FRACUNIT;
 
       fracy := srcy * FRACUNIT;
       fracxstep := FRACUNIT * width div destw;
@@ -529,7 +535,9 @@ procedure V_CopyRect32(
   height: integer;
   destx: integer;
   desty: integer;
-  preserve: boolean);
+  preserve: boolean;
+  fracxzoom: integer = FRACUNIT;
+  fracyzoom: integer = FRACUNIT);
 var
   src: PByteArray;
   dest: PLongWord;
@@ -547,10 +555,10 @@ begin
   swidth := V_GetScreenWidth(srcscrn);
   dwidth := SCREENWIDTH;
 
-  if V_NeedsPreserve(SCN_FG, srcscrn, preserve) then
+  if V_NeedsPreserve(SCN_FG, srcscrn, preserve) or (fracxzoom <> FRACUNIT) or (fracyzoom <> FRACUNIT) then
   begin
-    destw := V_PreserveW(destx, width);
-    desth := V_PreserveH(desty, height);
+    destw := V_PreserveW(destx, width) * fracxzoom div FRACUNIT;
+    desth := V_PreserveH(desty, height) * fracyzoom div FRACUNIT;
   end
   else
   begin
@@ -558,12 +566,12 @@ begin
     desth := height;
   end;
 
-  if (destw <> 0) and (desth <> 0) then
+  if (destw > 0) and (desth > 0) then
   begin
-    if V_NeedsPreserve(SCN_FG, srcscrn, preserve) then
+    if V_NeedsPreserve(SCN_FG, srcscrn, preserve) or (fracxzoom <> FRACUNIT) or (fracyzoom <> FRACUNIT) then
     begin
-      destx := V_PreserveX(destx);
-      desty := V_PreserveY(desty);
+      destx := V_PreserveX(destx) * fracxzoom div FRACUNIT;
+      desty := V_PreserveY(desty) * fracyzoom div FRACUNIT;
       fracxstep := FRACUNIT * width div destw;
       fracystep := FRACUNIT * height div desth;
     end
@@ -600,12 +608,14 @@ procedure V_CopyRect(
   destx: integer;
   desty: integer;
   destscrn: integer;
-  preserve: boolean);
+  preserve: boolean;
+  fracxzoom: integer = FRACUNIT;
+  fracyzoom: integer = FRACUNIT);
 begin
   if (videomode = vm32bit) and (destscrn = SCN_FG) then
-    V_CopyRect32(srcx, srcy, srcscrn, width, height, destx, desty, preserve)
+    V_CopyRect32(srcx, srcy, srcscrn, width, height, destx, desty, preserve, fracxzoom, fracyzoom)
   else
-    V_CopyRect8(srcx, srcy, srcscrn, width, height, destx, desty, destscrn, preserve);
+    V_CopyRect8(srcx, srcy, srcscrn, width, height, destx, desty, destscrn, preserve, fracxzoom, fracyzoom);
 end;
 
 procedure V_CopyAddRect(
@@ -705,7 +715,9 @@ procedure V_CopyRectTransparent8(
   destx: integer;
   desty: integer;
   destscrn: integer;
-  preserve: boolean);
+  preserve: boolean;
+  fracxzoom: integer = FRACUNIT;
+  fracyzoom: integer = FRACUNIT);
 var
   src: PByteArray;
   dest: PByteArray;
@@ -723,17 +735,17 @@ var
 begin
   swidth := V_GetScreenWidth(srcscrn);
   dwidth := V_GetScreenWidth(destscrn);
-  if V_NeedsPreserve(destscrn, srcscrn, preserve) then
+  if V_NeedsPreserve(destscrn, srcscrn, preserve) or (fracxzoom <> FRACUNIT) or (fracyzoom <> FRACUNIT) then
   begin
-    destw := V_PreserveW(destx, width);
+    destw := V_PreserveW(destx, width) * fracxzoom div FRACUNIT;
 
-    desth := V_PreserveH(desty, height);
+    desth := V_PreserveH(desty, height) * fracyzoom div FRACUNIT;
 
     if (destw <> 0) and (desth <> 0) then
     begin
-      destx := V_PreserveX(destx);
+      destx := V_PreserveX(destx) * fracxzoom div FRACUNIT;
 
-      desty := V_PreserveY(desty);
+      desty := V_PreserveY(desty) * fracyzoom div FRACUNIT;
 
       fracy := srcy * FRACUNIT;
       fracxstep := FRACUNIT * width div destw;
@@ -785,7 +797,9 @@ procedure V_CopyRectTransparent32(
   height: integer;
   destx: integer;
   desty: integer;
-  preserve: boolean);
+  preserve: boolean;
+  fracxzoom: integer = FRACUNIT;
+  fracyzoom: integer = FRACUNIT);
 var
   src: PByteArray;
   dest: PLongWordArray;
@@ -807,10 +821,10 @@ begin
   swidth := V_GetScreenWidth(srcscrn);
   dwidth := SCREENWIDTH;
 
-  if V_NeedsPreserve(SCN_FG, srcscrn, preserve) then
+  if V_NeedsPreserve(SCN_FG, srcscrn, preserve) or (fracxzoom <> FRACUNIT) or (fracyzoom <> FRACUNIT) then
   begin
-    destw := V_PreserveW(destx, width);
-    desth := V_PreserveH(desty, height);
+    destw := V_PreserveW(destx, width) * fracxzoom div FRACUNIT;
+    desth := V_PreserveH(desty, height) * fracyzoom div FRACUNIT;
   end
   else
   begin
@@ -820,12 +834,12 @@ begin
   destw1 := destw and $3;
   destw := destw - destw1;
 
-  if (destw <> 0) and (desth <> 0) then
+  if (destw > 0) and (desth > 0) then
   begin
-    if V_NeedsPreserve(SCN_FG, srcscrn, preserve) then
+    if V_NeedsPreserve(SCN_FG, srcscrn, preserve) or (fracxzoom <> FRACUNIT) or (fracyzoom <> FRACUNIT) then
     begin
-      destx := V_PreserveX(destx);
-      desty := V_PreserveY(desty);
+      destx := V_PreserveX(destx) * fracxzoom div FRACUNIT;
+      desty := V_PreserveY(desty) * fracyzoom div FRACUNIT;
       fracxstep := FRACUNIT * width div destw;
       fracystep := FRACUNIT * height div desth;
       fracxstep4 := 4 * fracxstep;
@@ -885,12 +899,14 @@ procedure V_CopyRectTransparent(
   destx: integer;
   desty: integer;
   destscrn: integer;
-  preserve: boolean);
+  preserve: boolean;
+  fracxzoom: integer = FRACUNIT;
+  fracyzoom: integer = FRACUNIT);
 begin
   if (videomode = vm32bit) and (destscrn = SCN_FG) then
-    V_CopyRectTransparent32(srcx, srcy, srcscrn, width, height, destx, desty, preserve)
+    V_CopyRectTransparent32(srcx, srcy, srcscrn, width, height, destx, desty, preserve, fracxzoom, fracyzoom)
   else
-    V_CopyRectTransparent8(srcx, srcy, srcscrn, width, height, destx, desty, destscrn, preserve);
+    V_CopyRectTransparent8(srcx, srcy, srcscrn, width, height, destx, desty, destscrn, preserve, fracxzoom, fracyzoom);
 end;
 
 procedure V_ShadeScreen(const scn: integer; const ofs: integer = 0;

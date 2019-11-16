@@ -125,6 +125,7 @@ begin
     WindowClass.hInstance := HInstance;
     WindowClass.hIcon := LoadIcon(HInstance, 'MAINICON');
     WindowClass.hCursor := 0;
+    WindowClass.hbrBackground := GetStockObject(BLACK_BRUSH);
     if RegisterClass(WindowClass) = 0 then
       halt(1);
   end;

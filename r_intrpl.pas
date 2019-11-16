@@ -71,6 +71,7 @@ uses
   p_tick,
   p_mobj,
   p_mobj_h,
+  p_telept,
   p_pspr_h,
   r_defs,
   tables;
@@ -318,6 +319,7 @@ begin
     R_AddInterpolationItem(@player.lookupdown, iinteger); // JVAL Look Up/Down
     R_AddInterpolationItem(@player.lookleftright, ibyte);
     R_AddInterpolationItem(@player.viewz, iinteger);
+    R_AddInterpolationItem(@teleporttics[displayplayer], iinteger);
   end;
 
   // Interpolate Sectors

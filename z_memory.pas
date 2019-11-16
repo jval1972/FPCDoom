@@ -118,12 +118,12 @@ end;
 
 function TMemManager.item2ptr(const id: integer): Pointer;
 begin
-  result := pointer(integer(fitems[id]) + SizeOf(memmanageritem_t));
+  result := pOp(fitems[id], SizeOf(memmanageritem_t));
 end;
 
 function TMemManager.ptr2item(const ptr: Pointer): integer;
 begin
-  result := Pmemmanageritem_t(Integer(ptr) - SizeOf(memmanageritem_t)).index;
+  result := Pmemmanageritem_t(pOp(ptr, -SizeOf(memmanageritem_t))).index;
 end;
 
 procedure TMemManager.M_Free(ptr: Pointer);
