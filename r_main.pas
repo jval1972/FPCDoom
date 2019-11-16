@@ -244,6 +244,8 @@ uses
   p_setup,
   p_sight,
   p_map,
+  p_mobj_h,
+  p_telept,
   r_aspect,
   r_zbuffer,
   r_draw,
@@ -855,7 +857,7 @@ begin
   // psprite scales
   // JVAL: Widescreen support
   pspritescale := Round((centerx / monitor_relative_aspect * FRACUNIT) / 160);
-  pspriteyscale := Round((((SCREENHEIGHT * viewwidth) / SCREENWIDTH) * FRACUNIT) / 200);
+  pspriteyscale := Round((((SCREENHEIGHT * viewwidth) / SCREENWIDTH) * FRACUNIT + FRACUNIT div 2) / 200);
   pspriteiscale := FixedDiv(FRACUNIT, pspritescale);
 
   if excludewidescreenplayersprites then
@@ -1137,6 +1139,36 @@ end;
 
 
 //
+// R_AdjustTeleportZoom
+//
+procedure R_AdjustTeleportZoom(const player: Pplayer_t);
+var
+  mo: Pmobj_t;
+  an: angle_t;
+  distf: float;
+  dist: fixed_t;
+  pid: integer;
+begin
+  if not useteleportzoomeffect then
+    exit;
+
+  pid := PlayerToId(player);
+  if teleporttics[pid] <= 0 then
+    exit;
+
+  mo := player.mo;
+  if mo = nil then
+    exit;
+
+  an := mo.angle div ANGLETOFINEUNIT;
+
+  distf := Sqr(teleporttics[pid] / FRACUNIT) / (TELEPORTZOOM / FRACUNIT);
+  dist := Round(distf * FRACUNIT);
+  viewx := viewx - FixedMul(dist, finecosine[an]);
+  viewy := viewy - FixedMul(dist, finesine[an]);
+end;
+
+//
 // R_SetupFrame
 //
 procedure R_SetupFrame(player: Pplayer_t);
@@ -1154,6 +1186,7 @@ begin
 
   viewz := player.viewz;
 
+  R_AdjustTeleportZoom(player);
   R_AdjustChaseCamera;
 
 //******************************
@@ -1295,8 +1328,8 @@ begin
   NetUpdate;
 
   // Render walls, flats & sky from pool using multiple CPU cores
-  R_RenderItemsMT(RI_WALL, RIF_WAIT);
   R_RenderItemsMT(RI_SPAN, RIF_WAIT);
+  R_RenderItemsMT(RI_WALL, RIF_WAIT);
 
   // Sort sprites
   R_SortVisSprites;

@@ -519,8 +519,8 @@ begin
 
   if mobj.flags_ex and MF_EX_FLOATBOB <> 0 then
   begin
-    mobj.z := mobj.floorz + FloatBobOffsets[mobj.bob];
-    mobj.bob := (mobj.bob + 1) and FLOATBOBMASK;
+    mobj.z := mobj.floorz + FloatBobOffsets[mobj.floatbob];
+    mobj.floatbob := (mobj.floatbob + 1) and FLOATBOBMASK;
   end
   else if (mobj.z <> mobj.floorz) or (mobj.momz <> 0) then
   begin
@@ -607,7 +607,7 @@ begin
   mobj.renderstyle := info.renderstyle;
   mobj.alpha := info.alpha;
   if mobj.flags_ex and MF_EX_FLOATBOB <> 0 then
-    mobj.bob := N_Random and FLOATBOBMASK;
+    mobj.floatbob := N_Random and FLOATBOBMASK;
   mobj.health := info.spawnhealth;
 
   if gameskill <> sk_nightmare then

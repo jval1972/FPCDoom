@@ -32,6 +32,8 @@ unit p_telept;
 interface
 
 uses
+  doomdef,
+  m_fixed,
   p_mobj_h,
   r_defs;
 
@@ -40,6 +42,13 @@ uses
 //
 function EV_Teleport(line: Pline_t; side: integer; thing: Pmobj_t): integer;
 
+const
+  TELEPORTZOOM = 15 * FRACUNIT;
+
+var
+  teleporttics: array[-1..MAXPLAYERS - 1] of integer;
+  useteleportzoomeffect: boolean = true;
+
 implementation
 
 uses
@@ -47,7 +56,6 @@ uses
   d_think,
   d_player,
   info_h,
-  m_fixed,
   p_setup,
   p_tick,
   p_mobj,
@@ -148,7 +156,10 @@ begin
 
         // don't move for a bit
         if thing.player <> nil then
+        begin
           thing.reactiontime := 18;
+          teleporttics[PlayerToId(thing.player)] := TELEPORTZOOM;
+        end;
 
         thing.angle := m.angle;
         thing.momx := 0;
