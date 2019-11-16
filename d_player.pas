@@ -230,7 +230,23 @@ const
   MINLOOKDIR = -110;
   MAXLOOKDIR = 90;
 
+  function PlayerToId(const p: Pplayer_t): integer;
+
 implementation
+
+function PlayerToId(const p: Pplayer_t): integer;
+var
+  i: integer;
+begin
+  for i := 0 to MAXPLAYERS - 1 do
+    if p = @players[i] then
+    begin
+      result := i;
+      exit;
+    end;
+
+  result := -1;
+end;
 
 end.
 
