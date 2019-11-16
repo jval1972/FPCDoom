@@ -33,12 +33,18 @@ interface
 
 procedure R_InitAspect;
 
+function R_ForcedAspect: Double;
+
 function R_GetRelativeAspect: double;
 
 var
   widescreensupport: Boolean = true;
   excludewidescreenplayersprites: Boolean = true;
   forcedaspectstr: string = '0.00';
+
+const
+  MINRELATIVEASPECT = 0.5;
+  MAXRELATIVEASPECT = 2.5;
 
 implementation
 
@@ -97,13 +103,13 @@ end;
 function R_ForcedAspect: Double;
 var
   ar, par: string;
-  nar, npar: integer;
+  nar, npar: float;
 begin
   splitstring(forcedaspectstr, ar, par, [':', '/']);
   if par <> '' then
   begin
-    nar := atoi(strtrim(ar));
-    npar := atoi(strtrim(par));
+    nar := atof(strtrim(ar));
+    npar := atof(strtrim(par));
     if npar > 0 then
       result := nar / npar
     else
@@ -112,7 +118,7 @@ begin
   else
     result := atof(forcedaspectstr);
 
-  if result < 1.0 then
+  if result < MINRELATIVEASPECT then
     result := 0.0;
   forcedaspectstr := ftoa(result);
 end;
@@ -130,7 +136,6 @@ begin
 
   R_CmdForcedAspect('');
 end;
-
 
 
 procedure R_InitAspect;
@@ -166,10 +171,10 @@ begin
   if maxheight > 0 then
   begin
     relative_aspect := maxwidth / maxheight / (4 / 3);
-    if relative_aspect < 1.0 then
-      relative_aspect := 1.0
-    else if relative_aspect > 2.0 then
-      relative_aspect := 2.0;
+    if relative_aspect < MINRELATIVEASPECT then
+      relative_aspect := MINRELATIVEASPECT
+    else if relative_aspect > MAXRELATIVEASPECT then
+      relative_aspect := MAXRELATIVEASPECT;
   end;
   widths.Free;
   heights.Free;
@@ -189,10 +194,10 @@ begin
       result := relative_aspect
     else
       result := asp / (4 / 3);
-    if result < 1.0 then
-      result := 1.0
-    else if result > 2.0 then
-      result := 2.0;
+    if result < MINRELATIVEASPECT then
+      result := MINRELATIVEASPECT
+    else if result > MAXRELATIVEASPECT then
+      result := MAXRELATIVEASPECT;
   end
   else
     result := 1.0;

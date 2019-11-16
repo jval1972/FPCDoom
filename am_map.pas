@@ -350,7 +350,7 @@ end;
 
 function CYMTOF(y : integer): integer;
 begin
-  result := f_y + (f_h - MTOF(y - m_y))
+  result := f_y + (f_h - MTOF(y - m_y));
 end;
 
 //
@@ -1246,6 +1246,8 @@ begin
   dw := m_w;
   dh := m_h;
 
+  // [RH] Calculate a minimum for how long the grid lines should be so that
+  // they cover the screen at any rotation.
   minlen := trunc(sqrt(dw * dw + dh * dh));
   extx := (minlen - m_w) div 2;
   exty := (minlen - m_h) div 2;
@@ -1256,7 +1258,7 @@ begin
   // Figure out start of vertical gridlines
   start := m_x - extx;
   if ((start - bmaporgx) mod (MAPBLOCKUNITS * FRACUNIT)) <> 0 then
-    start := start {+ (MAPBLOCKUNITS * FRACUNIT)}
+    start := start
           - ((start - bmaporgx) mod (MAPBLOCKUNITS * FRACUNIT));
   finish := minx + minlen - extx;
 
@@ -1282,7 +1284,7 @@ begin
   // Figure out start of horizontal gridlines
   start := miny - exty;
   if ((start - bmaporgy) mod (MAPBLOCKUNITS * FRACUNIT)) <> 0 then
-    start := start {+ (MAPBLOCKUNITS * FRACUNIT)}
+    start := start
           - ((start - bmaporgy) mod (MAPBLOCKUNITS * FRACUNIT));
   finish := miny + minlen - exty;
 

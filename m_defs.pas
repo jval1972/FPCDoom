@@ -86,7 +86,7 @@ type
   Pdefault_t = ^default_t;
 
 const
-  NUMDEFAULTS = 128;
+  NUMDEFAULTS = 130;
 
   defaults: array[0..NUMDEFAULTS - 1] of default_t = (
     (name: 'Display';
@@ -352,6 +352,22 @@ const
      defaultivalue: 0;
      defaultbvalue: false;
      _type: tString),
+
+    (name: 'vid_pillarbox_pct';
+     location: @vid_pillarbox_pct;
+     setable: DFS_NEVER;
+     defaultsvalue: '';
+     defaultivalue: 0;
+     defaultbvalue: false;
+     _type: tInteger),
+
+    (name: 'vid_letterbox_pct';
+     location: @vid_letterbox_pct;
+     setable: DFS_NEVER;
+     defaultsvalue: '';
+     defaultivalue: 0;
+     defaultbvalue: false;
+     _type: tInteger),
 
     (name: 'mirrormode';
      location: @mirrormode;

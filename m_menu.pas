@@ -672,20 +672,38 @@ var
 // DISPLAY ADVANCED MENU
 type
   optionsdisplayadvanced_e = (
+    od_aspect,
     od_mirror,
     od_usetransparentsprites,
     od_interpolate,
     od_zaxisshift,
     od_chasecamera,
     od_fixstallhack,
-    od_widescreensupport,
-    od_excludewidescreenplayersprites,
     optdispadvanced_end
   );
 
 var
   OptionsDisplayAdvancedMenu: array[0..Ord(optdispadvanced_end) - 1] of menuitem_t;
   OptionsDisplayAdvancedDef: menu_t;
+
+// DISPLAY ASPECT RATIO MENU
+type
+  optionsdisplayaspectratio_e = (
+    oda_widescreensupport,
+    oda_excludewidescreenplayersprites,
+    oda_forceaspectratio,
+    oda_pillarbox_pct,
+    oda_filler1,
+    oda_filler2,
+    oda_letterbox_pct,
+    oda_filler3,
+    oda_filler4,
+    optdispaspect_end
+  );
+
+var
+  OptionsDisplayAspectRatioMenu: array[0..Ord(optdispaspect_end) - 1] of menuitem_t;
+  OptionsDisplayAspectRatioDef: menu_t;
 
 // COLORS MENU
 type
@@ -1667,6 +1685,11 @@ begin
   M_SetupNextMenu(@OptionsDisplayHudDef);
 end;
 
+procedure M_OptionAspectRatio(choice: integer);
+begin
+  M_SetupNextMenu(@OptionsDisplayAspectRatioDef);
+end;
+
 procedure M_ChangeHudFullScreenSize(choice: integer);
 begin
   custom_fullscreenhud_size := not custom_fullscreenhud_size;
@@ -2076,6 +2099,95 @@ begin
 
   ppos := M_WriteText(OptionsDisplayAdvancedDef.x, OptionsDisplayAdvancedDef.y + OptionsDisplayAdvancedDef.itemheight * Ord(od_mirror), 'Mirror Mode: ');
   M_WriteColorText(ppos.x, ppos.y, str_mirrormodes[mirrormode mod 4], 'CRGRAY');
+end;
+
+const
+  NUMSTRASPECTRATIOS = 12;
+  straspectratios: array[0..NUMSTRASPECTRATIOS - 1] of string =
+    ('OFF', '1:1', '5:4', '4:3', '3:2', '16:10', '5:3', '7:4', '16:9', '1.85:1', '2:1', '2.35:1');
+
+var
+  aspectratioidx: integer;
+
+procedure M_SwitchForcedAspectRatio(choice: integer);
+begin
+  aspectratioidx := (aspectratioidx + 1) mod NUMSTRASPECTRATIOS;
+  if aspectratioidx = 0 then
+    forcedaspectstr := '0'
+  else
+    forcedaspectstr := straspectratios[aspectratioidx];
+  setsizeneeded := true;
+end;
+
+function _nearest_aspect_index: integer;
+var
+  asp: single;
+  i, idx: integer;
+  diff, test, mx: single;
+  ar, par: string;
+begin
+  result := 0;
+
+  asp := R_ForcedAspect;
+  if asp < 1.0 then
+    exit;
+
+  mx := 100000000.0;
+
+  for i := 1 to NUMSTRASPECTRATIOS - 1 do
+  begin
+    splitstring(straspectratios[i], ar, par, [':', '/']);
+    if par = '' then
+      test := atof(ar)
+    else
+      test := atof(ar) / atof(par);
+    diff := fabs(test - asp);
+    if diff = 0 then
+    begin
+      result := i;
+      exit;
+    end;
+    if diff < mx then
+    begin
+      result := idx;
+      mx := diff;
+    end;
+  end;
+end;
+
+procedure M_SwitchPillarBox(choice: integer);
+begin
+  case choice of
+    0: vid_pillarbox_pct := vid_pillarbox_pct - 1;
+    1: vid_pillarbox_pct := vid_pillarbox_pct + 1;
+  end;
+  vid_pillarbox_pct := ibetween(vid_pillarbox_pct, PILLARLETTER_MIN, PILLARLETTER_MAX);
+end;
+
+procedure M_SwitchLetterBox(choice: integer);
+begin
+  case choice of
+    0: vid_letterbox_pct := vid_letterbox_pct - 1;
+    1: vid_letterbox_pct := vid_letterbox_pct + 1;
+  end;
+  vid_letterbox_pct := ibetween(vid_letterbox_pct, PILLARLETTER_MIN, PILLARLETTER_MAX);
+end;
+
+procedure M_DrawOptionsDisplayAspectRatio;
+var
+  ppos: menupos_t;
+begin
+  M_DrawDisplayOptions;
+  V_DrawPatch(20, 48, SCN_TMP, 'MENU_ASP', false);
+
+  ppos := M_WriteText(OptionsDisplayAspectRatioDef.x, OptionsDisplayAspectRatioDef.y + OptionsDisplayAspectRatioDef.itemheight * Ord(oda_forceaspectratio), 'Force Aspect Ratio: ');
+  M_WriteColorText(ppos.x, ppos.y, straspectratios[_nearest_aspect_index], 'CRGRAY');
+
+  M_DrawThermo(
+    OptionsDisplayAspectRatioDef.x, OptionsDisplayAspectRatioDef.y + OptionsDisplayAspectRatioDef.itemheight * (Ord(oda_pillarbox_pct) + 1), 21, vid_pillarbox_pct, PILLARLETTER_MAX - PILLARLETTER_MIN + 1);
+
+  M_DrawThermo(
+    OptionsDisplayAspectRatioDef.x, OptionsDisplayAspectRatioDef.y + OptionsDisplayAspectRatioDef.itemheight * (Ord(oda_letterbox_pct) + 1), 21, vid_letterbox_pct, PILLARLETTER_MAX - PILLARLETTER_MIN + 1);
 end;
 
 procedure M_SwitchGrayscaleMode(choice: integer);
@@ -3874,6 +3986,15 @@ begin
 //OptionsDisplayAdvancedMenu
   pmi := @OptionsDisplayAdvancedMenu[0];
   pmi.status := 1;
+  pmi.name := '!Aspect Ratio';
+  pmi.cmd := '';
+  pmi.routine := @M_OptionAspectRatio;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := 'a';
+  pmi.transtbl := 'CRGRAY';
+
+  inc(pmi);
+  pmi.status := 1;
   pmi.name := '!Mirror Mode';
   pmi.cmd := '';
   pmi.routine := @M_SwitchMirrorMode;
@@ -3920,7 +4041,24 @@ begin
   pmi.pBoolVal := @fixstallhack;
   pmi.alphaKey := 'f';
 
-  inc(pmi);
+////////////////////////////////////////////////////////////////////////////////
+//OptionsDisplayAdvancedDef
+  OptionsDisplayAdvancedDef.title := 'Advanced';
+  OptionsDisplayAdvancedDef.numitems := Ord(optdispadvanced_end); // # of menu items
+  OptionsDisplayAdvancedDef.prevMenu := @OptionsDisplayDef; // previous menu
+  OptionsDisplayAdvancedDef.leftMenu := @OptionsDisplayAppearanceDef; // left menu
+  OptionsDisplayAdvancedDef.rightMenu := @OptionsDisplayColorsDef; // right menu
+  OptionsDisplayAdvancedDef.menuitems := Pmenuitem_tArray(@OptionsDisplayAdvancedMenu);  // menu items
+  OptionsDisplayAdvancedDef.drawproc := @M_DrawOptionsDisplayAdvanced;  // draw routine
+  OptionsDisplayAdvancedDef.x := 32;
+  OptionsDisplayAdvancedDef.y := 68; // x,y of menu
+  OptionsDisplayAdvancedDef.lastOn := 0; // last item user was on in menu
+  OptionsDisplayAdvancedDef.itemheight := LINEHEIGHT2;
+  OptionsDisplayAdvancedDef.texturebk := true;
+
+////////////////////////////////////////////////////////////////////////////////
+//OptionsDisplayAspectRatioMenu
+  pmi := @OptionsDisplayAspectRatioMenu[0];
   pmi.status := 1;
   pmi.name := '!Widescreen support';
   pmi.cmd := 'widescreensupport';
@@ -3936,20 +4074,74 @@ begin
   pmi.pBoolVal := @excludewidescreenplayersprites;
   pmi.alphaKey := 'p';
 
+  inc(pmi);
+  pmi.status := 1;
+  pmi.name := '!Force Aspect Ratio';
+  pmi.cmd := '';
+  pmi.routine := @M_SwitchForcedAspectRatio;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := 'f';
+
+  inc(pmi);
+  pmi.status := 2;
+  pmi.name := '!Pillarbox pct%';
+  pmi.cmd := '';
+  pmi.routine := @M_SwitchPillarBox;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := 'p';
+
+  inc(pmi);
+  pmi.status := -1;
+  pmi.name := '';
+  pmi.cmd := '';
+  pmi.routine := nil;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := #0;
+
+  inc(pmi);
+  pmi.status := -1;
+  pmi.name := '';
+  pmi.cmd := '';
+  pmi.routine := nil;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := #0;
+
+  inc(pmi);
+  pmi.status := 2;
+  pmi.name := '!LetterBox pct%';
+  pmi.cmd := '';
+  pmi.routine := @M_SwitchLetterBox;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := 'p';
+
+  inc(pmi);
+  pmi.status := -1;
+  pmi.name := '';
+  pmi.cmd := '';
+  pmi.routine := nil;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := #0;
+
+  inc(pmi);
+  pmi.status := -1;
+  pmi.name := '';
+  pmi.cmd := '';
+  pmi.routine := nil;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := #0;
+
 ////////////////////////////////////////////////////////////////////////////////
-//OptionsDisplayAdvancedDef
-  OptionsDisplayAdvancedDef.title := 'Advanced';
-  OptionsDisplayAdvancedDef.numitems := Ord(optdispadvanced_end); // # of menu items
-  OptionsDisplayAdvancedDef.prevMenu := @OptionsDisplayDef; // previous menu
-  OptionsDisplayAdvancedDef.leftMenu := @OptionsDisplayAppearanceDef; // left menu
-  OptionsDisplayAdvancedDef.rightMenu := @OptionsDisplayColorsDef; // right menu
-  OptionsDisplayAdvancedDef.menuitems := Pmenuitem_tArray(@OptionsDisplayAdvancedMenu);  // menu items
-  OptionsDisplayAdvancedDef.drawproc := @M_DrawOptionsDisplayAdvanced;  // draw routine
-  OptionsDisplayAdvancedDef.x := 32;
-  OptionsDisplayAdvancedDef.y := 68; // x,y of menu
-  OptionsDisplayAdvancedDef.lastOn := 0; // last item user was on in menu
-  OptionsDisplayAdvancedDef.itemheight := LINEHEIGHT2;
-  OptionsDisplayAdvancedDef.texturebk := true;
+//OptionsDisplayAspectRatioDef
+  OptionsDisplayAspectRatioDef.title := 'Aspect Ratio';
+  OptionsDisplayAspectRatioDef.numitems := Ord(optdispaspect_end); // # of menu items
+  OptionsDisplayAspectRatioDef.prevMenu := @OptionsDisplayAdvancedDef; // previous menu
+  OptionsDisplayAspectRatioDef.menuitems := Pmenuitem_tArray(@OptionsDisplayAspectRatioMenu);  // menu items
+  OptionsDisplayAspectRatioDef.drawproc := @M_DrawOptionsDisplayAspectRatio;  // draw routine
+  OptionsDisplayAspectRatioDef.x := 32;
+  OptionsDisplayAspectRatioDef.y := 68; // x,y of menu
+  OptionsDisplayAspectRatioDef.lastOn := 0; // last item user was on in menu
+  OptionsDisplayAspectRatioDef.itemheight := LINEHEIGHT2;
+  OptionsDisplayAspectRatioDef.texturebk := true;
 
 ////////////////////////////////////////////////////////////////////////////////
 //OptionsDisplayColorsMenu
@@ -4037,7 +4229,7 @@ begin
   pmi.alphaKey := #0;
 
   inc(pmi);
-  pmi.status := 2;
+  pmi.status := 1;
   pmi.name := '!Reset to default';
   pmi.cmd := '';
   pmi.routine := @M_LightmapDefaults;

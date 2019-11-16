@@ -654,21 +654,22 @@ begin
 end;
 
 function atof(const s: string): single;
-var
-  code: integer;
 begin
-  val(s, result, code);
-  if code <> 0 then
-    result := 0.0;
+  result := atof(s, 0.0);
 end;
 
 function atof(const s: string; const default: single): single;
 var
-  code: integer;
+  fmt: TFormatSettings;
 begin
-  val(s, result, code);
-  if code <> 0 then
-    result := default;
+  fmt := DefaultFormatSettings;
+  fmt.DecimalSeparator := '.';
+  if TryStrToFloat(s, result, fmt) then
+    exit;
+  fmt.DecimalSeparator := ',';
+  if TryStrToFloat(s, result, fmt) then
+    exit;
+  result := default;
 end;
 
 procedure memcpy_MMX8(const dst: pointer; const src: pointer; const len: integer); assembler;

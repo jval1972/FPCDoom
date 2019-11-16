@@ -520,12 +520,12 @@ begin
     llast := @lumpinfo[last + 1];
 
   lump_p := llast;
-  while integer(lump_p) <> integer(lfirst) do
+  while lump_p <> lfirst do
   begin
     dec(lump_p);
     if (lump_p.v1 = v1) and (lump_p.v2 = v2) then
     begin
-      result := (integer(lump_p) - integer(lumpinfo)) div SizeOf(lumpinfo_t);
+      result := pDiff(lump_p, lumpinfo, SizeOf(lumpinfo_t));
       exit;
     end;
   end;

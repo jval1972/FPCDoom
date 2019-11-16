@@ -75,6 +75,14 @@ function I_DisplayModeIndex(const w, h: integer): integer;
 
 function I_NearestDisplayModeIndex(const w, h: integer): integer;
 
+var
+  vid_pillarbox_pct: integer;
+  vid_letterbox_pct: integer;
+
+const
+  PILLARLETTER_MIN = 0;
+  PILLARLETTER_MAX = 50;
+
 implementation
 
 uses
@@ -234,12 +242,22 @@ begin
   end;
 end;
 
+var
+  oldstretch: boolean = false;
+  old_pillarbox_pct: integer = -1;
+  old_letterbox_pct: integer = -1;
+  old_windowwidth: integer = -1;
+  old_windowheight: integer = -1;
+
 procedure I_FinishUpdate;
 var
   srcrect: TRect;
   destrect: TRect;
+  blackrect: TRect;
+  oldcolor: LongWord;
   parms1: finishupdateparms_t;
   stretch: boolean;
+  hpan, vpan: integer;
 begin
   if (hMainWnd = 0) or (screens[SCN_FG] = nil) or (screen32 = nil) then
     exit;
@@ -262,6 +280,9 @@ begin
     I_FinishUpdate8(@parms1);
   end;
 
+  vid_pillarbox_pct := ibetween(vid_pillarbox_pct, PILLARLETTER_MIN, PILLARLETTER_MAX);
+  vid_letterbox_pct := ibetween(vid_letterbox_pct, PILLARLETTER_MIN, PILLARLETTER_MAX);
+
   srcrect.Left := 0;
   srcrect.Top := 0;
   srcrect.Right := SCREENWIDTH;
@@ -269,14 +290,90 @@ begin
 
   stretch := stallhack and fixstallhack and (WINDOWHEIGHT = SCREENHEIGHT);
   if not stretch then
-    stretch := (WINDOWWIDTH <> SCREENWIDTH) or (WINDOWHEIGHT <> SCREENHEIGHT);
+    stretch := (WINDOWWIDTH <> SCREENWIDTH) or (WINDOWHEIGHT <> SCREENHEIGHT) or
+               (vid_pillarbox_pct <> 0) or (vid_letterbox_pct <> 0);
 
   if stretch then
   begin
-    destrect.Left := 0;
-    destrect.Top := 0;
-    destrect.Right := WINDOWWIDTH;
-    destrect.Bottom := WINDOWHEIGHT;
+    hpan := trunc(vid_pillarbox_pct * WINDOWWIDTH / 100 / 2);
+    vpan := trunc(vid_letterbox_pct * WINDOWHEIGHT / 100 / 2);
+
+    if not oldstretch or
+      (vid_pillarbox_pct <> old_pillarbox_pct) or
+      (vid_letterbox_pct <> old_letterbox_pct) or
+      (old_windowwidth <> WINDOWWIDTH) or
+      (old_windowheight <> WINDOWHEIGHT) then
+    begin
+      if bpp = 16 then
+      begin
+        oldcolor := screen16[0];
+        screen16[0] := 0;
+      end
+      else
+      begin
+        oldcolor := screen32[0];
+        screen32[0] := 0;
+      end;
+
+      blackrect.Left := 0;
+      blackrect.Top := 0;
+      blackrect.Right := 1;
+      blackrect.Bottom := 1;
+
+      if hpan <> 0 then
+      begin
+        destrect.Left := 0;
+        destrect.Top := 0;
+        destrect.Right := hpan;
+        destrect.Bottom := WINDOWHEIGHT;
+
+        if g_pDDSPrimary.Blt(destrect, g_pDDScreen, blackrect, DDBLTFAST_DONOTWAIT or DDBLTFAST_NOCOLORKEY, PDDBltFX(0)^) = DDERR_SURFACELOST then
+          g_pDDSPrimary.Restore;
+
+        destrect.Left := WINDOWWIDTH - hpan;
+        destrect.Top := 0;
+        destrect.Right := WINDOWWIDTH;
+        destrect.Bottom := WINDOWHEIGHT;
+
+        if g_pDDSPrimary.Blt(destrect, g_pDDScreen, blackrect, DDBLTFAST_DONOTWAIT or DDBLTFAST_NOCOLORKEY, PDDBltFX(0)^) = DDERR_SURFACELOST then
+          g_pDDSPrimary.Restore;
+      end;
+
+      if vpan <> 0 then
+      begin
+        destrect.Left := hpan;
+        destrect.Top := 0;
+        destrect.Right := WINDOWWIDTH - hpan;
+        destrect.Bottom := vpan;
+
+        if g_pDDSPrimary.Blt(destrect, g_pDDScreen, blackrect, DDBLTFAST_DONOTWAIT or DDBLTFAST_NOCOLORKEY, PDDBltFX(0)^) = DDERR_SURFACELOST then
+          g_pDDSPrimary.Restore;
+
+        destrect.Left := hpan;
+        destrect.Top := WINDOWHEIGHT - vpan;
+        destrect.Right := WINDOWWIDTH - hpan;
+        destrect.Bottom := WINDOWHEIGHT;
+
+        if g_pDDSPrimary.Blt(destrect, g_pDDScreen, blackrect, DDBLTFAST_DONOTWAIT or DDBLTFAST_NOCOLORKEY, PDDBltFX(0)^) = DDERR_SURFACELOST then
+          g_pDDSPrimary.Restore;
+      end;
+
+      if bpp = 16 then
+        screen16[0] := oldcolor
+      else
+        screen32[0] := oldcolor;
+
+      oldstretch := true;
+      old_pillarbox_pct := vid_pillarbox_pct;
+      old_letterbox_pct := vid_letterbox_pct;
+      old_windowwidth := WINDOWWIDTH;
+      old_windowheight := WINDOWHEIGHT;
+    end;
+
+    destrect.Left := hpan;
+    destrect.Top := vpan;
+    destrect.Right := WINDOWWIDTH - hpan;
+    destrect.Bottom := WINDOWHEIGHT - vpan;
 
     if g_pDDSPrimary.Blt(destrect, g_pDDScreen, srcrect, DDBLTFAST_DONOTWAIT or DDBLTFAST_NOCOLORKEY, PDDBltFX(0)^) = DDERR_SURFACELOST then
       g_pDDSPrimary.Restore;
@@ -286,8 +383,8 @@ begin
   begin
     if g_pDDSPrimary.BltFast(0, 0, g_pDDScreen, srcrect, DDBLTFAST_DONOTWAIT or DDBLTFAST_NOCOLORKEY) = DDERR_SURFACELOST then
       g_pDDSPrimary.Restore;
+    oldstretch := false;
   end;
-
 end;
 
 //
@@ -555,7 +652,7 @@ end;
 procedure I_FindWindowSize(const dofull, doexclusive: boolean);
 begin
   I_DoFindWindowSize(dofull, doexclusive);
-  printf('I_FindWindowSize(): Set window size at (%d, %d)'#13#10, [WINDOWWIDTH, WINDOWHEIGHT]);
+  printf('I_FindWindowSize: Set window size at (%d, %d)'#13#10, [WINDOWWIDTH, WINDOWHEIGHT]);
 end;
 
 procedure I_DetectNativeScreenResolution;
@@ -629,14 +726,14 @@ begin
         I_AdjustWindowMode;
         I_RestoreWindowPos;
 
-        printf('SetDisplayMode(): Failed to fullscreen %dx%dx%d, trying window mode...'#13#10,
+        I_Warning('SetDisplayMode(): Failed to fullscreen %dx%dx%d, trying window mode...'#13#10,
           [WINDOWWIDTH, WINDOWHEIGHT, 32]);
         printf('Window Mode %dx%d' + #13#10, [WINDOWWIDTH, WINDOWHEIGHT]);
 
         hres := I_SetCooperativeLevel(false);
         if hres <> DD_OK then
         begin
-          printf('SetDisplayMode(): Failed to window mode %dx%d...' + #13#10, [WINDOWWIDTH, WINDOWHEIGHT]);
+          I_Warning('SetDisplayMode(): Failed to window mode %dx%d...' + #13#10, [WINDOWWIDTH, WINDOWHEIGHT]);
           WINDOWWIDTH := 640;
           WINDOWHEIGHT := 480;
           V_ReInit;
