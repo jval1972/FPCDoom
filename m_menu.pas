@@ -113,14 +113,11 @@ uses
   i_video,
   p_mobj_h,
   p_terrain,
-  p_telept,
   p_enemy,
   p_saveg,
   r_aspect,
   r_data,
   r_draw,
-  r_draw_column,
-  r_draw_span,
   r_main,
   r_hires,
   r_intrpl,
@@ -188,10 +185,6 @@ var
   savegamestrings: array[0..9] of string;
   endstring: string;
 
-const
-  MIM_TRANSDOTSONLY = 1;
-  MIM_ANIMATEDOTS = 2;
-
 type
   menuitem_t = record
     // 0 = no cursor here, 1 = ok, 2 = arrows ok
@@ -211,8 +204,6 @@ type
     alphaKey: char;
     // Translation
     transtbl: string[8];
-    // Mode
-    itemflags: LongWord;
   end;
   Pmenuitem_t = ^menuitem_t;
   menuitem_tArray = packed array[0..$FFFF] of menuitem_t;
@@ -496,88 +487,6 @@ begin
   result.y := cy;
 end;
 
-var
-  menubasetic: integer = 0;
-
-function M_WriteAnimDotsText(x, y: integer; const str: string; const clmap: string; const flags: LongWord): menupos_t;
-var
-  s1, s2, s3: string;
-  num: integer;
-  dotrans1, dotrans2, dotrans3: boolean;
-begin
-  s1 := str;
-  while length(s1) > 0 do
-  begin
-    if s1[length(s1)] = '.' then
-      SetLength(s1, length(s1) - 1)
-    else
-      break;
-  end;
-
-  if flags and MIM_ANIMATEDOTS <> 0 then
-  begin
-    num := ((gametic - menubasetic) div 12) mod 4;
-    case num of
-      1: begin s2 := '.'; s3 := '..'; end;
-      2: begin s1 := s1 + '.'; s2 := '.'; s3 := '.'; end;
-      3: begin s1 := s1 + '..'; s2 := '.'; s3 := ''; end;
-    else
-      s1 := s1 + '...';
-      s2 := '';
-      s3 := '';
-    end;
-  end
-  else
-  begin
-    s1 := s1 + '...';
-    s2 := '';
-    s3 := '';
-  end;
-
-  if clmap = '' then
-  begin
-    dotrans1 := false;
-    dotrans2 := false;
-    dotrans3 := false;
-  end
-  else
-  begin
-    if flags and MIM_TRANSDOTSONLY <> 0 then
-    begin
-      dotrans1 := false;
-      dotrans2 := true;
-      dotrans3 := false;
-    end
-    else
-    begin
-      dotrans1 := true;
-      dotrans2 := true;
-      dotrans3 := true;
-    end;
-  end;
-
-  if dotrans1 then
-    result := M_WriteColorText(x, y, s1, clmap)
-  else
-    result := M_WriteText(x, y, s1);
-
-  if s2 <> '' then
-  begin
-    if dotrans2 then
-      result := M_WriteColorText(result.x, result.y, s2, clmap)
-    else
-      result := M_WriteText(result.x, result.y, s2);
-  end;
-
-  if s3 <> '' then
-  begin
-    if dotrans3 then
-      result := M_WriteColorText(result.x, result.y, s3, clmap)
-    else
-      result := M_WriteText(result.x, result.y, s3);
-  end;
-end;
-
 //
 // M_ClearMenus
 //
@@ -591,7 +500,6 @@ end;
 //
 procedure M_SetupNextMenu(menudef: Pmenu_t);
 begin
-  menubasetic := gametic;
   currentMenu := menudef;
   itemOn := currentMenu.lastOn;
 end;
@@ -703,10 +611,6 @@ var
 type
   optionsdisplaydetail_e = (
     odd_detaillevel,
-    odd_columnrenderingquality,
-    odd_spanrenderingquality,
-    odd_fullscreen,
-    odd_fullscreenexclusive,
     odd_screensize,
     odd_filler1,
     odd_filler2,
@@ -766,38 +670,21 @@ var
 // DISPLAY ADVANCED MENU
 type
   optionsdisplayadvanced_e = (
-    od_aspect,
+    od_fullscreen,
     od_mirror,
     od_usetransparentsprites,
     od_interpolate,
     od_zaxisshift,
     od_chasecamera,
     od_fixstallhack,
+    od_widescreensupport,
+    od_excludewidescreenplayersprites,
     optdispadvanced_end
   );
 
 var
   OptionsDisplayAdvancedMenu: array[0..Ord(optdispadvanced_end) - 1] of menuitem_t;
   OptionsDisplayAdvancedDef: menu_t;
-
-// DISPLAY ASPECT RATIO MENU
-type
-  optionsdisplayaspectratio_e = (
-    oda_widescreensupport,
-    oda_excludewidescreenplayersprites,
-    oda_forceaspectratio,
-    oda_pillarbox_pct,
-    oda_filler1,
-    oda_filler2,
-    oda_letterbox_pct,
-    oda_filler3,
-    oda_filler4,
-    optdispaspect_end
-  );
-
-var
-  OptionsDisplayAspectRatioMenu: array[0..Ord(optdispaspect_end) - 1] of menuitem_t;
-  OptionsDisplayAspectRatioDef: menu_t;
 
 // COLORS MENU
 type
@@ -818,10 +705,8 @@ type
     ol_accuracy,
     ol_colorintensity,
     ol_filler1,
-    ol_filler2,
     ol_lightwidthfactor,
-    ol_filler3,
-    ol_filler4,
+    ol_filler2,
     od_resettodefaults,
     ol_lightmap_end
   );
@@ -910,7 +795,6 @@ type
     cmp_majorbossdeathendsdoom1level,
     cmp_spawnrandommonsters,
     cmp_allowterrainsplashes,
-    cmp_useteleportzoomeffect,
     cmp_continueafterplayerdeath,
     cmp_loadtracerfromsavedgame,
     cmp_loadtargetfromsavedgame,
@@ -1782,11 +1666,6 @@ begin
   M_SetupNextMenu(@OptionsDisplayHudDef);
 end;
 
-procedure M_OptionAspectRatio(choice: integer);
-begin
-  M_SetupNextMenu(@OptionsDisplayAspectRatioDef);
-end;
-
 procedure M_ChangeHudFullScreenSize(choice: integer);
 begin
   custom_fullscreenhud_size := not custom_fullscreenhud_size;
@@ -1999,13 +1878,9 @@ end;
 var
   colordepths: array[boolean] of string = ('8bit', '32bit');
 
-var
-  strfullscreenmodes: array[boolean] of string = ('NORMAL', 'EXCLUSIVE');
-
-
 procedure M_DrawDisplayDetailOptions;
 var
-  stmp: string;
+  stmp, trn: string;
   ppos: menupos_t;
 begin
   M_DrawDisplayOptions;
@@ -2013,10 +1888,6 @@ begin
 
   ppos := M_WriteText(OptionsDisplayDetailDef.x, OptionsDisplayDetailDef.y + OptionsDisplayDetailDef.itemheight * Ord(odd_detaillevel), 'Detail level: ');
   sprintf(stmp, '%s (%s)', [detailStrings[detailLevel], colordepths[videomode = vm32bit]]);
-  M_WriteColorText(ppos.x, ppos.y, stmp, 'CRGRAY');
-
-  ppos := M_WriteText(OptionsDisplayDetailDef.x, OptionsDisplayDetailDef.y + OptionsDisplayDetailDef.itemheight * Ord(odd_fullscreenexclusive), 'Fullscreen Mode: ');
-  stmp := strfullscreenmodes[fullscreenexclusive];
   M_WriteColorText(ppos.x, ppos.y, stmp, 'CRGRAY');
 
   if mdisplaymode_idx < 0 then
@@ -2033,13 +1904,14 @@ begin
   if (displaymodes[mdisplaymode_idx].width = SCREENWIDTH) and (displaymodes[mdisplaymode_idx].height = SCREENHEIGHT) then
   begin
     stmp := 'No change';
-    M_WriteText(OptionsDisplayDetailDef.x, OptionsDisplayDetailDef.y + OptionsDisplayDetailDef.itemheight * Ord(odd_setvideomode), stmp);
+    trn := '';
   end
   else
   begin
     sprintf(stmp, 'Set video mode to %dx%d...', [displaymodes[mdisplaymode_idx].width, displaymodes[mdisplaymode_idx].height]);
-    M_WriteAnimDotsText(OptionsDisplayDetailDef.x, OptionsDisplayDetailDef.y + OptionsDisplayDetailDef.itemheight * Ord(odd_setvideomode), stmp, 'CRGRAY', MIM_TRANSDOTSONLY or MIM_ANIMATEDOTS);
+    trn := 'CRGRAY';
   end;
+  M_WriteColorText(OptionsDisplayDetailDef.x, OptionsDisplayDetailDef.y + OptionsDisplayDetailDef.itemheight * Ord(odd_setvideomode), stmp, trn);
 end;
 
 procedure M_SwitchShadeMode(choice: integer);
@@ -2159,6 +2031,7 @@ end;
 procedure M_DrawOptionsLightmap;
 var
   ppos: menupos_t;
+  offs: integer;
 begin
   M_DrawDisplayOptions;
   V_DrawPatch(20, 48, SCN_TMP, 'MENU_LIG', false);
@@ -2167,16 +2040,13 @@ begin
   M_WriteColorText(ppos.x, ppos.y, str_lightmapaccuracymodes[lightmapaccuracymode mod 4], 'CRGRAY');
 
   lightmapcolorintensityidx := (lightmapcolorintensity - 32) div 8;
-
-  ppos := M_WriteText(OptionsLightmapDef.x, OptionsLightmapDef.y + OptionsLightmapDef.itemheight * Ord(ol_colorintensity), 'Color intensity: ');
-  M_WriteColorText(ppos.x, ppos.y, itoa((lightmapcolorintensity * 100) div DEFLMCOLORSENSITIVITY) + '%', 'CRGRAY');
+  offs := M_StringWidth(OptionsLightmapMenu[Ord(ol_colorintensity)].name + ' ');
   M_DrawThermo(
-    OptionsLightmapDef.x, OptionsLightmapDef.y + OptionsLightmapDef.itemheight * (Ord(ol_colorintensity) + 1), 21, lightmapcolorintensityidx, (MAXLMCOLORSENSITIVITY - MINLMCOLORSENSITIVITY) div 8 + 1);
+    (OptionsLightmapDef.x + offs) and not 7, OptionsLightmapDef.y + OptionsLightmapDef.itemheight * Ord(ol_colorintensity), (MAXLMCOLORSENSITIVITY - MINLMCOLORSENSITIVITY) div 8 + 1, lightmapcolorintensityidx);
 
-  ppos := M_WriteText(OptionsLightmapDef.x, OptionsLightmapDef.y + OptionsLightmapDef.itemheight * Ord(ol_lightwidthfactor), 'Distance from source: ');
-  M_WriteColorText(ppos.x, ppos.y, itoa((lightwidthfactor * 100) div DEFLIGHTWIDTHFACTOR) + '%', 'CRGRAY');
+  offs := M_StringWidth(OptionsLightmapMenu[Ord(ol_lightwidthfactor)].name + ' ');
   M_DrawThermo(
-    OptionsLightmapDef.x, OptionsLightmapDef.y + OptionsLightmapDef.itemheight * (Ord(ol_lightwidthfactor) + 1), 21, lightwidthfactor, MAXLIGHTWIDTHFACTOR + 1);
+    (OptionsLightmapDef.x + offs) and not 7, OptionsLightmapDef.y + OptionsLightmapDef.itemheight * Ord(ol_lightwidthfactor), MAXLIGHTWIDTHFACTOR + 1, lightwidthfactor);
 end;
 
 procedure M_SwitchMirrorMode(choice: integer);
@@ -2197,101 +2067,6 @@ begin
 
   ppos := M_WriteText(OptionsDisplayAdvancedDef.x, OptionsDisplayAdvancedDef.y + OptionsDisplayAdvancedDef.itemheight * Ord(od_mirror), 'Mirror Mode: ');
   M_WriteColorText(ppos.x, ppos.y, str_mirrormodes[mirrormode mod 4], 'CRGRAY');
-end;
-
-const
-  NUMSTRASPECTRATIOS = 12;
-  straspectratios: array[0..NUMSTRASPECTRATIOS - 1] of string =
-    ('OFF', '1:1', '5:4', '4:3', '3:2', '16:10', '5:3', '7:4', '16:9', '1.85:1', '2:1', '2.35:1');
-
-var
-  aspectratioidx: integer;
-
-procedure M_SwitchForcedAspectRatio(choice: integer);
-begin
-  aspectratioidx := (aspectratioidx + 1) mod NUMSTRASPECTRATIOS;
-  if aspectratioidx = 0 then
-    forcedaspectstr := '0'
-  else
-    forcedaspectstr := straspectratios[aspectratioidx];
-  setsizeneeded := true;
-end;
-
-function _nearest_aspect_index: integer;
-var
-  asp: single;
-  i, idx: integer;
-  diff, test, mx: single;
-  ar, par: string;
-begin
-  result := 0;
-
-  asp := R_ForcedAspect;
-  if asp < 1.0 then
-    exit;
-
-  mx := 100000000.0;
-
-  for i := 1 to NUMSTRASPECTRATIOS - 1 do
-  begin
-    splitstring(straspectratios[i], ar, par, [':', '/']);
-    if par = '' then
-      test := atof(ar)
-    else
-      test := atof(ar) / atof(par);
-    diff := fabs(test - asp);
-    if diff = 0 then
-    begin
-      result := i;
-      exit;
-    end;
-    if diff < mx then
-    begin
-      result := idx;
-      mx := diff;
-    end;
-  end;
-end;
-
-procedure M_SwitchPillarBox(choice: integer);
-begin
-  case choice of
-    0: vid_pillarbox_pct := vid_pillarbox_pct - 1;
-    1: vid_pillarbox_pct := vid_pillarbox_pct + 1;
-  end;
-  vid_pillarbox_pct := ibetween(vid_pillarbox_pct, PILLARLETTER_MIN, PILLARLETTER_MAX);
-end;
-
-procedure M_SwitchLetterBox(choice: integer);
-begin
-  case choice of
-    0: vid_letterbox_pct := vid_letterbox_pct - 1;
-    1: vid_letterbox_pct := vid_letterbox_pct + 1;
-  end;
-  vid_letterbox_pct := ibetween(vid_letterbox_pct, PILLARLETTER_MIN, PILLARLETTER_MAX);
-end;
-
-procedure M_DrawOptionsDisplayAspectRatio;
-var
-  ppos: menupos_t;
-begin
-  M_DrawDisplayOptions;
-  V_DrawPatch(20, 48, SCN_TMP, 'MENU_ASP', false);
-
-  ppos := M_WriteText(OptionsDisplayAspectRatioDef.x, OptionsDisplayAspectRatioDef.y + OptionsDisplayAspectRatioDef.itemheight * Ord(oda_forceaspectratio), 'Force Aspect Ratio: ');
-  M_WriteColorText(ppos.x, ppos.y, straspectratios[_nearest_aspect_index], 'CRGRAY');
-
-  ppos := M_WriteText(OptionsDisplayAspectRatioDef.x, OptionsDisplayAspectRatioDef.y + OptionsDisplayAspectRatioDef.itemheight * Ord(oda_pillarbox_pct), 'Pillarbox percentage: ');
-  M_WriteColorText(ppos.x, ppos.y, itoa(vid_pillarbox_pct) + '%', 'CRGRAY');
-
-  M_DrawThermo(
-    OptionsDisplayAspectRatioDef.x, OptionsDisplayAspectRatioDef.y + OptionsDisplayAspectRatioDef.itemheight * (Ord(oda_pillarbox_pct) + 1), 21, vid_pillarbox_pct, PILLARLETTER_MAX - PILLARLETTER_MIN + 1);
-
-  ppos := M_WriteText(OptionsDisplayAspectRatioDef.x, OptionsDisplayAspectRatioDef.y + OptionsDisplayAspectRatioDef.itemheight * Ord(oda_letterbox_pct), 'Letterbox percentage: ');
-  M_WriteColorText(ppos.x, ppos.y, itoa(vid_letterbox_pct) + '%', 'CRGRAY');
-
-  M_DrawThermo(
-    OptionsDisplayAspectRatioDef.x, OptionsDisplayAspectRatioDef.y + OptionsDisplayAspectRatioDef.itemheight * (Ord(oda_letterbox_pct) + 1), 21, vid_letterbox_pct, PILLARLETTER_MAX - PILLARLETTER_MIN + 1);
 end;
 
 procedure M_SwitchGrayscaleMode(choice: integer);
@@ -2528,15 +2303,6 @@ begin
 
 end;
 
-var
-  mousewait: integer;
-
-procedure M_ChangeFullScreenMode(choice: integer);
-begin
-  I_ChangeFullScreen(fullscreen, not fullscreenexclusive);
-  mousewait := I_GetTime + 15;
-end;
-
 procedure M_ChangeScreenSize(choice: integer);
 begin
   case choice of
@@ -2617,6 +2383,7 @@ end;
 //
 var
   joywait: integer;
+  mousewait: integer;
   mmousex: integer;
   mmousey: integer;
   mlastx: integer;
@@ -2942,7 +2709,7 @@ begin
         begin
           if m_altdown then
           begin
-            I_ChangeFullScreen(not fullscreen, fullscreenexclusive);
+            I_ChangeFullScreen;
             mousewait := I_GetTime + 15;
             result := true;
             exit;
@@ -3446,12 +3213,7 @@ begin
           M_WriteColorText(ppos.x, ppos.y, yesnoStrings[currentMenu.menuitems[i].pBoolVal^], 'CRGRAY');
         end
         else
-        begin
-          if currentMenu.menuitems[i].itemflags and (MIM_TRANSDOTSONLY or MIM_ANIMATEDOTS) <> 0 then
-            M_WriteAnimDotsText(x, y, str, currentMenu.menuitems[i].transtbl, currentMenu.menuitems[i].itemflags)
-          else
-            M_WriteColorText(x, y, str, currentMenu.menuitems[i].transtbl);
-        end;
+          M_WriteColorText(x, y, str, currentMenu.menuitems[i].transtbl);
       end
       else
         V_DrawPatch(x, y, SCN_TMP,
@@ -3857,39 +3619,6 @@ begin
   pmi.alphaKey := 'c';
 
   inc(pmi);
-  pmi.status := 1;
-  pmi.name := '!Low column render quality';
-  pmi.cmd := 'lowrescolumndraw';
-  pmi.routine := @M_BoolCmd;
-  pmi.pBoolVal := @lowrescolumndraw;
-  pmi.alphaKey := 'c';
-
-
-  inc(pmi);
-  pmi.status := 1;
-  pmi.name := '!Low span render quality';
-  pmi.cmd := 'lowresspandraw';
-  pmi.routine := @M_BoolCmd;
-  pmi.pBoolVal := @lowresspandraw;
-  pmi.alphaKey := 's';
-
-  inc(pmi);
-  pmi.status := 1;
-  pmi.name := '!Fullscreen';
-  pmi.cmd := 'fullscreen';
-  pmi.routine := @M_BoolCmd;
-  pmi.pBoolVal := @fullscreen;
-  pmi.alphaKey := 'f';
-
-  inc(pmi);
-  pmi.status := 1;
-  pmi.name := '!Fullscreen Mode';
-  pmi.cmd := '';
-  pmi.routine := @M_ChangeFullScreenMode;
-  pmi.pBoolVal := nil;
-  pmi.alphaKey := 'f';
-
-  inc(pmi);
   pmi.status := 2;
   pmi.name := '';
   pmi.cmd := '';
@@ -3987,7 +3716,6 @@ begin
   pmi.pBoolVal := nil;
   pmi.alphaKey := 'h';
   pmi.transtbl := 'CRGRAY';
-  pmi.itemflags := MIM_TRANSDOTSONLY or MIM_ANIMATEDOTS;
 
   inc(pmi);
   pmi.status := 1;
@@ -4112,14 +3840,13 @@ begin
 ////////////////////////////////////////////////////////////////////////////////
 //OptionsDisplayAdvancedMenu
   pmi := @OptionsDisplayAdvancedMenu[0];
+
   pmi.status := 1;
-  pmi.name := '!Aspect Ratio...';
-  pmi.cmd := '';
-  pmi.routine := @M_OptionAspectRatio;
-  pmi.pBoolVal := nil;
-  pmi.alphaKey := 'a';
-  pmi.transtbl := 'CRGRAY';
-  pmi.itemflags := MIM_TRANSDOTSONLY or MIM_ANIMATEDOTS;
+  pmi.name := '!Fullscreen';
+  pmi.cmd := 'fullscreen';
+  pmi.routine := @M_BoolCmd;
+  pmi.pBoolVal := @fullscreen;
+  pmi.alphaKey := 'f';
 
   inc(pmi);
   pmi.status := 1;
@@ -4169,24 +3896,7 @@ begin
   pmi.pBoolVal := @fixstallhack;
   pmi.alphaKey := 'f';
 
-////////////////////////////////////////////////////////////////////////////////
-//OptionsDisplayAdvancedDef
-  OptionsDisplayAdvancedDef.title := 'Advanced';
-  OptionsDisplayAdvancedDef.numitems := Ord(optdispadvanced_end); // # of menu items
-  OptionsDisplayAdvancedDef.prevMenu := @OptionsDisplayDef; // previous menu
-  OptionsDisplayAdvancedDef.leftMenu := @OptionsDisplayAppearanceDef; // left menu
-  OptionsDisplayAdvancedDef.rightMenu := @OptionsDisplayColorsDef; // right menu
-  OptionsDisplayAdvancedDef.menuitems := Pmenuitem_tArray(@OptionsDisplayAdvancedMenu);  // menu items
-  OptionsDisplayAdvancedDef.drawproc := @M_DrawOptionsDisplayAdvanced;  // draw routine
-  OptionsDisplayAdvancedDef.x := 32;
-  OptionsDisplayAdvancedDef.y := 68; // x,y of menu
-  OptionsDisplayAdvancedDef.lastOn := 0; // last item user was on in menu
-  OptionsDisplayAdvancedDef.itemheight := LINEHEIGHT2;
-  OptionsDisplayAdvancedDef.texturebk := true;
-
-////////////////////////////////////////////////////////////////////////////////
-//OptionsDisplayAspectRatioMenu
-  pmi := @OptionsDisplayAspectRatioMenu[0];
+  inc(pmi);
   pmi.status := 1;
   pmi.name := '!Widescreen support';
   pmi.cmd := 'widescreensupport';
@@ -4202,74 +3912,20 @@ begin
   pmi.pBoolVal := @excludewidescreenplayersprites;
   pmi.alphaKey := 'p';
 
-  inc(pmi);
-  pmi.status := 1;
-  pmi.name := '!Force Aspect Ratio';
-  pmi.cmd := '';
-  pmi.routine := @M_SwitchForcedAspectRatio;
-  pmi.pBoolVal := nil;
-  pmi.alphaKey := 'f';
-
-  inc(pmi);
-  pmi.status := 2;
-  pmi.name := '!Pillarbox percentage';
-  pmi.cmd := '';
-  pmi.routine := @M_SwitchPillarBox;
-  pmi.pBoolVal := nil;
-  pmi.alphaKey := 'p';
-
-  inc(pmi);
-  pmi.status := -1;
-  pmi.name := '';
-  pmi.cmd := '';
-  pmi.routine := nil;
-  pmi.pBoolVal := nil;
-  pmi.alphaKey := #0;
-
-  inc(pmi);
-  pmi.status := -1;
-  pmi.name := '';
-  pmi.cmd := '';
-  pmi.routine := nil;
-  pmi.pBoolVal := nil;
-  pmi.alphaKey := #0;
-
-  inc(pmi);
-  pmi.status := 2;
-  pmi.name := '!LetterBox percentage';
-  pmi.cmd := '';
-  pmi.routine := @M_SwitchLetterBox;
-  pmi.pBoolVal := nil;
-  pmi.alphaKey := 'p';
-
-  inc(pmi);
-  pmi.status := -1;
-  pmi.name := '';
-  pmi.cmd := '';
-  pmi.routine := nil;
-  pmi.pBoolVal := nil;
-  pmi.alphaKey := #0;
-
-  inc(pmi);
-  pmi.status := -1;
-  pmi.name := '';
-  pmi.cmd := '';
-  pmi.routine := nil;
-  pmi.pBoolVal := nil;
-  pmi.alphaKey := #0;
-
 ////////////////////////////////////////////////////////////////////////////////
-//OptionsDisplayAspectRatioDef
-  OptionsDisplayAspectRatioDef.title := 'Aspect Ratio';
-  OptionsDisplayAspectRatioDef.numitems := Ord(optdispaspect_end); // # of menu items
-  OptionsDisplayAspectRatioDef.prevMenu := @OptionsDisplayAdvancedDef; // previous menu
-  OptionsDisplayAspectRatioDef.menuitems := Pmenuitem_tArray(@OptionsDisplayAspectRatioMenu);  // menu items
-  OptionsDisplayAspectRatioDef.drawproc := @M_DrawOptionsDisplayAspectRatio;  // draw routine
-  OptionsDisplayAspectRatioDef.x := 32;
-  OptionsDisplayAspectRatioDef.y := 68; // x,y of menu
-  OptionsDisplayAspectRatioDef.lastOn := 0; // last item user was on in menu
-  OptionsDisplayAspectRatioDef.itemheight := LINEHEIGHT2;
-  OptionsDisplayAspectRatioDef.texturebk := true;
+//OptionsDisplayAdvancedDef
+  OptionsDisplayAdvancedDef.title := 'Advanced';
+  OptionsDisplayAdvancedDef.numitems := Ord(optdispadvanced_end); // # of menu items
+  OptionsDisplayAdvancedDef.prevMenu := @OptionsDisplayDef; // previous menu
+  OptionsDisplayAdvancedDef.leftMenu := @OptionsDisplayAppearanceDef; // left menu
+  OptionsDisplayAdvancedDef.rightMenu := @OptionsDisplayColorsDef; // right menu
+  OptionsDisplayAdvancedDef.menuitems := Pmenuitem_tArray(@OptionsDisplayAdvancedMenu);  // menu items
+  OptionsDisplayAdvancedDef.drawproc := @M_DrawOptionsDisplayAdvanced;  // draw routine
+  OptionsDisplayAdvancedDef.x := 32;
+  OptionsDisplayAdvancedDef.y := 68; // x,y of menu
+  OptionsDisplayAdvancedDef.lastOn := 0; // last item user was on in menu
+  OptionsDisplayAdvancedDef.itemheight := LINEHEIGHT2;
+  OptionsDisplayAdvancedDef.texturebk := true;
 
 ////////////////////////////////////////////////////////////////////////////////
 //OptionsDisplayColorsMenu
@@ -4341,14 +3997,6 @@ begin
   pmi.alphaKey := #0;
 
   inc(pmi);
-  pmi.status := -1;
-  pmi.name := '';
-  pmi.cmd := '';
-  pmi.routine := nil;
-  pmi.pBoolVal := nil;
-  pmi.alphaKey := #0;
-
-  inc(pmi);
   pmi.status := 2;
   pmi.name := '!Distance from source';
   pmi.cmd := '';
@@ -4365,15 +4013,7 @@ begin
   pmi.alphaKey := #0;
 
   inc(pmi);
-  pmi.status := -1;
-  pmi.name := '';
-  pmi.cmd := '';
-  pmi.routine := nil;
-  pmi.pBoolVal := nil;
-  pmi.alphaKey := #0;
-
-  inc(pmi);
-  pmi.status := 1;
+  pmi.status := 2;
   pmi.name := '!Reset to default';
   pmi.cmd := '';
   pmi.routine := @M_LightmapDefaults;
@@ -4516,7 +4156,6 @@ begin
   pmi.pBoolVal := nil;
   pmi.alphaKey := 'v';
   pmi.transtbl := 'CRGRAY';
-  pmi.itemflags := MIM_TRANSDOTSONLY or MIM_ANIMATEDOTS;
 
   inc(pmi);
   pmi.status := 1;
@@ -4635,14 +4274,6 @@ begin
   pmi.cmd := 'allowterrainsplashes';
   pmi.routine := @M_BoolCmd;
   pmi.pBoolVal := @allowterrainsplashes;
-  pmi.alphaKey := 's';
-
-  inc(pmi);
-  pmi.status := 1;
-  pmi.name := '!Teleport zoom effect';
-  pmi.cmd := 'useteleportzoomeffect';
-  pmi.routine := @M_BoolCmd;
-  pmi.pBoolVal := @useteleportzoomeffect;
   pmi.alphaKey := 't';
 
   inc(pmi);
@@ -4718,7 +4349,6 @@ begin
   pmi.pBoolVal := nil;
   pmi.alphaKey := 's';
   pmi.transtbl := 'CRGRAY';
-  pmi.itemflags := MIM_TRANSDOTSONLY or MIM_ANIMATEDOTS;
 
   inc(pmi);
   pmi.status := 1;
@@ -4752,7 +4382,6 @@ begin
   pmi.pBoolVal := nil;
   pmi.alphaKey := 'b';
   pmi.transtbl := 'CRGRAY';
-  pmi.itemflags := MIM_TRANSDOTSONLY or MIM_ANIMATEDOTS;
 
 ////////////////////////////////////////////////////////////////////////////////
 //ControlsDef

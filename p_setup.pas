@@ -133,7 +133,6 @@ uses
   p_local,
   p_mobj,
   p_tick,
-  p_telept,
   p_spec,
   p_switch,
   r_data,
@@ -775,8 +774,6 @@ begin
     players[i].secretcount := 0;
     players[i].itemcount := 0;
   end;
-
-  ZeroMemory(@teleporttics, SizeOf(teleporttics));
 
   // Initial height of PointOfView
   // will be set by player think.

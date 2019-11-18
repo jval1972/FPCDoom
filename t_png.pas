@@ -1265,7 +1265,7 @@ begin
         if Output = nil then
           GetMem(Output, OutputSize) else ReallocMem(Output, OutputSize);
         {Copies the new data}
-        memcpy(pOp(Output, OutputSize - total_out),
+        memcpy(pointer(Longint(Output) + OutputSize - total_out),
           @Buffer, total_out);
       end {if (InflateRet = Z_STREAM_END) or (InflateRet = 0)}
       {Now tests for errors}
@@ -1325,7 +1325,7 @@ begin
           GetMem(Output, OutputSize) else ReallocMem(Output, OutputSize);
 
         {Copies the new data}
-        memcpy(pOp(Output, OutputSize - total_out),
+        memcpy(pointer(Longint(Output) + OutputSize - total_out),
           @Buffer, total_out);
       end {if (InflateRet = Z_STREAM_END) or (InflateRet = 0)}
       {Now tests for errors}
@@ -1723,12 +1723,12 @@ begin
     Exit; {Size must be 7}
 
   {Reads data}
-  fYear :=   PByte(Data)^ * 256+ PByte(pOp(Data, 1))^;
-  fMonth :=  PByte(pOp(Data, 2))^;
-  fDay :=    PByte(pOp(Data, 3))^;
-  fHour :=   PByte(pOp(Data, 4))^;
-  fMinute := PByte(pOp(Data, 5))^;
-  fSecond := PByte(pOp(Data, 6))^;
+  fYear := ((PByte(Longint(Data) )^) * 256)+ (PByte(Longint(Data) + 1)^);
+  fMonth := PByte(Longint(Data) + 2)^;
+  fDay := PByte(Longint(Data) + 3)^;
+  fHour := PByte(Longint(Data) + 4)^;
+  fMinute := PByte(Longint(Data) + 5)^;
+  fSecond := PByte(Longint(Data) + 6)^;
 end;
 
 {Assigns from another TChunk}
@@ -1748,11 +1748,11 @@ begin
   {Update data}
   ResizeData(7);  {Make sure the size is 7}
   PWord(Data)^ := ByteSwap16(Year);
-  PByte(pOp(Data, 2))^ := Month;
-  PByte(pOp(Data, 3))^ := Day;
-  PByte(pOp(Data, 4))^ := Hour;
-  PByte(pOp(Data, 5))^ := Minute;
-  PByte(pOp(Data, 6))^ := Second;
+  PByte(Longint(Data) + 2)^ := Month;
+  PByte(Longint(Data) + 3)^ := Day;
+  PByte(Longint(Data) + 4)^ := Hour;
+  PByte(Longint(Data) + 5)^ := Minute;
+  PByte(Longint(Data) + 6)^ := Second;
 
   {Let inherited save data}
   Result := inherited SaveToStream(Stream);
@@ -1784,7 +1784,7 @@ begin
   if CompressionMethod = 0 then
   begin
     Output := nil;
-    if DecompressZLIB(PChar(pOp(Data, Length(fKeyword) + 2)),
+    if DecompressZLIB(PChar(Longint(Data) + Length(fKeyword) + 2),
       Size - Length(fKeyword) - 2, Output, OutputSize, ErrorOutput) then
     begin
       SetLength(fText, OutputSize);
@@ -3696,8 +3696,8 @@ var
 begin
   {Get first column and enter in loop}
   Col := ColumnStart[Pass];
-  Src := pOp(Src, Col);
-  Trans := pOp(Trans, Col);
+  Src := PChar(Longint(Src) + Col);
+  Trans := PChar(Longint(Trans) + Col);
   repeat
     {Copy this row}
     Dest^ := Src^;   inc(Dest);
@@ -3719,8 +3719,8 @@ var
 begin
   {Get first column and enter in loop}
   Col := ColumnStart[Pass];
-  Src := pOp(Src, Col);
-  Trans := pOp(Trans, Col);
+  Src := PChar(Longint(Src) + Col);
+  Trans := PChar(Longint(Trans) + Col);
   repeat
     {Copy this row}
     PWord(Dest)^ := PByte(Src)^; inc(Dest, 2);
@@ -3787,9 +3787,9 @@ begin
     {Get current row index}
     CurrentRow := RowStart[CurrentPass];
     {Get a pointer to the current row image data}
-    Data := pOp(Header.ImageData, Header.BytesPerRow *
+    Data := pointer(Longint(Header.ImageData) + Header.BytesPerRow *
       (ImageHeight - 1 - CurrentRow));
-    Trans := pOp(Header.ImageAlpha, ImageWidth * CurrentRow);
+    Trans := pointer(Longint(Header.ImageAlpha) + ImageWidth * CurrentRow);
 
     {Process all the image rows}
     if Row_Bytes > 0 then
@@ -4461,7 +4461,8 @@ begin
   {Obtains image pointers}
   ImageData := BufferBits;
   AlphaSource := Header.ImageAlpha;
-  ImageSource := pOp(Header.ImageData, Header.BytesPerRow * Longint(Header.Height - 1));
+  Longint(ImageSource) := Longint(Header.ImageData) +
+    Header.BytesPerRow * Longint(Header.Height - 1);
   ImageSourceOrg := ImageSource;
 
   case Header.BitmapInfo.bmiHeader.biBitCount of
@@ -4498,8 +4499,9 @@ begin
           j2 := trunc(j / FactorY)
         else
           j2 := j;
-        ImageSource := pOp(ImageSourceOrg, -BytesPerRowSrc * j2);
-        AlphaSource := pOp(Header.ImageAlpha, BytesPerRowAlpha * j2);
+        Longint(ImageSource) := Longint(ImageSourceOrg) - BytesPerRowSrc * j2;
+        Longint(AlphaSource) := Longint(Header.ImageAlpha) +
+          BytesPerRowAlpha * j2;
       end;
     {Palette images with 1 byte for each pixel}
     1,4,8: if Header.ColorType = COLOR_GRAYSCALEALPHA then
@@ -4522,13 +4524,13 @@ begin
           end;
 
         {Move pointers}
-        ImageData := pOp(ImageData, BytesPerRowDest);
+        Longint(ImageData) := Longint(ImageData) + BytesPerRowDest;
         if Stretch then
           j2 := trunc(j / FactorY)
         else
           j2 := j;
-        ImageSource := pOp(ImageSourceOrg, - BytesPerRowSrc * j2);
-        AlphaSource := pOp(Header.ImageAlpha, BytesPerRowAlpha * j2);
+        Longint(ImageSource) := Longint(ImageSourceOrg) - BytesPerRowSrc * j2;
+        Longint(AlphaSource) := Longint(Header.ImageAlpha) + BytesPerRowAlpha * j2;
       end
     else {Palette images}
     begin
@@ -4576,9 +4578,9 @@ begin
         until i >= Integer(W);
 
         {Move pointers}
-        ImageData := pOp(ImageData, BytesPerRowDest);
+        Longint(ImageData) := Longint(ImageData) + BytesPerRowDest;
         if Stretch then j2 := trunc(j / FactorY) else j2 := j;
-        ImageSource := pOp(ImageSourceOrg, BytesPerRowSrc * j2);
+        Longint(ImageSource) := Longint(ImageSourceOrg) - BytesPerRowSrc * j2;
       end
     end {Palette images}
   end {case Header.BitmapInfo.bmiHeader.biBitCount};
@@ -4845,7 +4847,7 @@ function TPngObject.GetAlphaScanline(const LineIndex: Integer): PByteArray;
 begin
   with Header do
     if (ColorType = COLOR_RGBALPHA) or (ColorType = COLOR_GRAYSCALEALPHA) then
-      PCAST(Result) := PCAST(ImageAlpha) + (LineIndex * Longint(Width))
+      Longint(Result) := Longint(ImageAlpha) + (LineIndex * Longint(Width))
     else
       Result := nil;  {In case the image does not use alpha information}
 end;
@@ -4855,7 +4857,7 @@ end;
 function TPngObject.GetExtraScanline(const LineIndex: Integer): Pointer;
 begin
   with Header do
-    PCAST(Result) := (PCAST(ExtraImageData) + ((Longint(Height) - 1) *
+    Longint(Result) := (Longint(ExtraImageData) + ((Longint(Height) - 1) *
       BytesPerRow)) - (LineIndex * BytesPerRow);
 end;
 {$ENDIF}
@@ -4864,7 +4866,7 @@ end;
 function TPngObject.GetScanline(const LineIndex: Integer): Pointer;
 begin
   with Header do
-    PCAST(Result) := (PCAST(ImageData) + ((Longint(Height) - 1) *
+    Longint(Result) := (Longint(ImageData) + ((Longint(Height) - 1) *
       BytesPerRow)) - (LineIndex * BytesPerRow);
 end;
 
@@ -5193,7 +5195,7 @@ begin
 
     {Copies the image data}
     for Line := 0 to Min(CY - 1, Height - 1) do
-      memcpy(pointer(PCAST(NewImageData) + (Longint(CY) - 1) *
+      memcpy(pointer(Longint(NewImageData) + (Longint(CY) - 1) *
       NewBytesPerRow - (Line * NewBytesPerRow)), Scanline[Line],
       Min(NewBytesPerRow, Header.BytesPerRow));
 
@@ -5204,7 +5206,7 @@ begin
       GetMem(NewImageAlpha, CX * CY);
       FillChar(NewImageAlpha^, CX * CY, 255);
       for Line := 0 to Min(CY - 1, Height - 1) do
-        memcpy(pointer(PCAST(NewImageAlpha) + (Line * CX)),
+        memcpy(pointer(Longint(NewImageAlpha) + (Line * CX)),
         AlphaScanline[Line], Min(CX, Width));
       FreeMem(Header.ImageAlpha);
       Header.ImageAlpha := NewImageAlpha;
@@ -5216,7 +5218,7 @@ begin
       GetMem(NewImageExtra, CX * CY);
       ZeroMemory(@NewImageExtra, CX * CY);
       for Line := 0 to Min(CY - 1, Height - 1) do
-        memcpy(pointer(PCAST(NewImageExtra) + (Line * CX)),
+        memcpy(pointer(Longint(NewImageExtra) + (Line * CX)),
         ExtraScanline[Line], Min(CX, Width));
       FreeMem(Header.ExtraImageData);
       Header.ExtraImageData := NewImageExtra;
@@ -5301,9 +5303,9 @@ begin
     Exit; {Size must be 9}
 
   {Reads data}
-  fPPUnitX := ByteSwap(pCardinal(PCAST(Data))^);
-  fPPUnitY := ByteSwap(pCardinal(pOp(Data, 4))^);
-  fUnit := pUnitType(pOp(Data, 8))^;
+  fPPUnitX := ByteSwap(pCardinal(Longint(Data))^);
+  fPPUnitY := ByteSwap(pCardinal(Longint(Data) + 4)^);
+  fUnit := pUnitType(Longint(Data) + 8)^;
 end;
 
 {Saves the chunk to a stream}
@@ -5312,8 +5314,8 @@ begin
   {Update data}
   ResizeData(9);  {Make sure the size is 9}
   pCardinal(Data)^ := ByteSwap(fPPUnitX);
-  pCardinal(pOp(Data, 4))^ := ByteSwap(fPPUnitY);
-  pUnitType(pOp(Data, 8))^ := fUnit;
+  pCardinal(Longint(Data) + 4)^ := ByteSwap(fPPUnitY);
+  pUnitType(Longint(Data) + 8)^ := fUnit;
 
   {Let inherited save data}
   Result := inherited SaveToStream(Stream);
@@ -5463,7 +5465,7 @@ begin
     for i := 0 to png.Height - 1 do
     begin
       memcpy(row, png.Scanline[i], png.Width);
-      row := pOp(row, png.Width);
+      row := pointer(integer(row) + png.Width);
     end;
   end
   else

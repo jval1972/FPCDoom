@@ -32,14 +32,6 @@ unit d_fpc;
 interface
 
 type
-  {$if defined(Win32)}
-  PCAST = LongWord;
-  {$elseif defined(Win64)}
-  PCAST = QWORD;
-  {$else}
-     {$error this code is written for win32 or win64}
-  {$endif}
-
   PPointer = ^Pointer;
   
   PString = ^string;
@@ -562,8 +554,6 @@ function max3b(const a, b, c: byte): byte;
 
 function ibetween(const x: integer; const x1, x2: integer): integer;
 
-function pOp(const p: pointer; const offs: integer): pointer;
-
 implementation
 
 uses
@@ -664,22 +654,21 @@ begin
 end;
 
 function atof(const s: string): single;
+var
+  code: integer;
 begin
-  result := atof(s, 0.0);
+  val(s, result, code);
+  if code <> 0 then
+    result := 0.0;
 end;
 
 function atof(const s: string; const default: single): single;
 var
-  fmt: TFormatSettings;
+  code: integer;
 begin
-  fmt := DefaultFormatSettings;
-  fmt.DecimalSeparator := '.';
-  if TryStrToFloat(s, result, fmt) then
-    exit;
-  fmt.DecimalSeparator := ',';
-  if TryStrToFloat(s, result, fmt) then
-    exit;
-  result := default;
+  val(s, result, code);
+  if code <> 0 then
+    result := default;
 end;
 
 procedure memcpy_MMX8(const dst: pointer; const src: pointer; const len: integer); assembler;
@@ -818,13 +807,13 @@ begin
   end;}
 
   // if copying more than 16 bytes and we can copy 8 byte aligned
-  if (count0 > 16) and (((PCAST(dest0) xor PCAST(src0)) and 7) = 0) then
+  if (count0 > 16) and (((integer(dest0) xor integer(src0)) and 7) = 0) then
   begin
     dest := PByte(dest0);
     src := PByte(src0);
 
     // copy up to the first 8 byte aligned boundary
-    count := PCAST(dest) and 7;
+    count := integer(dest) and 7;
     Move(src^, dest^, count);
     inc(dest, count);
     inc(src, count);
@@ -887,7 +876,7 @@ begin
   dest := PByte(dest0);
   count := count0;
 
-  while (count > 0) and (PCAST(dest) and 7 <> 0) do
+  while (count > 0) and (integer(dest) and 7 <> 0) do
   begin
     dest^ := val;
     inc(dest);
@@ -1008,7 +997,7 @@ begin
   result := malloc(Size);
   original := result; 
   if result <> nil then
-    result := pointer(PCAST(result) and (1 - Align) + Align);
+    result := pointer(integer(result) and (1 - Align) + Align);
 end;
 
 function mallocz(const size: integer): Pointer;
@@ -1132,13 +1121,13 @@ end;
 
 function incp(var p: pointer; const size: integer = 1): pointer;
 begin
-  result := pointer(PCAST(p) + size);
+  result := Pointer(integer(p) + size);
   p := result;
 end;
 
 function pDiff(const p1, p2: pointer; const size: integer): integer;
 begin
-  result := (PCAST(p1) - PCAST(p2)) div size;
+  result := (Integer(p1) - Integer(p2)) div size;
 end;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1264,13 +1253,12 @@ end;
 function TCachedFile.Read(var Buffer; Count: Longint): Longint;
 var
   x: Longint;
-  p: Pointer;
 begin
 // Buffer hit
   if (fPosition >= fBufferStart) and (fPosition + Count <= fBufferEnd) then
   begin
-    p := pOp(fBuffer, fPosition - fBufferStart);
-    Move(p^, Buffer, Count);
+    x := LongInt(fBuffer) + fPosition - fBufferStart;
+    Move(Pointer(x)^, Buffer, Count);
     fPosition := fPosition + Count;
     result := Count;
   end
@@ -1468,6 +1456,7 @@ end;
 function TDPointerList.IndexOf(const value: pointer): integer;
 var
   i: integer;
+  p: pointer;
 begin
   for i := 0 to fNumItems - 1 do
     if fList[i] = value then
@@ -1918,10 +1907,10 @@ begin
   Clear;
   P := PChar(@A[0]);
   if P <> nil then
-    while (P^ <> #0) and (P <> @A[Size]) do
+    while (P^ <> #0) and (integer(P) <> integer(@A[Size])) do
     begin
       Start := P;
-      while (not (P^ in [#0, #10, #13])) and (P <> @A[Size]) do Inc(P);
+      while (not (P^ in [#0, #10, #13])) and (integer(P) <> integer(@A[Size])) do Inc(P);
       SetString(S, Start, P - Start);
       Add(S);
       if P^ = #13 then Inc(P);
@@ -2312,7 +2301,7 @@ begin
   dest := PByte(dest0);
   count := count0;
 
-  while (count > 0) and (PCAST(dest) and 7 <> 0) do
+  while (count > 0) and (integer(dest) and 7 <> 0) do
   begin
     dest^ := 0;
     inc(dest);
@@ -2705,11 +2694,6 @@ begin
     result := x2
   else
     result := x;
-end;
-
-function pOp(const p: pointer; const offs: integer): pointer;
-begin
-  result := pointer(PCAST(p) + offs);
 end;
 
 end.

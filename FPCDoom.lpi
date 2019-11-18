@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="11"/>
+    <Version Value="10"/>
     <PathDelim Value="\"/>
     <General>
       <Flags>
@@ -25,7 +25,7 @@
       <MajorVersionNr Value="1"/>
       <MinorVersionNr Value="12"/>
       <RevisionNr Value="2"/>
-      <BuildNr Value="111"/>
+      <BuildNr Value="104"/>
       <StringTable Comments="http://sourceforge.net/projects/fpcdoom/" CompanyName="Jim Valavanis" FileDescription="Source port of the game Doom developed in FPC/Lazarus" InternalName="FPCDoom" LegalCopyright="Copyright 2005 - 2019, Jim Valavanis" LegalTrademarks="Copyright 2005 - 2019, Jim Valavanis" OriginalFilename="FPCDoom.exe" ProductName="FPCDoom" ProductVersion="1.12"/>
     </VersionInfo>
     <BuildModes Count="1">
@@ -36,16 +36,9 @@
     </PublishOptions>
     <RunParams>
       <local>
-        <CommandLineParams Value="-iwad doomu.wad doom-hires.pk3"/>
+        <FormatVersion Value="1"/>
+        <CommandLineParams Value="-nofullscreen -geom 640x400 -iwad doomu.wad deng-dhtp-20171001.pk3"/>
       </local>
-      <FormatVersion Value="2"/>
-      <Modes Count="1">
-        <Mode0 Name="default">
-          <local>
-            <CommandLineParams Value="-iwad doomu.wad doom-hires.pk3"/>
-          </local>
-        </Mode0>
-      </Modes>
     </RunParams>
     <Units Count="120">
       <Unit0>

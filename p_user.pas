@@ -56,7 +56,6 @@ uses
   p_pspr,
   p_local,
   p_spec,
-  p_telept,
   p_map,
   r_main,
   r_defs,
@@ -360,7 +359,6 @@ procedure P_PlayerThink(player: Pplayer_t);
 var
   cmd: Pticcmd_t;
   newweapon: weapontype_t;
-  pid: integer;
 begin
   // fixme: do this in the cheat code
   if player.cheats and CF_NOCLIP <> 0 then
@@ -378,13 +376,6 @@ begin
     player.mo.flags := player.mo.flags and (not MF_JUSTATTACKED);
   end;
 
-  pid := PlayerToId(player);
-  if teleporttics[pid] > 0 then
-  begin
-    teleporttics[pid] := teleporttics[pid] - FRACUNIT;
-    if teleporttics[pid] < 0 then
-      teleporttics[pid] := 0;
-  end;
 
   if player.playerstate = PST_DEAD then
   begin

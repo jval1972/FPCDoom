@@ -41,8 +41,7 @@ uses
   g_game,
   hu_stuff,
   p_mobj_h, 
-  p_terrain,
-  p_telept,
+  p_terrain, 
   p_enemy,
   p_saveg,
   i_video, 
@@ -54,8 +53,6 @@ uses
   r_aspect,
   r_defs,
   r_draw,
-  r_draw_column,
-  r_draw_span,
   r_lightmap,
   r_main,
   r_mirror,
@@ -89,7 +86,7 @@ type
   Pdefault_t = ^default_t;
 
 const
-  NUMDEFAULTS = 133;
+  NUMDEFAULTS = 127;
 
   defaults: array[0..NUMDEFAULTS - 1] of default_t = (
     (name: 'Display';
@@ -120,7 +117,7 @@ const
      location: @SCREENWIDTH;
      setable: DFS_NEVER;
      defaultsvalue: '';
-     defaultivalue: 640;
+     defaultivalue: -1;
      defaultbvalue: false;
      _type: tInteger),
 
@@ -128,23 +125,15 @@ const
      location: @SCREENHEIGHT;
      setable: DFS_NEVER;
      defaultsvalue: '';
-     defaultivalue: 400;
+     defaultivalue: -1;
      defaultbvalue: false;
      _type: tInteger),
 
-     (name: 'fullscreen';
-      location: @fullscreen;
-      setable: DFS_NEVER;
-      defaultsvalue: '';
-      defaultivalue: 1;
-      defaultbvalue: true;
-      _type: tBoolean),
-
-    (name: 'fullscreenexclusive';
-     location: @fullscreenexclusive;
+    (name: 'fullscreen';
+     location: @fullscreen;
      setable: DFS_NEVER;
      defaultsvalue: '';
-     defaultivalue: 0;
+     defaultivalue: 1;
      defaultbvalue: true;
      _type: tBoolean),
 
@@ -268,22 +257,6 @@ const
      defaultbvalue: false;
      _type: tInteger),
 
-    (name: 'lowrescolumndraw';
-     location: @lowrescolumndraw;
-     setable: DFS_ALWAYS;
-     defaultsvalue: '';
-     defaultivalue: 0;
-     defaultbvalue: false;
-     _type: tBoolean),
-
-    (name: 'lowresspandraw';
-     location: @lowresspandraw;
-     setable: DFS_ALWAYS;
-     defaultsvalue: '';
-     defaultivalue: 0;
-     defaultbvalue: false;
-     _type: tBoolean),
-
     (name: 'uselightmap';
      location: @uselightmap;
      setable: DFS_ALWAYS;
@@ -371,22 +344,6 @@ const
      defaultivalue: 0;
      defaultbvalue: false;
      _type: tString),
-
-    (name: 'vid_pillarbox_pct';
-     location: @vid_pillarbox_pct;
-     setable: DFS_NEVER;
-     defaultsvalue: '';
-     defaultivalue: 0;
-     defaultbvalue: false;
-     _type: tInteger),
-
-    (name: 'vid_letterbox_pct';
-     location: @vid_letterbox_pct;
-     setable: DFS_NEVER;
-     defaultsvalue: '';
-     defaultivalue: 0;
-     defaultbvalue: false;
-     _type: tInteger),
 
     (name: 'mirrormode';
      location: @mirrormode;
@@ -578,15 +535,7 @@ const
      location: @allowterrainsplashes;
      setable: DFS_SINGLEPLAYER;
      defaultsvalue: '';
-     defaultivalue: 1;
-     defaultbvalue: true;
-     _type: tBoolean),
-
-    (name: 'useteleportzoomeffect';
-     location: @useteleportzoomeffect;
-     setable: DFS_SINGLEPLAYER;
-     defaultsvalue: '';
-     defaultivalue: 1;
+     defaultivalue: 0;
      defaultbvalue: true;
      _type: tBoolean),
 
