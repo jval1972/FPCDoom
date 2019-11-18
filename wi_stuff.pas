@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -68,6 +68,7 @@ uses
   r_defs,
   doomstat,
   sounds,
+  v_intermission,
   v_video;
 
 const
@@ -1702,6 +1703,7 @@ begin
   end;
 
   V_CopyRect(0, 0, SCN_TMP, 320, 200, 0, 0, SCN_FG, true);
+  V_IntermissionStretch;
 end;
 
 procedure WI_InitVariables(wbstartstruct: Pwbstartstruct_t);
@@ -1747,6 +1749,5 @@ initialization
   anims[1] := @epsd1animinfo;
   anims[2] := @epsd2animinfo;
   anims[3] := nil;
-
 
 end.

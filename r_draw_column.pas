@@ -99,6 +99,7 @@ const
 var
   dc_llindex: integer;
   rcolumn: columnparams_t;
+  lowrescolumndraw: boolean = false;
 
 implementation
 
@@ -125,6 +126,7 @@ var
   fracstep: fixed_t;
   fracstop: fixed_t;
   dc_source8: PByteArray;
+  b: byte;
 begin
   count := parms.dc_yh - parms.dc_yl;
 
@@ -147,6 +149,26 @@ begin
   // Inner loop that does the actual texture mapping,
   //  e.g. a DDA-lile scaling.
   // This is as fast as it gets.
+
+  if lowrescolumndraw and (count > 0) then
+  begin
+    frac := frac + fracstep div 2;
+    fracstep := fracstep * 2;
+    while frac < fracstop do
+    begin
+    // Re-map color indices from wall texture column
+    //  using a lighting/special effects LUT.
+      b := parms.dc_colormap[dc_source8[(LongWord(frac) shr FRACBITS) and 127]];
+      dest^ := b;
+      inc(dest, SCREENWIDTH);
+      dest^ := b;
+      inc(dest, SCREENWIDTH);
+      inc(frac, fracstep);
+    end;
+    fracstep := fracstep div 2;
+    frac := frac - fracstep div 2;
+  end;
+
   while frac <= fracstop do
   begin
   // Re-map color indices from wall texture column
@@ -167,6 +189,7 @@ var
   fracstop: fixed_t;
   and_mask: integer;
   dc_source32: PLongWordArray;
+  l: LongWord;
 begin 
   count := parms.dc_yh - parms.dc_yl;
 
@@ -189,6 +212,23 @@ begin
   fracstop := frac + count * fracstep;
   dc_source32 := parms.dc_source;
 
+  if lowrescolumndraw and (count > 0) then
+  begin
+    frac := frac + fracstep div 2;
+    fracstep := fracstep * 2;
+    while frac < fracstop do
+    begin
+      l := R_ColorLightEx(dc_source32[(LongWord(frac) shr FRACBITS) and and_mask], parms.dc_lightlevel);
+      destl^ := l;
+      inc(destl, SCREENWIDTH);
+      destl^ := l;
+      inc(destl, SCREENWIDTH);
+      inc(frac, fracstep);
+    end;
+    fracstep := fracstep div 2;
+    frac := frac - fracstep div 2;
+  end;
+
   while frac <= fracstop do
   begin
     destl^ := R_ColorLightEx(dc_source32[(LongWord(frac) shr FRACBITS) and and_mask], parms.dc_lightlevel);
@@ -205,6 +245,7 @@ var
   fracstep: fixed_t;
   fracstop: fixed_t;
   dc_source8: PByteArray;
+  l: LongWord;
 begin
   count := parms.dc_yh - parms.dc_yl;
 
@@ -217,6 +258,23 @@ begin
   frac := parms.dc_texturemid + (parms.dc_yl - centery) * fracstep;
   fracstop := frac + count * fracstep;
   dc_source8 := parms.dc_source;
+
+  if lowrescolumndraw and (count > 0) then
+  begin
+    frac := frac + fracstep div 2;
+    fracstep := fracstep * 2;
+    while frac < fracstop do
+    begin
+      l := R_ColorLightEx(curpal[dc_source8[(LongWord(frac) shr FRACBITS) and 127]], parms.dc_lightlevel);
+      destl^ := l;
+      inc(destl, SCREENWIDTH);
+      destl^ := l;
+      inc(destl, SCREENWIDTH);
+      inc(frac, fracstep);
+    end;
+    fracstep := fracstep div 2;
+    frac := frac - fracstep div 2;
+  end;
 
   while frac <= fracstop do
   begin
@@ -234,7 +292,7 @@ var
   fracstep: fixed_t;
   fracstop: fixed_t;
   and_mask: integer;
-  c: LongWord;
+  c, l: LongWord;
   dc_source32: PLongWordArray;
 begin
   count := parms.dc_yh - parms.dc_yl;
@@ -258,6 +316,29 @@ begin
 
   fracstop := frac + count * fracstep;
   dc_source32 := parms.dc_source;
+
+  if lowrescolumndraw and (count > 0) then
+  begin
+    frac := frac + fracstep div 2;
+    fracstep := fracstep * 2;
+    while frac < fracstop do
+    begin
+      c := dc_source32[(LongWord(frac) shr FRACBITS) and and_mask];
+      if c <> 0 then
+      begin
+        l := R_ColorLightEx(c, parms.dc_lightlevel);
+        destl^ := l;
+        inc(destl, SCREENWIDTH);
+        destl^ := l;
+        inc(destl, SCREENWIDTH);
+      end
+      else
+        inc(destl, 2 * SCREENWIDTH);
+      inc(frac, fracstep);
+    end;
+    fracstep := fracstep div 2;
+    frac := frac - fracstep div 2;
+  end;
 
   while frac <= fracstop do
   begin
@@ -533,6 +614,7 @@ var
   fracstop: fixed_t;
   spot: integer;
   dc_source8: PByteArray;
+  b: byte;
 begin
   count := parms.dc_yh - parms.dc_yl;
 
@@ -545,6 +627,28 @@ begin
   frac := parms.dc_texturemid + (parms.dc_yl - centery) * fracstep;
   fracstop := frac + count * fracstep;
   dc_source8 := parms.dc_source;
+
+  if lowrescolumndraw and (count > 0) then
+  begin
+    frac := frac + fracstep div 2;
+    fracstep := fracstep * 2;
+    while frac < fracstop do
+    begin
+      // Invert Sky Texture if below horizont level
+      spot := LongWord(frac) shr FRACBITS;
+      if spot > 127 then
+        spot := 127 - (spot and 127);
+
+      b := dc_source8[spot];
+      dest^ := b;
+      inc(dest, SCREENWIDTH);
+      dest^ := b;
+      inc(dest, SCREENWIDTH);
+      inc(frac, fracstep);
+    end;
+    fracstep := fracstep div 2;
+    frac := frac - fracstep div 2;
+  end;
 
   while frac <= fracstop do
   begin
@@ -570,6 +674,7 @@ var
   spot: integer;
   and_mask: integer;
   dc_source32: PLongWordArray;
+  l: LongWord;
 begin
   count := parms.dc_yh - parms.dc_yl;
 
@@ -586,6 +691,27 @@ begin
   fracstop := frac + count * fracstep;
   and_mask := 128 * (1 shl parms.dc_texturefactorbits) - 1;
   dc_source32 := parms.dc_source;
+
+  if lowrescolumndraw and (count > 0) then
+  begin
+    frac := frac + fracstep div 2;
+    fracstep := fracstep * 2;
+    while frac <= fracstop do
+    begin
+      // Invert Sky Texture if below horizont level
+      spot := LongWord(frac) shr FRACBITS;
+      if spot > and_mask then
+        spot := and_mask - (spot and and_mask);
+      l := dc_source32[spot];
+      destl^ := l;
+      inc(destl, SCREENWIDTH);
+      destl^ := l;
+      inc(destl, SCREENWIDTH);
+      inc(frac, fracstep);
+    end;
+    fracstep := fracstep div 2;
+    frac := frac - fracstep div 2;
+  end;
 
   while frac <= fracstop do
   begin
@@ -617,6 +743,7 @@ var
   fracstep: fixed_t;
   fracstop: fixed_t;
   dc_source8: PByteArray;
+  b: byte;
 begin
   count := parms.dc_yh - parms.dc_yl;
 
@@ -631,6 +758,29 @@ begin
   frac := parms.dc_texturemid + (parms.dc_yl - centery) * fracstep;
   fracstop := frac + count * fracstep;
   dc_source8 := parms.dc_source;
+
+  if lowrescolumndraw and (count > 0) then
+  begin
+    frac := frac + fracstep div 2;
+    fracstep := fracstep * 2;
+    while frac < fracstop do
+    begin
+      // Translation tables are used
+      //  to map certain colorramps to other ones,
+      //  used with PLAY sprites.
+      // Thus the "green" ramp of the player 0 sprite
+      //  is mapped to gray, red, black/indigo.
+      b := parms.dc_colormap[dc_translation[dc_source8[LongWord(frac) shr FRACBITS]]];
+      dest^ := b;
+      inc(dest, SCREENWIDTH);
+      dest^ := b;
+      inc(dest, SCREENWIDTH);
+
+      inc(frac, fracstep);
+    end;
+    fracstep := fracstep div 2;
+    frac := frac - fracstep div 2;
+  end;
 
   // Here we do an additional index re-mapping.
   while frac <= fracstop do
@@ -655,6 +805,7 @@ var
   fracstep: fixed_t;
   fracstop: fixed_t;
   dc_source8: PByteArray;
+  l: LongWord;
 begin
   count := parms.dc_yh - parms.dc_yl;
 
@@ -669,6 +820,29 @@ begin
   frac := parms.dc_texturemid + (parms.dc_yl - centery) * fracstep;
   fracstop := frac + count * fracstep;
   dc_source8 := parms.dc_source;
+
+  if lowrescolumndraw and (count > 0) then
+  begin
+    frac := frac + fracstep div 2;
+    fracstep := fracstep * 2;
+    while frac < fracstop do
+    begin
+      // Translation tables are used
+      //  to map certain colorramps to other ones,
+      //  used with PLAY sprites.
+      // Thus the "green" ramp of the player 0 sprite
+      //  is mapped to gray, red, black/indigo.
+      l := parms.dc_colormap32[dc_translation[dc_source8[LongWord(frac) shr FRACBITS]]];
+      destl^ := l;
+      inc(destl, SCREENWIDTH);
+      destl^ := l;
+      inc(destl, SCREENWIDTH);
+
+      inc(frac, fracstep);
+    end;
+    fracstep := fracstep div 2;
+    frac := frac - fracstep div 2;
+  end;
 
   // Here we do an additional index re-mapping.
   while frac <= fracstop do

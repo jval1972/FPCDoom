@@ -32,6 +32,14 @@ unit d_fpc;
 interface
 
 type
+  {$if defined(Win32)}
+  PCAST = LongWord;
+  {$elseif defined(Win64)}
+  PCAST = QWORD;
+  {$else}
+     {$error this code is written for win32 or win64}
+  {$endif}
+
   PPointer = ^Pointer;
   
   PString = ^string;
@@ -257,6 +265,7 @@ type
     function Delete(const Index: integer): boolean;
     function IndexOf(const value: integer): integer;
     procedure Clear;
+    procedure Sort; virtual;
     property Count: integer read fNumItems;
     property Numbers[Index: Integer]: integer read Get write Put; default;
   end;
@@ -554,6 +563,12 @@ function max3b(const a, b, c: byte): byte;
 
 function ibetween(const x: integer; const x1, x2: integer): integer;
 
+function pOp(const p: pointer; const offs: integer): pointer; inline;
+
+function imin(const x1, x2: integer): integer;
+
+function imax(const x1, x2: integer): integer;
+
 implementation
 
 uses
@@ -654,21 +669,22 @@ begin
 end;
 
 function atof(const s: string): single;
-var
-  code: integer;
 begin
-  val(s, result, code);
-  if code <> 0 then
-    result := 0.0;
+  result := atof(s, 0.0);
 end;
 
 function atof(const s: string; const default: single): single;
 var
-  code: integer;
+  fmt: TFormatSettings;
 begin
-  val(s, result, code);
-  if code <> 0 then
-    result := default;
+  fmt := DefaultFormatSettings;
+  fmt.DecimalSeparator := '.';
+  if TryStrToFloat(s, result, fmt) then
+    exit;
+  fmt.DecimalSeparator := ',';
+  if TryStrToFloat(s, result, fmt) then
+    exit;
+  result := default;
 end;
 
 procedure memcpy_MMX8(const dst: pointer; const src: pointer; const len: integer); assembler;
@@ -807,13 +823,13 @@ begin
   end;}
 
   // if copying more than 16 bytes and we can copy 8 byte aligned
-  if (count0 > 16) and (((integer(dest0) xor integer(src0)) and 7) = 0) then
+  if (count0 > 16) and (((PCAST(dest0) xor PCAST(src0)) and 7) = 0) then
   begin
     dest := PByte(dest0);
     src := PByte(src0);
 
     // copy up to the first 8 byte aligned boundary
-    count := integer(dest) and 7;
+    count := PCAST(dest) and 7;
     Move(src^, dest^, count);
     inc(dest, count);
     inc(src, count);
@@ -876,7 +892,7 @@ begin
   dest := PByte(dest0);
   count := count0;
 
-  while (count > 0) and (integer(dest) and 7 <> 0) do
+  while (count > 0) and (PCAST(dest) and 7 <> 0) do
   begin
     dest^ := val;
     inc(dest);
@@ -997,7 +1013,7 @@ begin
   result := malloc(Size);
   original := result; 
   if result <> nil then
-    result := pointer(integer(result) and (1 - Align) + Align);
+    result := pointer(PCAST(result) and (1 - Align) + Align);
 end;
 
 function mallocz(const size: integer): Pointer;
@@ -1121,13 +1137,13 @@ end;
 
 function incp(var p: pointer; const size: integer = 1): pointer;
 begin
-  result := Pointer(integer(p) + size);
+  result := pointer(PCAST(p) + size);
   p := result;
 end;
 
 function pDiff(const p1, p2: pointer; const size: integer): integer;
 begin
-  result := (Integer(p1) - Integer(p2)) div size;
+  result := (PCAST(p1) - PCAST(p2)) div size;
 end;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1253,12 +1269,13 @@ end;
 function TCachedFile.Read(var Buffer; Count: Longint): Longint;
 var
   x: Longint;
+  p: Pointer;
 begin
 // Buffer hit
   if (fPosition >= fBufferStart) and (fPosition + Count <= fBufferEnd) then
   begin
-    x := LongInt(fBuffer) + fPosition - fBufferStart;
-    Move(Pointer(x)^, Buffer, Count);
+    p := pOp(fBuffer, fPosition - fBufferStart);
+    Move(p^, Buffer, Count);
     fPosition := fPosition + Count;
     result := Count;
   end
@@ -1400,6 +1417,44 @@ begin
   fNumItems := 0;
 end;
 
+procedure TDNumberList.Sort;
+
+  procedure qsortI(l, r: Integer);
+  var
+    i, j: integer;
+    t: integer;
+    d: integer;
+  begin
+    repeat
+      i := l;
+      j := r;
+      d := fList[(l + r) shr 1];
+      repeat
+        while fList[i] < d do
+          inc(i);
+        while fList[j] > d do
+          dec(j);
+        if i <= j then
+        begin
+          t := fList[i];
+          fList[i] := fList[j];
+          fList[j] := t;
+          inc(i);
+          dec(j);
+        end;
+      until i > j;
+      if l < j then
+        qsortI(l, j);
+      l := i;
+    until i >= r;
+  end;
+
+begin
+  if fNumItems > 1 then
+    qsortI(0, fNumItems - 1);
+end;
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // TDPointerList
 constructor TDPointerList.Create;
@@ -1456,7 +1511,6 @@ end;
 function TDPointerList.IndexOf(const value: pointer): integer;
 var
   i: integer;
-  p: pointer;
 begin
   for i := 0 to fNumItems - 1 do
     if fList[i] = value then
@@ -1907,10 +1961,10 @@ begin
   Clear;
   P := PChar(@A[0]);
   if P <> nil then
-    while (P^ <> #0) and (integer(P) <> integer(@A[Size])) do
+    while (P^ <> #0) and (P <> @A[Size]) do
     begin
       Start := P;
-      while (not (P^ in [#0, #10, #13])) and (integer(P) <> integer(@A[Size])) do Inc(P);
+      while (not (P^ in [#0, #10, #13])) and (P <> @A[Size]) do Inc(P);
       SetString(S, Start, P - Start);
       Add(S);
       if P^ = #13 then Inc(P);
@@ -2301,7 +2355,7 @@ begin
   dest := PByte(dest0);
   count := count0;
 
-  while (count > 0) and (integer(dest) and 7 <> 0) do
+  while (count > 0) and (PCAST(dest) and 7 <> 0) do
   begin
     dest^ := 0;
     inc(dest);
@@ -2695,6 +2749,28 @@ begin
   else
     result := x;
 end;
+
+function pOp(const p: pointer; const offs: integer): pointer; inline;
+begin
+  result := pointer(PCAST(p) + offs);
+end;
+
+function imin(const x1, x2: integer): integer;
+begin
+  if x1 > x2 then
+    result := x2
+  else
+    result := x1;
+end;
+
+function imax(const x1, x2: integer): integer;
+begin
+  if x1 > x2 then
+    result := x1
+  else
+    result := x2;
+end;
+
 
 end.
 

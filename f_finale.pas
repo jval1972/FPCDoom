@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -91,6 +91,7 @@ uses
   r_things,
 // Functions.
   z_memory,
+  v_intermission,
   v_video,
   w_wad,
   s_sound,
@@ -377,6 +378,8 @@ begin
     dec(count);
   end;
   V_CopyRect(0, 0, SCN_TMP, 320, 200, 0, 0, SCN_FG, true);
+
+  V_IntermissionStretch;
 end;
 
 var
@@ -627,6 +630,7 @@ begin
   
   V_CopyRect(0, 0, SCN_TMP, 320, 200, 0, 0, SCN_FG, true);
 
+  V_IntermissionStretch;
 end;
 
 //
@@ -640,14 +644,14 @@ var
   desttop: PByte;
   count: integer;
 begin
-  column := Pcolumn_t(integer(patch) + patch.columnofs[col]);
-  desttop := PByte(integer(screens[SCN_TMP]) + x);
+  column := pOp(patch, patch.columnofs[col]);
+  desttop := pOp(screens[SCN_TMP], x);
 
   // step through the posts in a column
   while column.topdelta <> $ff do
   begin
-    source := PByte(integer(column) + 3);
-    dest := PByte(integer(desttop) + column.topdelta * 320);
+    source := pOp(column, 3);
+    dest := pOp(desttop, column.topdelta * 320);
     count := column.length;
 
     while count > 0 do
@@ -657,7 +661,7 @@ begin
       inc(dest, 320);
       dec(count);
     end;
-    column := Pcolumn_t(integer(column) + column.length + 4);
+    column := pOp(column, column.length + 4);
   end;
 end;
 
@@ -721,6 +725,8 @@ begin
   end;
 
   V_CopyRect(0, 0, SCN_TMP, 320, 200, 0, 0, SCN_FG, true);
+
+  V_IntermissionStretch;
 end;
 
 //

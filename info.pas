@@ -16549,7 +16549,7 @@ begin
   end;
 
   if result = -1 then
-    result :=  (integer(imo) - integer(@mobjinfo[0])) div SizeOf(mobjinfo_t);
+    result :=  (PCAST(imo) - PCAST(@mobjinfo[0])) div SizeOf(mobjinfo_t);
 
 end;
 

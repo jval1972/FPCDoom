@@ -94,8 +94,12 @@ var
 // Window Screen Dimentions
   WINDOWWIDTH: integer;
   WINDOWHEIGHT: integer;
+// Window Screen Dimentions
+  NATIVEWIDTH: integer;
+  NATIVEHEIGHT: integer;
 
   fullscreen: boolean = true;
+  fullscreenexclusive: boolean = true;
   zaxisshift: boolean = true;
 
 const

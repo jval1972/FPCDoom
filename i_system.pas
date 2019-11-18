@@ -576,7 +576,7 @@ begin
     if PChar(res)^ = #0 then
       break;
     result := result + PChar(res)^;
-    res := pointer(integer(res) + 1);
+    res := pOp(res, 1);
   end;
   memfree(buffer, vsize + 1);
 end;

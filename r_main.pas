@@ -244,6 +244,8 @@ uses
   p_setup,
   p_sight,
   p_map,
+  p_mobj_h,
+  p_telept,
   r_aspect,
   r_zbuffer,
   r_draw,
@@ -697,7 +699,7 @@ begin
       else if level >= NUMCOLORMAPS then
         level := NUMCOLORMAPS - 1;
 
-      zlight[i][j] := PByteArray(integer(colormaps) + level * 256);
+      zlight[i][j] := @colormaps[level * 256];
     end;
 
     startmaphi := ((LIGHTLEVELS - 1 - i) * 2 * FRACUNIT) div LIGHTLEVELS;
@@ -855,7 +857,7 @@ begin
   // psprite scales
   // JVAL: Widescreen support
   pspritescale := Round((centerx / monitor_relative_aspect * FRACUNIT) / 160);
-  pspriteyscale := Round((((SCREENHEIGHT * viewwidth) / SCREENWIDTH) * FRACUNIT) / 200);
+  pspriteyscale := Round((((SCREENHEIGHT * viewwidth) / SCREENWIDTH) * FRACUNIT + FRACUNIT div 2) / 200);
   pspriteiscale := FixedDiv(FRACUNIT, pspritescale);
 
   if excludewidescreenplayersprites then
@@ -899,7 +901,7 @@ begin
           level := NUMCOLORMAPS - 1;
       end;
 
-      scalelight[i][j] := PByteArray(integer(colormaps) + level * 256);
+      scalelight[i][j] := @colormaps[level * 256];
     end;
   end;
 
@@ -1137,6 +1139,36 @@ end;
 
 
 //
+// R_AdjustTeleportZoom
+//
+procedure R_AdjustTeleportZoom(const player: Pplayer_t);
+var
+  mo: Pmobj_t;
+  an: angle_t;
+  distf: float;
+  dist: fixed_t;
+  pid: integer;
+begin
+  if not useteleportzoomeffect then
+    exit;
+
+  pid := PlayerToId(player);
+  if teleporttics[pid] <= 0 then
+    exit;
+
+  mo := player.mo;
+  if mo = nil then
+    exit;
+
+  an := mo.angle div ANGLETOFINEUNIT;
+
+  distf := Sqr(teleporttics[pid] / FRACUNIT) / (TELEPORTZOOM / FRACUNIT);
+  dist := Round(distf * FRACUNIT);
+  viewx := viewx - FixedMul(dist, finecosine[an]);
+  viewy := viewy - FixedMul(dist, finesine[an]);
+end;
+
+//
 // R_SetupFrame
 //
 procedure R_SetupFrame(player: Pplayer_t);
@@ -1154,6 +1186,7 @@ begin
 
   viewz := player.viewz;
 
+  R_AdjustTeleportZoom(player);
   R_AdjustChaseCamera;
 
 //******************************
@@ -1192,8 +1225,7 @@ begin
   fixedcolormapnum := player.fixedcolormap;
   if fixedcolormapnum <> 0 then
   begin
-    fixedcolormap := PByteArray(
-      integer(colormaps) + fixedcolormapnum * 256);
+    fixedcolormap := @colormaps[fixedcolormapnum * 256];
 
     walllights := @scalelightfixed;
 
@@ -1221,7 +1253,7 @@ begin
   if cmap = nil then
     result := -1
   else
-    result := FRACUNIT - (integer(cmap) - integer(colormaps)) div 256 * FRACUNIT div NUMCOLORMAPS;
+    result := FRACUNIT - (PCAST(cmap) - PCAST(colormaps)) div 256 * FRACUNIT div NUMCOLORMAPS;
 end;
 
 function R_GetColormap32(const cmap: PByteArray): PLongWordArray;
@@ -1229,7 +1261,7 @@ begin
   if cmap = nil then
     result := @colormaps32[6 * 256] // FuzzLight
   else
-    result := @colormaps32[(integer(cmap) - integer(colormaps))];
+    result := @colormaps32[(PCAST(cmap) - PCAST(colormaps))];
 end;
 
 procedure R_SetupRenderFlags;
@@ -1258,6 +1290,9 @@ procedure R_RenderPlayerView(player: Pplayer_t);
 begin
   // Wait for running threads to finish
   R_WaitTasks;
+
+  // Setup number of rendering threads
+  R_SetupRenderingThreads;
 
   // new render validcount
   Inc(rendervalidcount);
@@ -1295,8 +1330,8 @@ begin
   NetUpdate;
 
   // Render walls, flats & sky from pool using multiple CPU cores
-  R_RenderItemsMT(RI_WALL, RIF_WAIT);
   R_RenderItemsMT(RI_SPAN, RIF_WAIT);
+  R_RenderItemsMT(RI_WALL, RIF_WAIT);
 
   // Sort sprites
   R_SortVisSprites;

@@ -529,7 +529,7 @@ begin
 
         // check non-local sounds for distance clipping
         //  or modify their params
-        if (c.origin <> nil) and (integer(listener_p) <> integer(c.origin)) then
+        if (c.origin <> nil) and (listener_p <> c.origin) then
         begin
           if S_AdjustSoundParams(listener, c.origin, @volume, @sep, @pitch) then
             I_UpdateSoundParams(c.handle, volume, sep, pitch)

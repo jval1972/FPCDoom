@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -52,13 +52,11 @@ const
   SCN_BG = 1;
   SCN_CON = 2;  // Console Screen Buffer
   SCN_TMP = 3;  // Temporary Screen Buffer 320x200
-  SCN_ST = 4;   // Status Bar Screen Buffer (320x32)
+  SCN_MED = 4;  // Temporary Screen Buffer intermediate size
+  SCN_ST2 = 5;  // Status Bar Back Buffer (320x32)
+  SCN_ST = 6;   // Status Bar Screen Buffer (320x32)
 
 var
-// Screen 0 is the screen updated by I_Update screen.
-// Screen 1 is an extra buffer.
-// Screen 4 is an extra buffer for finale.
-// Screen 5 is used by status line
   screens: array[SCN_FG..SCN_ST] of PByteArray;
   screen32: PLongWordArray;
 
@@ -76,6 +74,8 @@ const
     (width:  -1; height:  -1; depth: 1),
     (width:  -1; height:  -1; depth: 1),
     (width: 320; height: 200; depth: 1),
+    (width:  -2; height:  -2; depth: 1),
+    (width: 320; height:  32; depth: 1),
     (width: 320; height:  32; depth: 1)
   );
 
@@ -173,13 +173,13 @@ procedure V_DrawPatchFlipped(x, y: integer; scrn: integer; patch: Ppatch_t);
 
 procedure V_PageDrawer(const pagename: string);
 
-function V_PreserveX(const x: integer): integer;
+function V_PreserveX(const x: integer; const destscrn: integer = -1; const srcscrn: integer = -1): integer;
 
-function V_PreserveY(const y: integer): integer;
+function V_PreserveY(const y: integer; const destscrn: integer = -1; const srcscrn: integer = -1): integer;
 
-function V_PreserveW(const x: integer; const w: integer): integer;
+function V_PreserveW(const x: integer; const w: integer; const destscrn: integer = -1; const srcscrn: integer = -1): integer;
 
-function V_PreserveH(const y: integer; const h: integer): integer;
+function V_PreserveH(const y: integer; const h: integer; const destscrn: integer = -1; const srcscrn: integer = -1): integer;
 
 function V_NeedsPreserve(const destscrn, srcscrn: integer): boolean; overload;
 
@@ -297,6 +297,7 @@ uses
   r_data,
   r_mmx,
   t_draw,
+  v_intermission,
   w_wad,
   z_memory;
 
@@ -322,41 +323,83 @@ begin
 end;
 
 // preserve x coordinates
-function V_PreserveX(const x: integer): integer;
+function V_PreserveX(const x: integer; const destscrn: integer = -1; const srcscrn: integer = -1): integer;
+var
+  wd, ws: integer;
 begin
-  if x <= 0 then
-    result := 0
-  else if x >= 320 then
-    result := SCREENWIDTH
-  else if SCREENWIDTH = 320 then
-    result := x
+  if (destscrn = -1) and (srcscrn = -1) then
+  begin
+    if x <= 0 then
+      result := 0
+    else if x >= 320 then
+      result := SCREENWIDTH
+    else if SCREENWIDTH = 320 then
+      result := x
+    else
+      result := preserveX[x];
+  end
   else
-    result := preserveX[x];
+  begin
+    if x <= 0 then
+      result := 0
+    else
+    begin
+      wd := V_GetScreenWidth(destscrn);
+      ws := V_GetScreenWidth(srcscrn);
+      if x >= ws then
+        result := wd
+      else if ws = wd then
+        result := x
+      else
+        result := trunc(x * wd / ws);
+    end;
+  end;
 end;
 
 // preserve y coordinates
-function V_PreserveY(const y: integer): integer;
+function V_PreserveY(const y: integer; const destscrn: integer = -1; const srcscrn: integer = -1): integer;
+var
+  hd, hs: integer;
 begin
-  if y <= 0 then
-    result := 0
-  else if y >= 200 then
-    result := SCREENHEIGHT
-  else if SCREENHEIGHT = 200 then
-    result := y
+  if (destscrn = -1) and (srcscrn = -1) then
+  begin
+    if y <= 0 then
+      result := 0
+    else if y >= 200 then
+      result := SCREENHEIGHT
+    else if SCREENHEIGHT = 200 then
+      result := y
+    else
+      result := preserveY[y];
+  end
   else
-    result := preserveY[y];
+  begin
+    if y <= 0 then
+      result := 0
+    else
+    begin
+      hd := V_GetScreenHeight(destscrn);
+      hs := V_GetScreenHeight(srcscrn);
+      if y >= hs then
+        result := hd
+      else if hs = hd then
+        result := y
+      else
+        result := trunc(y * hd / hs);
+    end;
+  end;
 end;
 
 // preserve width coordinates
-function V_PreserveW(const x: integer; const w: integer): integer;
+function V_PreserveW(const x: integer; const w: integer; const destscrn: integer = -1; const srcscrn: integer = -1): integer;
 begin
-  result := V_PreserveX(x + w) - V_PreserveX(x);
+  result := V_PreserveX(x + w, destscrn, srcscrn) - V_PreserveX(x, destscrn, srcscrn);
 end;
 
 // preserve height coordinates
-function V_PreserveH(const y: integer; const h: integer): integer;
+function V_PreserveH(const y: integer; const h: integer; const destscrn: integer = -1; const srcscrn: integer = -1): integer;
 begin
-  result := V_PreserveY(y + h) - V_PreserveY(y);
+  result := V_PreserveY(y + h, destscrn, srcscrn) - V_PreserveY(y, destscrn, srcscrn);
 end;
 
 procedure V_CopyCustomScreen8(
@@ -386,7 +429,7 @@ begin
   for row := 0 to desth - 1 do
   begin
     fracx := 0;
-    dest := PByte(integer(screens[destscrn]) + destw * row);
+    dest := pOp(screens[destscrn], destw * row);
     src := @scrA[(fracy div FRACUNIT) * width];
     for col := 0 to destw - 1 do
     begin
@@ -499,8 +542,8 @@ begin
       for row := desty to desty + desth - 1 do
       begin
         fracx := 0;
-        dest := PByte(integer(screens[destscrn]) + dwidth * row + destx);
-        src := PByteArray(integer(screens[srcscrn]) + swidth * (fracy div FRACUNIT) + srcx);
+        dest := pOp(screens[destscrn], dwidth * row + destx);
+        src := pOp(screens[srcscrn], swidth * (fracy div FRACUNIT) + srcx);
         for col := 0 to destw - 1 do
         begin
           dest^ := src[LongWord(fracx) shr FRACBITS];
@@ -514,14 +557,14 @@ begin
   else
   begin
 
-    src := PByteArray(integer(screens[srcscrn]) + swidth * srcy + srcx);
-    destA := PByteArray(integer(screens[destscrn]) + dwidth * desty + destx);
+    src := pOp(screens[srcscrn], swidth * srcy + srcx);
+    destA := pOp(screens[destscrn], dwidth * desty + destx);
 
     while height > 0 do
     begin
       memcpy(destA, src, width);
-      src := PByteArray(integer(src) + swidth);
-      destA := PByteArray(integer(destA) + dwidth);
+      src := pOp(src, swidth);
+      destA := pOp(destA, dwidth);
       dec(height);
     end;
   end;
@@ -587,7 +630,7 @@ begin
     begin
       fracx := 0;
       dest := @screen32[dwidth * row + destx];
-      src := PByteArray(integer(screens[srcscrn]) + swidth * (fracy div FRACUNIT) + srcx);
+      src := pOp(screens[srcscrn], swidth * (fracy div FRACUNIT) + srcx);
       for col := 0 to destw - 1 do
       begin
         dest^ := videopal[src[LongWord(fracx) shr FRACBITS]];
@@ -689,7 +732,7 @@ begin
       begin
         fracx := 0;
         dest := @screen32[dwidth * row + destx];
-        src := PByteArray(integer(screens[srcscrn]) + swidth * (fracy div FRACUNIT) + srcx);
+        src := pOp(screens[srcscrn], swidth * (fracy div FRACUNIT) + srcx);
         for col := 0 to destw - 1 do
         begin
           dest[col] := R_ColorAverage(videopal[src[LongWord(fracx) shr FRACBITS]], dest[col], addfactor);
@@ -737,15 +780,15 @@ begin
   dwidth := V_GetScreenWidth(destscrn);
   if V_NeedsPreserve(destscrn, srcscrn, preserve) or (fracxzoom <> FRACUNIT) or (fracyzoom <> FRACUNIT) then
   begin
-    destw := V_PreserveW(destx, width) * fracxzoom div FRACUNIT;
+    destw := V_PreserveW(destx, width, destscrn, srcscrn) * fracxzoom div FRACUNIT;
 
-    desth := V_PreserveH(desty, height) * fracyzoom div FRACUNIT;
+    desth := V_PreserveH(desty, height, destscrn, srcscrn) * fracyzoom div FRACUNIT;
 
     if (destw <> 0) and (desth <> 0) then
     begin
-      destx := V_PreserveX(destx) * fracxzoom div FRACUNIT;
+      destx := V_PreserveX(destx, destscrn, srcscrn) * fracxzoom div FRACUNIT;
 
-      desty := V_PreserveY(desty) * fracyzoom div FRACUNIT;
+      desty := V_PreserveY(desty, destscrn, srcscrn) * fracyzoom div FRACUNIT;
 
       fracy := srcy * FRACUNIT;
       fracxstep := FRACUNIT * width div destw;
@@ -754,9 +797,9 @@ begin
       for row := desty to desty + desth - 1 do
       begin
         fracx := 0;
-        dest := PByteArray(integer(screens[destscrn]) + dwidth * row + destx);
+        dest := pOp(screens[destscrn], dwidth * row + destx);
         // Source is a 320 width screen
-        src := PByteArray(integer(screens[srcscrn]) + swidth * (fracy div FRACUNIT) + srcx);
+        src := pOp(screens[srcscrn], swidth * (fracy div FRACUNIT) + srcx);
         for col := 0 to destw - 1 do
         begin
           srcb := src[LongWord(fracx) shr FRACBITS];
@@ -771,8 +814,8 @@ begin
   else
   begin
 
-    src := PByteArray(integer(screens[srcscrn]) + swidth * srcy + srcx);
-    dest := PByteArray(integer(screens[destscrn]) + dwidth * desty + destx);
+    src := pOp(screens[srcscrn], swidth * srcy + srcx);
+    dest := pOp(screens[destscrn], dwidth * desty + destx);
 
     while height > 0 do
     begin
@@ -782,8 +825,8 @@ begin
         if srcb <> 0 then
           dest[col] := srcb;
       end;
-      src := PByteArray(integer(src) + swidth);
-      dest := PByteArray(integer(dest) + dwidth);
+      src := pOp(src, + swidth);
+      dest := pOp(dest, + dwidth);
       dec(height);
     end;
   end;
@@ -823,8 +866,8 @@ begin
 
   if V_NeedsPreserve(SCN_FG, srcscrn, preserve) or (fracxzoom <> FRACUNIT) or (fracyzoom <> FRACUNIT) then
   begin
-    destw := V_PreserveW(destx, width) * fracxzoom div FRACUNIT;
-    desth := V_PreserveH(desty, height) * fracyzoom div FRACUNIT;
+    destw := V_PreserveW(destx, width, SCN_FG, srcscrn) * fracxzoom div FRACUNIT;
+    desth := V_PreserveH(desty, height, SCN_FG, srcscrn) * fracyzoom div FRACUNIT;
   end
   else
   begin
@@ -838,8 +881,8 @@ begin
   begin
     if V_NeedsPreserve(SCN_FG, srcscrn, preserve) or (fracxzoom <> FRACUNIT) or (fracyzoom <> FRACUNIT) then
     begin
-      destx := V_PreserveX(destx) * fracxzoom div FRACUNIT;
-      desty := V_PreserveY(desty) * fracyzoom div FRACUNIT;
+      destx := V_PreserveX(destx, SCN_FG, srcscrn) * fracxzoom div FRACUNIT;
+      desty := V_PreserveY(desty, SCN_FG, srcscrn) * fracyzoom div FRACUNIT;
       fracxstep := FRACUNIT * width div destw;
       fracystep := FRACUNIT * height div desth;
       fracxstep4 := 4 * fracxstep;
@@ -857,7 +900,7 @@ begin
     begin
       fracx := 0;
       dest := @screen32[dwidth * row + destx];
-      src := PByteArray(integer(screens[srcscrn]) + swidth * (fracy div FRACUNIT) + srcx);
+      src := pOp(screens[srcscrn], + swidth * (fracy div FRACUNIT) + srcx);
       col := 0;
       while col < destw do
       begin
@@ -965,8 +1008,8 @@ var
   cnt: integer;
 begin
 
-  src := PByte(integer(screens[srcscrn]) +  srcoffs);
-  dest := PByte(integer(screens[destscrn]) + destoffs);
+  src := pOp(screens[srcscrn], srcoffs);
+  dest := pOp(screens[destscrn], destoffs);
 
   if size = -1 then
     cnt := V_GetScreenWidth(srcscrn) * V_GetScreenHeight(srcscrn)
@@ -991,7 +1034,7 @@ var
   cnt: integer;
 begin
 
-  src := PByte(integer(screens[srcscrn]) +  srcoffs);
+  src := pOp(screens[srcscrn], srcoffs);
   dest := @screen32[destoffs];
 
   if size = -1 then
@@ -1044,12 +1087,18 @@ end;
 
 function V_GetScreenWidth(scrn: integer): integer;
 begin
-  result := screendimentions[scrn].width;
+  if scrn < SCN_FG then
+    result := 320
+  else
+    result := screendimentions[scrn].width;
 end;
 
 function V_GetScreenHeight(scrn: integer): integer;
 begin
-  result := screendimentions[scrn].height;
+  if scrn < SCN_FG then
+    result := 200
+  else
+    result := screendimentions[scrn].height;
 end;
 
 procedure V_DrawPatch8(x, y: integer; scrn: integer; patch: Ppatch_t; preserve: boolean);
@@ -1081,19 +1130,19 @@ begin
 
     col := 0;
 
-    desttop := PByte(integer(screens[scrn]) + y * swidth + x);
+    desttop := pOp(screens[scrn], y * swidth + x);
 
     w := patch.width;
 
     while col < w do
     begin
-      column := Pcolumn_t(integer(patch) + patch.columnofs[col]);
+      column := pOp(patch, patch.columnofs[col]);
 
     // step through the posts in a column
       while column.topdelta <> $ff do
       begin
-        source := PByte(integer(column) + 3);
-        dest := PByte(integer(desttop) + column.topdelta * swidth);
+        source := pOp(column, 3);
+        dest := pOp(desttop, column.topdelta * swidth);
         count := column.length;
 
         while count > 0 do
@@ -1103,7 +1152,7 @@ begin
           inc(dest, swidth);
           dec(count);
         end;
-        column := Pcolumn_t(integer(column) + column.length + 4);
+        column := pOp(column, column.length + 4);
       end;
       inc(col);
       inc(desttop);
@@ -1133,20 +1182,20 @@ begin
       fracystep := FRACUNIT * patch.height div ph;
 
       col := 0;
-      desttop := PByte(integer(screens[scrn]) + y * swidth + x);
+      desttop := pOp(screens[scrn], y * swidth + x);
 
       sheight := V_GetScreenHeight(scrn);
 
       while col < pw do
       begin
-        column := Pcolumn_t(integer(patch) + patch.columnofs[LongWord(fracx) shr FRACBITS]);
+        column := pOp(patch, patch.columnofs[LongWord(fracx) shr FRACBITS]);
 
       // step through the posts in a column
         while column.topdelta <> $ff do
         begin
-          source := PByte(integer(column) + 3);
+          source := pOp(column, 3);
           vs := v_translation[source^];
-          dest := PByte(integer(desttop) + ((column.topdelta * sheight) div 200) * swidth);
+          dest := pOp(desttop, ((column.topdelta * sheight) div 200) * swidth);
           count := column.length;
           fracy := 0;
           lasty := 0;
@@ -1165,7 +1214,7 @@ begin
               dec(count);
             end;
           end;
-          column := Pcolumn_t(integer(column) + column.length + 4);
+          column := pOp(column, + column.length + 4);
         end;
         inc(col);
         inc(desttop);
@@ -1212,12 +1261,12 @@ begin
 
     while col < w do
     begin
-      column := Pcolumn_t(integer(patch) + patch.columnofs[col]);
+      column := pOp(patch, patch.columnofs[col]);
 
     // step through the posts in a column
       while column.topdelta <> $ff do
       begin
-        source := PByte(integer(column) + 3);
+        source := pOp(column, 3);
         dest := @desttop[column.topdelta * swidth];
         count := column.length;
 
@@ -1228,7 +1277,7 @@ begin
           inc(dest, swidth);
           dec(count);
         end;
-        column := Pcolumn_t(integer(column) + column.length + 4);
+        column := pOp(column, column.length + 4);
       end;
       inc(col);
       desttop := @desttop[1];
@@ -1261,14 +1310,14 @@ begin
 
       while col < pw do
       begin
-        column := Pcolumn_t(integer(patch) + patch.columnofs[fracx div FRACUNIT]);
+        column := pOp(patch, patch.columnofs[fracx div FRACUNIT]);
 
       // step through the posts in a column
         while column.topdelta <> $ff do
         begin
-          source := PByte(integer(column) + 3);
+          source := pOp(column, 3);
           vs := videopal[source^];
-          dest := @desttop[((column.topdelta * sheight div 200) * swidth)];
+          dest := @desttop[(column.topdelta * sheight div 200) * swidth];
           count := column.length;
           fracy := 0;
           lasty := 0;
@@ -1287,7 +1336,7 @@ begin
               dec(count);
             end;
           end;
-          column := Pcolumn_t(integer(column) + column.length + 4);
+          column := pOp(column, column.length + 4);
         end;
         inc(col);
         desttop := @desttop[1];
@@ -1318,7 +1367,7 @@ begin
   Z_ChangeTag(patch, PU_CACHE);
 end;
 
-procedure V_DrawPatch(x, y: integer; scrn: integer; const lump: integer; preserve: boolean); overload;
+procedure V_DrawPatch(x, y: integer; scrn: integer; const lump: integer; preserve: boolean);
 var
   patch: Ppatch_t;
 begin
@@ -1347,19 +1396,19 @@ begin
 
   col := 0;
 
-  desttop := PByte(integer(screens[scrn]) + y * 320 + x);
+  desttop := pOp(screens[scrn], y * 320 + x);
 
   w := patch.width;
 
   while col < w do
   begin
-    column := Pcolumn_t(integer(patch) + patch.columnofs[w - 1 - col]);
+    column := pOp(patch, patch.columnofs[w - 1 - col]);
 
   // step through the posts in a column
     while column.topdelta <> $ff do
     begin
-      source := PByte(integer(column) + 3);
-      dest := PByte(integer(desttop) + column.topdelta * 320);
+      source := pOp(column, 3);
+      dest := pOp(desttop, column.topdelta * 320);
       count := column.length;
 
       while count > 0 do
@@ -1369,14 +1418,14 @@ begin
         inc(dest, 320);
         dec(count);
       end;
-      column := Pcolumn_t(integer(column) + column.length + 4);
+      column := pOp(column, column.length + 4);
     end;
     inc(col);
     inc(desttop);
   end;
 end;
 
-procedure V_PageDrawer(const pagename: string);
+procedure V_DoPageDrawer(const pagename: string);
 begin
   if useexternaltextures and (videomode = vm32bit) then
     if T_DrawFullScreenPatch(pagename, screen32) then
@@ -1385,6 +1434,13 @@ begin
   V_DrawPatch(0, 0, SCN_TMP, pagename, false);
   V_CopyRect(0, 0, SCN_TMP, 320, 200, 0, 0, SCN_FG, true);
 end;
+
+procedure V_PageDrawer(const pagename: string);
+begin
+  V_DoPageDrawer(pagename);
+  V_IntermissionStretch;
+end;
+
 
 procedure V_CalcPreserveTables;
 var
@@ -1414,13 +1470,13 @@ begin
   dest := @videopal[0];
   src := palette;
   curgamma := @gammatable[usegamma];
-  while integer(src) < integer(@palette[256 * 3]) do
+  while PCAST(src) < PCAST(@palette[256 * 3]) do
   begin
     dest^ := (LongWord(curgamma[src[0]]) shl 16) or
              (LongWord(curgamma[src[1]]) shl 8) or
              (LongWord(curgamma[src[2]]));
     inc(dest);
-    src := PByteArray(integer(src) + 3);
+    src := pOp(src, 3);
   end;
   recalctablesneeded := true;
   needsbackscreen := true; // force background redraw
@@ -1443,22 +1499,27 @@ begin
   begin
     if FIXED_DIMENTIONS[i].width = -1 then
       screendimentions[i].width := SCREENWIDTH
+    else if FIXED_DIMENTIONS[i].width = -2 then
+      screendimentions[i].width := (SCREENWIDTH + 320) div 2
     else
       screendimentions[i].width := FIXED_DIMENTIONS[i].width;
     if FIXED_DIMENTIONS[i].height = -1 then
       screendimentions[i].height := SCREENHEIGHT
+    else if FIXED_DIMENTIONS[i].height = -2 then
+      screendimentions[i].height := (SCREENHEIGHT + 200) div 2
     else
       screendimentions[i].height := FIXED_DIMENTIONS[i].height;
+    screendimentions[i].depth := FIXED_DIMENTIONS[i].depth;
   end;
   // stick these in low dos memory on PCs
   vsize := V_ScreensSize;
-  base := malloc(vsize);
+  base := mallocz(vsize);
 
   st := 0;
   for i := SCN_FG to SCN_ST do
   begin
     screens[i] := @base[st];
-    st := st + screendimentions[i].width * screendimentions[i].height;
+    st := st + screendimentions[i].width * screendimentions[i].height * screendimentions[i].depth;
   end;
 
   V_CalcPreserveTables;
@@ -1500,10 +1561,14 @@ begin
   begin
     w := FIXED_DIMENTIONS[i].width;
     if w = -1 then
-      w := SCREENWIDTH;
+      w := SCREENWIDTH
+    else if w = -2 then
+      w := (SCREENWIDTH + 320) div 2;
     h := FIXED_DIMENTIONS[i].height;
     if h = -1 then
-      h := SCREENHEIGHT;
+      h := SCREENHEIGHT
+    else if h = -2 then
+      h := (SCREENHEIGHT + 200) div 2;
     result := result + w * h * FIXED_DIMENTIONS[i].depth;
   end;
 end;

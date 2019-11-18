@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -117,7 +117,7 @@ type
     backpack: boolean;
 
     // Frags, kills of other players.
-    frags: array[0..(MAXPLAYERS)-1] of integer;
+    frags: array[0..MAXPLAYERS - 1] of integer;
     readyweapon: weapontype_t;
 
     // Is wp_nochange if not changing.
@@ -230,7 +230,7 @@ const
   MINLOOKDIR = -110;
   MAXLOOKDIR = 90;
 
-  function PlayerToId(const p: Pplayer_t): integer;
+function PlayerToId(const p: Pplayer_t): integer;
 
 implementation
 

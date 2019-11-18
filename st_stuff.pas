@@ -82,11 +82,15 @@ type
 
 var
   custom_fullscreenhud: boolean = false;
-  custom_fullscreenhud_size: boolean = false;
+  custom_fullscreenhud_size: integer = 1;
   custom_hudhelthpos: integer = 1;
   custom_hudammopos: integer = 1;
   custom_hudarmorpos: integer = 1;
   custom_hudkeyspos: integer = 1;
+
+const
+  CUSTOM_FULLSCREENHUD_SIZE_MIN = 0;
+  CUSTOM_FULLSCREENHUD_SIZE_MAX = 2;
 
 implementation
 
@@ -117,6 +121,7 @@ uses
   m_fixed,
   m_menu,
   s_sound,
+  v_intermission,
 // Needs access to LFB.
   v_video,
 // State.
@@ -448,6 +453,8 @@ var
 // ammo widgets
   w_ammo: array[0..3] of st_number_t;
   w_ammo2: array[0..3] of st_number_t;
+  w_ammo2loffs: array[0..3] of integer;
+  w_ammo2roffs: array[0..3] of integer;
 
 // max ammo widgets
   w_maxammo: array[0..3] of st_number_t;
@@ -1312,7 +1319,7 @@ begin
     st_palette := palette;
     R_SetPalette(palette);
     lpal := W_CacheLumpNum(lu_palette, PU_STATIC);
-    pal := PByteArray(integer(lpal) + palette * 768);
+    pal := @lpal[palette * 768];
     I_SetPalette(pal);
     V_SetPalette(pal);
     Z_ChangeTag(lpal, PU_CACHE);
@@ -1410,7 +1417,7 @@ begin
   ST_FinishRefresh;
 end;
 
-procedure ST_DrawTallNumber(num: integer; x, y: integer; stretch: boolean);
+procedure ST_DrawTallNumber(num: integer; x, y: integer; scn: integer; stretch: boolean);
 var
   w: integer;
   numdigits: integer;
@@ -1420,7 +1427,7 @@ begin
   // in the special case of 0, you draw 0
   if num = 0 then
   begin
-    V_DrawPatch(x - w, y, SCN_FG, tallnum[0], stretch);
+    V_DrawPatch(x - w, y, scn, tallnum[0], stretch);
     exit;
   end;
 
@@ -1429,16 +1436,16 @@ begin
   while (num <> 0) and (numdigits <> 0) do
   begin
     x := x - w;
-    V_DrawPatch(x, y, SCN_FG, tallnum[num mod 10], stretch);
+    V_DrawPatch(x, y, scn, tallnum[num mod 10], stretch);
     num := num div 10;
     dec(numdigits);
   end;
 end;
 
-procedure ST_DrawTallPercent(num: integer; x, y: integer; stretch: boolean);
+procedure ST_DrawTallPercent(num: integer; x, y: integer; scn: integer; stretch: boolean);
 begin
-  ST_DrawTallNumber(num, x, y, stretch);
-  V_DrawPatch(x, y, SCN_FG, tallpercent, stretch);
+  ST_DrawTallNumber(num, x, y, scn, stretch);
+  V_DrawPatch(x, y, scn, tallpercent, stretch);
 end;
 
 procedure ST_RefreshCustom;
@@ -1448,16 +1455,35 @@ var
   sheight: integer;
   ammo: integer;
   xkeys, i: integer;
+  ff: boolean;
+  scn: integer;
+  sth: integer;
 begin
-  if custom_fullscreenhud_size then
+  custom_fullscreenhud_size := ibetween(custom_fullscreenhud_size,
+                                        CUSTOM_FULLSCREENHUD_SIZE_MIN,
+                                        CUSTOM_FULLSCREENHUD_SIZE_MAX);
+
+  if custom_fullscreenhud_size = CUSTOM_FULLSCREENHUD_SIZE_MAX then
   begin
     swidth := 320;
     sheight := 200;
+    scn := SCN_FG;
+    ff := true;
   end
-  else
+  else if custom_fullscreenhud_size = CUSTOM_FULLSCREENHUD_SIZE_MIN then
   begin
     swidth := SCREENWIDTH;
     sheight := SCREENHEIGHT;
+    scn := SCN_FG;
+    ff := false;
+  end
+  else
+  begin
+    swidth := (SCREENWIDTH + 320) div 2;
+    sheight := (SCREENHEIGHT + 200) div 2;
+    scn := SCN_MED;
+    ZeroMemory(screens[SCN_MED], V_GetScreenWidth(SCN_MED) * V_GetScreenHeight(SCN_MED));
+    ff := false;
   end;
 
   xl := 60;
@@ -1472,15 +1498,15 @@ begin
   custom_hudhelthpos := ibetween(custom_hudhelthpos, -1, 1);
   if custom_hudhelthpos = -1 then
   begin
-    ST_DrawTallPercent(w_health.n.num^, xl, yl, custom_fullscreenhud_size);
-    V_DrawPatch(xpl, ypl, SCN_FG, smedikit, custom_fullscreenhud_size);
+    ST_DrawTallPercent(w_health.n.num^, xl, yl, scn, ff);
+    V_DrawPatch(xpl, ypl, scn, smedikit, ff);
     yl := yl - 22;
     ypl := ypl - 22;
   end
   else if custom_hudhelthpos = 1 then
   begin
-    ST_DrawTallPercent(w_health.n.num^, xr - tallpercent.width, yr, custom_fullscreenhud_size);
-    V_DrawPatch(xpr, ypr, SCN_FG, smedikit, custom_fullscreenhud_size);
+    ST_DrawTallPercent(w_health.n.num^, xr - tallpercent.width, yr, scn, ff);
+    V_DrawPatch(xpr, ypr, scn, smedikit, ff);
     yr := yr - 22;
     ypr := ypr - 22;
   end;
@@ -1488,15 +1514,15 @@ begin
   custom_hudarmorpos := ibetween(custom_hudarmorpos, -1, 1);
   if custom_hudarmorpos = -1 then
   begin
-    ST_DrawTallPercent(w_armor.n.num^, xl, yl, custom_fullscreenhud_size);
-    V_DrawPatch(xpl, ypl, SCN_FG, sarmor, custom_fullscreenhud_size);
+    ST_DrawTallPercent(w_armor.n.num^, xl, yl, scn, ff);
+    V_DrawPatch(xpl, ypl, scn, sarmor, ff);
     yl := yl - 22;
     ypl := ypl - 22;
   end
   else if custom_hudarmorpos = 1 then
   begin
-    ST_DrawTallPercent(w_armor.n.num^, xr - tallpercent.width, yr, custom_fullscreenhud_size);
-    V_DrawPatch(xpr, ypr, SCN_FG, sarmor, custom_fullscreenhud_size);
+    ST_DrawTallPercent(w_armor.n.num^, xr - tallpercent.width, yr, scn, ff);
+    V_DrawPatch(xpr, ypr, scn, sarmor, ff);
     yr := yr - 22;
     ypr := ypr - 22;
   end;
@@ -1507,17 +1533,33 @@ begin
     custom_hudammopos := ibetween(custom_hudammopos, -1, 1);
     if custom_hudammopos = -1 then
     begin
-      ST_DrawTallNumber(w_ammo2[ammo].num^, xl, yl, custom_fullscreenhud_size);
-      V_DrawPatch(xpl - 2, ypl, SCN_FG, sammo[ammo], custom_fullscreenhud_size);
-      yl := yl - 22;
-      ypl := ypl - 22;
+      ST_DrawTallNumber(w_ammo2[ammo].num^, xl, yl, scn, ff);
+      V_DrawPatch(xpl - w_ammo2loffs[ammo], ypl, scn, sammo[ammo], ff);
+      if ammo = Ord(am_misl) then
+      begin
+        yl := yl - 30;
+        ypl := ypl - 30;
+      end
+      else
+      begin
+        yl := yl - 22;
+        ypl := ypl - 22;
+      end;
     end
     else if custom_hudammopos = 1 then
     begin
-      ST_DrawTallNumber(w_ammo2[ammo].num^, xr, yr, custom_fullscreenhud_size);
-      V_DrawPatch(xpr + 2, ypr, SCN_FG, sammo[ammo], custom_fullscreenhud_size);
-      yr := yr - 22;
-      ypr := ypr - 22;
+      ST_DrawTallNumber(w_ammo2[ammo].num^, xr, yr, scn, ff);
+      V_DrawPatch(xpr + w_ammo2roffs[ammo], ypr, scn, sammo[ammo], ff);
+      if ammo = Ord(am_misl) then
+      begin
+        yr := yr - 30;
+        ypr := ypr - 30;
+      end
+      else
+      begin
+        yr := yr - 22;
+        ypr := ypr - 22;
+      end;
     end;
   end;
 
@@ -1528,7 +1570,7 @@ begin
     for i := 0 to Ord(NUMCARDS) - 1 do
       if plyr.cards[i] then
       begin
-        V_DrawPatch(xkeys, ypl - keys[i].height, SCN_FG, keys[i], custom_fullscreenhud_size);
+        V_DrawPatch(xkeys, ypl - keys[i].height, scn, keys[i], ff);
         xkeys := xkeys + keys[i].width + 4;
       end;
     yl := yl - keys[0].height - 4;
@@ -1540,13 +1582,19 @@ begin
     for i := 0 to Ord(NUMCARDS) - 1 do
       if plyr.cards[i] then
       begin
-        V_DrawPatch(xkeys, ypr - keys[i].height, SCN_FG, keys[i], custom_fullscreenhud_size);
+        V_DrawPatch(xkeys, ypr - keys[i].height, scn, keys[i], ff);
         xkeys := xkeys - keys[i].width - 4;
       end;
     yr := yr - keys[0].height - 4;
     ypr := ypr - keys[0].height - 4;
   end;
 
+
+  if scn = SCN_MED then
+  begin
+    sth := imin(imin(yl, ypl), imin(yr, ypr));
+    V_CopyRectTransparent(0, sth, scn, swidth, sheight - sth, 0, sth, SCN_FG, true);
+  end;
 end;
 
 procedure ST_Drawer(dopt: stdrawoptions_t; refresh: boolean);
@@ -1567,6 +1615,7 @@ begin
       // Otherwise, update as little as possible
       else
         ST_diffDraw;
+      V_StatusBarStretch;
     end;
   end
   else
@@ -1917,6 +1966,14 @@ begin
       @plyr.ammo[i],
       @st_statusbaron,
       ST_MAMMOWIDTH);
+  w_ammo2loffs[0] := 2;
+  w_ammo2loffs[1] := 2;
+  w_ammo2loffs[2] := 0;
+  w_ammo2loffs[3] := 0;
+  w_ammo2roffs[0] := 2;
+  w_ammo2roffs[1] := 2;
+  w_ammo2roffs[2] := 3;
+  w_ammo2roffs[3] := 5;
 
   // max ammo count (all four kinds)
   STlib_initNum(

@@ -451,6 +451,7 @@ begin
   videomode := vm32bit;
   repeat
     repeat
+      I_Sleep(0);
       nowtime := I_GetTime;
       tics := nowtime - wipestart;
     until tics <> 0;
@@ -522,7 +523,7 @@ end;
 //
 procedure D_PageDrawer;
 begin
-  V_PageDrawer(pagename);
+   V_PageDrawer(pagename);
 end;
 
 //
@@ -1677,7 +1678,7 @@ begin
 
   printf('SC_Init: Initializing script engine.'#13#10);
   SC_Init;
-  printf('SC_ParseActordefLumps(): Parsing DECORATE lumps.'#13#10);
+  printf('SC_ParseActordefLumps(): Parsing ACTORDEF lumps.'#13#10);
   SC_ParseActordefLumps;
 
   if M_CheckParm('-nowaddehacked') = 0 then
@@ -1868,6 +1869,7 @@ begin
   ST_Init;
 
   printf('I_DetectNativeScreenResolution: Detect native screen resolution.'#13#10);
+  I_DetectNativeScreenResolution;
 
 // check for a driver that wants intermission stats
   p := M_CheckParm('-statcopy');

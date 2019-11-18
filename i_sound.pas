@@ -371,7 +371,7 @@ begin
 
     sfx.data := W_CacheLumpNum(sfx.lumpnum, PU_SOUND);
     PLData := sfx.data;
-    PLData2 := PLongWordArray(Integer(PLData) + 2);
+    PLData2 := pOp(PLData, 2);
     if PLData[0] = CS_RIFF then // WAVE Sound inside WAD as lump
     begin
 

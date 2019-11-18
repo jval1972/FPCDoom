@@ -73,6 +73,7 @@ uses
   p_mobj_h,
   p_telept,
   p_pspr_h,
+  p_pspr,
   r_defs,
   tables;
 
@@ -314,13 +315,10 @@ begin
 
   // Interpolate player
   player := @players[displayplayer];
-  if player <> nil then
-  begin
-    R_AddInterpolationItem(@player.lookupdown, iinteger); // JVAL Look Up/Down
-    R_AddInterpolationItem(@player.lookleftright, ibyte);
-    R_AddInterpolationItem(@player.viewz, iinteger);
-    R_AddInterpolationItem(@teleporttics[displayplayer], iinteger);
-  end;
+  R_AddInterpolationItem(@player.lookupdown, iinteger); // JVAL Look Up/Down
+  R_AddInterpolationItem(@player.lookleftright, ibyte);
+  R_AddInterpolationItem(@player.viewz, iinteger);
+  R_AddInterpolationItem(@teleporttics[displayplayer], iinteger);
 
   // Interpolate Sectors
   sec := @sectors[0];
@@ -332,13 +330,11 @@ begin
     inc(sec);
   end;
 
-  if player <> nil then
+  for i := 0 to Ord(NUMPSPRITES) - 1 do
   begin
-    for i := 0 to Ord(NUMPSPRITES) - 1 do
-    begin
-      R_AddInterpolationItem(@player.psprites[i].sx, iinteger);
-      R_AddInterpolationItem(@player.psprites[i].sy, iinteger);
-    end;
+    // Customizable player bob
+    R_AddInterpolationItem(@psprdefs[displayplayer, i].r_sx, iinteger);
+    R_AddInterpolationItem(@psprdefs[displayplayer, i].r_sy, iinteger);
   end;
 
   // Interpolate Lines

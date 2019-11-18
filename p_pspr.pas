@@ -32,6 +32,7 @@ unit p_pspr;
 interface
 
 uses
+  doomdef,
 // Basic data types.
 // Needs fixed point, and BAM angles.
   m_fixed,
@@ -97,6 +98,15 @@ procedure P_MovePsprites(player: Pplayer_t);
 
 procedure P_BulletSlope(mo: Pmobj_t);
 
+const
+  MAXWEAPONBOBSTRENGTH = 150;
+
+var
+  weaponbobstrengthpct: integer = 100;
+  psprdefs: array[-1..MAXPLAYERS - 1] of array[-1..Ord(NUMPSPRITES) - 1] of psprdef_t;
+
+function PspdefToPsprdef(const p: Pplayer_t; const psp: Ppspdef_t): Ppsprdef_t;
+
 implementation
 
 uses
@@ -109,8 +119,7 @@ uses
 // This includes all the data for thing animation,
 // i.e. the Thing Atrributes table
 // and the Frame Sequence table.
-  doomdef,
-  d_event, 
+  d_event,
   d_items,
   m_rnd,
   p_local, 
@@ -149,8 +158,10 @@ procedure P_SetPsprite(player: Pplayer_t; position: integer; stnum: statenum_t);
 var
   psp: Ppspdef_t;
   state: Pstate_t;
+  pid: integer;
 begin
   psp := @player.psprites[position];
+  pid := PlayerToId(player);
   repeat
     if Ord(stnum) = 0 then
     begin
@@ -165,10 +176,18 @@ begin
 
     // coordinate set
     if state.misc1 <> 0 then
+    begin
       psp.sx := state.misc1 * FRACUNIT;
+      // Customizable player bob
+      psprdefs[pid, position].r_sx := psp.sx;
+    end;
 
     if state.misc2 <> 0 then
+    begin
       psp.sy := state.misc2 * FRACUNIT;
+      // Customizable player bob
+      psprdefs[pid, position].r_sy := psp.sy;
+    end;
 
     // Call action routine.
     // Modified handling.
@@ -205,6 +224,7 @@ begin
 
   player.pendingweapon := wp_nochange;
   player.psprites[Ord(ps_weapon)].sy := WEAPONBOTTOM;
+  psprdefs[PlayerToId(player)][Ord(ps_weapon)].r_sy := WEAPONBOTTOM;
 
   P_SetPsprite(player, Ord(ps_weapon), newstate);
 end;
@@ -302,6 +322,19 @@ begin
   P_SetPsprite(player, Ord(ps_weapon), statenum_t(weaponinfo[Ord(player.readyweapon)].downstate));
 end;
 
+function PspdefToId(const p: Pplayer_t; const psp: Ppspdef_t): integer;
+var
+  i: integer;
+begin
+  for i := 0 to Ord(NUMPSPRITES) - 1 do
+    if psp = @p.psprites[i] then
+    begin
+      result := i;
+      exit;
+    end;
+  result := -1;
+end;
+
 //
 // A_WeaponReady
 // The player can fire the weapon
@@ -313,6 +346,7 @@ procedure A_WeaponReady(player: Pplayer_t; psp: Ppspdef_t);
 var
   newstate: statenum_t;
   angle: integer;
+  pid, ppid: integer;
 begin
   // get out of attack state
   if (player.mo.state = @states[Ord(S_PLAY_ATK1)]) or
@@ -349,11 +383,23 @@ begin
   else
     player.attackdown := false;
 
+  pid := PlayerToId(player);
+  ppid := PspdefToId(player, psp);
+
   // bob the weapon based on movement speed
+
   angle := (128 * leveltime) and FINEMASK;
   psp.sx := FRACUNIT + FixedMul(player.bob, finecosine[angle]);
+  // Customizable player bob
+  weaponbobstrengthpct := ibetween(weaponbobstrengthpct, 0, MAXWEAPONBOBSTRENGTH);
+  psprdefs[pid, ppid].r_sx := FRACUNIT + (FixedMul(player.bob, finecosine[angle]) * weaponbobstrengthpct div 100);
+
   angle := angle and (FINEANGLES div 2 - 1);
   psp.sy := WEAPONTOP + FixedMul(player.bob, finesine[angle]);
+  // Customizable player bob
+  psprdefs[pid, ppid].r_sy := WEAPONTOP + (FixedMul(player.bob, finesine[angle]) * weaponbobstrengthpct div 100);
+
+  angle := angle and (FINEANGLES div 2 - 1);
 end;
 
 //
@@ -390,8 +436,14 @@ end;
 //  and changes weapon at bottom.
 //
 procedure A_Lower(player: Pplayer_t; psp: Ppspdef_t);
+var
+  pspr: Ppsprdef_t;
 begin
   psp.sy := psp.sy + LOWERSPEED;
+
+  // Customizable player bob
+  pspr := PspdefToPsprdef(player, psp);
+  pspr.r_sy := pspr.r_sy + LOWERSPEED;
 
   // Is already down.
   if psp.sy < WEAPONBOTTOM then
@@ -401,6 +453,8 @@ begin
   if player.playerstate = PST_DEAD then
   begin
     psp.sy := WEAPONBOTTOM;
+    // Customizable player bob
+    pspr.r_sy := WEAPONBOTTOM;
     // don't bring weapon back up
     exit;
   end;
@@ -425,13 +479,21 @@ end;
 procedure A_Raise(player: Pplayer_t; psp: Ppspdef_t);
 var
   newstate: statenum_t;
+  pspr: Ppsprdef_t;
 begin
   psp.sy := psp.sy - RAISESPEED;
+
+  // Customizable player bob
+  pspr := PspdefToPsprdef(player, psp);
+  pspr.r_sy := pspr.r_sy - RAISESPEED;
 
   if psp.sy > WEAPONTOP then
     exit;
 
   psp.sy := WEAPONTOP;
+
+  // Customizable player bob
+  pspr.r_sy := WEAPONTOP;
 
   // The weapon has been raised all the way,
   //  so change to the ready state.
@@ -804,6 +866,7 @@ var
   i: integer;
   psp: Ppspdef_t;
   state: Pstate_t;
+  pid: integer;
 begin
   for i := 0 to Ord(NUMPSPRITES) - 1 do
   begin
@@ -823,8 +886,17 @@ begin
     end;
   end;
 
+  pid := PlayerToId(player);
   player.psprites[Ord(ps_flash)].sx := player.psprites[Ord(ps_weapon)].sx;
   player.psprites[Ord(ps_flash)].sy := player.psprites[Ord(ps_weapon)].sy;
+
+  psprdefs[pid, Ord(ps_flash)].r_sx := psprdefs[pid, Ord(ps_weapon)].r_sx;
+  psprdefs[pid, Ord(ps_flash)].r_sy := psprdefs[pid, Ord(ps_weapon)].r_sy;
+end;
+
+function PspdefToPsprdef(const p: Pplayer_t; const psp: Ppspdef_t): Ppsprdef_t;
+begin
+  result := @psprdefs[PlayerToId(p), PspdefToId(p, psp)];
 end;
 
 end.

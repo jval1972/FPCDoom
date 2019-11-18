@@ -39,7 +39,7 @@ uses
 
 const
 // Networking and tick handling related.
-  BACKUPTICS = 64;
+  BACKUPTICS = 12;
 
 type
   Tcmds = packed array[0..BACKUPTICS - 1] of ticcmd_t;

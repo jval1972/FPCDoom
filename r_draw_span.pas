@@ -90,6 +90,7 @@ procedure R_DrawSpanNormal(const parms: Pspanparams_t);
 var
   ds_llzindex: fixed_t; // Lightlevel index for z axis
   rspan: spanparams_t;
+  lowresspandraw: boolean = false;
 
 implementation
 
@@ -123,6 +124,7 @@ var
   count: integer;
   psi: Pdsscaleinfo_t;
   ds_source8: PByteArray;
+  b: byte;
 begin
   // We do not check for zero spans here?
   count := parms.ds_x2 - parms.ds_x1;
@@ -135,6 +137,31 @@ begin
   xstep := parms.ds_xstep * psi.frac;
   ystep := parms.ds_ystep * psi.frac;
   ds_source8 := parms.ds_source;
+
+  if lowresspandraw and (count > 1) then
+  begin
+    xfrac := xfrac + xstep div 2;
+    yfrac := yfrac + ystep div 2;
+    xstep := xstep * 2;
+    ystep := ystep * 2;
+    while count > 0 do
+    begin
+      b := parms.ds_colormap[ds_source8[_SHR(yfrac, psi.yshift) and psi.yand + _SHR(xfrac, FRACBITS) and psi.dand]];
+      dest^ := b;
+      inc(dest);
+      dest^ := b;
+      inc(dest);
+
+      // Next step in u,v.
+      xfrac := xfrac + xstep;
+      yfrac := yfrac + ystep;
+      dec(count, 2);
+    end;
+    xstep := xstep div 2;
+    ystep := ystep div 2;
+    xfrac := xfrac - xstep div 2;
+    yfrac := yfrac - ystep div 2;
+  end;
 
   while count >= 0 do
   begin
@@ -161,6 +188,7 @@ var
   count: integer;
   psi: Pdsscaleinfo_t;
   ds_source32: PLongWordArray;
+  l: LongWord;
 begin
   // We do not check for zero spans here?
   count := parms.ds_x2 - parms.ds_x1;
@@ -172,6 +200,31 @@ begin
   xstep := parms.ds_xstep * psi.frac;
   ystep := parms.ds_ystep * psi.frac;
   ds_source32 := parms.ds_source;
+
+  if lowresspandraw and (count > 1) then
+  begin
+    xfrac := xfrac + xstep div 2;
+    yfrac := yfrac + ystep div 2;
+    xstep := xstep * 2;
+    ystep := ystep * 2;
+    while count > 0 do
+    begin
+      l := R_ColorLightEx(ds_source32[_SHR(yfrac, psi.yshift) and psi.yand + _SHR(xfrac, FRACBITS) and psi.dand], parms.ds_lightlevel);
+      destl^ := l;
+      inc(destl);
+      destl^ := l;
+      inc(destl);
+
+      // Next step in u,v.
+      xfrac := xfrac + xstep;
+      yfrac := yfrac + ystep;
+      dec(count, 2);
+    end;
+    xstep := xstep div 2;
+    ystep := ystep div 2;
+    xfrac := xfrac - xstep div 2;
+    yfrac := yfrac - ystep div 2;
+  end;
 
   while count >= 0 do
   begin

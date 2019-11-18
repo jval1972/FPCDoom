@@ -95,6 +95,17 @@ procedure R_WaitTask(const id: integer);
 
 procedure R_WaitTasks;
 
+procedure R_SetupRenderingThreads;
+
+// JVAL: Max Rendering threads
+const
+  MAXRTHREADS = 256;
+  MAXGPTHREADS = 8; // General purpose threads
+
+var
+  setrenderingthreads: integer = 0;
+  setrenderingthreadslist: TDNumberList;
+
 implementation
 
 uses
@@ -135,11 +146,6 @@ type
 var
   ritems: array[RI_WALL..RI_MAX - 1] of renderitempool_t;
 
-// JVAL: Max Rendering threads
-const
-  MAXRTHREADS = 256;
-  MAXGPTHREADS = 8; // General purpose threads
-
 var
   numrthreads: integer;
   r_threads: array[0..MAXRTHREADS - 1] of TDThread;
@@ -163,7 +169,7 @@ begin
   ritems[RI_DEPTHBUFFERWALL].pint := nil;
   ritems[RI_SPAN].intoffset := -1;
   ritems[RI_SPAN].pint := nil;
-  ritems[RI_DEPTHBUFFERSPAN].intoffset :=integer(@(r0^.spanparams.ds_y));
+  ritems[RI_DEPTHBUFFERSPAN].intoffset := integer(@(r0^.spanparams.ds_y));
   ritems[RI_DEPTHBUFFERSPAN].pint := @viewheight;
   ritems[RI_SPRITE].intoffset := integer(@(r0^.columnparams.dc_x));
   ritems[RI_SPRITE].pint := @viewwidth;
@@ -196,6 +202,9 @@ begin
     r_threads[i] := TDThread.Create;
   for i := 0 to MAXGPTHREADS - 1 do
     r_gpthreads[i] := TDThread.Create;
+
+  setrenderingthreadslist := TDNumberList.Create;
+  setrenderingthreadslist.Add(setrenderingthreads);
 end;
 
 procedure R_ShutDownRender;
@@ -208,6 +217,7 @@ begin
     r_threads[i].Free;
   for i := 0 to MAXGPTHREADS - 1 do
     r_gpthreads[i].Free;
+  setrenderingthreadslist.Free;
 end;
 
 procedure R_AddRenderTaskId(const proc: PPointerParmProcedure; const flags: LongWord; id: integer; const parms: pointer);
@@ -513,6 +523,33 @@ begin
   for i := 0 to MAXGPTHREADS - 1 do
     if Assigned(tasks[i].proc) then
       r_gpthreads[i].Wait;
+end;
+
+procedure R_SetupRenderingThreads;
+var
+  newmunthreads, i: integer;
+begin
+  setrenderingthreads := ibetween(setrenderingthreads, 0, MAXRTHREADS);
+  if setrenderingthreads = 1 then
+    setrenderingthreads := 2;
+  if setrenderingthreadslist.IndexOf(setrenderingthreads) < 0 then
+    setrenderingthreadslist.Add(setrenderingthreads);
+
+  if setrenderingthreads = 0 then
+    newmunthreads := I_GetNumCPUs
+  else
+    newmunthreads := setrenderingthreads;
+
+  newmunthreads := ibetween(newmunthreads, 2, MAXRTHREADS);
+
+  if newmunthreads <> numrthreads then
+  begin
+    for i := numrthreads to newmunthreads - 1 do
+      r_threads[i] := TDThread.Create;
+    for i := newmunthreads to numrthreads - 1 do
+      r_threads[i].Free;
+    numrthreads := newmunthreads;
+  end;
 end;
 
 end.

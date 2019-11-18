@@ -418,7 +418,7 @@ begin
 
     if rcolumn.dc_yl <= rcolumn.dc_yh then
     begin
-      rcolumn.dc_source := PByteArray(integer(column) + 3);
+      rcolumn.dc_source := pOp(column, 3);
       rcolumn.dc_texturemid := basetexturemid - (column.topdelta * FRACUNIT);
       // Drawn by either R_DrawColumn
       //  or (SHADOW) R_DrawFuzzColumn
@@ -426,7 +426,7 @@ begin
       //  or R_DrawTranslatedColumn
       R_AddRenderTask(colfunc, flags, @rcolumn);
     end;
-    column := Pcolumn_t(integer(column) + column.length + 4);
+    column := pOp(column, column.length + 4);
   end;
 
   rcolumn.dc_texturemid := basetexturemid;
@@ -462,7 +462,7 @@ begin
 
     if rcolumn.dc_yl <= rcolumn.dc_yh then
     begin
-      rcolumn.dc_source := PByteArray(integer(column) + 3);
+      rcolumn.dc_source := pOp(column, 3);
       rcolumn.dc_texturemid := basetexturemid - (column.topdelta * FRACUNIT);
       // Drawn by either R_DrawColumn
       //  or (SHADOW) R_DrawFuzzColumn
@@ -470,7 +470,7 @@ begin
       //  or R_DrawTranslatedColumn
       colfunc(@rcolumn);
     end;
-    column := Pcolumn_t(integer(column) + column.length + 4);
+    column := pOp(column, column.length + 4);
   end;
 
   rcolumn.dc_texturemid := basetexturemid;
@@ -548,8 +548,7 @@ begin
   else if vis.mobjflags and MF_TRANSLATION <> 0 then
   begin
     colfunc := transcolfunc;
-    dc_translation := PByteArray(integer(translationtables) - 256 +
-      (_SHR((vis.mobjflags and MF_TRANSLATION), (MF_TRANSSHIFT - 8))));
+    dc_translation := pOp(translationtables, - 256 + (_SHR((vis.mobjflags and MF_TRANSLATION), (MF_TRANSSHIFT - 8))));
   end
   else if usetransparentsprites and (vis.mobjflags_ex and MF_EX_TRANSPARENT <> 0) then
   begin
@@ -577,7 +576,7 @@ begin
   begin
     texturecolumn := LongWord(frac) shr FRACBITS;
 
-    column := Pcolumn_t(integer(patch) + patch.columnofs[texturecolumn]);
+    column := pOp(patch, patch.columnofs[texturecolumn]);
     proc(column, renderflags_masked);
     frac := frac + xiscale;
     inc(rcolumn.dc_x);
@@ -804,6 +803,8 @@ var
   flip: boolean;
   vis: Pvissprite_t;
   avis: vissprite_t;
+  pspr: Ppsprdef_t;
+  wsx, wsy: fixed_t;
 begin
   // decide which patch to use
 
@@ -814,8 +815,13 @@ begin
   lump := sprframe.lump[0];
   flip := sprframe.flip[0];
 
+  // Customizable player bob
+  pspr := PspdefToPsprdef(viewplayer, psp);
+  wsx := pspr.r_sx;
+  wsy := pspr.r_sy;
+
   // calculate edges of the shape
-  tx := psp.sx - 160 * FRACUNIT;
+  tx := wsx - 160 * FRACUNIT;
 
   tx := tx - spriteoffset[lump];
   x1 := FixedInt(centerxfrac + centerxshift + FixedMul(tx, pspritescalep));
@@ -838,7 +844,7 @@ begin
   vis.mobjflags2_ex := 0;
   vis.mo := viewplayer.mo;
   vis._type := Ord(MT_PLAYER);
-  vis.texturemid := (BASEYCENTER * FRACUNIT) + FRACUNIT div 2 - (psp.sy - spritetopoffset[lump]);
+  vis.texturemid := (BASEYCENTER * FRACUNIT) + FRACUNIT div 2 - (wsy - spritetopoffset[lump]);
   if x1 < 0 then
     vis.x1 := 0
   else

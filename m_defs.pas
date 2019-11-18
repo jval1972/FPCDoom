@@ -41,9 +41,11 @@ uses
   g_game,
   hu_stuff,
   p_mobj_h, 
-  p_terrain, 
+  p_terrain,
+  p_telept,
   p_enemy,
   p_saveg,
+  p_pspr,
   i_video, 
   i_system, 
   i_music,
@@ -53,6 +55,8 @@ uses
   r_aspect,
   r_defs,
   r_draw,
+  r_draw_column,
+  r_draw_span,
   r_lightmap,
   r_main,
   r_mirror,
@@ -60,9 +64,11 @@ uses
   r_colorsubsampling,
   r_hires,
   r_intrpl,
+  r_render,
   st_stuff,
   s_sound,
   t_main,
+  v_intermission,
   v_video;
 
 const
@@ -86,7 +92,7 @@ type
   Pdefault_t = ^default_t;
 
 const
-  NUMDEFAULTS = 127;
+  NUMDEFAULTS = 137;
 
   defaults: array[0..NUMDEFAULTS - 1] of default_t = (
     (name: 'Display';
@@ -117,7 +123,7 @@ const
      location: @SCREENWIDTH;
      setable: DFS_NEVER;
      defaultsvalue: '';
-     defaultivalue: -1;
+     defaultivalue: 640;
      defaultbvalue: false;
      _type: tInteger),
 
@@ -125,15 +131,23 @@ const
      location: @SCREENHEIGHT;
      setable: DFS_NEVER;
      defaultsvalue: '';
-     defaultivalue: -1;
+     defaultivalue: 400;
      defaultbvalue: false;
      _type: tInteger),
 
-    (name: 'fullscreen';
-     location: @fullscreen;
+     (name: 'fullscreen';
+      location: @fullscreen;
+      setable: DFS_NEVER;
+      defaultsvalue: '';
+      defaultivalue: 1;
+      defaultbvalue: true;
+      _type: tBoolean),
+
+    (name: 'fullscreenexclusive';
+     location: @fullscreenexclusive;
      setable: DFS_NEVER;
      defaultsvalue: '';
-     defaultivalue: 1;
+     defaultivalue: 0;
      defaultbvalue: true;
      _type: tBoolean),
 
@@ -198,7 +212,7 @@ const
      setable: DFS_ALWAYS;
      defaultsvalue: '';
      defaultivalue: 0;
-     defaultbvalue: true;
+     defaultbvalue: false;
      _type: tBoolean),
 
     (name: 'wipestyle';
@@ -256,6 +270,22 @@ const
      defaultivalue: DL_NORMAL;
      defaultbvalue: false;
      _type: tInteger),
+
+    (name: 'lowrescolumndraw';
+     location: @lowrescolumndraw;
+     setable: DFS_ALWAYS;
+     defaultsvalue: '';
+     defaultivalue: 0;
+     defaultbvalue: false;
+     _type: tBoolean),
+
+    (name: 'lowresspandraw';
+     location: @lowresspandraw;
+     setable: DFS_ALWAYS;
+     defaultsvalue: '';
+     defaultivalue: 0;
+     defaultbvalue: false;
+     _type: tBoolean),
 
     (name: 'uselightmap';
      location: @uselightmap;
@@ -345,6 +375,38 @@ const
      defaultbvalue: false;
      _type: tString),
 
+    (name: 'vid_pillarbox_pct';
+     location: @vid_pillarbox_pct;
+     setable: DFS_NEVER;
+     defaultsvalue: '';
+     defaultivalue: 0;
+     defaultbvalue: false;
+     _type: tInteger),
+
+    (name: 'vid_letterbox_pct';
+     location: @vid_letterbox_pct;
+     setable: DFS_NEVER;
+     defaultsvalue: '';
+     defaultivalue: 0;
+     defaultbvalue: false;
+     _type: tInteger),
+
+    (name: 'intermissionstretch_mode';
+     location: @intermissionstretch_mode;
+     setable: DFS_ALWAYS;
+     defaultsvalue: '';
+     defaultivalue: Ord(ism_auto);
+     defaultbvalue: false;
+     _type: tInteger),
+
+    (name: 'statusbarstretch_mode';
+     location: @statusbarstretch_mode;
+     setable: DFS_ALWAYS;
+     defaultsvalue: '';
+     defaultivalue: Ord(ism_auto);
+     defaultbvalue: false;
+     _type: tInteger),
+
     (name: 'mirrormode';
      location: @mirrormode;
      setable: DFS_ALWAYS;
@@ -391,7 +453,7 @@ const
      defaultsvalue: '';
      defaultivalue: 1;
      defaultbvalue: true;
-     _type: tBoolean),
+     _type: tInteger),
 
     (name: 'custom_hudhelthpos';
      location: @custom_hudhelthpos;
@@ -421,7 +483,7 @@ const
      location: @custom_hudkeyspos;
      setable: DFS_ALWAYS;
      defaultsvalue: '';
-     defaultivalue: 1;
+     defaultivalue: -1;
      defaultbvalue: true;
      _type: tInteger),
 
@@ -535,7 +597,15 @@ const
      location: @allowterrainsplashes;
      setable: DFS_SINGLEPLAYER;
      defaultsvalue: '';
-     defaultivalue: 0;
+     defaultivalue: 1;
+     defaultbvalue: true;
+     _type: tBoolean),
+
+    (name: 'useteleportzoomeffect';
+     location: @useteleportzoomeffect;
+     setable: DFS_SINGLEPLAYER;
+     defaultsvalue: '';
+     defaultivalue: 1;
      defaultbvalue: true;
      _type: tBoolean),
 
@@ -562,6 +632,14 @@ const
      defaultivalue: 0;
      defaultbvalue: true;
      _type: tBoolean),
+
+    (name: 'weaponbobstrengthpct';
+     location: @weaponbobstrengthpct;
+     setable: DFS_ALWAYS;
+     defaultsvalue: '';
+     defaultivalue: 100;
+     defaultbvalue: true;
+     _type: tInteger),
 
      // Controls
     (name: 'Controls';
@@ -1115,7 +1193,15 @@ const
      defaultsvalue: 'png';
      defaultivalue: 0;
      defaultbvalue: true;
-     _type: tString)
+     _type: tString),
+
+    (name: 'setrenderingthreads';
+     location: @setrenderingthreads;
+     setable: DFS_ALWAYS;
+     defaultsvalue: '';
+     defaultivalue: 0;
+     defaultbvalue: false;
+     _type: tInteger)
 
   );
 

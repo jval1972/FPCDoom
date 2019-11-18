@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -51,12 +51,13 @@ implementation
 uses
   Windows,
   d_fpc,
+  doomdef,
   m_misc,
   c_cmds,
   r_main;
 
 var
-  relative_aspect: Double = 1.0;
+  relative_aspect_fs: Double = 1.0;
 
 procedure R_CmdWideScreen(const parm: string);
 var
@@ -119,7 +120,9 @@ begin
     result := atof(forcedaspectstr);
 
   if result < MINRELATIVEASPECT then
-    result := 0.0;
+    result := 0.0
+  else if result > MAXRELATIVEASPECT then
+    result := MAXRELATIVEASPECT;
   forcedaspectstr := ftoa(result);
 end;
 
@@ -127,6 +130,7 @@ procedure R_CmdForcedAspect(const parm: string);
 begin
   if parm = '' then
   begin
+    R_ForcedAspect;
     printf('Current setting: forcedaspect = %s.'#13#10, [forcedaspectstr]);
     exit;
   end;
@@ -170,11 +174,11 @@ begin
 
   if maxheight > 0 then
   begin
-    relative_aspect := maxwidth / maxheight / (4 / 3);
-    if relative_aspect < MINRELATIVEASPECT then
-      relative_aspect := MINRELATIVEASPECT
-    else if relative_aspect > MAXRELATIVEASPECT then
-      relative_aspect := MAXRELATIVEASPECT;
+    relative_aspect_fs := maxwidth / maxheight / (4 / 3);
+    if relative_aspect_fs < MINRELATIVEASPECT then
+      relative_aspect_fs := MINRELATIVEASPECT
+    else if relative_aspect_fs > MAXRELATIVEASPECT then
+      relative_aspect_fs := MAXRELATIVEASPECT;
   end;
   widths.Free;
   heights.Free;
@@ -190,8 +194,15 @@ begin
   if widescreensupport then
   begin
     asp := R_ForcedAspect;
-    if asp < 1.0 then
-      result := relative_aspect
+    if asp < MINRELATIVEASPECT then
+    begin
+      if fullscreen and fullscreenexclusive then
+        result := (SCREENWIDTH / SCREENHEIGHT) / (4 / 3)
+      else if fullscreen then
+        result := relative_aspect_fs
+      else
+        result := (WINDOWWIDTH / WINDOWHEIGHT) / (4 / 3);
+    end
     else
       result := asp / (4 / 3);
     if result < MINRELATIVEASPECT then

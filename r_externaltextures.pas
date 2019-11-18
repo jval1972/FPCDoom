@@ -721,7 +721,7 @@ begin
       end;
     end;
 
-    if useexternaltextures and (integer(t) > $1) then // if we have a hi resolution flat
+    if useexternaltextures and (PCAST(t) > $1) then // if we have a hi resolution flat
     begin
       fsize := t.GetWidth;
       if fsize = 512 then
@@ -746,8 +746,8 @@ begin
         plw := @pds32[0];
         tpal := PLongWordArray(t.GetTransformedPalette);
         pb := PByte(t.GetImage);
-        pbstop := PByte(integer(pb) + numpixels);
-        while integer(pb) < integer(pbstop) do
+        pbstop := pOp(pb, numpixels);
+        while PCAST(pb) < PCAST(pbstop) do
         begin
           plw^ := tpal[pb^];
           inc(plw);

@@ -42,6 +42,7 @@ uses
   i_video,
   r_main,
   r_zbuffer,
+  r_draw,
   r_draw_column,
   r_draw_light,
   r_externaltextures,
@@ -92,6 +93,7 @@ begin
 
     I_InitGraphics;          // Initialize graphics
 
+    needsstatusbarback := true; // Redraw statusbar background
     AM_Start;                // Start the automap
     C_AdjustScreenSize;
     setsizeneeded := true;   // Set-up new SCREENWIDTH & SCREENHEIGHT

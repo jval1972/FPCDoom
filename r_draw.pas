@@ -53,6 +53,11 @@ procedure R_InitTranslationTables;
 // Rendering function.
 procedure R_FillBackScreen;
 
+procedure R_FillBackStatusbar;
+
+var
+  needsstatusbarback: boolean = true;
+
 // If the view size is not full screen, draws a border around it.
 procedure R_DrawViewBorder;
 
@@ -93,6 +98,7 @@ uses
   am_map,
   m_argv,
   r_hires,
+  r_main,
   w_wad,
   z_memory,
   st_stuff,
@@ -111,7 +117,7 @@ var
   i: integer;
 begin
   translationtables := Z_Malloc(256 * 3 + 255, PU_STATIC, nil);
-  translationtables := PByteArray((integer(translationtables) + 255 ) and (not 255));
+  translationtables := PByteArray((PCAST(translationtables) + 255) and (not 255));
 
   // translate just the 16 green colors
   for i := 0 to 255 do
@@ -164,8 +170,8 @@ begin
   // Preclaculate all row offsets.
   for i := 0 to height - 1 do
   begin
-    ylookup[i] := PByteArray(integer(screens[SCN_FG]) + (i + viewwindowy) * SCREENWIDTH);
-    ylookup32[i] := PLongWordArray(@screen32[(i + viewwindowy) * SCREENWIDTH]);
+    ylookup[i] := @screens[SCN_FG][(i + viewwindowy) * SCREENWIDTH];
+    ylookup32[i] := @screen32[(i + viewwindowy) * SCREENWIDTH];
   end;
 end;
 
@@ -219,7 +225,7 @@ begin
   begin
     for x := 0 to 320 div 64 - 1 do
     begin
-      memcpy(dest, PByteArray(integer(src) + _SHL(y and 63, 6)), 64);
+      memcpy(dest, pOp(src, _SHL(y and 63, 6)), 64);
       dest := @dest[64];
     end;
   end;
@@ -286,7 +292,62 @@ begin
   R_ScreenBlanc(SCN_BG);
   x := V_PreserveY(ST_Y) * V_GetScreenWidth(SCN_BG); 
   R_VideoBlanc(SCN_BG, x, (V_GetScreenHeight(SCN_BG) - V_PreserveY(ST_Y)) * V_GetScreenWidth(SCN_BG));
+end;
 
+var
+  oldstatusbarfillblocks: integer = -1;
+
+procedure R_FillBackStatusbar;
+var
+  src: PByteArray;
+  dest: PByteArray;
+  x: integer;
+  y: integer;
+  patch: Ppatch_t;
+  name: string;
+begin
+  if (oldstatusbarfillblocks <> 10) <> (screenblocks <> 10) then
+  begin
+    oldstatusbarfillblocks := screenblocks;
+    needsstatusbarback := true;
+  end;
+
+  if not needsstatusbarback then
+    exit;
+
+  needsstatusbarback := false;
+
+  if gamemode = commercial then
+    name := 'GRNROCK'   // DOOM II border patch.
+  else
+    name := 'FLOOR7_2'; // DOOM border patch.
+
+  src := W_CacheLumpName(name, PU_STATIC);
+
+  dest := screens[SCN_ST2];
+
+  for y := 200 - ST_HEIGHT + 1 to 200 do
+  begin
+    for x := 0 to 320 div 64 - 1 do
+    begin
+      memcpy(dest, pOp(src, _SHL(y and 63, 6)), 64);
+      dest := @dest[64];
+    end;
+  end;
+
+  Z_ChangeTag(src, PU_CACHE);
+
+  if screenblocks = 10 then
+  begin
+    patch := W_CacheLumpName('brdr_b', PU_STATIC);
+    x := 0;
+    while x < 320 do
+    begin
+      V_DrawPatch(x, patch.topoffset, SCN_ST2, patch, false);
+      x := x + 8;
+    end;
+    Z_ChangeTag(patch, PU_CACHE);
+  end;
 end;
 
 //
@@ -305,7 +366,7 @@ begin
   //  at one point.
   if videomode = vm32bit then
   begin
-    src := PByte(integer(screens[SCN_BG]) + ofs);
+    src := @screens[SCN_BG][ofs];
     dest := @screen32[ofs];
     for i := 1 to count do
     begin
@@ -315,7 +376,7 @@ begin
     end;
   end
   else
-    memcpy(Pointer(integer(screens[SCN_FG]) + ofs), Pointer(integer(screens[SCN_BG]) + ofs), count);
+    memcpy(@screens[SCN_FG][ofs], @screens[SCN_BG][ofs], count);
 end;
 
 procedure R_VideoBlanc(const scn: integer; const ofs: integer; const count: integer; const black: byte = 0);

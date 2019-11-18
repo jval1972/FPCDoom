@@ -186,7 +186,7 @@ begin
   else
     result := Sz;
 
-  memcpy(@buf, pointer(integer(data) + fPosition), result);
+  memcpy(@buf, pOp(data, fPosition), result);
   fPosition := fPosition + result;
 end;
 

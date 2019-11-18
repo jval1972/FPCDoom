@@ -216,7 +216,7 @@ begin
   rcolumn.seg := curline; // we do not need it
   rcolumn.rendertype := RIT_MASKEDWALL;
   R_GetDCs(texnum, 0); // JVAL Also precache external texture if not loaded
-  use32 := (videomode = vm32bit) and (integer(textures[texnum].texture32) > $1);
+  use32 := (videomode = vm32bit) and (PCAST(textures[texnum].texture32) > $1);
   if use32 then
   begin
     mc2height := textures[texnum].height;
@@ -323,7 +323,7 @@ begin
       else
       begin
         // draw the texture
-        col := Pcolumn_t(integer(R_GetColumn(texnum, texturecolumn)) - 3);
+        col := pOp(R_GetColumn(texnum, texturecolumn), -3);
         R_DrawMaskedColumn(col, renderflags_masked);
       end;
       maskedtexturecol[rcolumn.dc_x] := MAXSHORT;

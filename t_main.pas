@@ -2,7 +2,7 @@
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -338,7 +338,7 @@ end;
 
 function TTexture.GetImage: pointer;
 begin
-  result := pointer(integer(FData) + 4);
+  result := pOp(FData, 4);
 end;
 
 function TTexture.GetPalette: PPalette;
@@ -386,7 +386,7 @@ var
   srcstep: integer;
 begin
   col := col mod FWidth;
-  src := pointer(integer(FData) + 4 + col * FBytesPerPixel);
+  src := pOp(FData, 4 + col * FBytesPerPixel);
   dst := dest;
   row := 0;
   irow := FHeight;
@@ -397,14 +397,14 @@ begin
         while row < size do
         begin
           PLongWord(dst)^ := PLongWord(@PPalette(FPalette)[PByte(src)^])^;
-          dst := pointer(integer(dst) + 4);
-          src := pointer(integer(src) + srcstep);
+          dst := pOp(dst, 4);
+          src := pOp(src, srcstep);
           inc(row);
           dec(irow);
           if irow <= 0 then
           begin
             irow := FHeight;
-            src := pointer(integer(FData) + 4 + col);
+            src := pOp(FData, 4 + col);
           end;
         end;
       end;
@@ -414,14 +414,14 @@ begin
         while row < size do
         begin
           PLongWord(dst)^ := pixel15to24(PWord(src)^);
-          dst := pointer(integer(dst) + 4);
-          src := pointer(integer(src) + srcstep);
+          dst := pOp(dst, 4);
+          src := pOp(src, srcstep);
           inc(row);
           dec(irow);
           if irow <= 0 then
           begin
             irow := FHeight;
-            src := pointer(integer(FData) + 4 + col * 2);
+            src := pOp(FData, 4 + col * 2);
           end;
         end;
       end;
@@ -431,14 +431,14 @@ begin
         while row < size do
         begin
           PLongWord(dst)^ := PLongWord(src)^;
-          dst := pointer(integer(dst) + 4);
-          src := pointer(integer(src) + srcstep);
+          dst := pOp(dst, 4);
+          src := pOp(src, srcstep);
           inc(row);
           dec(irow);
           if irow <= 0 then
           begin
             irow := FHeight;
-            src := pointer(integer(FData) + 4 + col * 4);
+            src := pOp(FData, 4 + col * 4);
           end;
         end;
       end;
@@ -456,7 +456,7 @@ begin
   if FBytesPerPixel = 1 then
   begin
     col := col mod FWidth;
-    src := pointer(integer(FData) + 4 + col * FBytesPerPixel);
+    src := pOp(FData, 4 + col * FBytesPerPixel);
     dst := dest;
     row := 0;
     irow := FHeight;
@@ -465,14 +465,14 @@ begin
     while row < size do
     begin
       PLongWord(dst)^ := PLongWord(@PPalette(FTransformedPalette)[PByte(src)^])^;
-      dst := pointer(integer(dst) + 4);
-      src := pointer(integer(src) + srcstep);
+      dst := pOp(dst, 4);
+      src := pOp(src, srcstep);
       inc(row);
       dec(irow);
       if irow <= 0 then
       begin
         irow := FHeight;
-        src := pointer(integer(FData) + 4 + col);
+        src := pOp(FData, 4 + col);
       end;
     end;
     result := true;
@@ -489,7 +489,7 @@ var
   dst: pointer;
 begin
   row := row mod FHeight;
-  src := pointer(integer(FData) + 4 + row * FBytesPerPixel * FWidth);
+  src := pOp(FData, 4 + row * FBytesPerPixel * FWidth);
   dst := dest;
   col := 0;
   icol := FWidth;
@@ -499,14 +499,14 @@ begin
         while col < size do
         begin
           PLongWord(dst)^ := PLongWord(@PPalette(FPalette)[PByte(src)^])^;
-          dst := pointer(integer(dst) + 4);
-          src := pointer(integer(src) + 1);
+          dst := pOp(dst, 4);
+          src := pOp(src, 1);
           inc(col);
           dec(icol);
           if icol <= 0 then
           begin
             icol := FWidth;
-            src := pointer(integer(FData) + 4 + row * FWidth);
+            src := pOp(FData, 4 + row * FWidth);
           end;
         end;
       end;
@@ -515,14 +515,14 @@ begin
         while col < size do
         begin
           PLongWord(dst)^ := pixel15to24(PWord(src)^);
-          dst := pointer(integer(dst) + 4);
-          src := pointer(integer(src) + 2);
+          dst := pOp(dst, 4);
+          src := pOp(src, 2);
           inc(col);
           dec(icol);
           if icol <= 0 then
           begin
             icol := FWidth;
-            src := pointer(integer(FData) + 4 + 2 * row * FWidth);
+            src := pOp(FData, 4 + 2 * row * FWidth);
           end;
         end;
       end;
@@ -531,14 +531,14 @@ begin
         while col < size do
         begin
           PLongWord(dst)^ := PLongWord(src)^;
-          dst := pointer(integer(dst) + 4);
-          src := pointer(integer(src) + 4);
+          dst := pOp(dst, 4);
+          src := pOp(src, 4);
           inc(col);
           dec(icol);
           if icol <= 0 then
           begin
             icol := FWidth;
-            src := pointer(integer(FData) + 4 + 4 * row * FWidth);
+            src := pOp(FData, 4 + 4 * row * FWidth);
           end;
         end;
       end;
@@ -555,7 +555,7 @@ begin
   if FBytesPerPixel = 1 then
   begin
     row := row mod FHeight;
-    src := pointer(integer(FData) + 4 + row * FBytesPerPixel * FWidth);
+    src := pOp(FData, 4 + row * FBytesPerPixel * FWidth);
     dst := dest;
     col := 0;
     icol := FWidth;
@@ -563,14 +563,14 @@ begin
     while col < size do
     begin
       PLongWord(dst)^ := PLongWord(@PPalette(FPalette)[PByte(src)^])^;
-      dst := pointer(integer(dst) + 4);
-      src := pointer(integer(src) + 1);
+      dst := pOp(dst, 4);
+      src := pOp(src, 1);
       inc(col);
       dec(icol);
       if icol <= 0 then
       begin
         icol := FWidth;
-        src := pointer(integer(FData) + 4 + row * FWidth);
+        src := pOp(FData, 4 + row * FWidth);
       end;
     end;
     result := true;
@@ -588,7 +588,7 @@ var
 begin
   if (FBytesPerPixel = 4) and (color <> 0) then
   begin
-    plw := PLongWord(integer(FData) + 4);
+    plw := pOp(FData, 4);
     for i := 0 to FWidth * FHeight - 1 do
     begin
       plw^ := R_ColorAdd(plw^, color);
@@ -782,7 +782,7 @@ begin
       g := (integer(APalette^) shr gshr) and m;
       b := (integer(APalette^) shr bshr) and m;
       PIntegerArray(FPalette)[i] := (r shl 16) or (g shl 8) or (b);
-      APalette := pointer(integer(APalette) + RecordSize);
+      APalette := pOp(APalette, RecordSize);
     end;
   end
   else
@@ -819,17 +819,17 @@ begin
     begin
       c := FEncodeColor(PIntegerArray(FPalette)[(b shr 7) and 1]);
       Move(c, dest^, FBytesPerPixel);
-      dest := pointer(integer(dest) + FBytesPerPixel);
+      dest := pOp(dest, FBytesPerPixel);
       b := b shl 1;
     end;
-    Source := pointer(integer(Source) + 1);
+    Source := pOp(Source, 1);
   end;
   b := byte(source^);
   for j := 0 to count and 7 - 1 do
   begin
     c := FEncodeColor(PIntegerArray(FPalette)[(b shr 7) and 1]);
     Move(c, dest^, FBytesPerPixel);
-    dest := pointer(integer(dest) + FBytesPerPixel);
+    dest := pOp(dest, FBytesPerPixel);
     b := b shl 1;
   end;
 end;
@@ -844,11 +844,11 @@ begin
   begin
     c := FEncodeColor(PIntegerArray(FPalette)[byte(source^) shr 4]);
     Move(c, dest^, FBytesPerPixel);
-    dest := pointer(integer(dest) + FBytesPerPixel);
+    dest := pOp(dest, FBytesPerPixel);
     c := FEncodeColor(PIntegerArray(FPalette)[byte(source^) and 15]);
     Move(c, dest^, FBytesPerPixel);
-    dest := pointer(integer(dest) + FBytesPerPixel);
-    Source := pointer(integer(Source) + 1);
+    dest := pOp(dest, FBytesPerPixel);
+    Source := pOp(Source, 1);
   end;
   if count and 1 = 1 then
   begin
@@ -865,8 +865,8 @@ begin
   begin
     c := FEncodeColor(PIntegerArray(FPalette)[byte(source^)]);
     Move(c, dest^, FBytesPerPixel);
-    dest := pointer(integer(dest) + FBytesPerPixel);
-    Source := pointer(integer(Source) + 1);
+    dest := pOp(dest, FBytesPerPixel);
+    Source := pOp(Source, 1);
   end;
 end;
 
@@ -878,8 +878,8 @@ begin
   begin
     c := FEncodeColor(Pixel15to24(word(Source^)));
     Move(c, dest^, FBytesPerPixel);
-    dest := pointer(integer(dest) + FBytesPerPixel);
-    Source := pointer(integer(Source) + 2);
+    dest := pOp(dest, FBytesPerPixel);
+    Source := pOp(Source, 2);
   end;
 end;
 
@@ -891,8 +891,8 @@ begin
   begin
     c := FEncodeColor(integer(Source^));
     Move(c, Dest^, FBytesPerPixel);
-    Dest := pointer(integer(Dest) + FBytesPerPixel);
-    Source := pointer(integer(Source) + 3);
+    Dest := pOp(Dest, FBytesPerPixel);
+    Source := pOp(Source, 3);
   end;
 end;
 
@@ -904,8 +904,8 @@ begin
   begin
     c := FEncodeColor(integer(source^));
     Move(c, dest^, FBytesPerPixel);
-    dest := pointer(integer(dest) + FBytesPerPixel);
-    Source := pointer(integer(source) + 4);
+    dest := pOp(dest, FBytesPerPixel);
+    Source := pOp(source, 4);
   end;
 end;
 
@@ -916,7 +916,7 @@ procedure TTexture.PutPixels(X, Y: Integer; Count: integer; Buffer: Pointer; Pix
 var
   ofs: pointer;
 begin
-  ofs := pointer(integer(FData) + 4 + (x + y * FWidth) * FBytesPerPixel);
+  ofs := pOp(FData, 4 + (x + y * FWidth) * FBytesPerPixel);
   if PixelFormat and 255 = FBitsPerPixel then
     Move(Buffer^, ofs^, Count * FBytesPerPixel)
   else
@@ -945,9 +945,9 @@ begin
 
   SetBytesPerPixel(4);
 
-  pdest := PLongWord(integer(Fdata) + 4);
+  pdest := pOp(Fdata, 4);
   pdeststop := @PLongWordArray(pdest)[FWidth * FHeight];
-  while integer(pdest) < integer(pdeststop) do
+  while PCAST(pdest) < PCAST(pdeststop) do
   begin
     if pdest^ = FTransparentColor then
       pdest^ := 0

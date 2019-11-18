@@ -1549,21 +1549,21 @@ begin
       exit; // bad version
     end;
 
-  save_p := PByteArray(integer(save_p) + VERSIONSIZE);
+  save_p := pOp(save_p, VERSIONSIZE);
 
   gameskill := skill_t(save_p[0]);
-  save_p := PByteArray(integer(save_p) + 1);
+  save_p := pOp(save_p, 1);
 
   gameepisode := save_p[0];
-  save_p := PByteArray(integer(save_p) + 1);
+  save_p := pOp(save_p, 1);
 
   gamemap := save_p[0];
-  save_p := PByteArray(integer(save_p) + 1);
+  save_p := pOp(save_p, 1);
 
   for i := 0 to MAXPLAYERS - 1 do
   begin
     playeringame[i] := save_p[0] <> 0;
-    save_p := PByteArray(integer(save_p) + 1);
+    save_p := pOp(save_p, 1);
   end;
 
   // load a base level
@@ -1571,13 +1571,13 @@ begin
 
   // get the times
   a := save_p[0];
-  save_p := PByteArray(integer(save_p) + 1);
+  save_p := pOp(save_p, 1);
 
   b := save_p[0];
-  save_p := PByteArray(integer(save_p) + 1);
+  save_p := pOp(save_p, 1);
 
   c := save_p[0];
-  save_p := PByteArray(integer(save_p) + 1);
+  save_p := pOp(save_p, 1);
 
   leveltime := _SHL(a, 16) + _SHL(b, 8) + c;
 
@@ -1631,7 +1631,7 @@ begin
 
   memcpy(save_p, @description[1], SAVESTRINGSIZE);
 
-  save_p := PByteArray(integer(save_p) + SAVESTRINGSIZE);
+  save_p := pOp(save_p, SAVESTRINGSIZE);
   name2 := '';
 
   savegameversion := VERSION;
@@ -1640,31 +1640,31 @@ begin
     name2 := name2 + ' ';
 
   memcpy(save_p, @name2[1], VERSIONSIZE);
-  save_p := PByteArray(integer(save_p) + VERSIONSIZE);
+  save_p := pOp(save_p, VERSIONSIZE);
 
   save_p[0] := Ord(gameskill);
-  save_p := PByteArray(integer(save_p) + 1);
+  save_p := pOp(save_p, 1);
 
   save_p[0] := gameepisode;
-  save_p := PByteArray(integer(save_p) + 1);
+  save_p := pOp(save_p, 1);
 
   save_p[0] := gamemap;
-  save_p := PByteArray(integer(save_p) + 1);
+  save_p := pOp(save_p, 1);
 
   for i := 0 to MAXPLAYERS - 1 do
   begin
     save_p[0] := intval(playeringame[i]);
-    save_p := PByteArray(integer(save_p) + 1);
+    save_p := pOp(save_p, 1);
   end;
 
   save_p[0] := _SHR(leveltime, 16);
-  save_p := PByteArray(integer(save_p) + 1);
+  save_p := pOp(save_p, 1);
 
   save_p[0] := _SHR(leveltime, 8);
-  save_p := PByteArray(integer(save_p) + 1);
+  save_p := pOp(save_p, 1);
 
   save_p[0] := leveltime;
-  save_p := PByteArray(integer(save_p) + 1);
+  save_p := pOp(save_p, 1);
 
   P_ArchivePlayers;
   P_ArchiveWorld;
@@ -1673,7 +1673,7 @@ begin
 
   save_p[0] := $1d; // consistancy marker
 
-  len := integer(save_p) - integer(savebuffer) + 1;
+  len := PCAST(save_p) - PCAST(savebuffer) + 1;
   if len > maxsize then
     I_Error('G_DoSaveGame(): Savegame buffer overrun');
   M_WriteFile(name, savebuffer, len);
@@ -1917,7 +1917,7 @@ begin
   begin
     compatibility_done := true;
     i := 4;
-    while (integer(@demo_p[i]) < integer(demoend) - 4) and (demo_p[i] <> DEMOMARKER) do
+    while (PCAST(@demo_p[i]) < PCAST(demoend) - 4) and (demo_p[i] <> DEMOMARKER) do
       inc(i, 4);
     // JVAL: Leave maximum 4 seconds after player death
     if i > 4 * TICKRATE * 4 then
@@ -1994,14 +1994,14 @@ var
 begin
   // Find the current size
 
-  current_length := integer(demoend) - integer(demobuffer);
+  current_length := PCAST(demoend) - PCAST(demobuffer);
 
   // Generate a new buffer twice the size
   new_length := current_length + $80000;
 
   new_demobuffer := Z_Malloc(new_length, PU_STATIC, nil);
 
-  new_demop := @new_demobuffer[integer(demo_p) - integer(demobuffer)];
+  new_demop := @new_demobuffer[PCAST(demo_p) - PCAST(demobuffer)];
 
   // Copy over the old data
 
@@ -2054,7 +2054,7 @@ begin
 
   demo_p := demo_start;
 
-  if integer(demo_p) >= integer(demoend) - 2 * SizeOf(ticcmd_t) then
+  if PCAST(demo_p) >= PCAST(demoend) - 2 * SizeOf(ticcmd_t) then
     G_IncreaseDemoBuffer;
 
   G_ReadDemoTiccmd(cmd);  // make SURE it is exactly the same

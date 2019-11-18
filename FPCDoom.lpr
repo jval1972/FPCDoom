@@ -147,6 +147,7 @@ uses
   t_png in 't_png.pas',
   t_tga in 't_tga.pas',
   tables in 'tables.pas',
+  v_intermission in 'v_intermission.pas',
   v_screenresolution in 'v_screenresolution.pas',
   v_video in 'v_video.pas',
   w_wad in 'w_wad.pas',

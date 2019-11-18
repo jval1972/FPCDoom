@@ -95,13 +95,13 @@ begin
   dest := @palL[0];
   pal := V_ReadPalette(PU_STATIC);
   src := pal;
-  while integer(src) < integer(@pal[256 * 3]) do
+  while PCAST(src) < PCAST(@pal[256 * 3]) do
   begin
     dest^ := (LongWord(src[0]) shl 16) or
              (LongWord(src[1]) shl 8) or
              (LongWord(src[2]));
     inc(dest);
-    src := PByteArray(integer(src) + 3);
+    src := pOp(src, 3);
   end;
   Z_ChangeTag(pal, PU_CACHE);
 

@@ -143,7 +143,7 @@ var
 begin
   while patch.topdelta <> $ff do
   begin
-    source := PByteArray(integer(patch) + 3);
+    source := pOp(patch, 3);
 
     count := patch.length;
     position := originy + patch.topdelta;
@@ -160,7 +160,7 @@ begin
     if count > 0 then
       memcpy(@cache[position], source, count);
 
-    patch := Pcolumn_t(integer(patch) + patch.length + 4);
+    patch := pOp(patch, patch.length + 4);
   end;
 end;
 
@@ -216,7 +216,7 @@ begin
       // Column does not have multiple patches?
       if collump[x] < 0 then
       begin
-        patchcol := Pcolumn_t(integer(realpatch) + realpatch.columnofs[x - x1]);
+        patchcol := pOp(realpatch, realpatch.columnofs[x - x1]);
         R_DrawColumnInCache(
           patchcol, @block[colofs[x]], patch.originy, theight);
       end;
@@ -325,14 +325,14 @@ begin
 
   if lump > 0 then
   begin
-    result := PByteArray(integer(W_CacheLumpNum(lump, PU_LEVEL)) + ofs);
+    result := pOp(W_CacheLumpNum(lump, PU_LEVEL), ofs);
     exit;
   end;
 
   if texturecomposite[tex] = nil then
     R_GenerateComposite(tex);
 
-  result := PByteArray(integer(texturecomposite[tex]) + ofs);
+  result := pOp(texturecomposite[tex], ofs);
 end;
 
 procedure R_GetDSs(const flat: integer);
@@ -394,7 +394,7 @@ begin
   ZeroMemory(@name, SizeOf(char8_t));
   names := W_CacheLumpName('PNAMES', PU_STATIC);
   nummappatches := PInteger(names)^;
-  name_p := PByteArray(integer(names) + 4);
+  name_p := pOp(names, 4);
 
 //  patchlookup := malloc(nummappatches * SizeOf(integer));
   patchlookup := Z_Malloc(nummappatches * SizeOf(integer), PU_STATIC, nil);
@@ -428,7 +428,7 @@ begin
   maptex := maptex1;
   numtextures1 := maptex[0];
   maxoff := W_LumpLength(W_GetNumForName('TEXTURE1'));
-  directory := PintegerArray(integer(maptex) + SizeOf(integer));
+  directory := pOp(maptex, SizeOf(integer));
 
   if W_CheckNumForName('TEXTURE2') <> -1 then
   begin
@@ -459,7 +459,7 @@ begin
       // Start looking in second texture file.
       maptex := maptex2;
       maxoff := maxoff2;
-      directory := PIntegerArray(integer(maptex) + SizeOf(integer));
+      directory := pOp(maptex, SizeOf(integer));
     end;
 
     offset := directory[0];
@@ -467,7 +467,7 @@ begin
     if offset > maxoff then
       I_Error('R_InitTextures(): bad texture directory');
 
-    mtexture := Pmaptexture_t(integer(maptex) + offset);
+    mtexture := pOp(maptex, offset);
 
     textures[i] :=
       Z_Malloc(
@@ -635,13 +635,13 @@ begin
 
   dest := @cpal[0];
   src := palette;
-  while integer(src) < integer(@palette[256 * 3]) do
+  while PCAST(src) < PCAST(@palette[256 * 3]) do
   begin
     dest^ := (LongWord(src[0]) shl 16) or
              (LongWord(src[1]) shl 8) or
              (LongWord(src[2]));
     inc(dest);
-    src := PByteArray(integer(src) + 3);
+    src := pOp(src, 3);
   end;
   aprox_black := V_FindAproxColorIndex(@cpal, $0, 1, 255);
   Z_ChangeTag(palette, PU_CACHE);
