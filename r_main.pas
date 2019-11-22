@@ -79,6 +79,12 @@ var
   chasecamera_viewxy: integer;
   chasecamera_viewz: integer;
 
+const
+  CHASECAMERA_XY_MIN = 8;
+  CHASECAMERA_XY_MAX = 128;
+  CHASECAMERA_Z_MIN = -8;
+  CHASECAMERA_Z_MAX = 64;
+
 //
 // Utility functions.
 //
@@ -1025,6 +1031,7 @@ begin
   C_AddCmd('detaillevel', @R_CmdDetailLevel);
   C_AddCmd('fullscreen', @R_CmdFullScreen);
   C_AddCmd('extremeflatfiltering', @R_CmdExtremeflatfiltering);
+  C_AddCmd('smoothskies', @R_CmdSmoothSkies);
   C_AddCmd('32bittexturepaletteeffects, use32bittexturepaletteeffects', @R_Cmd32bittexturepaletteeffects);
   C_AddCmd('useexternaltextures', @R_CmdUseExternalTextures);
   C_AddCmd('use32bitfuzzeffect', @R_CmdUse32boitfuzzeffect);
@@ -1102,6 +1109,9 @@ var
 begin
   if chasecamera then
   begin
+    chasecamera_viewxy := ibetween(chasecamera_viewxy, CHASECAMERA_XY_MIN, CHASECAMERA_XY_MAX);
+    chasecamera_viewz := ibetween(chasecamera_viewz, CHASECAMERA_Z_MIN, CHASECAMERA_Z_MAX);
+
     sec := Psubsector_t(viewplayer.mo.subsector).sector;
     ceilz := sec.ceilingheight + P_SectorJumpOverhead(sec) - CAMERARADIOUS;
     cz := viewz + chasecamera_viewz * FRACUNIT;
@@ -1313,6 +1323,9 @@ begin
   R_ClearSprites;
   R_ClearDynamicLights;
   R_ClearRender;
+
+  // Calculate sky stretch
+  R_CalcSkyStretch;
 
   // check for new console commands.
   NetUpdate;

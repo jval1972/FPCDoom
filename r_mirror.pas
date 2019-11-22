@@ -38,7 +38,7 @@ const
   MR_NONE = 0;
   MR_ENVIROMENT = 1;
   MR_WEAPON = 2;
-  MR_ALL = MR_ENVIROMENT or MR_WEAPON;
+  MR_SKY = 4;
 
 var
   mirrormode: integer = 0;

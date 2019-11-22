@@ -600,9 +600,9 @@ end;
 procedure TTexture.ScaleTo(AWidth, AHeight: word);
 var
   xs, ys, yi, xi, x, y: integer;
-  newimage: integer;
+  newimage: pointer;
   newsize: integer;
-  esi, edi: integer;
+  esi, edi: pointer;
 begin
   if FData = nil then
   begin
@@ -615,15 +615,15 @@ begin
     
   xi := (FWidth shl 16) div aWidth;
   yi := (FHeight shl 16) div aHeight;
-  NewSize := 4 + AWidth * AHeight * FBytesPerPixel;
-  NewImage := integer(malloc(NewSize));
-  PWord(NewImage)^ := AWidth;
-  PWord(NewImage + 2)^ := AHeight;
-  edi := NewImage + 4;
+  newSize := 4 + AWidth * AHeight * FBytesPerPixel;
+  NewImage := malloc(newSize);
+  PWord(newImage)^ := AWidth;
+  PWord(newImage + 2)^ := AHeight;
+  edi := pOp(newImage, 4);
   ys := 0;
   for y := 0 to AHeight - 1 do
   begin
-    esi := (integer(FData) + 4) + (ys shr 16) * (fWidth * FBytesPerPixel);
+    esi := pOp(FData, 4 + (ys shr 16) * (fWidth * FBytesPerPixel));
     xs := 0;
     case FBytesPerPixel of
        1:
@@ -645,11 +645,11 @@ begin
           xs := xs + xi;
         end;
     end;
-    edi := edi + (FBytesPerPixel * AWidth);
+    edi := pOp(edi, FBytesPerPixel * AWidth);
     ys := ys + yi;
   end;
   memfree(FData, FSize);
-  FData := pointer(NewImage);
+  FData := newImage;
   FWidth := AWidth;
   FHeight := AHeight;
   FSize := NewSize;
@@ -657,7 +657,7 @@ end;
 
 procedure TTexture.SetWidth(Value: word);
 var
-   newImage: integer;
+   newImage: pointer;
    y, newSize: integer;
 begin
   if Value = FWidth then
@@ -675,28 +675,28 @@ begin
   else
   begin
     newSize := 4 + Value * FHeight * FBytesPerPixel;
-    NewImage := integer(malloc(NewSize));
+    newImage := malloc(newSize);
     PWord(newImage)^ := Value;
     PWord(newImage + 2)^ := FHeight;
     if FData <> nil then
     begin
       for y := 0 to FHeight - 1 do
       begin
-        Move(pointer(integer(FData) + 4 + (FBytesPerPixel * FWidth * y))^,
-             pointer(NewImage + 4 + (FBytesPerPixel * Value * y))^,
-             (FBytesPerPixel * FWidth));
+        Move(pOp(FData, 4 + (FBytesPerPixel * FWidth * y))^,
+             pOp(newImage, 4 + (FBytesPerPixel * Value * y))^,
+             FBytesPerPixel * FWidth);
       end;
       memfree(FData, FSize);
     end;
-    FData := pointer(newImage);
-    FSize := NewSize;
+    FData := newImage;
+    FSize := newSize;
     FWidth := Value;
   end;
 end;
 
 procedure TTexture.SetHeight(Value: word);
 var
-  newImage: integer;
+  newImage: pointer;
   newSize: integer;
 begin
   if Value = FHeight then
@@ -713,17 +713,17 @@ begin
   end
   else
   begin
-    NewSize := 4 + fWidth * Value * FBytesPerPixel;
-    NewImage := integer(malloc(NewSize));
+    newSize := 4 + fWidth * Value * FBytesPerPixel;
+    newImage := malloc(newSize);
     if FData <> nil then
     begin
-      Move(FData^, pointer(NewImage)^, FSize);
+      Move(FData^, newImage^, FSize);
       memfree(FData, FSize);
     end;
-    PWord(NewImage)^ := FWidth;
-    PWord(NewImage + 2)^ := Value;
-    FData := pointer(NewImage);
-    FSize := NewSize;
+    PWord(newImage)^ := FWidth;
+    PWord(newImage + 2)^ := Value;
+    FData := newImage;
+    FSize := newSize;
     FHeight := Value;
   end;
 end;
@@ -748,7 +748,7 @@ begin
       FSize := 4 + FWidth * FHeight * FBytesPerPixel;
       FData := malloc(FSize);
       PWord(FData)^ := FWidth;
-      PWord(integer(FData) + 2)^ := FHeight;
+      PWord(pOp(FData, 2))^ := FHeight;
     end;
   end;
 end;
@@ -778,9 +778,9 @@ begin
     m := 255 shl m;
     for i := 0 to Count - 1 do
     begin
-      r := (integer(APalette^) shr rshr) and m;
-      g := (integer(APalette^) shr gshr) and m;
-      b := (integer(APalette^) shr bshr) and m;
+      r := (PInteger(APalette)^ shr rshr) and m;
+      g := (PInteger(APalette)^ shr gshr) and m;
+      b := (PInteger(APalette)^ shr bshr) and m;
       PIntegerArray(FPalette)[i] := (r shl 16) or (g shl 8) or (b);
       APalette := pOp(APalette, RecordSize);
     end;
@@ -814,7 +814,7 @@ var
 begin
   for i := 0 to count div 8 - 1 do
   begin
-    b := byte(source^);
+    b := PByte(source)^;
     for j := 0 to 7 do
     begin
       c := FEncodeColor(PIntegerArray(FPalette)[(b shr 7) and 1]);
@@ -824,7 +824,7 @@ begin
     end;
     Source := pOp(Source, 1);
   end;
-  b := byte(source^);
+  b := PByte(source)^;
   for j := 0 to count and 7 - 1 do
   begin
     c := FEncodeColor(PIntegerArray(FPalette)[(b shr 7) and 1]);
@@ -842,17 +842,17 @@ var
 begin
   for i := 0 to count div 2 - 1 do
   begin
-    c := FEncodeColor(PIntegerArray(FPalette)[byte(source^) shr 4]);
+    c := FEncodeColor(PIntegerArray(FPalette)[PByte(source)^ shr 4]);
     Move(c, dest^, FBytesPerPixel);
     dest := pOp(dest, FBytesPerPixel);
-    c := FEncodeColor(PIntegerArray(FPalette)[byte(source^) and 15]);
+    c := FEncodeColor(PIntegerArray(FPalette)[PByte(source)^ and 15]);
     Move(c, dest^, FBytesPerPixel);
     dest := pOp(dest, FBytesPerPixel);
     Source := pOp(Source, 1);
   end;
   if count and 1 = 1 then
   begin
-    c := FEncodeColor(PIntegerArray(FPalette)[byte(source^) shr 4]);
+    c := FEncodeColor(PIntegerArray(FPalette)[PByte(source)^ shr 4]);
     Move(c, dest^, FBytesPerPixel);
   end;
 end;
@@ -863,7 +863,7 @@ var
 begin
   for i := 0 to count - 1 do
   begin
-    c := FEncodeColor(PIntegerArray(FPalette)[byte(source^)]);
+    c := FEncodeColor(PIntegerArray(FPalette)[PByte(source)^]);
     Move(c, dest^, FBytesPerPixel);
     dest := pOp(dest, FBytesPerPixel);
     Source := pOp(Source, 1);
@@ -876,7 +876,7 @@ var
 begin
   for i := 0 to count - 1 do
   begin
-    c := FEncodeColor(Pixel15to24(word(Source^)));
+    c := FEncodeColor(Pixel15to24(PWord(Source)^));
     Move(c, dest^, FBytesPerPixel);
     dest := pOp(dest, FBytesPerPixel);
     Source := pOp(Source, 2);
@@ -889,7 +889,7 @@ var
 begin
   for i := 0 to count - 1 do
   begin
-    c := FEncodeColor(integer(Source^));
+    c := FEncodeColor(PInteger(Source)^);
     Move(c, Dest^, FBytesPerPixel);
     Dest := pOp(Dest, FBytesPerPixel);
     Source := pOp(Source, 3);
@@ -902,7 +902,7 @@ var
 begin
   for i := 0 to count - 1 do
   begin
-    c := FEncodeColor(integer(source^));
+    c := FEncodeColor(PInteger(source)^);
     Move(c, dest^, FBytesPerPixel);
     dest := pOp(dest, FBytesPerPixel);
     Source := pOp(source, 4);
@@ -1109,7 +1109,7 @@ begin
   result := ImageFormats;
   while result <> nil do
   begin
-    if not(Pos(FileExt, result.GetFileExt) = 0) then
+    if Pos(FileExt, result.GetFileExt) <> 0 then
       break;
     result := result^.getNext;
   end;

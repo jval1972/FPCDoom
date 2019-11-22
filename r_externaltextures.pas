@@ -80,11 +80,10 @@ const
   COL32CACHESIZE = $4000;
 
 const
-  MAXTEXTUREHEIGHT32 = 1024;
-  MAXTEXTUREHEIGHT8 = 128;
+  MAXTEXTURESIZE32 = 128 * (1 shl MAXTEXTUREFACTORBITS);
 
 type
-  dc32_t = array[0..MAXTEXTUREHEIGHT32] of LongWord;
+  dc32_t = array[0..MAXTEXTURESIZE32] of LongWord;
   Pdc32_t = ^dc32_t;
 
   Pdc32cacheitem_t = ^dc32cacheitem_t;
@@ -174,7 +173,7 @@ end;
 // R_ReadDC32ExternalCache
 //
 // JVAL
-//  Create dc_source32 from an external texture
+//  Create dc_source (32 bit) from an external texture
 //
 function R_ReadDC32ExternalCache(const rtex, rcol: integer): boolean;
 var
@@ -209,7 +208,7 @@ begin
     exit;
   end;
 
-  // Cache read of the caclulated dc_source32, 98-99% propability not to recalc...
+  // Cache read of the caclulated dc_source (32 bit), 98-99% propability not to recalc...
   hash := R_GetHash(rtex, rcol, rcolumn.dc_texturemod);
   rover := R_FindDC32Rover(hash, rtex, rcol, rcolumn.dc_texturemod);
   cachemiss := rover = nil;
@@ -242,7 +241,7 @@ begin
         // JVAL Final adjustment of hi resolution textures
         twidth := (1 shl i) * ptex.width;
         theight := (1 shl i) * ptex.height;
-        while (twidth > MAXTEXTUREHEIGHT32) or (theight > MAXTEXTUREHEIGHT32) do
+        while (twidth > MAXTEXTURESIZE32) or (theight > MAXTEXTURESIZE32) do
         begin
           dec(i);
           twidth := (1 shl i) * ptex.width;
@@ -430,11 +429,79 @@ begin
   result := true;
 end;
 
+type
+  resize_t = function (const x1, x2, x3: LongWord; const offs: integer): LongWord;
+
+function hqresize(const x1, x2, x3: LongWord; const offs: integer): LongWord;
+  function _color_sqdiff(const c1, c2: LongWord): LongWord;
+  var
+    dr, dg, db: LongWord;
+  begin
+    dr := ((c1 shr 16) and $FF) - ((c2 shr 16) and $FF);
+    dg := ((c1 shr 8) and $FF) - ((c1 shr 8) and $FF);
+    db := (c1 and $FF) - (c2 and $FF);
+    result := dr * dr + dg * dg + db * db;
+  end;
+var
+  sqoffs: LongWord;
+  sqoffs1, sqoffs3: LongWord;
+  t1, t3: LongWord;
+begin
+  sqoffs := offs * offs;
+
+  sqoffs1 := _color_sqdiff(x1, x2);
+  if sqoffs1 < sqoffs then
+    t1 := x1
+  else
+    t1 := x2;
+
+  sqoffs3 := _color_sqdiff(x3, x2);
+  if sqoffs3 < sqoffs then
+    t3 := x3
+  else
+    t3 := x2;
+
+  result := R_ColorMidAverage([t1, x2, x2, t3]);
+end;
+
+function noresize(const x1, x2, x3: LongWord; const offs: integer): LongWord;
+begin
+  result := x2;
+end;
+
+function R_Grow_dc32(p: Pdc32cacheitem_t; oldcolumnsize: integer; factor: integer; lastid: integer; proc: resize_t): Pdc32_t;
+var
+  l: PLongWordArray;
+  i: integer;
+begin
+  if p.dc32 = nil then
+  begin
+    p.dc32 := mallocz(factor * (oldcolumnsize + 1) * SizeOf(LongWord));
+    p.columnsize32 := factor * oldcolumnsize;
+  end
+  else if p.columnsize32 = oldcolumnsize then
+  begin
+    l := malloc((factor * oldcolumnsize + 1) * SizeOf(LongWord));
+    for i := 0 to factor * oldcolumnsize - 1 do
+      l[i] := p.dc32[i div factor];
+    l[factor * p.columnsize32] := p.dc32[lastid];
+
+    realloc(p.dc32, (p.columnsize32 + 1) * SizeOf(LongWord), (factor * oldcolumnsize + 1) * SizeOf(LongWord));
+    p.columnsize32 := factor * oldcolumnsize;
+    p.dc32[0] := proc(l[p.columnsize32], l[0], l[1], 64);
+    for i := 1 to p.columnsize32 - 1 do
+      p.dc32[i] := proc(l[i - 1], l[i], l[i + 1], 64);
+    p.dc32[p.columnsize32] := proc(l[p.columnsize32 - 1], l[p.columnsize32], l[1], 64);
+    memfree(l, (factor * oldcolumnsize + 1) * SizeOf(LongWord));
+  end;
+  result := p.dc32;
+end;
+
 //
 // R_ReadDC32InternalCache
 //
 // JVAL
-//  Create dc_source32 from internal (IWAD) texture
+//  Create dc_source (32 bit) from internal (IWAD) texture
 //
 procedure R_ReadDC32InternalCache(const rtex, rcol: integer);
 var
@@ -447,13 +514,16 @@ var
   i: integer;
   dc_source1, dc_source2: PByteArray;
   rover: Pdc32cacheitem_t;
+  factorbits: integer;
 begin
-  // Cache read of the caclulated dc_source32, 98-99% propability not to recalc...
+  // Cache read of the caclulated dc_source (32 bit), 98-99% propability not to recalc...
   hash := R_GetHash(rtex, rcol, rcolumn.dc_mod);
   rover := R_FindDC32Rover(hash, rtex, rcol, rcolumn.dc_texturemod);
   cachemiss := rover = nil;
   if cachemiss then
     rover := R_NewDC32Rover(hash);
+
+  factorbits := 0;
 
   if cachemiss then
   begin
@@ -492,11 +562,20 @@ begin
     end;
 
     if rtex = skytexture then
-      plw^ := rover.dc32[127]
+    begin
+      if smoothskies then
+      begin
+        R_Grow_dc32(rover, 128, 2, 127, @hqresize)
+      end
+      else
+        R_Grow_dc32(rover, 128, 2, 127, @noresize);
+      textures[rtex].factorbits := 1;
+      factorbits := 1;
+    end
     else
       plw^ := rover.dc32[0];
   end;
-  rcolumn.dc_texturefactorbits := 0;
+  rcolumn.dc_texturefactorbits := factorbits;
   rcolumn.dc_source := rover.dc32;
 end;
 

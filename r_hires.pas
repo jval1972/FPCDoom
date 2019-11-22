@@ -47,6 +47,7 @@ type
 var
   detailLevel: integer;
   extremeflatfiltering: boolean;
+  smoothskies: boolean;
   setdetail: integer = -1;
   videomode: videomode_t = vm8bit;
   usetransparentsprites: boolean;
@@ -61,11 +62,13 @@ const
 const
   detailStrings: array[0..DL_NUMRESOLUTIONS - 1] of string = ('MEDIUM', 'NORMAL');
   flatfilteringstrings: array[boolean] of string = ('NORMAL', 'EXTREME');
+  smoothskiesstrings: array[boolean] of string = ('NORMAL', 'DOUBLE');
 
 procedure R_CmdMediumRes(const parm1: string = '');
 procedure R_CmdNormalRes(const parm1: string = '');
 procedure R_CmdDetailLevel(const parm1: string = '');
 procedure R_CmdExtremeflatfiltering(const parm1: string = '');
+procedure R_CmdSmoothSkies(const parm1: string = '');
 procedure R_CmdFullScreen(const parm1: string = '');
 procedure R_Cmd32bittexturepaletteeffects(const parm1: string = '');
 procedure R_CmdUseExternalTextures(const parm1: string = '');
@@ -109,6 +112,9 @@ procedure R_SetPalette(palette: integer);
 
 var
   pal_color: LongWord;
+
+const
+  MAXTEXTUREFACTORBITS = 3; // JVAL: Allow hi resolution textures x 8
 
 implementation
 
@@ -262,6 +268,33 @@ begin
     R_ResetDS32Cache;
   end;
   R_CmdExtremeflatfiltering;
+end;
+
+procedure R_CmdSmoothSkies(const parm1: string = '');
+var
+  newsmoothskies: boolean;
+  parm: string;
+begin
+  if parm1 = '' then
+  begin
+    printf('Current setting: smoothskies = %s.'#13#10, [smoothskiesstrings[smoothskies]]);
+    exit;
+  end;
+
+  parm := strupper(parm1);
+  if parm = smoothskiesstrings[true] then
+    newsmoothskies := true
+  else if parm = smoothskiesstrings[false] then
+    newsmoothskies := false
+  else
+    newsmoothskies := C_BoolEval(parm1, smoothskies);
+
+  if smoothskies <> newsmoothskies then
+  begin
+    smoothskies := newsmoothskies;
+    R_ResetDC32Cache;
+  end;
+  R_CmdSmoothSkies;
 end;
 
 procedure R_Cmd32bittexturepaletteeffects(const parm1: string = '');

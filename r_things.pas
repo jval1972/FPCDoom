@@ -47,7 +47,7 @@ var
   maxvissprite: integer;
 
 procedure R_DrawMaskedColumn(const col: Pcolumn_t; flags: LongWord);
-procedure R_DrawMaskedColumn32(const mc2h: integer; flags: LongWord); // Use dc_source32
+procedure R_DrawMaskedColumn32(const mc2h: integer; flags: LongWord); // Use dc_source (32 bit)
 
 
 procedure R_SortVisSprites;
@@ -476,7 +476,7 @@ begin
   rcolumn.dc_texturemid := basetexturemid;
 end;
 
-procedure R_DrawMaskedColumn32(const mc2h: integer; flags: LongWord); // Use dc_source32
+procedure R_DrawMaskedColumn32(const mc2h: integer; flags: LongWord); // Use dc_source (32 bit)
 var
   topscreen: int64;
   bottomscreen: int64;

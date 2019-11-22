@@ -134,7 +134,6 @@ uses
   p_mobj,
   p_tick,
   p_telept,
-  p_pspr,
   p_spec,
   p_switch,
   r_data,

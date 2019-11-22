@@ -93,9 +93,6 @@ procedure R_DrawSkyColumnHi(const parms: Pcolumnparams_t);
 procedure R_DrawTranslatedColumn(const parms: Pcolumnparams_t);
 procedure R_DrawTranslatedColumnHi(const parms: Pcolumnparams_t);
 
-const
-  MAXTEXTUREFACTORBITS = 3; // JVAL: Allow hi resolution textures x 8 
-
 var
   dc_llindex: integer;
   rcolumn: columnparams_t;
@@ -109,6 +106,7 @@ uses
   r_data,
   r_draw,
   r_hires,
+  r_sky,
   v_video;
 
 //
@@ -615,6 +613,7 @@ var
   spot: integer;
   dc_source8: PByteArray;
   b: byte;
+  strn: Pskytransarray_t;
 begin
   count := parms.dc_yh - parms.dc_yl;
 
@@ -627,6 +626,7 @@ begin
   frac := parms.dc_texturemid + (parms.dc_yl - centery) * fracstep;
   fracstop := frac + count * fracstep;
   dc_source8 := parms.dc_source;
+  strn := @skytranstable[0];
 
   if lowrescolumndraw and (count > 0) then
   begin
@@ -635,11 +635,11 @@ begin
     while frac < fracstop do
     begin
       // Invert Sky Texture if below horizont level
-      spot := LongWord(frac) shr FRACBITS;
-      if spot > 127 then
-        spot := 127 - (spot and 127);
+      spot := LongWord(frac) shr (FRACBITS - 1);
+      if spot > 255 then
+        spot := 255 - (spot and 255);
 
-      b := dc_source8[spot];
+      b := dc_source8[strn[spot]];
       dest^ := b;
       inc(dest, SCREENWIDTH);
       dest^ := b;
@@ -653,11 +653,11 @@ begin
   while frac <= fracstop do
   begin
     // Invert Sky Texture if below horizont level
-    spot := LongWord(frac) shr FRACBITS;
-    if spot > 127 then
-      spot := 127 - (spot and 127);
+    spot := LongWord(frac) shr (FRACBITS - 1);
+    if spot > 255 then
+      spot := 255 - (spot and 255);
 
-    dest^ := dc_source8[spot];
+    dest^ := dc_source8[strn[spot]];
 
     inc(dest, SCREENWIDTH);
     inc(frac, fracstep);
@@ -671,10 +671,12 @@ var
   frac: fixed_t;
   fracstep: fixed_t;
   fracstop: fixed_t;
+  factor: integer;
   spot: integer;
   and_mask: integer;
   dc_source32: PLongWordArray;
   l: LongWord;
+  strn: Pskytransarray_t;
 begin
   count := parms.dc_yh - parms.dc_yl;
 
@@ -686,11 +688,13 @@ begin
   fracstep := parms.dc_iscale;
   frac := parms.dc_texturemid + (parms.dc_yl - centery) * fracstep;
 
-  fracstep := fracstep * (1 shl parms.dc_texturefactorbits);
-  frac := frac * (1 shl parms.dc_texturefactorbits);
+  factor := 1 shl (parms.dc_texturefactorbits);
+  fracstep := fracstep * factor;
+  frac := frac * factor;
   fracstop := frac + count * fracstep;
-  and_mask := 128 * (1 shl parms.dc_texturefactorbits) - 1;
+  and_mask := 256 * factor - 1;
   dc_source32 := parms.dc_source;
+  strn := @skytranstable[parms.dc_texturefactorbits];
 
   if lowrescolumndraw and (count > 0) then
   begin
@@ -699,10 +703,10 @@ begin
     while frac <= fracstop do
     begin
       // Invert Sky Texture if below horizont level
-      spot := LongWord(frac) shr FRACBITS;
+      spot := LongWord(frac) shr (FRACBITS - 1);
       if spot > and_mask then
         spot := and_mask - (spot and and_mask);
-      l := dc_source32[spot];
+      l := dc_source32[strn[spot]];
       destl^ := l;
       inc(destl, SCREENWIDTH);
       destl^ := l;
@@ -716,10 +720,10 @@ begin
   while frac <= fracstop do
   begin
     // Invert Sky Texture if below horizont level
-    spot := LongWord(frac) shr FRACBITS;
+    spot := LongWord(frac) shr (FRACBITS - 1);
     if spot > and_mask then
       spot := and_mask - (spot and and_mask);
-    destl^ := dc_source32[spot];
+    destl^ := dc_source32[strn[spot]];
     inc(destl, SCREENWIDTH);
     inc(frac, fracstep);
   end;

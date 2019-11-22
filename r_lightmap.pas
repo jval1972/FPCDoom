@@ -879,6 +879,10 @@ begin
       P_BlockThingsIterator(x, y, RIT_AddAdditionalLights);
 end;
 
+const
+  DEPTHBUFFER_NEAR = $3FFF * FRACUNIT;
+  DEPTHBUFFER_FAR = 256;
+
 function R_GetVisLightProjection(const x, y, z: fixed_t; const radius: fixed_t; const color: LongWord): Pvislight_t;
 var
   tr_x: fixed_t;
@@ -909,8 +913,8 @@ begin
     exit;
 
   xscale := FixedDiv(projection, tz);
-  if xscale > $3FFF * FRACUNIT then
-    xscale := $3FFF * FRACUNIT;
+  if xscale > DEPTHBUFFER_NEAR then
+    xscale := DEPTHBUFFER_NEAR;
 
   gxt := -FixedMul(tr_x, viewsin);
   gyt := FixedMul(tr_y, viewcos);
@@ -976,12 +980,12 @@ begin
   tz := gxt - gyt;
 
   if tz <= 4 * FRACUNIT then
-    result.dbmin := $3FFF * FRACUNIT
+    result.dbmin := DEPTHBUFFER_NEAR
   else
   begin
     result.dbmin := FixedDiv(projectiony, tz);
-    if result.dbmin > $3FFF * FRACUNIT then
-      result.dbmin := $3FFF * FRACUNIT
+    if result.dbmin > DEPTHBUFFER_NEAR then
+      result.dbmin := DEPTHBUFFER_NEAR
     else if result.dbmin < 256 then
       result.dbmin := 256;
   end;
@@ -995,24 +999,24 @@ begin
   tz := gxt - gyt;
 
   if tz <= 4 * FRACUNIT then
-    result.dbmax := $3FFF * FRACUNIT
+    result.dbmax := DEPTHBUFFER_NEAR
   else
   begin
     result.dbmax := FixedDiv(projectiony, tz);
-    if result.dbmax > $3FFF * FRACUNIT then
-      result.dbmax := $3FFF * FRACUNIT
-    else if result.dbmax < 256 then
-      result.dbmax := 256;
+    if result.dbmax > DEPTHBUFFER_NEAR then
+      result.dbmax := DEPTHBUFFER_NEAR
+    else if result.dbmax < DEPTHBUFFER_FAR then
+      result.dbmax := DEPTHBUFFER_FAR;
   end;
   if result.dbmax = result.dbmin then
   begin
-    result.dbmax := result.scale + 256;
-    if result.scale < 512 then
-      result.dbmin := 256
+    result.dbmax := result.scale + DEPTHBUFFER_FAR;
+    if result.scale < 2 * DEPTHBUFFER_FAR then
+      result.dbmin := DEPTHBUFFER_FAR
     else
-      result.dbmin := result.scale - 256;
-    result.dbdmin := 256;
-    result.dbdmax := 256;
+      result.dbmin := result.scale - DEPTHBUFFER_FAR;
+    result.dbdmin := DEPTHBUFFER_FAR;
+    result.dbdmax := DEPTHBUFFER_FAR;
   end
   else
   begin

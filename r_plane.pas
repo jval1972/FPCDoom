@@ -78,10 +78,12 @@ uses
   r_sky,
   r_draw,
   r_main,
+  r_mirror,
   r_hires,
   r_draw_span,
   r_draw_column,
   r_render,
+  tables,
   z_memory;
 
 // Here comes the obnoxious "visplane".
@@ -440,6 +442,7 @@ var
   x: integer;
   stop: integer;
   angle: integer;
+  flipsky: boolean;
 begin
   for i := 0 to lastvisplane - 1 do
   begin
@@ -451,11 +454,16 @@ begin
     if pl.picnum = skyflatnum then
     begin
       if zaxisshift and (viewangleoffset = 0) then
-        rcolumn.dc_iscale := FRACUNIT * 93 div viewheight // JVAL adjust z axis shift also
+      begin
+        rcolumn.dc_iscale := FRACUNIT * 93 div viewheight; // JVAL adjust z axis shift also
+      end
       else
+      begin
         rcolumn.dc_iscale := FRACUNIT * 200 div viewheight;
+      end;
 
       rcolumn.dc_texturemid := skytexturemid;
+      flipsky := (mirrormode and MR_ENVIROMENT <> 0) <> (mirrormode and MR_SKY <> 0);
       for x := pl.minx to pl.maxx do
       begin
         rcolumn.dc_yl := pl.top[x];
@@ -463,7 +471,10 @@ begin
 
         if rcolumn.dc_yl < rcolumn.dc_yh then
         begin
-          angle := (viewangle + xtoviewangle[x]) div ANGLETOSKYUNIT;
+          if flipsky then
+            angle := (ANGLE_MAX - viewangle - xtoviewangle[x]) div ANGLETOSKYUNIT
+          else
+            angle := (viewangle + xtoviewangle[x]) div ANGLETOSKYUNIT;
           rcolumn.dc_texturemod := 0;
           rcolumn.dc_mod := 0;
           rcolumn.dc_x := x;

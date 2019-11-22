@@ -130,6 +130,7 @@ uses
   r_grayscale,
   r_colorsubsampling,
   r_render,
+  r_sky,
   t_main,
   v_intermission,
   v_video,
@@ -771,11 +772,10 @@ var
 type
   optionsdisplayadvanced_e = (
     od_aspect,
+    od_camera,
     od_mirror,
     od_usetransparentsprites,
     od_interpolate,
-    od_zaxisshift,
-    od_chasecamera,
     od_fixstallhack,
     od_numrenderingthreads,
     optdispadvanced_end
@@ -784,6 +784,19 @@ type
 var
   OptionsDisplayAdvancedMenu: array[0..Ord(optdispadvanced_end) - 1] of menuitem_t;
   OptionsDisplayAdvancedDef: menu_t;
+
+// DISPLAY MIRROR MENU
+type
+  optionsdisplaymirror_e = (
+    odm_enviroment,
+    odm_weapon,
+    odm_sky,
+    optdispmirror_end
+  );
+
+var
+  OptionsDisplayMirrorMenu: array[0..Ord(optdispmirror_end) - 1] of menuitem_t;
+  OptionsDisplayMirrorDef: menu_t;
 
 // DISPLAY ASPECT RATIO MENU
 type
@@ -805,11 +818,34 @@ var
   OptionsDisplayAspectRatioMenu: array[0..Ord(optdispaspect_end) - 1] of menuitem_t;
   OptionsDisplayAspectRatioDef: menu_t;
 
+//
+// DISPLAY CAMERA MENU
+type
+  optionsdisplaycamera_e = (
+    odc_zaxisshift,
+    odc_skystretchpct,
+    odc_filler1,
+    odc_filler2,
+    odc_chasecamera,
+    odc_chasecameraxy,
+    odc_filler3,
+    odc_filler4,
+    odc_chasecameraz,
+    odc_filler5,
+    odc_filler6,
+    optdispcamera_end
+  );
+
+var
+  OptionsDisplayCameraMenu: array[0..Ord(optdispcamera_end) - 1] of menuitem_t;
+  OptionsDisplayCameraDef: menu_t;
+
 // COLORS MENU
 type
   optionsdisplaycolors_e = (
     oc_grayscale,
     oc_colorsubsubling,
+    oc_gammacorrection,
     optdispcolors_end
   );
 
@@ -845,6 +881,7 @@ type
     od_useexternaltextures,
     od_preferetexturesnamesingamedirectory,
     od_flatfiltering,
+    od_smoothskies,
     optdisp32bit_end
   );
 
@@ -1851,6 +1888,38 @@ begin
   end;
 end;
 
+procedure M_OptionCameraShift(choice: integer);
+begin
+  M_SetupNextMenu(@OptionsDisplayCameraDef);
+end;
+
+procedure M_ChangeSkyStretch(choice: integer);
+begin
+  case choice of
+    0: skystretch_pct := skystretch_pct - 5;
+    1: skystretch_pct := skystretch_pct + 5;
+  end;
+  skystretch_pct := ibetween(skystretch_pct, 0, 100);
+end;
+
+procedure M_ChangeCameraXY(choice: integer);
+begin
+  case choice of
+    0: chasecamera_viewxy := chasecamera_viewxy - 8;
+    1: chasecamera_viewxy := chasecamera_viewxy + 8;
+  end;
+  chasecamera_viewxy := ibetween(chasecamera_viewxy, CHASECAMERA_XY_MIN, CHASECAMERA_XY_MAX);
+end;
+
+procedure M_ChangeCameraZ(choice: integer);
+begin
+  case choice of
+    0: chasecamera_viewz := chasecamera_viewz - 8;
+    1: chasecamera_viewz := chasecamera_viewz + 8;
+  end;
+  chasecamera_viewz := ibetween(chasecamera_viewz, CHASECAMERA_Z_MIN, CHASECAMERA_Z_MAX);
+end;
+
 procedure M_ChangeHudFullScreenSize(choice: integer);
 begin
   if m_shiftdown then
@@ -2113,6 +2182,9 @@ var
 var
   strfullscreenmodes: array[boolean] of string = ('SHARED', 'EXCLUSIVE');
 
+var
+  str_renderquality: array[boolean] of string = ('normal', 'low');
+
 
 procedure M_DrawDisplayDetailOptions;
 var
@@ -2125,6 +2197,12 @@ begin
   ppos := M_WriteText(OptionsDisplayDetailDef.x, OptionsDisplayDetailDef.y + OptionsDisplayDetailDef.itemheight * Ord(odd_detaillevel), 'Detail level: ');
   sprintf(stmp, '%s (%s)', [detailStrings[detailLevel], colordepths[videomode = vm32bit]]);
   M_WriteColorText(ppos.x, ppos.y, stmp, 'CRGRAY');
+
+  ppos := M_WriteText(OptionsDisplayDetailDef.x, OptionsDisplayDetailDef.y + OptionsDisplayDetailDef.itemheight * Ord(odd_columnrenderingquality), 'Column render quality: ');
+  M_WriteColorText(ppos.x, ppos.y, str_renderquality[lowrescolumndraw], 'CRGRAY');
+
+  ppos := M_WriteText(OptionsDisplayDetailDef.x, OptionsDisplayDetailDef.y + OptionsDisplayDetailDef.itemheight * Ord(odd_spanrenderingquality), 'Span render quality: ');
+  M_WriteColorText(ppos.x, ppos.y, str_renderquality[lowresspandraw], 'CRGRAY');
 
   ppos := M_WriteText(OptionsDisplayDetailDef.x, OptionsDisplayDetailDef.y + OptionsDisplayDetailDef.itemheight * Ord(odd_fullscreenexclusive), 'Fullscreen Mode: ');
   stmp := strfullscreenmodes[fullscreenexclusive];
@@ -2211,7 +2289,7 @@ begin
   M_WriteColorText(ppos.x, ppos.y, ssminfo_names[statusbarstretch_mode ], 'CRGRAY');
 
   custom_fullscreenhud_size := ibetween(custom_fullscreenhud_size, CUSTOM_FULLSCREENHUD_SIZE_MIN, CUSTOM_FULLSCREENHUD_SIZE_MAX);
-  ppos := M_WriteText(OptionsDisplayHudDef.x, OptionsDisplayHudDef.y + OptionsDisplayHudDef.itemheight * Ord(od_custom_fullscreenhud_size), 'Size: ');
+  ppos := M_WriteText(OptionsDisplayHudDef.x, OptionsDisplayHudDef.y + OptionsDisplayHudDef.itemheight * Ord(od_custom_fullscreenhud_size), 'Fullscreen HUD Size: ');
   M_WriteColorText(ppos.x, ppos.y, strhudsize[custom_fullscreenhud_size], 'CRGRAY');
 
   custom_hudhelthpos := ibetween(custom_hudhelthpos, -1, 1);
@@ -2303,12 +2381,33 @@ begin
     OptionsLightmapDef.x, OptionsLightmapDef.y + OptionsLightmapDef.itemheight * (Ord(ol_lightwidthfactor) + 1), 21, lightwidthfactor, MAXLIGHTWIDTHFACTOR + 1);
 end;
 
-procedure M_SwitchMirrorMode(choice: integer);
+procedure M_OptionsDisplayAdvancedMirror(choice: integer);
 begin
-  if m_shiftdown then
-    mirrormode := (mirrormode + 3) mod 4
+  M_SetupNextMenu(@OptionsDisplayMirrorDef);
+end;
+
+procedure M_SwitchMirrorEnviroment(choice: integer);
+begin
+  if mirrormode and MR_ENVIROMENT <> 0 then
+    mirrormode := mirrormode and not MR_ENVIROMENT
   else
-    mirrormode := (mirrormode + 1) mod 4;
+    mirrormode := mirrormode or MR_ENVIROMENT;
+end;
+
+procedure M_SwitchMirrorWeapon(choice: integer);
+begin
+  if mirrormode and MR_WEAPON <> 0 then
+    mirrormode := mirrormode and not MR_WEAPON
+  else
+    mirrormode := mirrormode or MR_WEAPON;
+end;
+
+procedure M_SwitchMirrorSky(choice: integer);
+begin
+  if mirrormode and MR_SKY <> 0 then
+    mirrormode := mirrormode and not MR_SKY
+  else
+    mirrormode := mirrormode or MR_SKY;
 end;
 
 function renderingthreadslist: TDNumberList;
@@ -2368,10 +2467,6 @@ begin
   lst.Free;
 end;
 
-const
-  str_mirrormodes: array[0..3] of string =
-    ('NONE', 'ENVIROMENT', 'WEAPON', 'ALL');
-
 procedure M_DrawOptionsDisplayAdvanced;
 var
   ppos: menupos_t;
@@ -2381,9 +2476,24 @@ begin
 
   ppos := M_WriteText(OptionsDisplayAdvancedDef.x, OptionsDisplayAdvancedDef.y + OptionsDisplayAdvancedDef.itemheight * Ord(od_numrenderingthreads), 'Rendering Threads: ');
   M_WriteColorText(ppos.x, ppos.y, decide(setrenderingthreads = 0, 'AUTO', itoa(setrenderingthreads)), 'CRGRAY');
+end;
 
-  ppos := M_WriteText(OptionsDisplayAdvancedDef.x, OptionsDisplayAdvancedDef.y + OptionsDisplayAdvancedDef.itemheight * Ord(od_mirror), 'Mirror Mode: ');
-  M_WriteColorText(ppos.x, ppos.y, str_mirrormodes[mirrormode mod 4], 'CRGRAY');
+procedure M_DrawOptionsDisplayMirror;
+var
+  ppos: menupos_t;
+begin
+  M_DrawDisplayOptions;
+  V_DrawPatch(20, 48, SCN_TMP, 'MENU_MIR', false);
+
+  ppos := M_WriteText(OptionsDisplayMirrorDef.x, OptionsDisplayMirrorDef.y + OptionsDisplayMirrorDef.itemheight * Ord(odm_enviroment), 'Enviroment: ');
+  M_WriteColorText(ppos.x, ppos.y, decide(mirrormode and MR_ENVIROMENT <> 0, 'ON', 'OFF'), 'CRGRAY');
+
+  ppos := M_WriteText(OptionsDisplayMirrorDef.x, OptionsDisplayMirrorDef.y + OptionsDisplayMirrorDef.itemheight * Ord(odm_weapon), 'Weapon: ');
+  M_WriteColorText(ppos.x, ppos.y, decide(mirrormode and MR_WEAPON <> 0, 'ON', 'OFF'), 'CRGRAY');
+
+  ppos := M_WriteText(OptionsDisplayMirrorDef.x, OptionsDisplayMirrorDef.y + OptionsDisplayMirrorDef.itemheight * Ord(odm_sky), 'Sky: ');
+  M_WriteColorText(ppos.x, ppos.y, decide(mirrormode and MR_SKY <> 0, 'ON', 'OFF'), 'CRGRAY');
+
 end;
 
 const
@@ -2410,7 +2520,7 @@ end;
 function _nearest_aspect_index: integer;
 var
   asp: single;
-  i, idx: integer;
+  i: integer;
   diff, test, mx: single;
   ar, par: string;
 begin
@@ -2437,7 +2547,7 @@ begin
     end;
     if diff < mx then
     begin
-      result := idx;
+      result := i;
       mx := diff;
     end;
   end;
@@ -2504,6 +2614,35 @@ begin
     OptionsDisplayAspectRatioDef.x, OptionsDisplayAspectRatioDef.y + OptionsDisplayAspectRatioDef.itemheight * (Ord(oda_letterbox_pct) + 1), 21, vid_letterbox_pct, PILLARLETTER_MAX - PILLARLETTER_MIN + 1);
 end;
 
+procedure M_DrawOptionsDisplayCamera;
+var
+  ppos: menupos_t;
+begin
+  M_DrawDisplayOptions;
+  V_DrawPatch(20, 48, SCN_TMP, 'MENU_CAM', false);
+
+  skystretch_pct := ibetween(skystretch_pct, 0, 100);
+  ppos := M_WriteText(OptionsDisplayCameraDef.x, OptionsDisplayCameraDef.y + OptionsDisplayCameraDef.itemheight * Ord(odc_skystretchpct), 'Sky stretch percentage: ');
+  M_WriteColorText(ppos.x, ppos.y, itoa(skystretch_pct) + '%', 'CRGRAY');
+
+  chasecamera_viewxy := ibetween(chasecamera_viewxy, CHASECAMERA_XY_MIN, CHASECAMERA_XY_MAX);
+  ppos := M_WriteText(OptionsDisplayCameraDef.x, OptionsDisplayCameraDef.y + OptionsDisplayCameraDef.itemheight * Ord(odc_chasecameraxy), 'Chase Camera XY postion: ');
+  M_WriteColorText(ppos.x, ppos.y, itoa(chasecamera_viewxy), 'CRGRAY');
+
+  chasecamera_viewz := ibetween(chasecamera_viewz, CHASECAMERA_Z_MIN, CHASECAMERA_Z_MAX);
+  ppos := M_WriteText(OptionsDisplayCameraDef.x, OptionsDisplayCameraDef.y + OptionsDisplayCameraDef.itemheight * Ord(odc_chasecameraz), 'Chase Camera Z postion: ');
+  M_WriteColorText(ppos.x, ppos.y, itoa(chasecamera_viewz), 'CRGRAY');
+
+  M_DrawThermo(
+    OptionsDisplayCameraDef.x, OptionsDisplayCameraDef.y + OptionsDisplayCameraDef.itemheight * (Ord(odc_skystretchpct) + 1), 21, skystretch_pct, 100);
+
+  M_DrawThermo(
+    OptionsDisplayCameraDef.x, OptionsDisplayCameraDef.y + OptionsDisplayCameraDef.itemheight * (Ord(odc_chasecameraxy) + 1), 21, chasecamera_viewxy - CHASECAMERA_XY_MIN, CHASECAMERA_XY_MAX - CHASECAMERA_XY_MIN);
+
+  M_DrawThermo(
+    OptionsDisplayCameraDef.x, OptionsDisplayCameraDef.y + OptionsDisplayCameraDef.itemheight * (Ord(odc_chasecameraz) + 1), 21, chasecamera_viewz - CHASECAMERA_Z_MIN, CHASECAMERA_Z_MAX - CHASECAMERA_Z_MIN);
+end;
+
 procedure M_SwitchGrayscaleMode(choice: integer);
 begin
   if m_shiftdown then
@@ -2524,9 +2663,29 @@ begin
     colorsubsamplingmode := (colorsubsamplingmode + 1) mod 5;
 end;
 
+procedure M_ChangeGammaCorrection(choice: integer);
+var
+  palette: PByteArray;
+begin
+  usegamma := ibetween(usegamma, 0, GAMMASIZE - 1);
+  if m_shiftdown then
+    usegamma := (usegamma + GAMMASIZE - 1) mod GAMMASIZE
+  else
+    usegamma := (usegamma + 1) mod GAMMASIZE;
+
+  players[consoleplayer]._message := gammamsg[usegamma];
+  palette := V_ReadPalette(PU_STATIC);
+  I_SetPalette(palette);
+  V_SetPalette(palette);
+  Z_ChangeTag(palette, PU_CACHE);
+end;
+
 const
   str_colorsubsamplingmodes: array[0..4] of string =
     ('OFF', '4-4-4 RGB', '3-3-3 RGB', '2-2-2 RGB', '27 COLORS');
+
+  str_gammacorrection: array[0..4] of string =
+    ('OFF', 'level 1', 'level 2', 'level 3', 'level 4');
 
 procedure M_DrawOptionsDisplayColors;
 var
@@ -2540,6 +2699,11 @@ begin
 
   ppos := M_WriteText(OptionsDisplayColorsDef.x, OptionsDisplayColorsDef.y + OptionsDisplayColorsDef.itemheight * Ord(oc_colorsubsubling), 'Palette reduction: ');
   M_WriteColorText(ppos.x, ppos.y, str_colorsubsamplingmodes[colorsubsamplingmode mod 5], 'CRGRAY');
+
+  usegamma := ibetween(usegamma, 0, GAMMASIZE - 1);
+  ppos := M_WriteText(OptionsDisplayColorsDef.x, OptionsDisplayColorsDef.y + OptionsDisplayColorsDef.itemheight * Ord(oc_gammacorrection), 'Gamma Correction: ');
+  M_WriteColorText(ppos.x, ppos.y, str_gammacorrection[usegamma mod GAMMASIZE], 'CRGRAY');
+
 end;
 
 procedure M_DrawOptionsDisplay32bit;
@@ -2552,6 +2716,10 @@ begin
   ppos := M_WriteText(OptionsDisplay32bitDef.x, OptionsDisplay32bitDef.y + OptionsDisplay32bitDef.itemheight * Ord(od_flatfiltering),
     'Flat filtering: ');
   M_WriteColorText(ppos.x, ppos.y, flatfilteringstrings[extremeflatfiltering], 'CRGRAY');
+
+  ppos := M_WriteText(OptionsDisplay32bitDef.x, OptionsDisplay32bitDef.y + OptionsDisplay32bitDef.itemheight * Ord(od_smoothskies),
+    'Smooth sky: ');
+  M_WriteColorText(ppos.x, ppos.y, yesnostrings[smoothskies], 'CRGRAY');
 end;
 
 procedure M_Options(choice: integer);
@@ -2744,6 +2912,16 @@ begin
 
 end;
 
+procedure M_ChangeColumnRenderQuality(choice: integer);
+begin
+  lowrescolumndraw := not lowrescolumndraw;
+end;
+
+procedure M_ChangeSpanRenderQuality(choice: integer);
+begin
+  lowresspandraw := not lowresspandraw;
+end;
+
 var
   mousewait: integer;
 
@@ -2781,6 +2959,11 @@ end;
 procedure M_ChangeFlatFiltering(choice: integer);
 begin
   C_ExecuteCmd('extremeflatfiltering', yesnoStrings[not extremeflatfiltering]);
+end;
+
+procedure M_ChangeSmoothSky(choice: integer);
+begin
+  C_ExecuteCmd('smoothskies', yesnoStrings[not smoothskies]);
 end;
 
 procedure M_BoolCmd(choice: integer);
@@ -3350,6 +3533,7 @@ begin
   if menuactive then
     exit;
 
+  m_shiftdown := false;
   menuactive := true;
   currentMenu := @MainDef;// JDC
   itemOn := currentMenu.lastOn; // JDC
@@ -3586,12 +3770,6 @@ begin
     begin
       memcpy(@screens[SCN_TMP, dest], @src[_SHL(y and 63, 6)], 64);
       dest := dest + 64;
-    end;
-
-    if 320 and 63 <> 0 then
-    begin
-      memcpy(@screens[SCN_TMP, dest], @src[_SHL(y and 63, 6)], 320 and 63);
-      dest := dest + (320 and 63);
     end;
   end;
   Z_ChangeTag(src, PU_CACHE);
@@ -4089,19 +4267,19 @@ begin
 
   inc(pmi);
   pmi.status := 1;
-  pmi.name := '!Low column render quality';
-  pmi.cmd := 'lowrescolumndraw';
-  pmi.routine := @M_BoolCmd;
-  pmi.pBoolVal := @lowrescolumndraw;
+  pmi.name := '!Column render quality';
+  pmi.cmd := '';
+  pmi.routine := @M_ChangeColumnRenderQuality;
+  pmi.pBoolVal := nil;
   pmi.alphaKey := 'c';
 
 
   inc(pmi);
   pmi.status := 1;
-  pmi.name := '!Low span render quality';
-  pmi.cmd := 'lowresspandraw';
-  pmi.routine := @M_BoolCmd;
-  pmi.pBoolVal := @lowresspandraw;
+  pmi.name := '!Span render quality';
+  pmi.cmd := '';
+  pmi.routine := @M_ChangeSpanRenderQuality;
+  pmi.pBoolVal := nil;
   pmi.alphaKey := 's';
 
   inc(pmi);
@@ -4362,11 +4540,23 @@ begin
 
   inc(pmi);
   pmi.status := 1;
-  pmi.name := '!Mirror Mode';
+  pmi.name := '!Camera...';
   pmi.cmd := '';
-  pmi.routine := @M_SwitchMirrorMode;
+  pmi.routine := @M_OptionCameraShift;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := 'c';
+  pmi.transtbl := 'CRGRAY';
+  pmi.itemflags := MIM_TRANSDOTSONLY or MIM_ANIMATEDOTS;
+
+  inc(pmi);
+  pmi.status := 1;
+  pmi.name := '!Mirror...';
+  pmi.cmd := '';
+  pmi.routine := @M_OptionsDisplayAdvancedMirror;
   pmi.pBoolVal := nil;
   pmi.alphaKey := 'm';
+  pmi.transtbl := 'CRGRAY';
+  pmi.itemflags := MIM_TRANSDOTSONLY or MIM_ANIMATEDOTS;
 
   inc(pmi);
   pmi.status := 1;
@@ -4383,22 +4573,6 @@ begin
   pmi.routine := @M_BoolCmd;
   pmi.pBoolVal := @interpolate;
   pmi.alphaKey := 'u';
-
-  inc(pmi);
-  pmi.status := 1;
-  pmi.name := '!Z-Axis Shift';
-  pmi.cmd := 'zaxisshift';
-  pmi.routine := @M_BoolCmd;
-  pmi.pBoolVal := @zaxisshift;
-  pmi.alphaKey := 'z';
-
-  inc(pmi);
-  pmi.status := 1;
-  pmi.name := '!Chase camera';
-  pmi.cmd := 'chasecamera';
-  pmi.routine := @M_BoolCmd;
-  pmi.pBoolVal := @chasecamera;
-  pmi.alphaKey := 'c';
 
   inc(pmi);
   pmi.status := 1;
@@ -4528,6 +4702,150 @@ begin
   OptionsDisplayAspectRatioDef.texturebk := true;
 
 ////////////////////////////////////////////////////////////////////////////////
+//OptionsDisplayCameraMenu
+  pmi := @OptionsDisplayCameraMenu[0];
+  pmi.status := 1;
+  pmi.name := '!Look Up/Down';
+  pmi.cmd := 'zaxisshift';
+  pmi.routine := @M_BoolCmd;
+  pmi.pBoolVal := @zaxisshift;
+  pmi.alphaKey := 'z';
+
+  inc(pmi);
+  pmi.status := 2;
+  pmi.name := '!Sky stretch percentage';
+  pmi.cmd := '';
+  pmi.routine := @M_ChangeSkyStretch;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := 's';
+
+  inc(pmi);
+  pmi.status := -1;
+  pmi.name := '';
+  pmi.cmd := '';
+  pmi.routine := nil;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := #0;
+
+  inc(pmi);
+  pmi.status := -1;
+  pmi.name := '';
+  pmi.cmd := '';
+  pmi.routine := nil;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := #0;
+
+  inc(pmi);
+  pmi.status := 1;
+  pmi.name := '!Chase camera';
+  pmi.cmd := 'chasecamera';
+  pmi.routine := @M_BoolCmd;
+  pmi.pBoolVal := @chasecamera;
+  pmi.alphaKey := 'c';
+
+  inc(pmi);
+  pmi.status := 2;
+  pmi.name := '!Chase Camera XY postion';
+  pmi.cmd := '';
+  pmi.routine := @M_ChangeCameraXY;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := 'x';
+
+  inc(pmi);
+  pmi.status := -1;
+  pmi.name := '';
+  pmi.cmd := '';
+  pmi.routine := nil;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := #0;
+
+  inc(pmi);
+  pmi.status := -1;
+  pmi.name := '';
+  pmi.cmd := '';
+  pmi.routine := nil;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := #0;
+
+  inc(pmi);
+  pmi.status := 2;
+  pmi.name := '!Chase Camera Z postion';
+  pmi.cmd := '';
+  pmi.routine := @M_ChangeCameraZ;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := 'z';
+
+  inc(pmi);
+  pmi.status := -1;
+  pmi.name := '';
+  pmi.cmd := '';
+  pmi.routine := nil;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := #0;
+
+  inc(pmi);
+  pmi.status := -1;
+  pmi.name := '';
+  pmi.cmd := '';
+  pmi.routine := nil;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := #0;
+
+
+////////////////////////////////////////////////////////////////////////////////
+//OptionsDisplayCameraDef
+  OptionsDisplayCameraDef.title := 'Camera';
+  OptionsDisplayCameraDef.numitems := Ord(optdispcamera_end); // # of menu items
+  OptionsDisplayCameraDef.prevMenu := @OptionsDisplayAdvancedDef; // previous menu
+  OptionsDisplayCameraDef.menuitems := Pmenuitem_tArray(@OptionsDisplayCameraMenu);  // menu items
+  OptionsDisplayCameraDef.drawproc := @M_DrawOptionsDisplayCamera;  // draw routine
+  OptionsDisplayCameraDef.x := 32;
+  OptionsDisplayCameraDef.y := 68; // x,y of menu
+  OptionsDisplayCameraDef.lastOn := 0; // last item user was on in menu
+  OptionsDisplayCameraDef.itemheight := LINEHEIGHT2;
+  OptionsDisplayCameraDef.texturebk := true;
+
+////////////////////////////////////////////////////////////////////////////////
+//OptionsDisplayMirrorMenu
+  pmi := @OptionsDisplayMirrorMenu[0];
+  pmi.status := 1;
+  pmi.name := '!Enviroment';
+  pmi.cmd := '';
+  pmi.routine := @M_SwitchMirrorEnviroment;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := 'e';
+
+  inc(pmi);
+  pmi.status := 1;
+  pmi.name := '!Weapon';
+  pmi.cmd := '';
+  pmi.routine := @M_SwitchMirrorWeapon;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := 'w';
+
+  inc(pmi);
+  pmi.status := 1;
+  pmi.name := '!Sky';
+  pmi.cmd := '';
+  pmi.routine := @M_SwitchMirrorSky;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := 's';
+
+
+////////////////////////////////////////////////////////////////////////////////
+//OptionsDisplayMirrorDef
+  OptionsDisplayMirrorDef.title := 'Mirror';
+  OptionsDisplayMirrorDef.numitems := Ord(optdispmirror_end); // # of menu items
+  OptionsDisplayMirrorDef.prevMenu := @OptionsDisplayAdvancedDef; // previous menu
+  OptionsDisplayMirrorDef.menuitems := Pmenuitem_tArray(@OptionsDisplayMirrorMenu);  // menu items
+  OptionsDisplayMirrorDef.drawproc := @M_DrawOptionsDisplayMirror;  // draw routine
+  OptionsDisplayMirrorDef.x := 32;
+  OptionsDisplayMirrorDef.y := 68; // x,y of menu
+  OptionsDisplayMirrorDef.lastOn := 0; // last item user was on in menu
+  OptionsDisplayMirrorDef.itemheight := LINEHEIGHT2;
+  OptionsDisplayMirrorDef.texturebk := true;
+
+////////////////////////////////////////////////////////////////////////////////
 //OptionsDisplayColorsMenu
   pmi := @OptionsDisplayColorsMenu[0];
 
@@ -4545,6 +4863,14 @@ begin
   pmi.routine := @M_SwitchColorsSubsampling;
   pmi.pBoolVal := nil;
   pmi.alphaKey := 'q';
+
+  inc(pmi);
+  pmi.status := 1;
+  pmi.name := '!Gamma Correction';
+  pmi.cmd := '';
+  pmi.routine := @M_ChangeGammaCorrection;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := 'c';
 
 ////////////////////////////////////////////////////////////////////////////////
 //OptionsDisplayColorsDef
@@ -4630,12 +4956,13 @@ begin
 
   inc(pmi);
   pmi.status := 1;
-  pmi.name := '!Reset to default';
+  pmi.name := '!Reset to default...';
   pmi.cmd := '';
   pmi.routine := @M_LightmapDefaults;
   pmi.pBoolVal := nil;
   pmi.alphaKey := 'r';
   pmi.transtbl := 'CRGRAY';
+  pmi.itemflags := MIM_TRANSDOTSONLY or MIM_ANIMATEDOTS;
 
 ////////////////////////////////////////////////////////////////////////////////
 //OptionsLightmapDef
@@ -4702,6 +5029,14 @@ begin
   pmi.routine := @M_ChangeFlatFiltering;
   pmi.pBoolVal := nil;
   pmi.alphaKey := 'f';
+
+  inc(pmi);
+  pmi.status := 1;
+  pmi.name := '';
+  pmi.cmd := '';
+  pmi.routine := @M_ChangeSmoothSky;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := 's';
 
 ////////////////////////////////////////////////////////////////////////////////
 //OptionsDisplay32bitDef

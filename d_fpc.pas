@@ -1137,7 +1137,7 @@ end;
 
 function incp(var p: pointer; const size: integer = 1): pointer;
 begin
-  result := pointer(PCAST(p) + size);
+  result := pOp(p, size);
   p := result;
 end;
 

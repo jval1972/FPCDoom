@@ -1115,7 +1115,8 @@ procedure G_PlayerFinishLevel(p: Pplayer_t);
 begin
   ZeroMemory(@p.powers, SizeOf(p.powers));
   ZeroMemory(@p.cards, SizeOf(p.cards));
-  p.mo.flags := p.mo.flags and (not MF_SHADOW); // cancel invisibility
+  if p.mo <> nil then
+    p.mo.flags := p.mo.flags and (not MF_SHADOW); // cancel invisibility
   p.lookupdown := 0;    // JVAL cancel lookdir Up/Down
   p.centering := false;
   p.lookleftright := 0; // JVAL cancel lookdir Left/Right
@@ -1541,6 +1542,10 @@ begin
     exit; // bad version // by JVAL extra checking
   end;
 
+  vsaved := '';
+  for i := 0 to Length(vcheck) - 1 do
+    vsaved := vsaved + Chr(save_p[i]);
+
   for i := 0 to Length(vcheck) - 1 do
     if save_p[i] <> Ord(vcheck[i + 1]) then
     begin
@@ -1849,7 +1854,7 @@ begin
     map := 9;
 
   R_ResetInterpolationBuffer;
-  
+
   M_ClearRandom;
 
   if (skill = sk_nightmare) or respawnparm then

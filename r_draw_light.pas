@@ -238,6 +238,8 @@ begin
             end;
             if dfactor > 0 then
             begin
+              if dfactor > FRACUNIT then
+                dfactor := FRACUNIT;
               li := R_LightmapBufferAt(parms.dl_x, y);
               factor := FixedMul(dls, dfactor);
               li.r := li.r + (parms.r * factor) shr LM_STORESHIFT;
@@ -446,7 +448,6 @@ begin
       if b > 255 then b := 255;
       for i := 0 to nsteps - 1 do
       begin
-       // if R_ZBufferAt(x + i, pls_y^).rendertype <> RIT_SPRITE then
         destl^ := R_ColorLightAdd(destl^, r, g, b);
         inc(destl);
       end;

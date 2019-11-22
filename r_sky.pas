@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -31,6 +31,9 @@ unit r_sky;
 
 interface
 
+uses
+  r_hires;
+
 // SKY, store the number for name.
 const
   SKYFLATNAME = 'F_SKY1';
@@ -39,16 +42,31 @@ const
   ANGLETOSKYSHIFT = 22;
   ANGLETOSKYUNIT = 1 shl 22;
 
+const
+  ORIGINALSKYSIZE = 128;
+  SKYSIZE = 256;
+  SKYTRNTARGETSIZE = 400;
+
+type
+  skytransarray_t = array[0..SKYSIZE * (1 shl MAXTEXTUREFACTORBITS) - 1] of integer;
+  Pskytransarray_t = ^skytransarray_t;
+
 var
   skyflatnum: integer;
   skytexture: integer;
   skytexturemid: integer;
+  skystretch_pct: integer = 100;
+  skytranstable: array[0..MAXTEXTUREFACTORBITS] of skytransarray_t;
 
 procedure R_InitSkyMap;
-  
+
+procedure R_CalcSkyStretch;
+
 implementation
 
 uses
+  d_fpc,
+  doomdef,
   m_fixed; // Needed for FRACUNIT.
 
 //
@@ -60,4 +78,56 @@ begin
   skytexturemid := 100 * FRACUNIT;
 end;
 
+var
+  oldskystretch_pct: integer = -1;
+  oldzaxisshift: boolean = false;
+  target: PIntegerArray;
+
+procedure R_CalcSkyStretch;
+var
+  i, x, f: integer;
+  start, minstart: integer;
+begin
+  skystretch_pct := ibetween(skystretch_pct, 0, 100);
+  if (skystretch_pct = oldskystretch_pct) and (zaxisshift = oldzaxisshift) then
+    exit;
+
+  oldzaxisshift := zaxisshift;
+  oldskystretch_pct := skystretch_pct;
+
+  if zaxisshift then
+  begin
+    for x := 0 to MAXTEXTUREFACTORBITS do
+    begin
+      f := 1 shl x;
+      target := mallocz(f * SKYTRNTARGETSIZE * SizeOf(integer));
+
+      // JVAL Leave 8 * f pixels at 0 %
+      minstart := f * (SKYTRNTARGETSIZE - SKYSIZE + 8);
+      start := minstart + trunc((skystretch_pct / 100) * (f * SKYTRNTARGETSIZE - minstart));
+
+      for i := f * SKYTRNTARGETSIZE - 1 downto start do
+        target[i] := i - f * SKYTRNTARGETSIZE + f * SKYSIZE;
+      for i := 0 to start - 1 do
+        target[i] := trunc(i * (start - f * SKYTRNTARGETSIZE + f * SKYSIZE) / start);
+
+      for i := f * SKYTRNTARGETSIZE - 1 downto 0 do
+       skytranstable[x][trunc(i * SKYSIZE / SKYTRNTARGETSIZE)] := trunc(target[i] * ORIGINALSKYSIZE / SKYSIZE);
+
+      memfree(target, f * SKYTRNTARGETSIZE * SizeOf(integer));
+    end;
+  end
+  else
+  begin
+    for x := 0 to MAXTEXTUREFACTORBITS do
+    begin
+      f := 1 shl x;
+
+      for i := 0 to f * SKYSIZE - 1 do
+        skytranstable[x][i] := i div 2;
+    end;
+  end;
+end;
+
 end.
+

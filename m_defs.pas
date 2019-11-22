@@ -65,6 +65,7 @@ uses
   r_hires,
   r_intrpl,
   r_render,
+  r_sky,
   st_stuff,
   s_sound,
   t_main,
@@ -92,7 +93,7 @@ type
   Pdefault_t = ^default_t;
 
 const
-  NUMDEFAULTS = 137;
+  NUMDEFAULTS = 139;
 
   defaults: array[0..NUMDEFAULTS - 1] of default_t = (
     (name: 'Display';
@@ -147,7 +148,7 @@ const
      location: @fullscreenexclusive;
      setable: DFS_NEVER;
      defaultsvalue: '';
-     defaultivalue: 0;
+     defaultivalue: 1;
      defaultbvalue: true;
      _type: tBoolean),
 
@@ -163,8 +164,8 @@ const
      location: @fixstallhack;
      setable: DFS_ALWAYS;
      defaultsvalue: '';
-     defaultivalue: 1;
-     defaultbvalue: true;
+     defaultivalue: 0;
+     defaultbvalue: false;
      _type: tBoolean),
 
     (name: '32bittexturepaletteeffects';
@@ -179,9 +180,17 @@ const
      location: @zaxisshift;
      setable: DFS_NEVER;
      defaultsvalue: '';
-     defaultivalue: 1;
-     defaultbvalue: true;
+     defaultivalue: 0;
+     defaultbvalue: false;
      _type: tBoolean),
+
+    (name: 'skystretch_pct';
+     location: @skystretch_pct;
+     setable: DFS_ALWAYS;
+     defaultsvalue: '';
+     defaultivalue: 50;
+     defaultbvalue: true;
+     _type: tInteger),
 
     (name: 'chasecamera';
      location: @chasecamera;
@@ -227,7 +236,7 @@ const
      location: @shademenubackground;
      setable: DFS_ALWAYS;
      defaultsvalue: '';
-     defaultivalue: 2;
+     defaultivalue: 1;
      defaultbvalue: false;
      _type: tInteger),
 
@@ -259,7 +268,7 @@ const
      location: @screenblocks;
      setable: DFS_NEVER;
      defaultsvalue: '';
-     defaultivalue: 9;
+     defaultivalue: 11;
      defaultbvalue: false;
      _type: tInteger),
 
@@ -355,7 +364,7 @@ const
      location: @widescreensupport;
      setable: DFS_ALWAYS;
      defaultsvalue: '';
-     defaultivalue: 0;
+     defaultivalue: 1;
      defaultbvalue: true;
      _type: tBoolean),
 
@@ -370,7 +379,7 @@ const
     (name: 'forcedaspect';
      location: @forcedaspectstr;
      setable: DFS_NEVER;
-     defaultsvalue: '0.00';
+     defaultsvalue: '16/10';
      defaultivalue: 0;
      defaultbvalue: false;
      _type: tString),
@@ -451,8 +460,8 @@ const
      location: @custom_fullscreenhud_size;
      setable: DFS_ALWAYS;
      defaultsvalue: '';
-     defaultivalue: 1;
-     defaultbvalue: true;
+     defaultivalue: 0;
+     defaultbvalue: false;
      _type: tInteger),
 
     (name: 'custom_hudhelthpos';
@@ -546,6 +555,14 @@ const
 
     (name: 'extremeflatfiltering';
      location: @extremeflatfiltering;
+     setable: DFS_NEVER;
+     defaultsvalue: '';
+     defaultivalue: 0;
+     defaultbvalue: false;
+     _type: tBoolean),
+
+    (name: 'smoothskies';
+     location: @smoothskies;
      setable: DFS_NEVER;
      defaultsvalue: '';
      defaultivalue: 0;

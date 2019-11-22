@@ -1819,9 +1819,9 @@ begin
     if Keyword <> '' then
       memcpy(Data, @fKeyword[1], Length(Keyword));
     {Compression method 0 (inflate/deflate)}
-    PByte(integer(Longint(Data) + Length(Keyword) + 1))^ := 0;
+    PByte(pOp(Data, Length(Keyword) + 1))^ := 0;
     if OutputSize > 0 then
-      memcpy(pointer(Longint(Data) + Length(Keyword) + 2), Output, OutputSize);
+      memcpy(pOp(Data, Length(Keyword) + 2), Output, OutputSize);
 
     {Let ancestor calculate crc and save}
     Result := SaveData(Stream);
@@ -1853,7 +1853,7 @@ begin
   {Get text}
   fKeyword := PChar(Data);
   SetLength(fText, Size - Length(fKeyword) - 1);
-  memcpy(@fText[1], pointer(Longint(Data) + Length(fKeyword) + 1), Length(fText));
+  memcpy(@fText[1], pOp(Data, Length(fKeyword) + 1), Length(fText));
 end;
 
 {Saving the chunk to a stream}
@@ -1867,7 +1867,7 @@ begin
   if Keyword <> '' then
     memcpy(Data, @fKeyword[1], Length(Keyword));
   if Text <> '' then
-    memcpy(pointer(Longint(Data) + Length(Keyword) + 1), @fText[1], Length(Text));
+    memcpy(pOp(Data, Length(Keyword) + 1), @fText[1], Length(Text));
   {Let ancestor calculate crc and save}
   Result := inherited SaveToStream(Stream);
 end;
@@ -2475,12 +2475,12 @@ var
 begin
   {Get first column and enter in loop}
   Col := ColumnStart[Pass];
-  Dest := PChar(Longint(Dest) + Col * 3);
+  Dest := pOp(Dest, Col * 3);
   repeat
     {Copy this row}
-    Byte(Dest^) := fOwner.GammaTable[PByte(Longint(Src) + 2)^]; inc(Dest);
-    Byte(Dest^) := fOwner.GammaTable[PByte(Longint(Src) + 1)^]; inc(Dest);
-    Byte(Dest^) := fOwner.GammaTable[PByte(Longint(Src)    )^]; inc(Dest);
+    Byte(Dest^) := fOwner.GammaTable[PByte(pOp(Src, 2))^]; inc(Dest);
+    Byte(Dest^) := fOwner.GammaTable[PByte(pOp(Src, 1))^]; inc(Dest);
+    Byte(Dest^) := fOwner.GammaTable[PByte(Src)^]; inc(Dest);
 
     {Move to next column}
     inc(Src, 3);
@@ -2497,17 +2497,17 @@ var
 begin
   {Get first column and enter in loop}
   Col := ColumnStart[Pass];
-  Dest := PChar(Longint(Dest) + Col * 3);
+  Dest := pOp(Dest, Col * 3);
   repeat
     {Copy this row}
-    Byte(Dest^) := Owner.GammaTable[PByte(Longint(Src) + 4)^]; inc(Dest);
-    Byte(Dest^) := Owner.GammaTable[PByte(Longint(Src) + 2)^]; inc(Dest);
-    Byte(Dest^) := Owner.GammaTable[PByte(Longint(Src)    )^]; inc(Dest);
+    PByte(Dest)^ := Owner.GammaTable[PByte(pOp(Src, 4))^]; inc(Dest);
+    PByte(Dest)^ := Owner.GammaTable[PByte(pOp(Src, 2))^]; inc(Dest);
+    PByte(Dest)^ := Owner.GammaTable[PByte(Src)^]; inc(Dest);
     {$IFDEF Store16bits}
     {Copy extra pixel values}
-    Byte(Extra^) := fOwner.GammaTable[PByte(Longint(Src) + 5)^]; inc(Extra);
-    Byte(Extra^) := fOwner.GammaTable[PByte(Longint(Src) + 3)^]; inc(Extra);
-    Byte(Extra^) := fOwner.GammaTable[PByte(Longint(Src) + 1)^]; inc(Extra);
+    PByte(Extra)^ := fOwner.GammaTable[PByte(pOp(Src, 5))^]; inc(Extra);
+    PByte(Extra)^ := fOwner.GammaTable[PByte(pOp(Src, 3))^]; inc(Extra);
+    PByte(Extra)^ := fOwner.GammaTable[PByte(pOp(Src, 1))^]; inc(Extra);
     {$ENDIF}
 
     {Move to next column}
@@ -2534,10 +2534,10 @@ begin
     CurBit := StartBit[Header.BitDepth];
     repeat
       {Adjust pointer to pixel byte bounds}
-      Dest2 := PChar(Longint(Dest) + (Header.BitDepth * Col) div 8);
+      Dest2 := pOp(Dest, (Header.BitDepth * Col) div 8);
       {Copy data}
-      Byte(Dest2^) := Byte(Dest2^) or
-        ( ((Byte(Src^) shr CurBit) and BitTable[Header.BitDepth])
+      PByte(Dest2)^ := PByte(Dest2)^ or
+        ( ((PByte(Src)^ shr CurBit) and BitTable[Header.BitDepth])
           shl (StartBit[Header.BitDepth] - (Col * Header.BitDepth mod 8)));
 
       {Move to next column}
@@ -2565,9 +2565,9 @@ begin
     CurBit := 6;
     repeat
       {Adjust pointer to pixel byte bounds}
-      Dest2 := PChar(Longint(Dest) + Col div 2);
+      Dest2 := pOp(Dest, Col div 2);
       {Copy data}
-      Byte(Dest2^) := Byte(Dest2^) or (((Byte(Src^) shr CurBit) and $3)
+      PByte(Dest2)^ := PByte(Dest2)^ or (((PByte(Src)^ shr CurBit) and $3)
          shl (4 - (4 * Col) mod 8));
       {Move to next column}
       inc(Col, ColumnIncrement[Pass]);
@@ -2594,10 +2594,10 @@ begin
     CurBit := 6;
     repeat
       {Adjust pointer to pixel byte bounds}
-      Dest2 := PChar(Longint(Dest) + Col div 2);
+      Dest2 := pOp(Dest, Col div 2);
       {Copy data}
-      Byte(Dest2^) := Byte(Dest2^) or ((((Byte(Src^) shr CurBit) shl 2) and $F)
-         shl (4 - (Col*4) mod 8));
+      PByte(Dest2)^ := PByte(Dest2)^ or ((((PByte(Src)^ shr CurBit) shl 2) and $F)
+         shl (4 - (Col * 4) mod 8));
       {Move to next column}
       inc(Col, ColumnIncrement[Pass]);
       {Will read next bits}
@@ -2617,12 +2617,12 @@ var
 begin
   {Get first column and enter in loop}
   Col := ColumnStart[Pass];
-  Dest := PChar(Longint(Dest) + Col);
+  Dest := pOp(Dest, Col);
   repeat
     {Copy this row}
     Dest^ := Src^; inc(Dest);
     {$IFDEF Store16bits}
-    Extra^ := PChar(Longint(Src) + 1)^; inc(Extra);
+    Extra^ := PChar(pOp(Src, 1))^; inc(Extra);
     {$ENDIF}
 
     {Move to next column}
@@ -2640,14 +2640,14 @@ var
 begin
   {Get first column and enter in loop}
   Col := ColumnStart[Pass];
-  Dest := PChar(Longint(Dest) + Col * 3);
-  Trans := PChar(Longint(Trans) + Col);
+  Dest := pOp(Dest, Col * 3);
+  Trans := pOp(Trans, Col);
   repeat
     {Copy this row and alpha value}
-    Trans^ := PChar(Longint(Src) + 3)^;
-    Byte(Dest^)  := fOwner.GammaTable[PByte(Longint(Src) + 2)^]; inc(Dest);
-    Byte(Dest^)  := fOwner.GammaTable[PByte(Longint(Src) + 1)^]; inc(Dest);
-    Byte(Dest^)  := fOwner.GammaTable[PByte(Longint(Src)    )^]; inc(Dest);
+    Trans^ := PChar(pOp(Src, 3))^;
+    Byte(Dest^)  := fOwner.GammaTable[PByte(pOp(Src, 2))^]; inc(Dest);
+    Byte(Dest^)  := fOwner.GammaTable[PByte(pOp(Src, 1))^]; inc(Dest);
+    Byte(Dest^)  := fOwner.GammaTable[PByte(Src)^]; inc(Dest);
 
     {Move to next column}
     inc(Src, 4);
@@ -2665,19 +2665,19 @@ var
 begin
   {Get first column and enter in loop}
   Col := ColumnStart[Pass];
-  Dest := PChar(Longint(Dest) + Col * 3);
-  Trans := PChar(Longint(Trans) + Col);
+  Dest := pOp(Dest, Col * 3);
+  Trans := pOp(Trans, Col);
   repeat
     {Copy this row and alpha value}
-    Trans^ := PChar(Longint(Src) + 6)^;
-    Byte(Dest^)  := fOwner.GammaTable[PByte(Longint(Src) + 4)^]; inc(Dest);
-    Byte(Dest^)  := fOwner.GammaTable[PByte(Longint(Src) + 2)^]; inc(Dest);
-    Byte(Dest^)  := fOwner.GammaTable[PByte(Longint(Src)    )^]; inc(Dest);
+    Trans^ := PChar(pOp(Src, 6))^;
+    PByte(Dest)^ := fOwner.GammaTable[PByte(pOp(Src, 4))^]; inc(Dest);
+    PByte(Dest)^ := fOwner.GammaTable[PByte(pOp(Src, 2))^]; inc(Dest);
+    PByte(Dest)^ := fOwner.GammaTable[PByte(Src)^]; inc(Dest);
     {$IFDEF Store16bits}
     {Copy extra pixel values}
-    Byte(Extra^) := fOwner.GammaTable[PByte(Longint(Src) + 5)^]; inc(Extra);
-    Byte(Extra^) := fOwner.GammaTable[PByte(Longint(Src) + 3)^]; inc(Extra);
-    Byte(Extra^) := fOwner.GammaTable[PByte(Longint(Src) + 1)^]; inc(Extra);
+    Byte(Extra^) := fOwner.GammaTable[PByte(pOp(Src, 5))^]; inc(Extra);
+    Byte(Extra^) := fOwner.GammaTable[PByte(pOp(Src, 3))^]; inc(Extra);
+    Byte(Extra^) := fOwner.GammaTable[PByte(Src)^]; inc(Extra);
     {$ENDIF}
 
     {Move to next column}
@@ -2696,8 +2696,8 @@ var
 begin
   {Get first column, pointers to the data and enter in loop}
   Col := ColumnStart[Pass];
-  Dest := PChar(Longint(Dest) + Col);
-  Trans := PChar(Longint(Trans) + Col);
+  Dest := pOp(Dest, Col);
+  Trans := pOp(Trans, Col);
   repeat
     {Copy this grayscale value and alpha}
     Dest^ := Src^;  inc(Src);
@@ -2718,11 +2718,11 @@ var
 begin
   {Get first column, pointers to the data and enter in loop}
   Col := ColumnStart[Pass];
-  Dest := PChar(Longint(Dest) + Col);
-  Trans := PChar(Longint(Trans) + Col);
+  Dest := pOp(Dest, Col);
+  Trans := pOp(Trans, Col);
   repeat
     {$IFDEF Store16bits}
-    Extra^ := PChar(Longint(Src) + 1)^; inc(Extra);
+    Extra^ := PChar(pOp(Src, 1))^; inc(Extra);
     {$ENDIF}
     {Copy this grayscale value and alpha, transforming 16 bits into 8}
     Dest^ := Src^;  inc(Src, 2);
@@ -2794,11 +2794,11 @@ begin
     {Get current row index}
     CurrentRow := RowStart[CurrentPass];
     {Get a pointer to the current row image data}
-    Data := pointer(Longint(Header.ImageData) + Header.BytesPerRow *
-      (ImageHeight - 1 - CurrentRow));
-    Trans := pointer(Longint(Header.ImageAlpha) + ImageWidth * CurrentRow);
+    Data := pointer(pOp(Header.ImageData, Header.BytesPerRow *
+      (ImageHeight - 1 - CurrentRow)));
+    Trans := pOp(Header.ImageAlpha, ImageWidth * CurrentRow);
     {$IFDEF Store16bits}
-    Extra := pointer(Longint(Header.ExtraImageData) + Header.BytesPerRow *
+    Extra := pOp(Header.ExtraImageData, Header.BytesPerRow *
       (ImageHeight - 1 - CurrentRow));
     {$ENDIF}
 
@@ -2841,9 +2841,9 @@ begin
   for I := 1 to ImageWidth do
   begin
     {Copy pixel values}
-    Byte(Dest^) := fOwner.GammaTable[PByte(Longint(Src) + 2)^]; inc(Dest);
-    Byte(Dest^) := fOwner.GammaTable[PByte(Longint(Src) + 1)^]; inc(Dest);
-    Byte(Dest^) := fOwner.GammaTable[PByte(Longint(Src)    )^]; inc(Dest);
+    PByte(Dest)^ := fOwner.GammaTable[PByte(pOp(Src, 2))^]; inc(Dest);
+    PByte(Dest)^ := fOwner.GammaTable[PByte(pOp(Src, 1))^]; inc(Dest);
+    PByte(Dest)^ := fOwner.GammaTable[PByte(Src)^]; inc(Dest);
     {Move to next pixel}
     inc(Src, 3);
   end {for I}
@@ -2860,14 +2860,14 @@ begin
     //Since windows does not supports 2 bytes for
     //each R, G, B value, the method will read only 1 byte from it
     {Copy pixel values}
-    Byte(Dest^) := fOwner.GammaTable[PByte(Longint(Src) + 4)^]; inc(Dest);
-    Byte(Dest^) := fOwner.GammaTable[PByte(Longint(Src) + 2)^]; inc(Dest);
-    Byte(Dest^) := fOwner.GammaTable[PByte(Longint(Src)    )^]; inc(Dest);
+    PByte(Dest)^ := fOwner.GammaTable[PByte(pOp(Src, 4))^]; inc(Dest);
+    PByte(Dest)^ := fOwner.GammaTable[PByte(pOp(Src, 2))^]; inc(Dest);
+    PByte(Dest)^ := fOwner.GammaTable[PByte(Src)^]; inc(Dest);
     {$IFDEF Store16bits}
     {Copy extra pixel values}
-    Byte(Extra^) := fOwner.GammaTable[PByte(Longint(Src) + 5)^]; inc(Extra);
-    Byte(Extra^) := fOwner.GammaTable[PByte(Longint(Src) + 3)^]; inc(Extra);
-    Byte(Extra^) := fOwner.GammaTable[PByte(Longint(Src) + 1)^]; inc(Extra);
+    PByte(Dest)^ := fOwner.GammaTable[PByte(pOp(Src, 5))^]; inc(Extra);
+    PByte(Dest)^ := fOwner.GammaTable[PByte(pOp(Src, 3))^]; inc(Extra);
+    PByte(Dest)^ := fOwner.GammaTable[PByte(pOp(Src, 1))^]; inc(Extra);
     {$ENDIF}
 
     {Move to next pixel}
@@ -2929,7 +2929,7 @@ begin
     {mode, so reduce to 8}
     Dest^ := Src^; inc(Dest);
     {$IFDEF Store16bits}
-    Extra^ := PChar(Longint(Src) + 1)^; inc(Extra);
+    Extra^ := PChar(pOp(Src, 1))^; inc(Extra);
     {$ENDIF}
 
     {Move to next pixel}
@@ -2946,10 +2946,10 @@ begin
   for I := 1 to ImageWidth do
   begin
     {Copy pixel values and transparency}
-    Trans^ := PChar(Longint(Src) + 3)^;
-    Byte(Dest^)  := fOwner.GammaTable[PByte(Longint(Src) + 2)^]; inc(Dest);
-    Byte(Dest^)  := fOwner.GammaTable[PByte(Longint(Src) + 1)^]; inc(Dest);
-    Byte(Dest^)  := fOwner.GammaTable[PByte(Longint(Src)    )^]; inc(Dest);
+    Trans^ := PChar(pOp(Src, 3))^;
+    Byte(Dest^)  := fOwner.GammaTable[PByte(pOp(Src, 2))^]; inc(Dest);
+    Byte(Dest^)  := fOwner.GammaTable[PByte(pOp(Src, 1))^]; inc(Dest);
+    Byte(Dest^)  := fOwner.GammaTable[PByte(Src)^]; inc(Dest);
     {Move to next pixel}
     inc(Src, 4); inc(Trans);
   end {for I}
@@ -2965,15 +2965,15 @@ begin
   begin
     //Copy rgb and alpha values (transforming from 16 bits to 8 bits)
     {Copy pixel values}
-    Trans^ := PChar(Longint(Src) + 6)^;
-    Byte(Dest^)  := fOwner.GammaTable[PByte(Longint(Src) + 4)^]; inc(Dest);
-    Byte(Dest^)  := fOwner.GammaTable[PByte(Longint(Src) + 2)^]; inc(Dest);
-    Byte(Dest^)  := fOwner.GammaTable[PByte(Longint(Src)    )^]; inc(Dest);
+    Trans^ := PChar(pOp(Src, 6))^;
+    Byte(Dest^)  := fOwner.GammaTable[PByte(pOp(Src, 4))^]; inc(Dest);
+    Byte(Dest^)  := fOwner.GammaTable[PByte(pOp(Src, 2))^]; inc(Dest);
+    Byte(Dest^)  := fOwner.GammaTable[PByte(Src)^]; inc(Dest);
     {$IFDEF Store16bits}
     {Copy extra pixel values}
-    Byte(Extra^) := fOwner.GammaTable[PByte(Longint(Src) + 5)^]; inc(Extra);
-    Byte(Extra^) := fOwner.GammaTable[PByte(Longint(Src) + 3)^]; inc(Extra);
-    Byte(Extra^) := fOwner.GammaTable[PByte(Longint(Src) + 1)^]; inc(Extra);
+    Byte(Extra^) := fOwner.GammaTable[PByte(pOp(Src, 5))^]; inc(Extra);
+    Byte(Extra^) := fOwner.GammaTable[PByte(pOp(Src, 3))^]; inc(Extra);
+    Byte(Extra^) := fOwner.GammaTable[PByte(pOp(Src, 1))^]; inc(Extra);
     {$ENDIF}
     {Move to next pixel}
     inc(Src, 8); inc(Trans);
@@ -3005,7 +3005,7 @@ begin
   begin
     {Copy alpha value and then gray value}
     {$IFDEF Store16bits}
-    Extra^ := PChar(Longint(Src) + 1)^; inc(Extra);
+    Extra^ := PChar(pOp(Src, 1))^; inc(Extra);
     {$ENDIF}
     Dest^  := Src^;  inc(Src, 2);
     Trans^ := Src^;  inc(Src, 2);
@@ -3056,12 +3056,10 @@ begin
   end;
 
   {Get the image data pointer}
-  Longint(Data) := Longint(Header.ImageData) +
-    Header.BytesPerRow * (ImageHeight - 1);
+  Data := pOp(Header.ImageData, Header.BytesPerRow * (ImageHeight - 1));
   Trans := Header.ImageAlpha;
   {$IFDEF Store16bits}
-  Longint(Extra) := Longint(Header.ExtraImageData) +
-    Header.BytesPerRow * (ImageHeight - 1);
+  Extra := pOp(Header.ExtraImageData, Header.BytesPerRow * (ImageHeight - 1));
   {$ENDIF}
   {Reads each line}
   for j := 0 to ImageHeight - 1 do
@@ -3357,9 +3355,9 @@ begin
   for I := 1 to ImageWidth do
   begin
     {Copy pixel values}
-    Byte(Dest^) := fOwner.InverseGamma[PByte(Longint(Src) + 2)^]; inc(Dest);
-    Byte(Dest^) := fOwner.InverseGamma[PByte(Longint(Src) + 1)^]; inc(Dest);
-    Byte(Dest^) := fOwner.InverseGamma[PByte(Longint(Src)    )^]; inc(Dest);
+    Byte(Dest^) := fOwner.InverseGamma[PByte(pOp(Src, 2))^]; inc(Dest);
+    Byte(Dest^) := fOwner.InverseGamma[PByte(pOp(Src, 1))^]; inc(Dest);
+    Byte(Dest^) := fOwner.InverseGamma[PByte(Src)^]; inc(Dest);
     {Move to next pixel}
     inc(Src, 3);
   end {for I}
@@ -3375,9 +3373,9 @@ begin
     //Now we copy from 1 byte for each sample stored to a 2 bytes (or 1 word)
     //for sample
     {Copy pixel values}
-    PWord(Dest)^ := fOwner.InverseGamma[PByte(Longint(Src) + 2)^]; inc(Dest, 2);
-    PWord(Dest)^ := fOwner.InverseGamma[PByte(Longint(Src) + 1)^]; inc(Dest, 2);
-    PWord(Dest)^ := fOwner.InverseGamma[PByte(Longint(Src)    )^]; inc(Dest, 2);
+    PWord(Dest)^ := fOwner.InverseGamma[PByte(pOp(Src, 2))^]; inc(Dest, 2);
+    PWord(Dest)^ := fOwner.InverseGamma[PByte(pOp(Src, 1))^]; inc(Dest, 2);
+    PWord(Dest)^ := fOwner.InverseGamma[PByte(Src)^]; inc(Dest, 2);
     {Move to next pixel}
     inc(Src, 3);
   end {for I}
@@ -3400,7 +3398,7 @@ begin
   begin
     //Now we copy from 1 byte for each sample stored to a 2 bytes (or 1 word)
     //for sample
-    PWord(Dest)^ := PByte(Longint(Src))^; inc(Dest, 2);
+    PWord(Dest)^ := PByte(Src)^; inc(Dest, 2);
     {Move to next pixel}
     inc(Src);
   end {for I}
@@ -3414,9 +3412,9 @@ begin
   {Copy the data to the destination, including data from Trans pointer}
   for i := 1 to ImageWidth do
   begin
-    Byte(Dest^) := Owner.InverseGamma[PByte(Longint(Src) + 2)^]; inc(Dest);
-    Byte(Dest^) := Owner.InverseGamma[PByte(Longint(Src) + 1)^]; inc(Dest);
-    Byte(Dest^) := Owner.InverseGamma[PByte(Longint(Src)    )^]; inc(Dest);
+    PByte(Dest)^ := Owner.InverseGamma[PByte(pOp(Src, 2))^]; inc(Dest);
+    PByte(Dest)^ := Owner.InverseGamma[PByte(pOp(Src, 1))^]; inc(Dest);
+    PByte(Dest)^ := Owner.InverseGamma[PByte(Src)^]; inc(Dest);
     Dest^ := Trans^; inc(Dest);
     inc(Src, 3); inc(Trans);
   end {for i};
@@ -3430,10 +3428,10 @@ begin
   {Copy the data to the destination, including data from Trans pointer}
   for i := 1 to ImageWidth do
   begin
-    PWord(Dest)^ := Owner.InverseGamma[PByte(Longint(Src) + 2)^]; inc(Dest, 2);
-    PWord(Dest)^ := Owner.InverseGamma[PByte(Longint(Src) + 1)^]; inc(Dest, 2);
-    PWord(Dest)^ := Owner.InverseGamma[PByte(Longint(Src)    )^]; inc(Dest, 2);
-    PWord(Dest)^ := PByte(Longint(Trans)  )^; inc(Dest, 2);
+    PWord(Dest)^ := Owner.InverseGamma[PByte(pOp(Src, 2))^]; inc(Dest, 2);
+    PWord(Dest)^ := Owner.InverseGamma[PByte(pOp(Src, 1))^]; inc(Dest, 2);
+    PWord(Dest)^ := Owner.InverseGamma[PByte(Src)^]; inc(Dest, 2);
+    PWord(Dest)^ := PByte(Trans)^; inc(Dest, 2);
     inc(Src, 3); inc(Trans);
   end {for i};
 end;
@@ -3512,8 +3510,7 @@ begin
   end {case Header.ColorType};
 
   {Get the image data pointer}
-  Longint(Data) := Longint(Header.ImageData) +
-    Header.BytesPerRow * (ImageHeight - 1);
+  Data := pOp(Header.ImageData, Header.BytesPerRow * (ImageHeight - 1));
   Trans := Header.ImageAlpha;
 
   {Writes each line}
@@ -3546,12 +3543,12 @@ var
 begin
   {Get first column and enter in loop}
   Col := ColumnStart[Pass];
-  Src := PChar(Longint(Src) + Col * 3);
+  Src := pOp(Src, Col * 3);
   repeat
     {Copy this row}
-    Byte(Dest^) := fOwner.InverseGamma[PByte(Longint(Src) + 2)^]; inc(Dest);
-    Byte(Dest^) := fOwner.InverseGamma[PByte(Longint(Src) + 1)^]; inc(Dest);
-    Byte(Dest^) := fOwner.InverseGamma[PByte(Longint(Src)    )^]; inc(Dest);
+    PByte(Dest)^ := fOwner.InverseGamma[PByte(pOp(Src, 2))^]; inc(Dest);
+    PByte(Dest)^ := fOwner.InverseGamma[PByte(pOp(Src, 1))^]; inc(Dest);
+    PByte(Dest)^ := fOwner.InverseGamma[PByte(Src)^]; inc(Dest);
 
     {Move to next column}
     inc(Src, ColumnIncrement[Pass] * 3);
@@ -3567,12 +3564,12 @@ var
 begin
   {Get first column and enter in loop}
   Col := ColumnStart[Pass];
-  Src := PChar(Longint(Src) + Col * 3);
+  Src := pOp(Src, Col * 3);
   repeat
     {Copy this row}
-    PWord(Dest)^ := Owner.InverseGamma[PByte(Longint(Src) + 2)^]; inc(Dest, 2);
-    PWord(Dest)^ := Owner.InverseGamma[PByte(Longint(Src) + 1)^]; inc(Dest, 2);
-    PWord(Dest)^ := Owner.InverseGamma[PByte(Longint(Src)    )^]; inc(Dest, 2);
+    PWord(Dest)^ := Owner.InverseGamma[PByte(pOp(Src, 2))^]; inc(Dest, 2);
+    PWord(Dest)^ := Owner.InverseGamma[PByte(pOp(Src, 1))^]; inc(Dest, 2);
+    PWord(Dest)^ := Owner.InverseGamma[PByte(Src)^]; inc(Dest, 2);
 
     {Move to next column}
     inc(Src, ColumnIncrement[Pass] * 3);
@@ -3601,10 +3598,10 @@ begin
       CurBit := StartBit[biBitCount];
       repeat
         {Adjust pointer to pixel byte bounds}
-        Src2 := PChar(Longint(Src) + (biBitCount * Col) div 8);
+        Src2 := pOp(Src, (biBitCount * Col) div 8);
         {Copy data}
-        Byte(Dest^) := Byte(Dest^) or
-          (((Byte(Src2^) shr (StartBit[Header.BitDepth] - (biBitCount * Col)
+        PByte(Dest)^ := PByte(Dest)^ or
+          (((PByte(Src2)^ shr (StartBit[Header.BitDepth] - (biBitCount * Col)
             mod 8))) and (BitTable[biBitCount])) shl CurBit;
 
         {Move to next column}
@@ -3626,10 +3623,10 @@ var
 begin
   {Get first column and enter in loop}
   Col := ColumnStart[Pass];
-  Src := PChar(Longint(Src) + Col);
+  Src := pOp(Src, Col);
   repeat
     {Copy this row}
-    PWord(Dest)^ := Byte(Src^); inc(Dest, 2);
+    PWord(Dest)^ := PByte(Src)^; inc(Dest, 2);
 
     {Move to next column}
     inc(Src, ColumnIncrement[Pass]);
@@ -3646,13 +3643,13 @@ var
 begin
   {Get first column and enter in loop}
   Col := ColumnStart[Pass];
-  Src := PChar(Longint(Src) + Col * 3);
-  Trans := PChar(Longint(Trans) + Col);
+  Src := pOp(Src, Col * 3);
+  Trans := pOp(Trans, Col);
   repeat
     {Copy this row}
-    Byte(Dest^) := Owner.InverseGamma[PByte(Longint(Src) + 2)^]; inc(Dest);
-    Byte(Dest^) := Owner.InverseGamma[PByte(Longint(Src) + 1)^]; inc(Dest);
-    Byte(Dest^) := Owner.InverseGamma[PByte(Longint(Src)    )^]; inc(Dest);
+    Byte(Dest^) := Owner.InverseGamma[PByte(pOp(Src, 2))^]; inc(Dest);
+    Byte(Dest^) := Owner.InverseGamma[PByte(pOp(Src, 1))^]; inc(Dest);
+    Byte(Dest^) := Owner.InverseGamma[PByte(Src)^]; inc(Dest);
     Dest^ := Trans^; inc(Dest);
 
     {Move to next column}
@@ -3671,13 +3668,13 @@ var
 begin
   {Get first column and enter in loop}
   Col := ColumnStart[Pass];
-  Src := PChar(Longint(Src) + Col * 3);
-  Trans := PChar(Longint(Trans) + Col);
+  Src := pOp(Src, Col * 3);
+  Trans := pOp(Trans, Col);
   repeat
     {Copy this row}
-    PWord(Dest)^ := PByte(Longint(Src) + 2)^; inc(Dest, 2);
-    PWord(Dest)^ := PByte(Longint(Src) + 1)^; inc(Dest, 2);
-    PWord(Dest)^ := PByte(Longint(Src)    )^; inc(Dest, 2);
+    PWord(Dest)^ := PByte(pOp(Src, 2))^; inc(Dest, 2);
+    PWord(Dest)^ := PByte(pOp(Src, 1))^; inc(Dest, 2);
+    PWord(Dest)^ := PByte(Src)^; inc(Dest, 2);
     PWord(Dest)^ := PByte(Trans)^; inc(Dest, 2);
 
     {Move to next column}
@@ -5193,7 +5190,7 @@ begin
 
     {Copies the image data}
     for Line := 0 to Min(CY - 1, Height - 1) do
-      memcpy(pointer(PCAST(NewImageData) + (Longint(CY) - 1) *
+      memcpy(pOp(NewImageData, (CY - 1) *
       NewBytesPerRow - (Line * NewBytesPerRow)), Scanline[Line],
       Min(NewBytesPerRow, Header.BytesPerRow));
 
@@ -5204,7 +5201,7 @@ begin
       GetMem(NewImageAlpha, CX * CY);
       FillChar(NewImageAlpha^, CX * CY, 255);
       for Line := 0 to Min(CY - 1, Height - 1) do
-        memcpy(pointer(PCAST(NewImageAlpha) + (Line * CX)),
+        memcpy(pOp(NewImageAlpha, Line * CX),
         AlphaScanline[Line], Min(CX, Width));
       FreeMem(Header.ImageAlpha);
       Header.ImageAlpha := NewImageAlpha;
@@ -5216,7 +5213,7 @@ begin
       GetMem(NewImageExtra, CX * CY);
       ZeroMemory(@NewImageExtra, CX * CY);
       for Line := 0 to Min(CY - 1, Height - 1) do
-        memcpy(pointer(PCAST(NewImageExtra) + (Line * CX)),
+        memcpy(pOp(NewImageExtra, Line * CX),
         ExtraScanline[Line], Min(CX, Width));
       FreeMem(Header.ExtraImageData);
       Header.ExtraImageData := NewImageExtra;

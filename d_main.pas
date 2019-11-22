@@ -1080,7 +1080,7 @@ begin
     inc(p);
     while (p < myargc) and (myargv[p][1] <> '-') do
     begin
-      D_AddFile(myargv[p]);
+      D_AddFile(FileInDoomPath(myargv[p]));
       inc(p);
     end;
   end;

@@ -64,19 +64,20 @@ type
   screendimention_t = record
     width: integer;
     height: integer;
+    scaleheight: integer;
     depth: byte;
   end;
 
 const
   FIXED_DIMENTIONS: array[SCN_320x200..SCN_ST] of screendimention_t = (
-    (width: 320; height: 200; depth: 1),
-    (width:  -1; height:  -1; depth: 1),
-    (width:  -1; height:  -1; depth: 1),
-    (width:  -1; height:  -1; depth: 1),
-    (width: 320; height: 200; depth: 1),
-    (width:  -2; height:  -2; depth: 1),
-    (width: 320; height:  32; depth: 1),
-    (width: 320; height:  32; depth: 1)
+    (width: 320; height: 200; scaleheight: 200; depth: 1),
+    (width:  -1; height:  -1; scaleheight:  -1; depth: 1),
+    (width:  -1; height:  -1; scaleheight:  -1; depth: 1),
+    (width:  -1; height:  -1; scaleheight:  -1; depth: 1),
+    (width: 320; height: 200; scaleheight: 200; depth: 1),
+    (width:  -2; height:  -2; scaleheight:  -2; depth: 1),
+    (width: 320; height:  32; scaleheight: 200; depth: 1),
+    (width: 320; height:  32; scaleheight: 200; depth: 1)
   );
 
 var
@@ -832,6 +833,11 @@ begin
   end;
 end;
 
+var
+  destw: integer;
+  destw1: integer;
+  desth: integer;
+
 procedure V_CopyRectTransparent32(
   srcx: integer;
   srcy: integer;
@@ -846,9 +852,6 @@ procedure V_CopyRectTransparent32(
 var
   src: PByteArray;
   dest: PLongWordArray;
-  destw: integer;
-  destw1: integer;
-  desth: integer;
   fracxstep: fixed_t;
   fracxstep4: fixed_t;
   fracystep: fixed_t;
@@ -1098,7 +1101,7 @@ begin
   if scrn < SCN_FG then
     result := 200
   else
-    result := screendimentions[scrn].height;
+    result := screendimentions[scrn].scaleheight;
 end;
 
 procedure V_DrawPatch8(x, y: integer; scrn: integer; patch: Ppatch_t; preserve: boolean);
@@ -1509,6 +1512,12 @@ begin
       screendimentions[i].height := (SCREENHEIGHT + 200) div 2
     else
       screendimentions[i].height := FIXED_DIMENTIONS[i].height;
+    if FIXED_DIMENTIONS[i].scaleheight = -1 then
+      screendimentions[i].scaleheight := SCREENHEIGHT
+    else if FIXED_DIMENTIONS[i].scaleheight = -2 then
+      screendimentions[i].scaleheight := (SCREENHEIGHT + 200) div 2
+    else
+      screendimentions[i].scaleheight := FIXED_DIMENTIONS[i].scaleheight;
     screendimentions[i].depth := FIXED_DIMENTIONS[i].depth;
   end;
   // stick these in low dos memory on PCs

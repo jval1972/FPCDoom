@@ -347,8 +347,8 @@ begin
   // First check for trivial rejection.
 
   // Determine subsector entries in REJECT table.
-  s1 := pDiff(Psubsector_t(t1.subsector).sector, @sectors[0], SizeOf(sectors[0]));
-  s2 := pDiff(Psubsector_t(t2.subsector).sector, @sectors[0], SizeOf(sectors[0]));
+  s1 := pDiff(Psubsector_t(t1.subsector).sector, @sectors[0], SizeOf(sector_t));
+  s2 := pDiff(Psubsector_t(t2.subsector).sector, @sectors[0], SizeOf(sector_t));
   pnum := s1 * numsectors + s2;
   bytenum := _SHR(pnum, 3);
   bitnum := 1 shl (pnum and 7);

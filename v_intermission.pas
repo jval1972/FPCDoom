@@ -88,7 +88,6 @@ implementation
 uses
   d_fpc,
   doomdef,
-  i_video,
   am_map,
   r_data,
   r_draw,
