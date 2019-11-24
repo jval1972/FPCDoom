@@ -514,7 +514,6 @@ var
   i: integer;
   dc_source1, dc_source2: PByteArray;
   rover: Pdc32cacheitem_t;
-  factorbits: integer;
 begin
   // Cache read of the caclulated dc_source (32 bit), 98-99% propability not to recalc...
   hash := R_GetHash(rtex, rcol, rcolumn.dc_mod);
@@ -522,8 +521,6 @@ begin
   cachemiss := rover = nil;
   if cachemiss then
     rover := R_NewDC32Rover(hash);
-
-  factorbits := 0;
 
   if cachemiss then
   begin
@@ -570,12 +567,11 @@ begin
       else
         R_Grow_dc32(rover, 128, 2, 127, @noresize);
       textures[rtex].factorbits := 1;
-      factorbits := 1;
     end
     else
       plw^ := rover.dc32[0];
   end;
-  rcolumn.dc_texturefactorbits := factorbits;
+  rcolumn.dc_texturefactorbits := textures[rtex].factorbits;
   rcolumn.dc_source := rover.dc32;
 end;
 

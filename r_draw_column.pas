@@ -688,11 +688,12 @@ begin
   fracstep := parms.dc_iscale;
   frac := parms.dc_texturemid + (parms.dc_yl - centery) * fracstep;
 
-  factor := 1 shl (parms.dc_texturefactorbits);
+  factor := 1 shl parms.dc_texturefactorbits;
   fracstep := fracstep * factor;
   frac := frac * factor;
   fracstop := frac + count * fracstep;
   and_mask := 256 * factor - 1;
+
   dc_source32 := parms.dc_source;
   strn := @skytranstable[parms.dc_texturefactorbits];
 

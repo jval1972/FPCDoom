@@ -85,7 +85,7 @@ var
 
 procedure R_CalcSkyStretch;
 var
-  i, x, f: integer;
+  i, j, x, f, d: integer;
   start, minstart: integer;
 begin
   skystretch_pct := ibetween(skystretch_pct, 0, 100);
@@ -97,25 +97,36 @@ begin
 
   if zaxisshift then
   begin
-    for x := 0 to MAXTEXTUREFACTORBITS do
+    f := 1 shl MAXTEXTUREFACTORBITS;
+    target := mallocz(f * SKYTRNTARGETSIZE * SizeOf(integer));
+
+    // JVAL Leave 8 * f pixels at 0 %
+    minstart := f * (SKYTRNTARGETSIZE - SKYSIZE + 8);
+    start := minstart + trunc((skystretch_pct / 100) * (f * SKYTRNTARGETSIZE - minstart));
+
+    for i := f * SKYTRNTARGETSIZE - 1 downto start do
+      target[i] := i - f * SKYTRNTARGETSIZE + f * SKYSIZE;
+    for i := 0 to start - 1 do
+      target[i] := trunc(i * (start - f * SKYTRNTARGETSIZE + f * SKYSIZE) / start);
+
+    for i := f * SKYTRNTARGETSIZE - 1 downto 0 do
+     skytranstable[MAXTEXTUREFACTORBITS][trunc(i * SKYSIZE / SKYTRNTARGETSIZE)] := trunc(target[i] * ORIGINALSKYSIZE / SKYSIZE);
+
+    for x := 0 to MAXTEXTUREFACTORBITS - 1 do
     begin
       f := 1 shl x;
-      target := mallocz(f * SKYTRNTARGETSIZE * SizeOf(integer));
-
-      // JVAL Leave 8 * f pixels at 0 %
-      minstart := f * (SKYTRNTARGETSIZE - SKYSIZE + 8);
-      start := minstart + trunc((skystretch_pct / 100) * (f * SKYTRNTARGETSIZE - minstart));
-
-      for i := f * SKYTRNTARGETSIZE - 1 downto start do
-        target[i] := i - f * SKYTRNTARGETSIZE + f * SKYSIZE;
-      for i := 0 to start - 1 do
-        target[i] := trunc(i * (start - f * SKYTRNTARGETSIZE + f * SKYSIZE) / start);
-
-      for i := f * SKYTRNTARGETSIZE - 1 downto 0 do
-       skytranstable[x][trunc(i * SKYSIZE / SKYTRNTARGETSIZE)] := trunc(target[i] * ORIGINALSKYSIZE / SKYSIZE);
-
-      memfree(target, f * SKYTRNTARGETSIZE * SizeOf(integer));
+      d := 1 shl (MAXTEXTUREFACTORBITS - x);
+      for i := 0 to f * SKYSIZE - 1 do
+      begin
+        skytranstable[x][i] := 0;
+        for j := 0 to d - 1 do
+          skytranstable[x][i] := skytranstable[x][i] + skytranstable[MAXTEXTUREFACTORBITS][i * d + j];
+        skytranstable[x][i] := trunc(skytranstable[x][i] / d / d);
+      end;
     end;
+
+    memfree(target, f * SKYTRNTARGETSIZE * SizeOf(integer));
+
   end
   else
   begin
@@ -125,6 +136,7 @@ begin
 
       for i := 0 to f * SKYSIZE - 1 do
         skytranstable[x][i] := i div 2;
+
     end;
   end;
 end;

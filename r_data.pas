@@ -357,7 +357,10 @@ end;
 procedure R_GetDCs(const tex: integer; const col: integer);
 begin
   if videomode = vm8bit then
-    rcolumn.dc_source := R_GetColumn(tex, col)
+  begin
+    rcolumn.dc_source := R_GetColumn(tex, col);
+    rcolumn.dc_texturefactorbits := 0;
+  end
   else
     R_ReadDC32Cache(tex, col);
 end;
