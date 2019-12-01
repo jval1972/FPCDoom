@@ -110,7 +110,7 @@ type
 type
   GLDRenderLight = record
     r, g, b: float;     // Color
-    radius: float;     // radius
+    radius: float;      // radius
     x, y, z: float;     // Offset
   end;
   PGLDRenderLight = ^GLDRenderLight;

@@ -1538,11 +1538,12 @@ begin
       end;
 
       plr := thing.player;
-      if (plr.cheats and CF_GODMODE <> 0) or (plr.powers[Ord(pw_invulnerability)] <> 0) then
-      begin
-        result := true;
-        exit;
-      end;
+      if plr <> nil then
+        if (plr.cheats and CF_GODMODE <> 0) or (plr.powers[Ord(pw_invulnerability)] <> 0) then
+        begin
+          result := true;
+          exit;
+        end;
     end;
 
     // spray blood in a random direction

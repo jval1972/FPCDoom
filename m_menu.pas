@@ -1914,8 +1914,8 @@ end;
 procedure M_ChangeCameraZ(choice: integer);
 begin
   case choice of
-    0: chasecamera_viewz := chasecamera_viewz - 8;
-    1: chasecamera_viewz := chasecamera_viewz + 8;
+    0: chasecamera_viewz := chasecamera_viewz - 4;
+    1: chasecamera_viewz := chasecamera_viewz + 4;
   end;
   chasecamera_viewz := ibetween(chasecamera_viewz, CHASECAMERA_Z_MIN, CHASECAMERA_Z_MAX);
 end;
@@ -2594,6 +2594,7 @@ begin
   M_DrawDisplayOptions;
   V_DrawPatch(20, 48, SCN_TMP, 'MENU_ASP', false);
 
+  aspectratioidx := _nearest_aspect_index;
   ppos := M_WriteText(OptionsDisplayAspectRatioDef.x, OptionsDisplayAspectRatioDef.y + OptionsDisplayAspectRatioDef.itemheight * Ord(oda_forceaspectratio), 'Force Aspect Ratio: ');
   M_WriteColorText(ppos.x, ppos.y, straspectratios[_nearest_aspect_index], 'CRGRAY');
 
@@ -2634,13 +2635,13 @@ begin
   M_WriteColorText(ppos.x, ppos.y, itoa(chasecamera_viewz), 'CRGRAY');
 
   M_DrawThermo(
-    OptionsDisplayCameraDef.x, OptionsDisplayCameraDef.y + OptionsDisplayCameraDef.itemheight * (Ord(odc_skystretchpct) + 1), 21, skystretch_pct, 100);
+    OptionsDisplayCameraDef.x, OptionsDisplayCameraDef.y + OptionsDisplayCameraDef.itemheight * (Ord(odc_skystretchpct) + 1), 21, skystretch_pct div 5, 100 div 5 + 1);
 
   M_DrawThermo(
-    OptionsDisplayCameraDef.x, OptionsDisplayCameraDef.y + OptionsDisplayCameraDef.itemheight * (Ord(odc_chasecameraxy) + 1), 21, chasecamera_viewxy - CHASECAMERA_XY_MIN, CHASECAMERA_XY_MAX - CHASECAMERA_XY_MIN);
+    OptionsDisplayCameraDef.x, OptionsDisplayCameraDef.y + OptionsDisplayCameraDef.itemheight * (Ord(odc_chasecameraxy) + 1), 21, (chasecamera_viewxy - CHASECAMERA_XY_MIN) div 8, (CHASECAMERA_XY_MAX - CHASECAMERA_XY_MIN) div 8 + 1);
 
   M_DrawThermo(
-    OptionsDisplayCameraDef.x, OptionsDisplayCameraDef.y + OptionsDisplayCameraDef.itemheight * (Ord(odc_chasecameraz) + 1), 21, chasecamera_viewz - CHASECAMERA_Z_MIN, CHASECAMERA_Z_MAX - CHASECAMERA_Z_MIN);
+    OptionsDisplayCameraDef.x, OptionsDisplayCameraDef.y + OptionsDisplayCameraDef.itemheight * (Ord(odc_chasecameraz) + 1), 21, (chasecamera_viewz - CHASECAMERA_Z_MIN) div 4, (CHASECAMERA_Z_MAX - CHASECAMERA_Z_MIN) div 4 + 1);
 end;
 
 procedure M_SwitchGrayscaleMode(choice: integer);

@@ -638,10 +638,11 @@ begin
   val(s, result, code);
   if code <> 0 then
   begin
+    ret2 := 0;
     if Pos('0x', s) = 1 then
       val('$' + Copy(s, 3, Length(s) - 2), ret2, code)
-    else
-      val('$' + s, ret2, code);
+    else if Pos('#', s) = 1 then
+      val(Copy(s, 2, Length(s) - 1), ret2, code);
     if code = 0 then
       result := ret2
     else
@@ -657,10 +658,11 @@ begin
   val(s, result, code);
   if code <> 0 then
   begin
+    ret2 := default;
     if Pos('0x', s) = 1 then
       val('$' + Copy(s, 3, Length(s) - 2), ret2, code)
-    else
-      val('$' + s, ret2, code);
+    else if Pos('#', s) = 1 then
+      val(Copy(s, 2, Length(s) - 1), ret2, code);
     if code = 0 then
       result := ret2
     else
