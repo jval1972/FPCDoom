@@ -149,6 +149,7 @@ var
 var
   safemode: boolean = false;
   usemmx: boolean = true;
+  win_vista_or_newer: boolean = true;
 
 implementation
 
@@ -608,6 +609,7 @@ begin
           osname := '98'
         else
           osname := 'Me';
+        win_vista_or_newer := false;
       end;
     VER_PLATFORM_WIN32_NT:
       begin
@@ -629,6 +631,7 @@ begin
           osname := 'Vista'
         else if (info.dwMajorVersion = 6) and (info.dwMinorVersion = 1) then
           osname := '7';
+        win_vista_or_newer := info.dwMajorVersion >= 6;
       end;
     else
       begin

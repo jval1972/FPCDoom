@@ -549,7 +549,7 @@ procedure S_SetMusicVolume(volume: integer);
 begin
   if (volume < 0) or (volume > 15) then
   begin
-    I_DevError('S_SetMusicVolume(): Attempt to set music volume at %d', [volume]);
+    I_Warning('S_SetMusicVolume(): Attempt to set music volume at %d', [volume]);
     volume := 8;
   end;
 
@@ -561,7 +561,7 @@ procedure S_SetSfxVolume(volume: integer);
 begin
   if (volume < 0) or (volume > 15) then
   begin
-    I_DevError('S_SetSfxVolume(): Attempt to set sfx volume at %d', [volume]);
+    I_Warning('S_SetSfxVolume(): Attempt to set sfx volume at %d', [volume]);
     snd_SfxVolume := 15;
   end
   else

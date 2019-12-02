@@ -1538,6 +1538,8 @@ begin
       end;
 
       plr := thing.player;
+      // JVAL 20191201: Fix bug reported by slayermbm
+      //   https://www.doomworld.com/forum/topic/98789-fpcdoom-1124115-updated-nov-24-2019/?do=findComment&comment=2050251
       if plr <> nil then
         if (plr.cheats and CF_GODMODE <> 0) or (plr.powers[Ord(pw_invulnerability)] <> 0) then
         begin
