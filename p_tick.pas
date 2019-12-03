@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2019 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -96,10 +96,15 @@ end;
 // Deallocation is lazy -- it will not actually be freed
 // until its thinking turn comes up.
 //
+procedure _removethinker;
+begin
+
+end;
+
 procedure P_RemoveThinker(thinker: Pthinker_t);
 begin
   // FIXME: NOP.
-  thinker._function.acv := nil;
+  thinker._function.acv := _removethinker;
 end;
 
 //
@@ -112,7 +117,7 @@ begin
   currentthinker := thinkercap.next;
   while currentthinker <> @thinkercap do
   begin
-    if not Assigned(currentthinker._function.acv) then
+    if @currentthinker._function.acv = @_removethinker then
     begin
       // time to remove it
       currentthinker.next.prev := currentthinker.prev;
