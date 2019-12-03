@@ -8,7 +8,7 @@
       <Unit0>
         <Filename Value="FPCDoom.lpr"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="6"/>
+        <EditorIndex Value="7"/>
         <TopLine Value="139"/>
         <CursorPos Y="161"/>
         <UsageCount Value="204"/>
@@ -81,7 +81,7 @@
       <Unit9>
         <Filename Value="d_main.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="4"/>
         <TopLine Value="1848"/>
         <CursorPos X="5" Y="1863"/>
         <UsageCount Value="204"/>
@@ -107,9 +107,8 @@
         <Filename Value="d_think.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
-        <WindowIndex Value="1"/>
-        <TopLine Value="21"/>
-        <CursorPos Y="33"/>
+        <TopLine Value="18"/>
+        <CursorPos X="11" Y="42"/>
         <UsageCount Value="204"/>
       </Unit12>
       <Unit13>
@@ -216,17 +215,17 @@
       <Unit26>
         <Filename Value="i_midi.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="5"/>
-        <TopLine Value="1334"/>
-        <CursorPos X="16" Y="1357"/>
+        <EditorIndex Value="6"/>
+        <TopLine Value="34"/>
+        <CursorPos Y="55"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit26>
       <Unit27>
         <Filename Value="i_music.pas"/>
         <IsPartOfProject Value="True"/>
-        <TopLine Value="607"/>
-        <CursorPos X="28" Y="613"/>
+        <TopLine Value="685"/>
+        <CursorPos X="34" Y="690"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit27>
@@ -241,7 +240,7 @@
       <Unit29>
         <Filename Value="i_sound.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="3"/>
         <TopLine Value="466"/>
         <CursorPos X="29" Y="482"/>
         <UsageCount Value="204"/>
@@ -250,8 +249,7 @@
       <Unit30>
         <Filename Value="i_system.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="5"/>
         <TopLine Value="310"/>
         <CursorPos Y="317"/>
         <UsageCount Value="204"/>
@@ -550,10 +548,12 @@
       <Unit66>
         <Filename Value="p_tick.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="128"/>
-        <CursorPos X="12" Y="156"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="114"/>
+        <CursorPos X="48" Y="124"/>
         <UsageCount Value="204"/>
+        <Loaded Value="True"/>
       </Unit66>
       <Unit67>
         <Filename Value="p_user.pas"/>
@@ -687,7 +687,7 @@
       <Unit83>
         <Filename Value="s_sound.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="2"/>
         <TopLine Value="216"/>
         <CursorPos X="11" Y="236"/>
         <UsageCount Value="204"/>
@@ -981,7 +981,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="155"/>
         <CursorPos Y="177"/>
-        <UsageCount Value="183"/>
+        <UsageCount Value="184"/>
       </Unit120>
       <Unit121>
         <Filename Value="r_ccache.pas"/>
@@ -1136,8 +1136,8 @@
         <Caret Line="199" Column="39" TopLine="184"/>
       </Position29>
       <Position30>
-        <Filename Value="i_system.pas"/>
-        <Caret Line="354" Column="38" TopLine="482"/>
+        <Filename Value="p_tick.pas"/>
+        <Caret Line="99" Column="26" TopLine="73"/>
       </Position30>
     </JumpHistory>
     <RunParams>

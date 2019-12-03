@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2019 by Jim Valavanis
+//  Copyright (C) 2017-2018 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -98,13 +98,14 @@ end;
 //
 procedure _removethinker;
 begin
-
+// JVAL 20191203 - Fixed non working plats & ceilings thanks to slayermbm
+//                 https://www.doomworld.com/forum/topic/98789-fpcdoom-1124117-updated-dec-2-2019/?do=findComment&comment=2050845
 end;
 
 procedure P_RemoveThinker(thinker: Pthinker_t);
 begin
-  // FIXME: NOP.
-  thinker._function.acv := _removethinker;
+  // FIXME: NOP. - JVAL 20191203 Fixed
+  @thinker._function.acv := @_removethinker;
 end;
 
 //
