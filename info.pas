@@ -11090,6 +11090,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_POSSESSED
     name: 'Trooper';                  // name
@@ -11124,6 +11125,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_SHOTGUY
     name: 'Sargeant';                 // name
@@ -11158,6 +11160,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_VILE
     name: 'Archvile';                 // name
@@ -11193,6 +11196,7 @@ const // Doom Original mobjinfo
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
     healstate: Ord(S_VILE_HEAL1);     // healstate
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_FIRE
     name: 'Archvile Attack';          // name
@@ -11227,6 +11231,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_UNDEAD
     name: 'Revenant';                 // name
@@ -11261,6 +11266,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_TRACER
     name: 'Revenant Fireball';        // name
@@ -11295,6 +11301,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_SMOKE
     name: 'Fireball Trail';           // name
@@ -11329,6 +11336,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_FATSO
     name: 'Mancubus';                 // name
@@ -11363,6 +11371,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_FATSHOT
     name: 'Mancubus Fireball';        // name
@@ -11397,6 +11406,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_CHAINGUY
     name: 'Chaingun Sargeant';        // name
@@ -11431,6 +11441,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_TROOP
     name: 'Imp';                      // name
@@ -11465,6 +11476,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_SERGEANT
     name: 'Demon';                    // name
@@ -11499,6 +11511,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_SHADOWS
     name: 'Spectre';                  // name
@@ -11533,6 +11546,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_HEAD
     name: 'Cacodemon';                // name
@@ -11567,6 +11581,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_BRUISER
     name: 'Baron of Hell';            // name
@@ -11601,6 +11616,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_BRUISERSHOT
     name: 'Baron Fireball';           // name
@@ -11635,6 +11651,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_KNIGHT
     name: 'Hell Knight';              // name
@@ -11669,6 +11686,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_SKULL
     name: 'Lost Soul';                // name
@@ -11703,6 +11721,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_SPIDER
     name: 'Spiderdemon';              // name
@@ -11737,6 +11756,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_BABY
     name: 'Arachnotron';              // name
@@ -11771,6 +11791,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_CYBORG
     name: 'Cyberdemon';               // name
@@ -11805,6 +11826,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_PAIN
     name: 'Pain Elemental';           // name
@@ -11839,6 +11861,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_WOLFSS
     name: 'SS Nazi';                  // name
@@ -11873,6 +11896,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_KEEN
     name: 'Commander Keen';           // name
@@ -11907,6 +11931,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_BOSSBRAIN
     name: 'Big Brain';                // name
@@ -11941,6 +11966,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_BOSSSPIT
     name: 'Demon Spawner';            // name
@@ -11975,6 +12001,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_BOSSTARGET
     name: 'Demon Spawn Spot';         // name
@@ -12009,6 +12036,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_SPAWNSHOT
     name: 'Demon Spawn Cube';         // name
@@ -12043,6 +12071,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_SPAWNFIRE
     name: 'Demon Spawn Fire';         // name
@@ -12077,6 +12106,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_BARREL
     name: 'Barrel';                   // name
@@ -12111,6 +12141,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_TROOPSHOT
     name: 'Imp Fireball';             // name
@@ -12145,6 +12176,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_HEADSHOT
     name: 'Caco Fireball';            // name
@@ -12179,6 +12211,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_ROCKET
     name: 'Rocket';                   // name
@@ -12213,6 +12246,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_PLASMA
     name: 'Plasma Bullet';            // name
@@ -12247,6 +12281,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_BFG
     name: 'BFG Shot';                 // name
@@ -12281,6 +12316,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_ARACHPLAZ
     name: 'Arach. Fireball';          // name
@@ -12315,6 +12351,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_PUFF
     name: 'Bullet Puff';              // name
@@ -12349,6 +12386,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_BLOOD
     name: 'Blood Splat';              // name
@@ -12383,6 +12421,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_TFOG
     name: 'Teleport Flash';           // name
@@ -12417,6 +12456,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_IFOG
     name: 'Item Respawn Fog';         // name
@@ -12451,6 +12491,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_TELEPORTMAN
     name: 'Teleport Exit';            // name
@@ -12485,6 +12526,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_EXTRABFG
     name: 'BFG Hit';                  // name
@@ -12519,6 +12561,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC0
     name: 'Green Armor';              // name
@@ -12553,6 +12596,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC1
     name: 'Blue Armor';               // name
@@ -12587,6 +12631,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC2
     name: 'Health Potion';            // name
@@ -12621,6 +12666,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC3
     name: 'Armor Helmet';             // name
@@ -12655,6 +12701,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC4
     name: 'Blue Keycard';             // name
@@ -12689,6 +12736,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC5
     name: 'Red Keycard';              // name
@@ -12723,6 +12771,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC6
     name: 'Yellow Keycard';           // name
@@ -12757,6 +12806,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC7
     name: 'Yellow Skull Key';         // name
@@ -12791,6 +12841,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC8
     name: 'Red Skull Key';            // name
@@ -12825,6 +12876,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC9
     name: 'Blue Skull Key';           // name
@@ -12859,6 +12911,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC10
     name: 'Stim Pack';                // name
@@ -12893,6 +12946,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC11
     name: 'Medical Kit';              // name
@@ -12927,6 +12981,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC12
     name: 'Soul Sphere';              // name
@@ -12961,6 +13016,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_INV
     name: 'Invulnerability';          // name
@@ -12995,6 +13051,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC13
     name: 'Berserk Sphere';           // name
@@ -13029,6 +13086,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_INS
     name: 'Blur Sphere';              // name
@@ -13063,6 +13121,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC14
     name: 'Radiation Suit';           // name
@@ -13097,6 +13156,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC15
     name: 'Computer Map';             // name
@@ -13131,6 +13191,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC16
     name: 'Lite Amp. Visor';          // name
@@ -13165,6 +13226,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MEGA
     name: 'Mega Sphere';              // name
@@ -13199,6 +13261,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_CLIP
     name: 'Ammo Clip';                // name
@@ -13233,6 +13296,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC17
     name: 'Box of Ammo';              // name
@@ -13267,6 +13331,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC18
     name: 'Rocket ammo';              // name
@@ -13301,6 +13366,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC19
     name: 'Box of Rockets';           // name
@@ -13335,6 +13401,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC20
     name: 'Energy Cell';              // name
@@ -13369,6 +13436,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC21
     name: 'Energy Pack';              // name
@@ -13403,6 +13471,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC22
     name: 'Shells';                   // name
@@ -13437,6 +13506,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC23
     name: 'Box of Shells';            // name
@@ -13471,6 +13541,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC24
     name: 'Backpack';                 // name
@@ -13505,6 +13576,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC25
     name: 'BFG 9000';                 // name
@@ -13539,6 +13611,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_CHAINGUN
     name: 'Chaingun';                 // name
@@ -13573,6 +13646,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC26
     name: 'Chainsaw';                 // name
@@ -13607,6 +13681,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC27
     name: 'Rocket Launcher';          // name
@@ -13641,6 +13716,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC28
     name: 'Plasma Gun';               // name
@@ -13675,6 +13751,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_SHOTGUN
     name: 'Shotgun';                  // name
@@ -13709,6 +13786,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_SUPERSHOTGUN
     name: 'Super Shotgun';            // name
@@ -13743,6 +13821,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC29
     name: 'Tall Lamp';                // name
@@ -13777,6 +13856,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC30
     name: 'Tall Lamp 2';              // name
@@ -13811,6 +13891,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC31
     name: 'Short Lamp';               // name
@@ -13845,6 +13926,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC32
     name: 'Tall Gr. Pillar';          // name
@@ -13879,6 +13961,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC33
     name: 'Short Gr. Pillar';         // name
@@ -13913,6 +13996,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC34
     name: 'Tall Red Pillar';          // name
@@ -13947,6 +14031,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC35
     name: 'Short Red Pillar';         // name
@@ -13981,6 +14066,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC36
     name: 'Pillar w/Skull';           // name
@@ -14015,6 +14101,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC37
     name: 'Pillar w/Heart';           // name
@@ -14049,6 +14136,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC38
     name: 'Eye in Symbol';            // name
@@ -14083,6 +14171,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC39
     name: 'Flaming Skulls';           // name
@@ -14117,6 +14206,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC40
     name: 'Grey Tree';                // name
@@ -14151,6 +14241,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC41
     name: 'Tall Blue Torch';          // name
@@ -14185,6 +14276,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC42
     name: 'Tall Green Torch';         // name
@@ -14219,6 +14311,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC43
     name: 'Tall Red Torch';           // name
@@ -14253,6 +14346,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC44
     name: 'Small Blue Torch';         // name
@@ -14287,6 +14381,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC45
     name: 'Small Gr. Torch';          // name
@@ -14321,6 +14416,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC46
     name: 'Small Red Torch';          // name
@@ -14355,6 +14451,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC47
     name: 'Brown Stub';               // name
@@ -14389,6 +14486,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC48
     name: 'Technical Column';         // name
@@ -14423,6 +14521,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC49
     name: 'Candle';                   // name
@@ -14457,6 +14556,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC50
     name: 'Candelabra';               // name
@@ -14491,6 +14591,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC51
     name: 'Swaying Body';             // name
@@ -14525,6 +14626,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC52
     name: 'Hanging Arms Out';         // name
@@ -14559,6 +14661,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC53
     name: 'One-legged Body';          // name
@@ -14593,6 +14696,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC54
     name: 'Hanging Torso';            // name
@@ -14627,6 +14731,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC55
     name: 'Hanging Leg';              // name
@@ -14661,6 +14766,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC56
     name: 'Hanging Arms Out 2';       // name
@@ -14695,6 +14801,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC57
     name: 'Hanging Torso 2';          // name
@@ -14729,6 +14836,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC58
     name: 'One-legged Body 2';        // name
@@ -14763,6 +14871,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC59
     name: 'Hanging Leg 2';            // name
@@ -14797,6 +14906,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC60
     name: 'Swaying Body 2';           // name
@@ -14831,6 +14941,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC61
     name: 'Dead Cacodemon';           // name
@@ -14865,6 +14976,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC62
     name: 'Dead Marine';              // name
@@ -14899,6 +15011,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC63
     name: 'Dead Trooper';             // name
@@ -14933,6 +15046,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC64
     name: 'Dead Demon';               // name
@@ -14967,6 +15081,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC65
     name: 'Dead Lost Soul';           // name
@@ -15001,6 +15116,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC66
     name: 'Dead Imp';                 // name
@@ -15035,6 +15151,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC67
     name: 'Dead Sargeant';            // name
@@ -15069,6 +15186,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC68
     name: 'Guts and Bones';           // name
@@ -15103,6 +15221,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC69
     name: 'Guts and Bones 2';         // name
@@ -15137,6 +15256,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC70
     name: 'Skewered Heads';           // name
@@ -15171,6 +15291,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC71
     name: 'Pool of Blood';            // name
@@ -15205,6 +15326,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC72
     name: 'Pole with Skull';          // name
@@ -15239,6 +15361,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC73
     name: 'Pile of Skulls';           // name
@@ -15273,6 +15396,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC74
     name: 'Impaled Body';             // name
@@ -15307,6 +15431,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC75
     name: 'Twitching Body';           // name
@@ -15341,6 +15466,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC76
     name: 'Large Tree';               // name
@@ -15375,6 +15501,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC77
     name: 'Flaming Barrel';           // name
@@ -15409,6 +15536,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC78
     name: 'Hanging Body 1';           // name
@@ -15443,6 +15571,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC79
     name: 'Hanging Body 2';           // name
@@ -15477,6 +15606,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC80
     name: 'Hanging Body 3';           // name
@@ -15511,6 +15641,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC81
     name: 'Hanging Body 4';           // name
@@ -15545,6 +15676,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC82
     name: 'Hanging Body 5';           // name
@@ -15579,6 +15711,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC83
     name: 'Hanging Body 6';           // name
@@ -15613,6 +15746,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC84
     name: 'Pool Of Blood 1';          // name
@@ -15647,6 +15781,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC85
     name: 'Pool Of Blood 2';          // name
@@ -15681,6 +15816,7 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_MISC86
     name: 'Brain';                    // name
@@ -15715,8 +15851,8 @@ const // Doom Original mobjinfo
     explosiondamage: 0;               // explosiondamage
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
+    scale: FRACUNIT;                  // scale
    ),
-
    (    // MT_SPLASH
     name: 'Splash';               // name
     inheritsfrom: -1;             // inheritsfrom
@@ -15744,6 +15880,7 @@ const // Doom Original mobjinfo
     flags: MF_NOBLOCKMAP or MF_MISSILE or MF_DROPOFF;    // flags
     flags_ex: MF_EX_LOWGRAVITY;   // flags_ex
     flags2_ex: MF2_EX_NOHITFLOOR; // flags2_ex
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_SPLASHBASE
     name: 'Splash 2';             // name
@@ -15771,6 +15908,7 @@ const // Doom Original mobjinfo
     activesound: Ord(sfx_None);   // activesound
     flags: MF_NOBLOCKMAP;         // flags
     flags2_ex: MF2_EX_NOHITFLOOR; // flags2_ex
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_LAVASPLASH
     name: 'Lava Splash';          // name
@@ -15798,6 +15936,7 @@ const // Doom Original mobjinfo
     activesound: Ord(sfx_None);   // activesound
     flags: MF_NOBLOCKMAP;         // flags
     flags2_ex: MF2_EX_NOHITFLOOR; // flags2_ex
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_LAVASMOKE
     name: 'Lava Smoke';           // name
@@ -15827,6 +15966,7 @@ const // Doom Original mobjinfo
     flags2_ex: MF2_EX_NOHITFLOOR; // flags2_ex
     renderstyle: mrs_translucent;
     alpha: 40000;
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_SLUDGECHUNK
     name: 'Sludge Chunk';         // name
@@ -15855,6 +15995,7 @@ const // Doom Original mobjinfo
     flags: MF_NOBLOCKMAP or MF_MISSILE or MF_DROPOFF;    // flags
     flags_ex: MF_EX_LOWGRAVITY;   // flags_ex
     flags2_ex: MF2_EX_NOHITFLOOR; // flags2_ex
+    scale: FRACUNIT;                  // scale
    ),
    (    // MT_SLUDGESPLASH
     name: 'Sludge Splash';        // name
@@ -15882,6 +16023,7 @@ const // Doom Original mobjinfo
     activesound: Ord(sfx_None);   // activesound
     flags: MF_NOBLOCKMAP;         // flags
     flags2_ex: MF2_EX_NOHITFLOOR; // flags2_ex
+    scale: FRACUNIT;                  // scale
    )
 
   );

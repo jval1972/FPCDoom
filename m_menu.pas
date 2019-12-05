@@ -86,6 +86,8 @@ var
 
   menubackgroundflat: string = 'FLOOR4_6';
 
+  menukeyescfunc: integer = 0;
+
 const
   DEFMENUBACKGROUNDFLAT = 'FLOOR4_6';
 
@@ -976,6 +978,7 @@ type
     cttl_mousesensitivity,
     ctrl_usejoystic,
     ctrl_autorun,
+    ctrl_menukeyescfunc,
     ctrl_keyboardmode,
     ctrl_keybindings,
     ctrl_end
@@ -1768,12 +1771,26 @@ begin
     M_SetKeyboardMode(2);
 end;
 
+procedure M_SwitchMenuKeyESC(choice: integer);
+begin
+  menukeyescfunc := ibetween(menukeyescfunc, 0, 1);
+  menukeyescfunc := 1 - menukeyescfunc;
+end;
+
+const
+  strmenukeyescfunc: array[0..1] of string = ('BACKSPACE', 'ESC');
+
 procedure M_DrawControls;
 var
   ppos: menupos_t;
 begin
   V_DrawPatch(108, 15, SCN_TMP, 'M_OPTTTL', false);
   V_DrawPatch(20, 48, SCN_TMP, 'MENU_CON', false);
+
+
+  menukeyescfunc := ibetween(menukeyescfunc, 0, 1);
+  ppos := M_WriteText(ControlsDef.x, ControlsDef.y + ControlsDef.itemheight * Ord(ctrl_menukeyescfunc), 'Go to upper level menu: ');
+  M_WriteColorText(ppos.x, ppos.y, strmenukeyescfunc[menukeyescfunc], 'CRGRAY');
 
   ppos := M_WriteText(ControlsDef.x, ControlsDef.y + ControlsDef.itemheight * Ord(ctrl_keyboardmode), 'Keyboard movement: ');
   M_WriteColorText(ppos.x, ppos.y, mkeyboardmodes[M_GetKeyboardMode], 'CRGRAY');
@@ -3029,6 +3046,7 @@ var
   ch: integer;
   i: integer;
   palette: PByteArray;
+  mouseback: boolean;
 begin
   if (ev.data1 = KEY_RALT) or (ev.data1 = KEY_LALT) then
   begin
@@ -3039,6 +3057,7 @@ begin
 
   ch := -1;
 
+  mouseback := false;
   if (ev._type = ev_joystick) and (joywait < I_GetTime) then
   begin
     if ev.data3 < 0 then
@@ -3071,6 +3090,7 @@ begin
     if ev.data1 and 2 <> 0 then
     begin
       ch := KEY_BACKSPACE;
+      mouseback := true;
       joywait := I_GetTime + 5;
     end;
   end
@@ -3484,20 +3504,32 @@ begin
     KEY_ESCAPE:
       begin
         currentMenu.lastOn := itemOn;
-        M_ClearMenus;
-        M_SwtchxSound;
+        if menukeyescfunc = 0 then
+          M_ClearMenus
+        else
+        begin
+          if currentMenu.prevMenu <> nil then
+          begin
+            currentMenu := currentMenu.prevMenu;
+            itemOn := currentMenu.lastOn;
+          end
+          else
+            M_ClearMenus
+        end;
+        M_SwtchnSound;
         result := true;
         exit;
       end;
     KEY_BACKSPACE:
       begin
         currentMenu.lastOn := itemOn;
-        if currentMenu.prevMenu <> nil then
-        begin
-          currentMenu := currentMenu.prevMenu;
-          itemOn := currentMenu.lastOn;
-          M_SwtchnSound;
-        end;
+        if mouseback or (menukeyescfunc = 0) then
+          if currentMenu.prevMenu <> nil then
+          begin
+            currentMenu := currentMenu.prevMenu;
+            itemOn := currentMenu.lastOn;
+            M_SwtchnSound;
+          end;
         result := true;
         exit;
       end;
@@ -5335,6 +5367,14 @@ begin
   pmi.routine := @M_BoolCmd;
   pmi.pBoolVal := @autorunmode;
   pmi.alphaKey := 'a';
+
+  inc(pmi);
+  pmi.status := 1;
+  pmi.name := '';
+  pmi.cmd := '';
+  pmi.routine := @M_SwitchMenuKeyESC;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := 'g';
 
   inc(pmi);
   pmi.status := 1;

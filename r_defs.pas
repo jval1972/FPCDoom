@@ -387,6 +387,7 @@ type
     mobjflags2_ex: integer;
     mo: Pmobj_t;
     _type: integer;
+    infoscale: fixed_t;
   end;
 
 //

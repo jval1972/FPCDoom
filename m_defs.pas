@@ -93,7 +93,7 @@ type
   Pdefault_t = ^default_t;
 
 const
-  NUMDEFAULTS = 139;
+  NUMDEFAULTS = 140;
 
   defaults: array[0..NUMDEFAULTS - 1] of default_t = (
     (name: 'Display';
@@ -674,6 +674,14 @@ const
      defaultivalue: 0;
      defaultbvalue: false;
      _type: tBoolean),
+
+    (name: 'menukeyescfunc';
+     location: @menukeyescfunc;
+     setable: DFS_ALWAYS;
+     defaultsvalue: '';
+     defaultivalue: 0;
+     defaultbvalue: false;
+     _type: tInteger),
 
     (name: 'Keyboard';
      location: nil;

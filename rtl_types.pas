@@ -85,6 +85,7 @@ type
     renderstyle: string;
     alpha: integer;
     healstate: integer;
+    scale: integer;
   end;
 
 

@@ -641,6 +641,7 @@ begin
 
                 end;
               end;
+          40: mobjinfo[mobj_no].scale := mobj_val;
         end;
       end;
 
@@ -1506,6 +1507,7 @@ begin
     result.Add('%s = %d', [capitalizedstring(mobj_tokens[36]), mobjinfo[i].dropitem]);
     result.Add('%s = %d', [capitalizedstring(mobj_tokens[37]), mobjinfo[i].missiletype]);
     result.Add('%s = %d', [capitalizedstring(mobj_tokens[38]), mobjinfo[i].healstate]);
+    result.Add('%s = %d', [capitalizedstring(mobj_tokens[40]), mobjinfo[i].scale]);
 
     result.Add('');
   end;
@@ -1771,6 +1773,7 @@ begin
   mobj_tokens.Add('MISSILETYPE');        // .missiletype              // 37
   mobj_tokens.Add('HEAL FRAME');         // .healstate                // 38
   mobj_tokens.Add('FLAGS2_EX');          // .flags2_ex                // 39
+  mobj_tokens.Add('SCALE');              // .scale                    // 40
 
 
   mobj_flags := TDTextList.Create;

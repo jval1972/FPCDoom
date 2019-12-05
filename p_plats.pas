@@ -53,6 +53,7 @@ procedure P_RemoveActivePlat(plat: Pplat_t);
 implementation
 
 uses
+  doomdef,
   i_system,
   m_fixed,
   m_rnd,
@@ -197,7 +198,7 @@ begin
           if plat.low > sec.floorheight then
             plat.low := sec.floorheight;
           plat.high := sec.floorheight;
-          plat.wait := TICKRATE * PLATWAIT;
+          plat.wait := TICRATE * PLATWAIT;
           plat.status := down;
           S_StartSound(Pmobj_t(@sec.soundorg), Ord(sfx_pstart));
         end;
@@ -208,7 +209,7 @@ begin
           if plat.low > sec.floorheight then
             plat.low := sec.floorheight;
           plat.high := sec.floorheight;
-          plat.wait := TICKRATE * PLATWAIT;
+          plat.wait := TICRATE * PLATWAIT;
           plat.status := down;
           S_StartSound(Pmobj_t(@sec.soundorg), Ord(sfx_pstart));
         end;
@@ -221,7 +222,7 @@ begin
           plat.high := P_FindHighestFloorSurrounding(sec);
           if plat.high < sec.floorheight then
             plat.high := sec.floorheight;
-          plat.wait := TICKRATE * PLATWAIT;
+          plat.wait := TICRATE * PLATWAIT;
           plat.status := plat_e(P_Random and 1);
           S_StartSound(Pmobj_t(@sec.soundorg), Ord(sfx_pstart));
         end;

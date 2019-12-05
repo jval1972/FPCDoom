@@ -468,6 +468,7 @@ type
     renderstyle: mobjrenderstyle_t;
     alpha: integer;
     healstate: integer;
+    scale: integer;
   end;
 
   Pmobjinfo_t = ^mobjinfo_t;

@@ -57,9 +57,6 @@ procedure P_Ticker;
 var
   leveltime: integer;
 
-const
-  TICKRATE = 35;
-
 implementation
 
 uses

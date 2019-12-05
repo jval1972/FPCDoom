@@ -611,6 +611,7 @@ var
   vis: Pvissprite_t;
   ang: angle_t;
   iscale: fixed_t;
+  infoscale: fixed_t;
 begin
   if (thing.player = viewplayer) and not chasecamera then
     exit;
@@ -671,15 +672,17 @@ begin
     flip := sprframe.flip[0];
   end;
 
+  infoscale := thing.info.scale;
+
   // calculate edges of the shape
-  tx := tx - spriteoffset[lump];
+  tx := tx - FixedMul(spriteoffset[lump], infoscale);
   x1 := FixedInt(centerxfrac + FixedMul(tx, xscale));
 
   // off the right side?
   if x1 > viewwidth then
     exit;
 
-  tx := tx + spritewidth[lump];
+  tx := tx + FixedMul(spritewidth[lump], infoscale);
   x2 := FixedInt(centerxfrac + FixedMul(tx, xscale)) - 1;
 
   // off the left side
@@ -697,7 +700,8 @@ begin
   vis.gx := thing.x;
   vis.gy := thing.y;
   vis.gz := thing.z;
-  vis.gzt := thing.z + spritetopoffset[lump];
+  vis.gzt := thing.z + FixedMul(spritetopoffset[lump], infoscale);
+  vis.infoscale := infoscale;
   vis.texturemid := vis.gzt - viewz;
   if x1 <= 0 then
     vis.x1 := 0
@@ -721,7 +725,7 @@ begin
   end;
 
   if vis.x1 > x1 then
-    vis.startfrac := vis.startfrac + vis.xiscale * (vis.x1 - x1);
+    vis.startfrac := vis.startfrac + FixedDiv(vis.xiscale, vis.infoscale) * (vis.x1 - x1);
   vis.patch := lump;
 
   // get light level
@@ -891,6 +895,7 @@ begin
     // local light
     vis.colormap := spritelights[MAXLIGHTSCALE - 1];
   end;
+  vis.infoscale := FRACUNIT;
 
   if mirrormode and MR_WEAPON <> 0 then
   begin
@@ -1126,6 +1131,9 @@ begin
 
   mfloorclip := @clipbot;
   mceilingclip := @cliptop;
+
+  spr.scale := FixedMul(spr.scale, spr.infoscale);
+  spr.xiscale := FixedDiv(spr.xiscale, spr.infoscale);
 
   R_DrawVisSprite(spr, @R_DrawMaskedColumn);
 end;

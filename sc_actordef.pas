@@ -511,6 +511,7 @@ var
       AddRes('Renderstyle = NORMAL');
     AddRes('Alpha = ' + itoa(mobj.alpha));
     AddRes('flags2_ex = ' + mobj.flags2_ex);
+    AddRes('Scale = ' + itoa(mobj.scale));
     AddRes('');
 
     if numstates > 0 then
@@ -606,6 +607,7 @@ begin
       mobj.flags := '';
       mobj.flags_ex := '';
       mobj.flags2_ex := '';
+      mobj.scale := FRACUNIT;
       ismissile := false;
       FillChar(m_states, SizeOf(m_states), 0);
       sc.GetString;
@@ -679,6 +681,7 @@ begin
 
           mobj.renderstyle := itoa(Ord(mobjinfo[idx].renderstyle));
           mobj.alpha := mobjinfo[idx].alpha;
+          mobj.scale := mobjinfo[idx].scale;
 
         end;
 
@@ -722,6 +725,13 @@ begin
         begin
           sc.GetFloat;
           mobj.alpha := round(sc._float * FRACUNIT);
+          sc.GetString;
+        end
+
+        else if sc.MatchString('SCALE') then
+        begin
+          sc.GetFloat;
+          mobj.scale := round(sc._float * FRACUNIT);
           sc.GetString;
         end
 

@@ -493,7 +493,7 @@ begin
   door.direction := 0;
   door._type := normal;
   door.speed := VDOORSPEED;
-  door.topcountdown := 30 * TICKRATE;
+  door.topcountdown := 30 * TICRATE;
 end;
 
 //
@@ -518,7 +518,7 @@ begin
   door.topheight := P_FindLowestCeilingSurrounding(sec);
   door.topheight := door.topheight - 4 * FRACUNIT;
   door.topwait := VDOORWAIT;
-  door.topcountdown := 5 * 60 * TICKRATE; 
+  door.topcountdown := 5 * 60 * TICRATE;
 end;
 
 
