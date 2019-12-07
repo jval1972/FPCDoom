@@ -371,7 +371,7 @@ begin
 
   while frac <= fracstop do
   begin
-    dest^ := parms.curtrans8table[(dest^ shl 8) + parms.dc_colormap[dc_source8[(LongWord(frac) shr FRACBITS) and 127]]];
+    dest^ := parms.curtrans8table[dest^ + (parms.dc_colormap[dc_source8[(LongWord(frac) shr FRACBITS) and 127]] shl 8)];
     inc(dest, SCREENWIDTH);
     inc(frac, fracstep);
   end;

@@ -125,6 +125,18 @@ var
 // JVAL Jump
   key_jump: integer;
 
+// JVAL 20191207 Key bindings for weapon change
+  key_weapon0: integer = Ord('1');
+  key_weapon1: integer = Ord('2');
+  key_weapon2: integer = Ord('3');
+  key_weapon3: integer = Ord('4');
+  key_weapon4: integer = Ord('5');
+  key_weapon5: integer = Ord('6');
+  key_weapon6: integer = Ord('7');
+  key_weapon7: integer = Ord('8');
+
+  KEY_WEAPONS: array[0..Ord(NUMWEAPONS) - 1] of PInteger;
+
   usemouse: boolean;
   invertmouseturn: boolean;
   invertmouselook: boolean;
@@ -538,7 +550,7 @@ begin
 
   // chainsaw overrides
   for i := 0 to Ord(NUMWEAPONS) - 2 do
-    if gamekeydown[Ord('1') + i] then
+    if gamekeydown[KEY_WEAPONS[i]^] then
     begin
       cmd.buttons := cmd.buttons or BT_CHANGE;
       cmd.buttons := cmd.buttons or _SHL(i, BT_WEAPONSHIFT);
@@ -2454,6 +2466,7 @@ begin
   if displayendscreen then
   begin
     gamestate := GS_ENDOOM;
+    S_PauseSound; // Stop music in ENDOOM screen
     printf('E_Init: Initializing ENDOOM screen.'#13#10);
     E_Init;
   end
@@ -2544,6 +2557,15 @@ initialization
   cpars[31] := 30;
 
   precache := true;
+
+  KEY_WEAPONS[0] := @key_weapon0;
+  KEY_WEAPONS[1] := @key_weapon1;
+  KEY_WEAPONS[2] := @key_weapon2;
+  KEY_WEAPONS[3] := @key_weapon3;
+  KEY_WEAPONS[4] := @key_weapon4;
+  KEY_WEAPONS[5] := @key_weapon5;
+  KEY_WEAPONS[6] := @key_weapon6;
+  KEY_WEAPONS[7] := @key_weapon7;
 
 end.
 

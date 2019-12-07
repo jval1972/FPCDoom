@@ -1031,12 +1031,22 @@ type
     kb_lookcenter,
     kb_lookleft,
     kb_lookright,
+    kb_weapon0,
+    kb_weapon1,
+    kb_weapon2,
+    kb_weapon3,
+    kb_weapon4,
+    kb_weapon5,
+    kb_weapon6,
+    kb_weapon7,
     kb_end
   );
 
 var
-  KeyBindingsMenu: array[0..Ord(kb_end) - 1] of menuitem_t;
-  KeyBindingsDef: menu_t;
+  KeyBindingsMenu1: array[0..Ord(kb_weapon0) - 1] of menuitem_t;
+  KeyBindingsDef1: menu_t;
+  KeyBindingsMenu2: array[0..Ord(kb_end) - Ord(kb_weapon0) - 1] of menuitem_t;
+  KeyBindingsDef2: menu_t;
 
 type
   bindinginfo_t = record
@@ -1061,7 +1071,15 @@ const
     (text: 'Look down'; pkey: @key_lookdown),
     (text: 'Look center'; pkey: @key_lookcenter),
     (text: 'Look left'; pkey: @key_lookleft),
-    (text: 'Look right'; pkey: @key_lookright)
+    (text: 'Look right'; pkey: @key_lookright),
+    (text: 'Fists/Chainsaw'; pkey: @key_weapon0),
+    (text: 'Pistol'; pkey: @key_weapon1),
+    (text: 'Shotgun'; pkey: @key_weapon2),
+    (text: 'Chaingun'; pkey: @key_weapon3),
+    (text: 'Rocket launcher'; pkey: @key_weapon4),
+    (text: 'Plasma gun'; pkey: @key_weapon5),
+    (text: 'BFG 9000'; pkey: @key_weapon6),
+    (text: 'Chainsaw'; pkey: @key_weapon7)
   );
 
 var
@@ -1166,7 +1184,7 @@ begin
   KeyBindingsInfo[slot].pkey^ := key;
 end;
 
-procedure M_DrawBindings;
+procedure M_DoDrawBindings(const m: menu_t; const start, stop: integer);
 var
   i: integer;
   len: integer;
@@ -1174,25 +1192,35 @@ var
   drawkey: boolean;
 begin
   V_DrawPatch(108, 15, SCN_TMP, 'M_OPTTTL', false);
-  for i := 0 to Ord(kb_end) - 1 do
+  for i := 0 to stop - start - 1 do
   begin
-    s := KeyBindingsInfo[i].text + ': ';
+    s := KeyBindingsInfo[start + i].text + ': ';
     len := M_StringWidth(s);
-    M_WriteText(KeyBindingsDef.x, KeyBindingsDef.y + KeyBindingsDef.itemheight * i, s);
+    M_WriteText(m.x, m.y + m.itemheight * i, s);
     drawkey := true;
     if bindkeyEnter then
-      if i = bindkeySlot then
+      if i = bindkeySlot - start then
         if (gametic div 18) mod 2 <> 0 then
           drawkey := false;
     if drawkey then
-      M_WriteColorText(KeyBindingsDef.x + len, KeyBindingsDef.y + KeyBindingsDef.itemheight * i, M_KeyToString(KeyBindingsInfo[i].pkey^), 'CRGRAY');
+      M_WriteColorText(m.x + len, m.y + m.itemheight * i, M_KeyToString(KeyBindingsInfo[start + i].pkey^), 'CRGRAY');
   end;
+end;
+
+procedure M_DrawBindings1;
+begin
+  M_DoDrawBindings(KeyBindingsDef1, 0, Ord(kb_weapon0));
+end;
+
+procedure M_DrawBindings2;
+begin
+  M_DoDrawBindings(KeyBindingsDef2, Ord(kb_weapon0), Ord(kb_end));
 end;
 
 //
 // Select key binding
 //
-procedure M_KeyBindingSelect(choice: integer);
+procedure M_KeyBindingSelect1(choice: integer);
 begin
   bindkeyEnter := true;
 
@@ -1201,6 +1229,14 @@ begin
   saveOldkey := KeyBindingsInfo[choice].pkey^;
 end;
 
+procedure M_KeyBindingSelect2(choice: integer);
+begin
+  bindkeyEnter := true;
+
+  bindkeySlot := Ord(kb_weapon0) + choice;
+
+  saveOldkey := KeyBindingsInfo[Ord(kb_weapon0) + choice].pkey^;
+end;
 
 var
   m_shiftdown: boolean = false;
@@ -1584,6 +1620,14 @@ begin
     key_lookright := 198;
     key_lookleft := 200;
     key_lookforward := 13;
+    key_weapon0 := Ord('1');
+    key_weapon1 := Ord('2');
+    key_weapon2 := Ord('3');
+    key_weapon3 := Ord('4');
+    key_weapon4 := Ord('5');
+    key_weapon5 := Ord('6');
+    key_weapon6 := Ord('7');
+    key_weapon7 := Ord('8');
   end
   else if mode = 1 then
   begin
@@ -1604,6 +1648,14 @@ begin
     key_lookright := 198;
     key_lookleft := 200;
     key_lookforward := 13;
+    key_weapon0 := Ord('1');
+    key_weapon1 := Ord('2');
+    key_weapon2 := Ord('3');
+    key_weapon3 := Ord('4');
+    key_weapon4 := Ord('5');
+    key_weapon5 := Ord('6');
+    key_weapon6 := Ord('7');
+    key_weapon7 := Ord('8');
   end
   else if mode = 2 then
   begin
@@ -1624,6 +1676,14 @@ begin
     key_lookright := 198;
     key_lookleft := 200;
     key_lookforward := 13;
+    key_weapon0 := Ord('1');
+    key_weapon1 := Ord('2');
+    key_weapon2 := Ord('3');
+    key_weapon3 := Ord('4');
+    key_weapon4 := Ord('5');
+    key_weapon5 := Ord('6');
+    key_weapon6 := Ord('7');
+    key_weapon7 := Ord('8');
   end;
 end;
 
@@ -1645,7 +1705,15 @@ begin
      (key_lookcenter = 199) and
      (key_lookright = 198) and
      (key_lookleft = 200) and
-     (key_lookforward = 13) then
+     (key_lookforward = 13) and
+     (key_weapon0 = Ord('1')) and
+     (key_weapon1 = Ord('2')) and
+     (key_weapon2 = Ord('3')) and
+     (key_weapon3 = Ord('4')) and
+     (key_weapon4 = Ord('5')) and
+     (key_weapon5 = Ord('6')) and
+     (key_weapon6 = Ord('7')) and
+     (key_weapon7 = Ord('8')) then
   begin
     result := 0;
     exit;
@@ -1667,7 +1735,15 @@ begin
      (key_lookcenter = 199) and
      (key_lookright = 198) and
      (key_lookleft = 200) and
-     (key_lookforward = 13) then
+     (key_lookforward = 13) and
+     (key_weapon0 = Ord('1')) and
+     (key_weapon1 = Ord('2')) and
+     (key_weapon2 = Ord('3')) and
+     (key_weapon3 = Ord('4')) and
+     (key_weapon4 = Ord('5')) and
+     (key_weapon5 = Ord('6')) and
+     (key_weapon6 = Ord('7')) and
+     (key_weapon7 = Ord('8')) then
   begin
     result := 1;
     exit;
@@ -1689,7 +1765,15 @@ begin
      (key_lookcenter = 199) and
      (key_lookright = 198) and
      (key_lookleft = 200) and
-     (key_lookforward = 13) then
+     (key_lookforward = 13) and
+     (key_weapon0 = Ord('1')) and
+     (key_weapon1 = Ord('2')) and
+     (key_weapon2 = Ord('3')) and
+     (key_weapon3 = Ord('4')) and
+     (key_weapon4 = Ord('5')) and
+     (key_weapon5 = Ord('6')) and
+     (key_weapon6 = Ord('7')) and
+     (key_weapon7 = Ord('8')) then
   begin
     result := 2;
     exit;
@@ -1792,7 +1876,7 @@ begin
   ppos := M_WriteText(ControlsDef.x, ControlsDef.y + ControlsDef.itemheight * Ord(ctrl_menukeyescfunc), 'Go to upper level menu: ');
   M_WriteColorText(ppos.x, ppos.y, strmenukeyescfunc[menukeyescfunc], 'CRGRAY');
 
-  ppos := M_WriteText(ControlsDef.x, ControlsDef.y + ControlsDef.itemheight * Ord(ctrl_keyboardmode), 'Keyboard movement: ');
+  ppos := M_WriteText(ControlsDef.x, ControlsDef.y + ControlsDef.itemheight * Ord(ctrl_keyboardmode), 'Keyboard preset: ');
   M_WriteColorText(ppos.x, ppos.y, mkeyboardmodes[M_GetKeyboardMode], 'CRGRAY');
 end;
 
@@ -2912,7 +2996,7 @@ end;
 
 procedure M_KeyBindings(choice: integer);
 begin
-  M_SetupNextMenu(@KeyBindingsDef);
+  M_SetupNextMenu(@KeyBindingsDef1);
 end;
 
 procedure M_ChangeDetail(choice: integer);
@@ -5539,13 +5623,13 @@ begin
 
 ////////////////////////////////////////////////////////////////////////////////
 //KeyBindingsMenu
-  pmi := @KeyBindingsMenu[0];
-  for i := 0 to Ord(kb_end) - 1 do
+  pmi := @KeyBindingsMenu1[0];
+  for i := 0 to Ord(kb_weapon0) - 1 do
   begin
     pmi.status := 1;
     pmi.name := '!' + KeyBindingsInfo[i].text;
     pmi.cmd := '';
-    pmi.routine := @M_KeyBindingSelect;
+    pmi.routine := @M_KeyBindingSelect1;
     pmi.pBoolVal := nil;
     pmi.alphaKey := Chr(Ord('1') + i);
     inc(pmi);
@@ -5553,15 +5637,45 @@ begin
 
 ////////////////////////////////////////////////////////////////////////////////
 //KeyBindingsDef
-  KeyBindingsDef.numitems := Ord(kb_end); // # of menu items
-  KeyBindingsDef.prevMenu := @ControlsDef; // previous menu
-  KeyBindingsDef.menuitems := Pmenuitem_tArray(@KeyBindingsMenu);  // menu items
-  KeyBindingsDef.drawproc := @M_DrawBindings;  // draw routine
-  KeyBindingsDef.x := 32;
-  KeyBindingsDef.y := 34; // x,y of menu
-  KeyBindingsDef.lastOn := 0; // last item user was on in menu
-  KeyBindingsDef.itemheight := LINEHEIGHT2;
-  KeyBindingsDef.texturebk := true;
+  KeyBindingsDef1.Title := 'Player move';
+  KeyBindingsDef1.numitems := Ord(kb_weapon0); // # of menu items
+  KeyBindingsDef1.prevMenu := @ControlsDef; // previous menu
+  KeyBindingsDef1.rightMenu := @KeyBindingsDef2; // right menu
+  KeyBindingsDef1.menuitems := Pmenuitem_tArray(@KeyBindingsMenu1);  // menu items
+  KeyBindingsDef1.drawproc := @M_DrawBindings1;  // draw routine
+  KeyBindingsDef1.x := 32;
+  KeyBindingsDef1.y := 34; // x,y of menu
+  KeyBindingsDef1.lastOn := 0; // last item user was on in menu
+  KeyBindingsDef1.itemheight := LINEHEIGHT2;
+  KeyBindingsDef1.texturebk := true;
+
+////////////////////////////////////////////////////////////////////////////////
+//KeyBindingsMenu2
+  pmi := @KeyBindingsMenu2[0];
+  for i := 0 to Ord(kb_end) - Ord(kb_weapon0) - 1 do
+  begin
+    pmi.status := 1;
+    pmi.name := '!' + KeyBindingsInfo[Ord(kb_weapon0) + i].text;
+    pmi.cmd := '';
+    pmi.routine := @M_KeyBindingSelect2;
+    pmi.pBoolVal := nil;
+    pmi.alphaKey := Chr(Ord('1') + i);
+    inc(pmi);
+  end;
+
+////////////////////////////////////////////////////////////////////////////////
+//KeyBindingsDef2
+  KeyBindingsDef2.Title := 'Weapons';
+  KeyBindingsDef2.numitems := Ord(kb_end) - Ord(kb_weapon0); // # of menu items
+  KeyBindingsDef2.prevMenu := @ControlsDef; // previous menu
+  KeyBindingsDef2.rightMenu := @KeyBindingsDef1; // right menu
+  KeyBindingsDef2.menuitems := Pmenuitem_tArray(@KeyBindingsMenu2);  // menu items
+  KeyBindingsDef2.drawproc := @M_DrawBindings2;  // draw routine
+  KeyBindingsDef2.x := 32;
+  KeyBindingsDef2.y := 34; // x,y of menu
+  KeyBindingsDef2.lastOn := 0; // last item user was on in menu
+  KeyBindingsDef2.itemheight := LINEHEIGHT2;
+  KeyBindingsDef2.texturebk := true;
 
 ////////////////////////////////////////////////////////////////////////////////
 //LoadMenu

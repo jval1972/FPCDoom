@@ -616,6 +616,10 @@ begin
   if (thing.player = viewplayer) and not chasecamera then
     exit;
 
+  infoscale := thing.info.scale;
+  if infoscale = 0 then
+    exit;
+
   // transform the origin point
   tr_x := thing.x - viewx;
   tr_y := thing.y - viewy;
@@ -672,8 +676,6 @@ begin
     flip := sprframe.flip[0];
   end;
 
-  infoscale := thing.info.scale;
-
   // calculate edges of the shape
   tx := tx - FixedMul(spriteoffset[lump], infoscale);
   x1 := FixedInt(centerxfrac + FixedMul(tx, xscale));
@@ -702,7 +704,7 @@ begin
   vis.gz := thing.z;
   vis.gzt := thing.z + FixedMul(spritetopoffset[lump], infoscale);
   vis.infoscale := infoscale;
-  vis.texturemid := vis.gzt - viewz;
+  vis.texturemid := FixedDiv(thing.z - viewz, infoscale) + spritetopoffset[lump];
   if x1 <= 0 then
     vis.x1 := 0
   else

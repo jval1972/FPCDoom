@@ -36,13 +36,13 @@
     </PublishOptions>
     <RunParams>
       <local>
-        <CommandLineParams Value="-nofullscreen -iwad doom2.wad AFRIT.WAD TEST_MAP01.WAD"/>
+        <CommandLineParams Value="-nofullscreen -iwad doomu.wad"/>
       </local>
       <FormatVersion Value="2"/>
       <Modes Count="1">
         <Mode0 Name="default">
           <local>
-            <CommandLineParams Value="-nofullscreen -iwad doom2.wad AFRIT.WAD TEST_MAP01.WAD"/>
+            <CommandLineParams Value="-nofullscreen -iwad doomu.wad"/>
           </local>
         </Mode0>
       </Modes>
