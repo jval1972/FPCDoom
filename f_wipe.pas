@@ -233,7 +233,7 @@ begin
     wipefrac := 0;
 
   for i := 0 to SCREENWIDTH * SCREENHEIGHT - 1 do
-    screen32[i] := R_ColorAverage(wipe_scr_end[i], wipe_scr_start[i], wipefrac);
+    screen32[i] := R_ColorAverageAlpha(wipe_scr_end[i], wipe_scr_start[i], wipefrac);
 
   if wipefrac > 0 then
     result := 0;

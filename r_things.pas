@@ -101,6 +101,7 @@ uses
   r_draw_column,
   r_mirror,
   r_render,
+  r_renderstyle,
   r_hires,
   r_trans8,
   z_memory,
@@ -550,16 +551,31 @@ begin
     colfunc := transcolfunc;
     dc_translation := pOp(translationtables, - 256 + (_SHR((vis.mobjflags and MF_TRANSLATION), (MF_TRANSSHIFT - 8))));
   end
-  else if usetransparentsprites and (vis.mobjflags_ex and MF_EX_TRANSPARENT <> 0) then
-  begin
-    rcolumn.curtrans8table := R_GetTransparency8table;
-    colfunc := averagecolfunc
-  end
   else if usetransparentsprites and (vis.mo <> nil) and (vis.mo.renderstyle = mrs_translucent) then
   begin
     rcolumn.dc_alpha := vis.mo.alpha;
     rcolumn.curtrans8table := R_GetTransparency8table(rcolumn.dc_alpha);
+    rcolumn.alphafunc := @R_ColorAverageAlpha;
     colfunc := alphacolfunc;
+  end
+  else if usetransparentsprites and (vis.mo <> nil) and (vis.mo.renderstyle = mrs_add) then
+  begin
+    rcolumn.dc_alpha := vis.mo.alpha;
+    rcolumn.curtrans8table := R_GetAdditive8table(rcolumn.dc_alpha);
+    rcolumn.alphafunc := @R_ColorAddAlpha;
+    colfunc := alphacolfunc;
+  end
+  else if usetransparentsprites and (vis.mo <> nil) and (vis.mo.renderstyle = mrs_subtract) then
+  begin
+    rcolumn.dc_alpha := vis.mo.alpha;
+    rcolumn.curtrans8table := R_GetSubtractive8table(rcolumn.dc_alpha);
+    rcolumn.alphafunc := @R_ColorSubtractAlpha;
+    colfunc := alphacolfunc;
+  end
+  else if usetransparentsprites and (vis.mobjflags_ex and MF_EX_TRANSPARENT <> 0) then
+  begin
+    rcolumn.curtrans8table := R_GetTransparency8table;
+    colfunc := averagecolfunc
   end
   else
     colfunc := maskedcolfunc;

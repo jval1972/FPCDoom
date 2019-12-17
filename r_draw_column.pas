@@ -35,6 +35,7 @@ uses
   d_fpc,
   m_fixed,
   r_main,
+  r_hires,
   r_trans8,
   r_defs;
 
@@ -55,6 +56,7 @@ type
     dc_texturefactorbits: integer; // JVAL for hi resolution
     dc_alpha: fixed_t;
     curtrans8table: Ptrans8table_t;
+    alphafunc: alphafunc_t;
     seg: Pseg_t;
     rendertype: LongWord;
   end;
@@ -105,7 +107,6 @@ uses
   m_rnd,
   r_data,
   r_draw,
-  r_hires,
   r_sky,
   v_video;
 
@@ -400,7 +401,7 @@ begin
 
   while frac <= fracstop do
   begin
-    destl^ := R_ColorAverage(destl^, parms.dc_colormap32[dc_source8[(LongWord(frac) shr FRACBITS) and 127]], parms.dc_alpha);
+    destl^ := parms.alphafunc(destl^, parms.dc_colormap32[dc_source8[(LongWord(frac) shr FRACBITS) and 127]], parms.dc_alpha);
     inc(destl, SCREENWIDTH);
     inc(frac, fracstep);
   end;

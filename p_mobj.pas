@@ -880,15 +880,15 @@ begin
     exit;
 
   // find which type to spawn
-  i := 0;
-  while i < nummobjtypes do
+  i := nummobjtypes - 1;
+  while i >= 0 do
   begin
     if mthing._type = mobjinfo[i].doomednum then
       break;
-    inc(i);
+    dec(i);
   end;
 
-  if i = nummobjtypes then
+  if i < 0 then
     I_Error('P_SpawnMapThing(): Unknown type %d at (%d, %d)',
       [mthing._type, mthing.x, mthing.y]);
 

@@ -56,7 +56,7 @@ procedure DEH_Init;
 procedure DEH_ShutDown;
 
 const
-  DEHNUMACTIONS = 128;
+  DEHNUMACTIONS = 129;
 
 type
   deh_action_t = record
@@ -66,7 +66,7 @@ type
 
 type
   deh_string_t = record
-    _string: PString;
+    pstr: PString;
     name: string[24];
   end;
   deh_string_tArray = array[0..$FFFF] of deh_string_t;
@@ -114,6 +114,7 @@ uses
   p_extra,
   p_pspr,
   p_inter,
+  r_renderstyle,
   sounds,
   sc_params,
   v_video,
@@ -247,7 +248,7 @@ begin
   end;
 end;
 
-procedure DEH_AddString(deh_strings: Pdeh_strings_t; _string: PString; const name: string);
+procedure DEH_AddString(deh_strings: Pdeh_strings_t; pstr: PString; const name: string);
 begin
   if deh_strings.numstrings = deh_strings.realnumstrings then
   begin
@@ -258,7 +259,7 @@ begin
       deh_strings.realnumstrings * SizeOf(deh_string_t));
   end;
 
-  deh_strings._array[deh_strings.numstrings]._string := _string;
+  deh_strings._array[deh_strings.numstrings].pstr := pstr;
   deh_strings._array[deh_strings.numstrings].name := name;
   inc(deh_strings.numstrings);
 end;
@@ -528,7 +529,8 @@ begin
                 begin
                   mobj_setflag := -1;
                   repeat
-                    splitstring(token2, token3, token4, ['|', ',', '+']);
+                    splitstring(token2, token3, token4, [' ', '|', ',', '+']);
+                    token3 := strtrim(token3);
                     mobj_flag := mobj_flags.IndexOf('MF_' + token3);
                     if mobj_flag = -1 then
                       mobj_flag := mobj_flags.IndexOf(token3);
@@ -544,7 +546,7 @@ begin
                         mobj_setflag := mobj_setflag or mobj_flag;
                       end;
                     end;
-                    token2 := token4;
+                    token2 := strtrim(token4);
                   until token2 = '';
                   if mobj_setflag <> -1 then
                     mobjinfo[mobj_no].flags := mobj_setflag;
@@ -562,7 +564,7 @@ begin
                 begin
                   mobj_setflag := -1;
                   repeat
-                    splitstring(token2, token3, token4, ['|', ',', '+']);
+                    splitstring(token2, token3, token4, [' ', '|', ',', '+']);
                     mobj_flag := mobj_flags_ex.IndexOf('MF_EX_' + token3);
                     if mobj_flag = -1 then
                       mobj_flag := mobj_flags_ex.IndexOf('MF_' + token3);
@@ -601,7 +603,7 @@ begin
                 end
                 else
                 begin
-                  mobj_val := renderstyle_tokens.IndexOf(token2);
+                  mobj_val := Ord(R_GetRenderstyleForName(token2));
                   if mobj_val >= 0 then
                     mobjinfo[mobj_no].renderstyle := mobjrenderstyle_t(mobj_val)
                   else
@@ -763,7 +765,7 @@ begin
                     break;
                   end;
                 if token4 <> '' then
-                  states[state_no].params := TCustomParamList.CreateFromText(token4);
+                  states[state_no].params := TCustomParamList.Create(token4);
               end;
             end;
            5: states[state_no].misc1 := state_val;
@@ -775,7 +777,7 @@ begin
                 begin
                   state_setflag := -1;
                   repeat
-                    splitstring(token2, token3, token4, ['|', ',', '+']);
+                    splitstring(token2, token3, token4, [' ', '|', ',', '+']);
                     state_flag := mobj_flags_ex.IndexOf('MF_EX_' + token3);
                     if state_flag = -1 then
                       state_flag := mobj_flags_ex.IndexOf('MF_' + token3);
@@ -842,10 +844,10 @@ begin
 
       foundtext := false;
       for j := 0 to deh_strings.numstrings - 1 do
-        if DEH_StringValue(deh_strings._array[j]._string^) = token1 then
+        if DEH_StringValue(deh_strings._array[j].pstr^) = token1 then
         begin
           foundtext := true;
-          deh_strings._array[j]._string^ := DEH_CStringToString(token2);
+          deh_strings._array[j].pstr^ := DEH_CStringToString(token2);
           break;
         end;
 
@@ -1227,7 +1229,7 @@ begin
         for j := 0 to deh_strings.numstrings - 1 do
           if deh_strings._array[j].name = token1 then
           begin
-            deh_strings._array[j]._string^ := DEH_CStringToString(token2);
+            deh_strings._array[j].pstr^ := DEH_CStringToString(token2);
             break;
           end;
       end;
@@ -1279,7 +1281,7 @@ begin
               break;
             end;
           if token5 <> '' then
-            states[state_no].params := TCustomParamList.CreateFromText(token5);
+            states[state_no].params := TCustomParamList.Create(token5);
         end;
       end;
     end
@@ -1632,7 +1634,7 @@ begin
   result.Add('');
   result.Add('[Strings]');
   for i := 0 to deh_strings.numstrings - 1 do
-    result.Add('%s = %s', [deh_strings._array[i].name, DEH_StringToCString(deh_strings._array[i]._string^)]);
+    result.Add('%s = %s', [deh_strings._array[i].name, DEH_StringToCString(deh_strings._array[i].pstr^)]);
   result.Add('');
 
   //////////////////////////////////////////////////////////////////////////////
@@ -2117,6 +2119,8 @@ begin
   deh_actions[126].name := strupper('MediumGravity');
   deh_actions[127].action.acp1 := @A_Wander;
   deh_actions[127].name := strupper('Wander');
+  deh_actions[128].action.acp1 := @A_SpawnItemEx;
+  deh_actions[128].name := strupper('SpawnItemEx');
 
 
   deh_strings.numstrings := 0;
@@ -2406,6 +2410,7 @@ begin
   renderstyle_tokens.Add('NORMAL');
   renderstyle_tokens.Add('TRANSLUCENT');
   renderstyle_tokens.Add('ADD');
+  renderstyle_tokens.Add('SUBTRACT');
 
 
   misc_tokens := TDTextList.Create;

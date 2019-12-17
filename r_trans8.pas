@@ -51,6 +51,8 @@ const
 
 var
   trans8tables: array[0..NUMTRANS8TABLES] of Ptrans8table_t;
+  additive8tables: array[0..NUMTRANS8TABLES] of Ptrans8table_t;
+  subtractive8tables: array[0..NUMTRANS8TABLES] of Ptrans8table_t;
   trans8tablescalced: boolean = false;
   averagetrans8table: Ptrans8table_t = nil;
   coloraddtrans8table: Ptrans8table_t = nil;
@@ -58,6 +60,10 @@ var
   subsampling8tables: array[1..4] of array[0..$FF] of byte;
 
 function R_GetTransparency8table(const factor: fixed_t = FRACUNIT div 2): Ptrans8table_t;
+
+function R_GetAdditive8table(const factor: fixed_t = FRACUNIT div 2): Ptrans8table_t;
+
+function R_GetSubtractive8table(const factor: fixed_t = FRACUNIT div 2): Ptrans8table_t;
 
 function R_FastApproxColorIndex(const c: LongWord): byte; overload;
 
@@ -115,7 +121,7 @@ begin
       c1 := palL[j];
       for k := 0 to 255 do
       begin
-        c := R_ColorAverage(palL[k], c1, factor);
+        c := R_ColorAverageAlpha(palL[k], c1, factor);
         ptrans8^ := V_FindAproxColorIndex(@palL, c) and $FF;
         inc(ptrans8);
       end;
@@ -132,6 +138,58 @@ begin
       end;
 
   averagetrans8table := trans8tables[NUMTRANS8TABLES div 2];
+
+  for i := 0 to NUMTRANS8TABLES do
+  begin
+    additive8tables[i] := malloc(SizeOf(trans8table_t));
+    ptrans8 := PByte(additive8tables[i]);
+    for j := 0 to 255 do
+    begin
+      c1 := palL[j];
+      r := ((c1 and $FF) * i * (FRACUNIT div NUMTRANS8TABLES)) div FRACUNIT;
+      if r > 255 then
+        r := 255;
+      g := (((c1 shr 8) and $FF) * i * (FRACUNIT div NUMTRANS8TABLES)) div FRACUNIT;
+      if g > 255 then
+        g := 255;
+      b := (((c1 shr 16) and $FF) * i * (FRACUNIT div NUMTRANS8TABLES)) div FRACUNIT;
+      if b > 255 then
+        b := 255;
+      c1 := r + g shl 8 + b shl 16;
+      for k := 0 to 255 do
+      begin
+        c := R_ColorAdd(palL[k], c1);
+        ptrans8^ := V_FindAproxColorIndex(@palL, c) and $FF;
+        inc(ptrans8);
+      end;
+    end;
+  end;
+
+  for i := 0 to NUMTRANS8TABLES do
+  begin
+    subtractive8tables[i] := malloc(SizeOf(trans8table_t));
+    ptrans8 := PByte(subtractive8tables[i]);
+    for j := 0 to 255 do
+    begin
+      c1 := palL[j];
+      r := ((c1 and $FF) * i * (FRACUNIT div NUMTRANS8TABLES)) div FRACUNIT;
+      if r > 255 then
+        r := 255;
+      g := (((c1 shr 8) and $FF) * i * (FRACUNIT div NUMTRANS8TABLES)) div FRACUNIT;
+      if g > 255 then
+        g := 255;
+      b := (((c1 shr 16) and $FF) * i * (FRACUNIT div NUMTRANS8TABLES)) div FRACUNIT;
+      if b > 255 then
+        b := 255;
+      c1 := r + g shl 8 + b shl 16;
+      for k := 0 to 255 do
+      begin
+        c := R_ColorSubtract(palL[k], c1);
+        ptrans8^ := V_FindAproxColorIndex(@palL, c) and $FF;
+        inc(ptrans8);
+      end;
+    end;
+  end;
 
   coloraddtrans8table := malloc(SizeOf(trans8table_t));
   ptrans8 := @coloraddtrans8table[0];
@@ -249,6 +307,32 @@ begin
   else if idx > NUMTRANS8TABLES then
     idx := NUMTRANS8TABLES;
   result := trans8tables[idx];
+end;
+
+function R_GetAdditive8table(const factor: fixed_t = FRACUNIT div 2): Ptrans8table_t;
+var
+  idx: integer;
+begin
+  idx := (factor * NUMTRANS8TABLES) div FRACUNIT;
+  if idx < 0 then
+    result := additive8tables[0]
+  else if idx > NUMTRANS8TABLES then
+    result := additive8tables[NUMTRANS8TABLES]
+  else
+    result := additive8tables[idx];
+end;
+
+function R_GetSubtractive8table(const factor: fixed_t = FRACUNIT div 2): Ptrans8table_t;
+var
+  idx: integer;
+begin
+  idx := (factor * NUMTRANS8TABLES) div FRACUNIT;
+  if idx < 0 then
+    result := subtractive8tables[0]
+  else if idx > NUMTRANS8TABLES then
+    result := subtractive8tables[NUMTRANS8TABLES]
+  else
+    result := subtractive8tables[idx];
 end;
 
 end.

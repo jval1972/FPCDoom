@@ -310,7 +310,7 @@ begin
         cfrac2 := rcolumn.dc_texturemod shl (FRACBITS - DC_HIRESBITS);
         for i := 0 to columnsize - 1 do
         begin
-          plw^ := R_ColorAverage(plw^, plw2^, cfrac2);
+          plw^ := R_ColorAverageAlpha(plw^, plw2^, cfrac2);
           inc(plw);
           inc(plw2);
         end;
@@ -461,7 +461,7 @@ begin
   else
     t3 := x2;
 
-  result := R_ColorMidAverage([t1, x2, x2, t3]);
+  result := R_ColorArrayAverage([t1, x2, x2, t3]);
 end;
 
 function noresize(const x1, x2, x3: LongWord; const offs: integer): LongWord;
@@ -705,7 +705,7 @@ begin
     for j := 0 to 127 do
     begin
       c := pspan128[i, j];
-      outspan128[i, j] := R_ColorMidAverage(
+      outspan128[i, j] := R_ColorArrayAverage(
         [pspan128[(i - 1) and 127, j], c, pspan128[(i + 1) and 127, j],
          pspan128[i, (j - 1) and 127], c, pspan128[i, (j + 1) and 127]]);
     end;

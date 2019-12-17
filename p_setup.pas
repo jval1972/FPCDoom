@@ -764,6 +764,8 @@ begin
   totalitems := 0;
   totalsecret := 0;
 
+  isgamefreezed := false;
+
   if not preparingdemoplayback then
     rnd_monster_seed := I_Random;
 

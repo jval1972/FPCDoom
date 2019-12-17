@@ -75,6 +75,7 @@ uses
   p_enemy,
   p_pspr,
   p_mobj_h,
+  r_renderstyle,
   sounds;
 
 const
@@ -16590,7 +16591,7 @@ begin
   mobj_name := strupper(strtrim(name));
   if Length(mobj_name) > MOBJINFONAMESIZE then
     SetLength(mobj_name, MOBJINFONAMESIZE);
-  for i := 0 to nummobjtypes - 1 do
+  for i := nummobjtypes - 1 downto 0 do
   begin
     check := Info_GetMobjName(i);
     check := strupper(strtrim(check));
@@ -16604,7 +16605,7 @@ begin
   mobj_name := strremovespaces(strupper(strtrim(name)));
   if Length(mobj_name) > MOBJINFONAMESIZE then
     SetLength(mobj_name, MOBJINFONAMESIZE);
-  for i := 0 to nummobjtypes - 1 do
+  for i := nummobjtypes - 1 downto 0 do
   begin
     check := Info_GetMobjName(i);
     check := strremovespaces(strupper(strtrim(check)));

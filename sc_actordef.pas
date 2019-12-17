@@ -50,6 +50,7 @@ uses
   m_fixed,
   i_system,
   info,
+  r_renderstyle,
   rtl_types,
   sc_engine,
   w_wad;
@@ -129,7 +130,6 @@ type
   TActordefScriptEngine = class(TScriptEngine)
   public
     function MatchFlag(const flag: string): boolean;
-    function MatchFlag2(const flag: string): boolean;
     function MatchFlagEx(const flag_ex: string): boolean;
     function MatchFlag2Ex(const flag2_ex: string): boolean;
   end;
@@ -137,11 +137,6 @@ type
 function TActordefScriptEngine.MatchFlag(const flag: string): boolean;
 begin
   result := MatchString(flag) or MatchString('+' + flag) or MatchString('MF_' + flag);
-end;
-
-function TActordefScriptEngine.MatchFlag2(const flag: string): boolean;
-begin
-  result := MatchString(flag) or MatchString('+' + flag) or MatchString('MF_' + flag) or MatchString('MF2_' + flag);
 end;
 
 function TActordefScriptEngine.MatchFlagEx(const flag_ex: string): boolean;
@@ -193,6 +188,71 @@ var
     result := false;
   end;
 
+  function RemoveFlag(const inp: string; const aflag: string): string;
+  var
+    sctmp: TScriptEngine;
+    acheck, icheck: string;
+  begin
+    result := '';
+    acheck := strupper(aflag);
+    if Pos('MF2_EX_', acheck) = 1 then
+      acheck := Copy(acheck, 8, length(acheck) - 7)
+    else if Pos('MF_EX_', acheck) = 1 then
+      acheck := Copy(acheck, 7, length(acheck) - 6)
+    {$IFDEF HERETIC_OR_HEXEN}
+    else if Pos('MF2_', acheck) = 1 then
+      acheck := Copy(acheck, 5, length(acheck) - 4)
+    {$ENDIF}
+    else if Pos('MF_', acheck) = 1 then
+      acheck := Copy(acheck, 4, length(acheck) - 3);
+    sctmp := TScriptEngine.Create(inp);
+    while sctmp.GetString do
+    begin
+      icheck := strupper(sctmp._String);
+      if (icheck <> acheck) and
+         (icheck <> 'MF_' + acheck) and
+         (icheck <> 'MF2_' + acheck) and
+         (icheck <> 'MF_EX_' + acheck) and
+         (icheck <> 'MF2_EX_' + acheck) then
+        result := result + icheck + ' ';
+    end;
+    sctmp.Free;
+  end;
+
+  function MatchFlags_Delete: boolean;
+  var
+    i: integer;
+    flag: string;
+    check: string;
+  begin
+    check := sc._String;
+    if Pos('-', check) <> 1 then
+    begin
+      result := false;
+      exit;
+    end;
+    if Pos('+', check) = 1 then
+    begin
+      result := false;
+      exit;
+    end;
+
+    for i := 0 to mobj_flags.Count - 1 do
+    begin
+      flag := mobj_flags[i];
+      if Pos('MF_', flag) = 1 then
+        flag := Copy(flag, 4, length(flag) - 3);
+      if sc.MatchFlag('-' + flag) then
+      begin
+        mobj.flags := RemoveFlag(mobj.flags, flag);
+        result := true;
+        exit;
+      end;
+    end;
+
+    result := false;
+  end;
+
   function MatchFlagsEx: boolean;
   var
     i: integer;
@@ -208,6 +268,42 @@ var
       if sc.MatchFlagEx(flag) then
       begin
         mobj.flags_ex := mobj.flags_ex + flag + ' ';
+        result := true;
+        exit;
+      end;
+    end;
+
+    result := false;
+  end;
+
+  function MatchFlagsEx_Delete: boolean;
+  var
+    i: integer;
+    flag: string;
+    check: string;
+  begin
+    check := sc._String;
+    if Pos('-', check) <> 1 then
+    begin
+      result := false;
+      exit;
+    end;
+    if Pos('+', check) = 1 then
+    begin
+      result := false;
+      exit;
+    end;
+
+    for i := 0 to mobj_flags_ex.Count - 1 do
+    begin
+      flag := mobj_flags_ex[i];
+      if Pos('MF_EX_', flag) = 1 then
+        flag := Copy(flag, 7, length(flag) - 6)
+      else if Pos('MF_', flag) = 1 then
+        flag := Copy(flag, 4, length(flag) - 3);
+      if sc.MatchFlagEx('-' + flag) then
+      begin
+        mobj.flags_ex := RemoveFlag(mobj.flags_ex, flag);
         result := true;
         exit;
       end;
@@ -235,6 +331,46 @@ var
       if sc.MatchFlag2Ex(flag) then
       begin
         mobj.flags2_ex := mobj.flags2_ex + flag + ' ';
+        result := true;
+        exit;
+      end;
+    end;
+
+    result := false;
+  end;
+
+  function MatchFlags2Ex_Delete: boolean;
+  var
+    i: integer;
+    flag: string;
+    check: string;
+  begin
+    check := sc._String;
+    if Pos('-', check) <> 1 then
+    begin
+      result := false;
+      exit;
+    end;
+    if Pos('+', check) = 1 then
+    begin
+      result := false;
+      exit;
+    end;
+
+    for i := 0 to mobj_flags2_ex.Count - 1 do
+    begin
+      flag := mobj_flags2_ex[i];
+      if Pos('MF2_EX_', flag) = 1 then
+        flag := Copy(flag, 8, length(flag) - 7)
+      else if Pos('MF_EX_', flag) = 1 then
+        flag := Copy(flag, 7, length(flag) - 6)
+      else if Pos('MF2_', flag) = 1 then
+        flag := Copy(flag, 5, length(flag) - 4)
+      else if Pos('MF_', flag) = 1 then
+        flag := Copy(flag, 4, length(flag) - 3);
+      if sc.MatchFlag2Ex('-' + flag) then
+      begin
+        mobj.flags2_ex := RemoveFlag(mobj.flags2_ex, flag);
         result := true;
         exit;
       end;
@@ -463,7 +599,10 @@ var
     cnt: integer;
   begin
     res := '';
-    AddRes('NewThing ' + mobj.name);
+    if mobj.replacesid >= 0 then
+      AddRes('Thing ' + itoa(mobj.replacesid + 1)) // JVAL DEH patches start Think numbers from 1
+    else
+      AddRes('NewThing ' + mobj.name);
     if mobj.inheritsfrom <> '' then
       AddRes('Inheritsfrom = ' + mobj.inheritsfrom)
     else
@@ -559,6 +698,7 @@ var
 
 var
   slist: TDStringList;
+  isreplace: boolean;
 begin
 
   state_tokens := TDStringList.Create;
@@ -585,7 +725,7 @@ begin
     finally
       slist.Free;
     end;
-    
+
     printf('--------'#13#10);
   end;
 
@@ -608,7 +748,9 @@ begin
       mobj.flags_ex := '';
       mobj.flags2_ex := '';
       mobj.scale := FRACUNIT;
+      mobj.replacesid := -1;
       ismissile := false;
+      isreplace := false;
       FillChar(m_states, SizeOf(m_states), 0);
       sc.GetString;
       mobj.name := sc._String;
@@ -623,7 +765,8 @@ begin
         if not sc.GetString then
           break;
 
-        if sc.MatchString('replaces') or sc.MatchString(':') or
+        isreplace := sc.MatchString('replaces');
+        if isreplace or sc.MatchString(':') or
            sc.MatchString('inherits') or sc.MatchString('inheritsfrom') then
         begin
           if not sc.GetString then
@@ -637,6 +780,11 @@ begin
         idx := Info_GetMobjNumForName(mobj.inheritsfrom);
         if idx >= 0 then
         begin
+          if isreplace then
+          begin
+            mobj.doomednum := mobjinfo[idx].doomednum;
+            mobj.replacesid := idx;
+          end;
           mobj.spawnhealth := mobjinfo[idx].spawnhealth;
           mobj.seesound := itoa(mobjinfo[idx].seesound);
           mobj.reactiontime := mobjinfo[idx].reactiontime;
@@ -691,7 +839,8 @@ begin
 
       if sc.NewLine then
       begin
-        mobj.doomednum := -1;
+        if not isreplace then
+          mobj.doomednum := -1;
       end
       else
       begin
@@ -708,16 +857,51 @@ begin
           mobj.spawnhealth := sc._integer;
           sc.GetString;
         end
-        else if sc.MatchString('monster') then
+
+        // When "inherits" is after the first line of actor we do not copy properties
+        else if sc.MatchString('inherits') or sc.MatchString('inheritsfrom') then
+        begin
+          if not sc.GetString then
+            break;
+          mobj.inheritsfrom := sc._string;
+        end
+
+        else if sc.MatchString('replaces') then
+        begin
+          if not sc.GetString then
+            break;
+          idx := Info_GetMobjNumForName(sc._string);
+          if idx >= 0 then
+          begin
+            if (mobj.doomednum > 0) and (mobjinfo[idx].doomednum <> mobj.doomednum) then
+              I_Warning('SC_ActordefToDEH(): Replaces keyword found but points to a new doomednum %d, old doomednum=%d', [mobjinfo[idx].doomednum, mobj.doomednum])
+            else
+            begin
+              mobj.doomednum := mobjinfo[idx].doomednum;
+              mobj.replacesid := idx;
+            end;
+          end
+          else
+            I_Warning('SC_ActordefToDEH(): Replaces keyword point to an unknown mobj %s'#13#10, [sc._string]);
+          sc.GetString;
+        end
+
+        else if sc.MatchString('monster') or sc.MatchString('+monster') then
         begin
            mobj.flags := mobj.flags + 'MF_SOLID MF_SHOOTABLE MF_COUNTKILL ';
+           sc.GetString;
+        end
+
+        else if sc.MatchString('projectile') or sc.MatchString('+projectile') then
+        begin
+           mobj.flags := mobj.flags + 'MF_NOGRAVITY MF_DROPOFF  MF_MISSILE ';
            sc.GetString;
         end
 
         else if sc.MatchString('RENDERSTYLE') then
         begin
           sc.GetString;
-          mobj.renderstyle := sc._String;
+          mobj.renderstyle := renderstyle_tokens[Ord(R_GetRenderstyleForName(sc._String))];
           sc.GetString;
         end
 
@@ -742,11 +926,20 @@ begin
         else if MatchFlags2Ex then
           sc.GetString
 
+        else if MatchFlags_Delete then
+          sc.GetString
+        else if MatchFlagsEx_Delete then
+          sc.GetString
+        else if MatchFlags2Ex_Delete then
+          sc.GetString
+
+
         else if sc.MatchString('DEFAULTMISSILE') or sc.MatchString('+DEFAULTMISSILE') then
         begin
-            mobj.flags := mobj.flags + 'NOGRAVITY MISSILE NOBLOCKMAP DROPOFF ';
+          mobj.flags := mobj.flags + 'NOGRAVITY MISSILE NOBLOCKMAP DROPOFF ';
           sc.GetString;
         end
+
         else if sc.MatchString('DEFAULTTRANSPARENT') or sc.MatchString('+DEFAULTTRANSPARENT') then
         begin
           mobj.renderstyle := 'TRANSLUCENT';

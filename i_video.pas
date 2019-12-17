@@ -185,7 +185,7 @@ type
 //
 procedure I_FinishUpdate8(parms: Pfinishupdateparms_t);
 var
-  dest: PLongWord;
+  destl: PLongWord;
   destw: PWord;
   pixel: LongWord;
   r, g, b: LongWord;
@@ -196,11 +196,11 @@ begin
   srcstop := @(screens[SCN_FG][parms.stop]);
   if bpp = 32 then
   begin
-    dest := @screen[parms.start];
+    destl := @screen[parms.start];
     while PCAST(src) < PCAST(srcstop) do
     begin
-      dest^ := curpal[src^];
-      inc(dest);
+      destl^ := curpal[src^];
+      inc(destl);
       inc(src);
     end;
   end

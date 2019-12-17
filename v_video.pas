@@ -736,7 +736,7 @@ begin
         src := pOp(screens[srcscrn], swidth * (fracy div FRACUNIT) + srcx);
         for col := 0 to destw - 1 do
         begin
-          dest[col] := R_ColorAverage(videopal[src[LongWord(fracx) shr FRACBITS]], dest[col], addfactor);
+          dest[col] := R_ColorAverageAlpha(videopal[src[LongWord(fracx) shr FRACBITS]], dest[col], addfactor);
           fracx := fracx + fracxstep;
         end;
         fracy := fracy + fracystep;

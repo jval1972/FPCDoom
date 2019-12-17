@@ -64,6 +64,9 @@ const
   flatfilteringstrings: array[boolean] of string = ('NORMAL', 'EXTREME');
   smoothskiesstrings: array[boolean] of string = ('NORMAL', 'DOUBLE');
 
+type
+  alphafunc_t = function (const c1, c2: LongWord; const alpha: fixed_t): LongWord;
+
 procedure R_CmdMediumRes(const parm1: string = '');
 procedure R_CmdNormalRes(const parm1: string = '');
 procedure R_CmdDetailLevel(const parm1: string = '');
@@ -74,21 +77,19 @@ procedure R_Cmd32bittexturepaletteeffects(const parm1: string = '');
 procedure R_CmdUseExternalTextures(const parm1: string = '');
 
 function R_ColorAdd(const c1, c2: LongWord): LongWord; register;
+function R_ColorSubtract(const c1, c2: LongWord): LongWord; register;
 
 function R_ColorLightAdd(const c1, r, g, b: LongWord): LongWord; register;
 
-function R_ColorAverage(const c1, c2: LongWord; const factor: fixed_t): LongWord;
+function R_ColorAverageAlpha(const c1, c2: LongWord; const alpha: fixed_t): LongWord;
+function R_ColorAddAlpha(const c1, c2: LongWord; const alpha: fixed_t): LongWord;
+function R_ColorSubtractAlpha(const c1, c2: LongWord; const alpha: fixed_t): LongWord;
 
-function R_ColorLightAverage(const c1, c2: LongWord; const factor, lfactor: fixed_t): LongWord;
-function R_InverseLightAverage(const c1, c2: LongWord; const factor: fixed_t): LongWord;
+function R_ColorMidAverage(const c1, c2: LongWord): LongWord;
 
-function R_ColorMidAverage(const c1, c2: LongWord): LongWord; overload;
-
-function R_ColorMidAverage(const A: array of const): LongWord; overload;
+function R_ColorArrayAverage(const A: array of const): LongWord;
 
 function R_ColorLight(const c: LongWord; const lfactor: fixed_t): LongWord;
-function R_ColorBoost(const c: LongWord; const lfactor: fixed_t): LongWord;
-function R_InverseLight(const c: LongWord): LongWord;
 function R_ColorLightEx(const c: LongWord; const lfactor: fixed_t): LongWord;
 function R_FuzzLight(const c: LongWord): LongWord;
 
@@ -364,6 +365,34 @@ begin
   result := r + g shl 8 + b shl 16;
 end;
 
+function R_ColorSubtract(const c1, c2: LongWord): LongWord; register;
+var
+  r1, g1, b1: byte;
+  r2, g2, b2: byte;
+  r, g, b: LongWord;
+begin
+  r1 := c1;
+  g1 := c1 shr 8;
+  b1 := c1 shr 16;
+  r2 := c2;
+  g2 := c2 shr 8;
+  b2 := c2 shr 16;
+
+  if r2 > r1 then
+    r := 0
+  else
+    r := r1 - r2;
+  if g2 > g1 then
+    g := 0
+  else
+    g := g1 - g2;
+  if b2 > b1 then
+    b := 0
+  else
+    b := b1 - b2;
+  result := r + g shl 8 + b shl 16;
+end;
+
 function R_ColorLightAdd(const c1, r, g, b: LongWord): LongWord; register;
 var
   r1, g1, b1: LongWord;
@@ -384,18 +413,44 @@ begin
 end;
 
 //
-// R_ColorAverage
+// R_ColorAverageAlpha
 //
-// Returns the average of 2 colors, c1 and c2 depending on factor
+// Returns the average of 2 colors, c1 and c2 depending on alpha
+// If alpha = 0 then returns c1
+// If alpha = FRACUNIT returns c2.
+//
+function R_ColorAverageAlpha(const c1, c2: LongWord; const alpha: fixed_t): LongWord;
+var
+  r1, g1, b1: byte;
+  r2, g2, b2: byte;
+  r, g, b: LongWord;
+  factor1: fixed_t;
+begin
+  r1 := c1;
+  g1 := c1 shr 8;
+  b1 := c1 shr 16;
+  r2 := c2;
+  g2 := c2 shr 8;
+  b2 := c2 shr 16;
+
+  factor1 := FRACUNIT - 1 - alpha;
+  r := ((r2 * alpha) + (r1 * factor1)) shr FRACBITS;
+  g := ((g2 * alpha) + (g1 * factor1)) shr FRACBITS;
+  b := ((b2 * alpha) + (b1 * factor1)) shr FRACBITS;
+  result := r + g shl 8 + b shl 16;
+end;
+
+//
+// R_ColorAddAlpha
+//
+// Adds alpha * c2 to c1
 // If factor = 0 then returns c1
-// If factor = FRACUNIT returns c2.
 //
-function R_ColorAverage(const c1, c2: LongWord; const factor: fixed_t): LongWord;
+function R_ColorAddAlpha(const c1, c2: LongWord; const alpha: fixed_t): LongWord;
 var
   r1, g1, b1: byte;
   r2, g2, b2: byte;
   r, g, b: LongWord;
-  factor1: fixed_t;
 begin
   r1 := c1;
   g1 := c1 shr 8;
@@ -404,21 +459,20 @@ begin
   g2 := c2 shr 8;
   b2 := c2 shr 16;
 
-  factor1 := FRACUNIT - 1 - factor;
-  r := ((r2 * factor) + (r1 * factor1)) shr FRACBITS;
-  g := ((g2 * factor) + (g1 * factor1)) shr FRACBITS;
-  b := ((b2 * factor) + (b1 * factor1)) shr FRACBITS;
+  r := ((r2 * alpha) shr FRACBITS) + r1;
+  if r > 255 then r := 255;
+  g := ((g2 * alpha) shr FRACBITS) + g1;
+  if g > 255 then g := 255;
+  b := ((b2 * alpha) shr FRACBITS) + b1;
+  if b > 255 then b := 255;
   result := r + g shl 8 + b shl 16;
 end;
 
-function R_ColorLightAverage(const c1, c2: LongWord;
-  const factor, lfactor: fixed_t): LongWord;
+function R_ColorSubtractAlpha(const c1, c2: LongWord; const alpha: fixed_t): LongWord;
 var
   r1, g1, b1: byte;
   r2, g2, b2: byte;
   r, g, b: LongWord;
-  factor1: fixed_t;
-  factor2: fixed_t;
 begin
   r1 := c1;
   g1 := c1 shr 8;
@@ -427,37 +481,13 @@ begin
   g2 := c2 shr 8;
   b2 := c2 shr 16;
 
-  factor1 := ((FRACUNIT - 1 - factor) * lfactor) shr FRACBITS;
-  factor2 := (factor * lfactor) shr FRACBITS;
-
-  r := ((r2 * factor2) + (r1 * factor1)) shr FRACBITS;
-  g := ((g2 * factor2) + (g1 * factor1)) shr FRACBITS;
-  b := ((b2 * factor2) + (b1 * factor1)) shr FRACBITS;
+  r2 := ((r2 * alpha) shr FRACBITS);
+  if r2 >= r1 then r := 0 else r := r1 - r2;
+  g2 := ((g2 * alpha) shr FRACBITS);
+  if g2 >= g1 then g := 0 else g := g1 - g2;
+  b2 := ((b2 * alpha) shr FRACBITS);
+  if b2 >= b1 then b := 0 else b := b1 - b2;
   result := r + g shl 8 + b shl 16;
-end;
-
-function R_InverseLightAverage(const c1, c2: LongWord;
-  const factor: fixed_t): LongWord;
-var
-  r1, g1, b1: byte;
-  r2, g2, b2: byte;
-  r, g, b: LongWord;
-  factor1: fixed_t;
-begin
-  r1 := c1;
-  g1 := c1 shr 8;
-  b1 := c1 shr 16;
-  r2 := c2;
-  g2 := c2 shr 8;
-  b2 := c2 shr 16;
-
-  factor1 := FRACUNIT - 1 - factor;
-
-  r := ((r2 * factor) + (r1 * factor1));
-  g := ((g2 * factor) + (g1 * factor1));
-  b := ((b2 * factor) + (b1 * factor1));
-  r := 255 - (r + g + b) div (FRACUNIT * 3);
-  result := r + r shl 8 + r shl 16;
 end;
 
 function R_ColorMidAverage(const c1, c2: LongWord): LongWord;
@@ -478,7 +508,7 @@ begin
   result := r + g shl 8 + b shl 16;
 end;
 
-function R_ColorMidAverage(const A: array of const): LongWord; overload;
+function R_ColorArrayAverage(const A: array of const): LongWord;
 var
   i: integer;
   c: LongWord;
@@ -521,41 +551,6 @@ begin
   g := (g1 * lfactor) shr FRACBITS;
   b := (b1 * lfactor) shr FRACBITS;
   result := r + g shl 8 + b shl 16;
-end;
-
-//
-// R_ColorBoost
-// Same as R_ColorLight but clip r, g, b values to allow lfactor greater than FRACUNIT
-function R_ColorBoost(const c: LongWord; const lfactor: fixed_t): LongWord;
-var
-  r1, g1, b1: byte;
-  r, g, b: LongWord;
-begin
-  r1 := c;
-  g1 := c shr 8;
-  b1 := c shr 16;
-  r := (r1 * lfactor) shr FRACBITS;
-  if r > 255 then
-    r := 255;
-  g := (g1 * lfactor) shr FRACBITS;
-  if g > 255 then
-    g := 255;
-  b := (b1 * lfactor) shr FRACBITS;
-  if b > 255 then
-    b := 255;
-  result := r + g shl 8 + b shl 16;
-end;
-
-function R_InverseLight(const c: LongWord): LongWord;
-var
-  r1, g1, b1: byte;
-  c1: LongWord;
-begin
-  r1 := c;
-  g1 := c shr 8;
-  b1 := c shr 16;
-  c1 := 255 - (r1 + g1 + b1) div 3;
-  result := c1 + c1 shl 8 + c1 shl 16;
 end;
 
 //

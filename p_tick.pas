@@ -56,6 +56,7 @@ procedure P_Ticker;
 
 var
   leveltime: integer;
+  isgamefreezed: boolean = false;
 
 implementation
 
@@ -68,6 +69,7 @@ uses
   p_user,
   p_spec,
   p_mobj,
+  p_mobj_h,
   z_memory;
 
 procedure P_InitThinkers;
@@ -125,7 +127,11 @@ begin
     else
     begin
       if Assigned(currentthinker._function.acp1) then
-        currentthinker._function.acp1(currentthinker);
+      if not isgamefreezed then
+        currentthinker._function.acp1(currentthinker)
+      else if @currentthinker._function.acp1 = @P_MobjThinker then
+        if Pmobj_t(currentthinker).player <> nil then
+          currentthinker._function.acp1(currentthinker);
     end;
     currentthinker := currentthinker.next;
   end;
@@ -154,9 +160,15 @@ begin
     if playeringame[i] then
       P_PlayerThink(@players[i]);
 
+  if demoplayback or demorecording then
+    isgamefreezed := false;
+
   P_RunThinkers;
-  P_UpdateSpecials;
-  P_RespawnSpecials;
+  if not isgamefreezed then
+  begin
+    P_UpdateSpecials;
+    P_RespawnSpecials;
+  end;
 
   // for par times
   inc(leveltime);

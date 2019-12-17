@@ -83,6 +83,7 @@ uses
   m_fixed,
   i_io,
   i_system,
+  p_tick,
   r_defs,
   r_main,
   v_video,
@@ -294,9 +295,24 @@ begin
   end;
 
   if not C_ExecuteCmd('use' + parm1, parm2) then
-    printf('%s mnemonic not found!');
+    printf('%s mnemonic not found!'#13#10);
 end;
 
+procedure Cmd_Freeze(const parm1, parm2: string);
+begin
+  if demoplayback or demorecording then
+  begin
+    printf('Can not freeze game while demo playback/recording'#13#10);
+    exit;
+  end;
+
+  isgamefreezed := not isgamefreezed;
+
+  if isgamefreezed then
+    printf('Game is freezed'#13#10)
+  else
+    printf('Game is not freezed'#13#10);
+end;
 
 //
 // C_Init
@@ -347,6 +363,7 @@ begin
   C_AddCmd('commandlineparams', @M_CmdShowCommandLineParams);
   C_AddCmd('cmdline', @M_CmdShowCmdline);
   C_AddCmd('use', @Cmd_Use);
+  C_AddCmd('freeze', @Cmd_Freeze);
 end;
 
 procedure C_AdjustScreenSize;

@@ -60,8 +60,7 @@ type
     procedure PutFloat(index: Integer; const value: single); virtual;
     function GetString(index: integer): string; virtual;
   public
-    constructor Create; virtual;
-    constructor CreateFromText(const tx: string); virtual;
+    constructor Create(const tx: string); virtual;
     destructor Destroy; override;
     procedure Add(const value: string); virtual;
     property Count: integer read fNumItems;
@@ -79,19 +78,14 @@ uses
   m_fixed,
   sc_engine;
 
-constructor TCustomParamList.Create;
-begin
-  fList := nil;
-  fNumItems := 0;
-end;
-
-constructor TCustomParamList.CreateFromText(const tx: string);
+constructor TCustomParamList.Create(const tx: string);
 var
   i: integer;
   sc: TScriptEngine;
   token1: string;
 begin
-  Create;
+  fList := nil;
+  fNumItems := 0;
 
   token1 := tx;
   for i := 1 to length(token1) do

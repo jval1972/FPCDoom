@@ -90,6 +90,8 @@ procedure A_MeleeAttack(actor: Pmobj_t);
 
 procedure A_SpawnItem(actor: Pmobj_t);
 
+procedure A_SpawnItemEx(actor: Pmobj_t);
+
 procedure A_SeekerMissile(actor: Pmobj_t);
 
 procedure A_CStaffMissileSlither(actor: Pmobj_t);
@@ -184,6 +186,7 @@ uses
   p_local,
   p_pspr,
   p_sounds,
+  r_renderstyle,
   sounds,
   s_sound,
   tables;
@@ -714,11 +717,118 @@ begin
   ang := (ang + actor.angle) shr ANGLETOFINESHIFT;
   mo := P_SpawnMobj(actor.x + FixedMul(distance, finecosine[ang]),
                     actor.y + FixedMul(distance, finesine[ang]),
-                    actor.z - actor.floorz + zheight, mobj_no);
+                    actor.z + zheight, mobj_no);
   if mo <> nil then
     mo.angle := actor.angle;
 end;
 
+// A_SpawnItemEx Flags
+const
+  SIXF_TRANSFERTRANSLATION = 1;
+  SIXF_ABSOLUTEPOSITION = 2;
+  SIXF_ABSOLUTEANGLE = 4;
+  SIXF_ABSOLUTEMOMENTUM = 8;
+  SIXF_SETMASTER = 16;
+  SIXF_NOCHECKPOSITION = 32;
+  SIXF_TELEFRAG = 64;
+  // 128 is used by Skulltag!
+  SIXF_TRANSFERAMBUSHFLAG = 256;
+
+//
+// A_SpawnItemEx(type, xofs, yofs, zofs, momx, momy, momz, Angle, flags, chance)
+//
+// type -> parm0
+// xofs -> parm1
+// yofs -> parm2
+// zofs -> parm3
+// momx -> parm4
+// momy -> parm5
+// momz -> parm6
+// Angle -> parm7
+// flags -> parm8
+// chance -> parm9
+//
+procedure A_SpawnItemEx(actor: Pmobj_t);
+var
+  mobj_no: integer;
+  x, y: fixed_t;
+  xofs, yofs, zofs: fixed_t;
+  momx, momy, momz: fixed_t;
+  newxmom: fixed_t;
+  mo: Pmobj_t;
+  ang, ang1: angle_t;
+  flags: integer;
+  chance: integer;
+begin
+  if not P_CheckStateParams(actor) then
+    exit;
+
+  chance := actor.state.params.IntVal[9];
+
+  if (chance > 0) and (chance < N_Random) then
+    exit;
+
+  if actor.state.params.IsComputed[0] then
+    mobj_no := actor.state.params.IntVal[0]
+  else
+  begin
+    mobj_no := Info_GetMobjNumForName(actor.state.params.StrVal[0]);
+    actor.state.params.IntVal[0] := mobj_no;
+  end;
+  if mobj_no = -1 then
+  begin
+    I_Warning('A_SpawnItemEx(): Unknown item %s'#13#10, [actor.state.params.StrVal[0]]);
+    exit;
+  end;
+
+  // JVAL 20180222 -> IntVal changed to FixedVal
+  xofs := round(actor.state.params.FloatVal[1] * FRACUNIT);
+  yofs := round(actor.state.params.FloatVal[2] * FRACUNIT);
+  zofs := round(actor.state.params.FloatVal[3] * FRACUNIT);
+  momx := round(actor.state.params.FloatVal[4] * FRACUNIT);
+  momy := round(actor.state.params.FloatVal[5] * FRACUNIT);
+  momz := round(actor.state.params.FloatVal[6] * FRACUNIT);
+  ang1 := actor.state.params.IntVal[7];
+  flags := actor.state.params.IntVal[8];
+
+  if (flags and SIXF_ABSOLUTEANGLE) = 0 then
+    ang1 := ang1 + Actor.angle;
+
+  ang := ang1 shr ANGLETOFINESHIFT;
+
+  if (flags and SIXF_ABSOLUTEPOSITION) <> 0 then
+  begin
+    x := actor.x + xofs;
+    y := actor.y + yofs;
+  end
+  else
+  begin
+    // in relative mode negative y values mean 'left' and positive ones mean 'right'
+    // This is the inverse orientation of the absolute mode!
+    x := actor.x + FixedMul(xofs, finecosine[ang]) + FixedMul(yofs, finesine[ang]);
+    y := actor.y + FixedMul(xofs, finesine[ang]) - FixedMul(yofs, finecosine[ang]);
+  end;
+
+  if (flags and SIXF_ABSOLUTEMOMENTUM) = 0 then
+  begin
+    // Same orientation issue here!
+    newxmom := FixedMul(momx, finecosine[ang]) + FixedMul(momy, finesine[ang]);
+    momy := FixedMul(momx, finesine[ang]) - FixedMul(momy, finecosine[ang]);
+    momx := newxmom;
+  end;
+
+  mo := P_SpawnMobj(x, y, actor.z{ - actor.floorz} + zofs, mobj_no);
+
+  if mo <> nil then
+  begin
+    mo.momx := momx;
+    mo.momy := momy;
+    mo.momz := momz;
+    mo.angle := ang1;
+    if (flags and SIXF_TRANSFERAMBUSHFLAG) <> 0 then
+      mo.flags := (mo.flags and not MF_AMBUSH) or (actor.flags and MF_AMBUSH);
+  end;
+end;
 
 //
 // Generic seeker missile function

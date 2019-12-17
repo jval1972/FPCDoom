@@ -153,7 +153,7 @@ uses
   w_wad in 'w_wad.pas',
   w_pak in 'w_pak.pas',
   wi_stuff in 'wi_stuff.pas',
-  z_memory in 'z_memory.pas';
+  z_memory in 'z_memory.pas', r_renderstyle;
 
 var
   Saved8087CW: Word;
