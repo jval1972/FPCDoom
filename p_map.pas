@@ -237,6 +237,8 @@ begin
   if thing.player = viewplayer then
     R_SetInterpolateSkipTicks(1);
 
+  thing.intrplcnt := 0;
+
   result := true;
 end;
 

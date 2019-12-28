@@ -109,6 +109,7 @@ uses
   info_h,
   info,
   m_argv,
+  m_fixed,
   p_mobj_h,
   p_enemy,
   p_extra,
@@ -643,7 +644,14 @@ begin
 
                 end;
               end;
-          40: mobjinfo[mobj_no].scale := mobj_val;
+          40: begin
+                if (Pos('.', token2) > 0) or (Pos(',', token2) > 0) then
+                  mobjinfo[mobj_no].scale := round(atof(token2) * FRACUNIT)
+                else
+                  mobjinfo[mobj_no].scale := mobj_val;
+                if mobjinfo[mobj_no].scale > 64 * FRACUNIT then
+                  mobjinfo[mobj_no].scale := mobjinfo[mobj_no].scale div FRACUNIT;
+              end;
         end;
       end;
 

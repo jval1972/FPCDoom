@@ -128,6 +128,8 @@ begin
     end;
   end;
 
+  averagetrans8table := trans8tables[NUMTRANS8TABLES div 2];
+
   ptrans8 := @approxcolorindexarray[0];
   for r := 0 to 15 do
     for g := 0 to 15 do
@@ -136,8 +138,6 @@ begin
         ptrans8^ := V_FindAproxColorIndex(@palL, r shl 20 + g shl 12 + b shl 4) and $FF;
         inc(ptrans8);
       end;
-
-  averagetrans8table := trans8tables[NUMTRANS8TABLES div 2];
 
   for i := 0 to NUMTRANS8TABLES do
   begin
@@ -277,7 +277,7 @@ function R_FastApproxColorIndex(const r, g, b: byte): byte; overload;
 var
   r1, g1, b1: LongWord;
 begin
-  b1 := r shr 4;
+  b1 := b shr 4;
   g1 := g shr 4;
   r1 := r shr 4;
   result := approxcolorindexarray[r1 shl 8 + g1 shl 4 + b1];

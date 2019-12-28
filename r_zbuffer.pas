@@ -151,41 +151,47 @@ var
 function R_ZBufferAt(const x, y: integer): Pzbufferitem_t;
 var
   Z: Pzbuffer_t;
-  i: integer;
+  pi, pistop: Pzbufferitem_t;
   maxdepth, depth: LongWord;
 begin
   result := @stubzitem;
   maxdepth := 0;
 
   Z := @Zcolumns[x];
-  for i := 0 to Z.numitems - 1 do
+  pi := @Z.items[0];
+  pistop := @Z.items[Z.numitems];
+  while pi <> pistop do
   begin
-    if (y >= Z.items[i].start) and (y <= Z.items[i].stop) then
+    if (y >= pi.start) and (y <= pi.stop) then
     begin
-      depth := Z.items[i].depth;
+      depth := pi.depth;
       if depth > maxdepth then
       begin
-        result := @Z.items[i];
+        result := pi;
         maxdepth := depth;
       end;
     end;
+    inc(pi);
   end;
 
   if result.seg <> nil then
     exit;
 
   Z := @Zspans[y];
-  for i := 0 to Z.numitems - 1 do
+  pi := @Z.items[0];
+  pistop := @Z.items[Z.numitems];
+  while pi <> pistop do
   begin
-    if (x >= Z.items[i].start) and (x <= Z.items[i].stop) then
+    if (x >= pi.start) and (x <= pi.stop) then
     begin
-      depth := Z.items[i].depth;
+      depth := pi.depth;
       if depth > maxdepth then
       begin
-        result := @Z.items[i];
+        result := pi;
         maxdepth := depth;
       end;
     end;
+    inc(pi);
   end;
 end;
 
