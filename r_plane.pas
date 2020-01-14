@@ -469,7 +469,7 @@ begin
         rcolumn.dc_yl := pl.top[x];
         rcolumn.dc_yh := pl.bottom[x];
 
-        if rcolumn.dc_yl < rcolumn.dc_yh then
+        if rcolumn.dc_yl <= rcolumn.dc_yh then
         begin
           if flipsky then
             angle := (ANGLE_MAX - viewangle - xtoviewangle[x]) div ANGLETOSKYUNIT

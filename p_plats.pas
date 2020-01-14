@@ -191,6 +191,7 @@ begin
           plat.status := up;
           S_StartSound(Pmobj_t(@sec.soundorg), Ord(sfx_stnmov));
         end;
+
       downWaitUpStay:
         begin
           plat.speed := PLATSPEED * 4;
@@ -202,6 +203,7 @@ begin
           plat.status := down;
           S_StartSound(Pmobj_t(@sec.soundorg), Ord(sfx_pstart));
         end;
+
       blazeDWUS:
         begin
           plat.speed := PLATSPEED * 8;
@@ -213,6 +215,7 @@ begin
           plat.status := down;
           S_StartSound(Pmobj_t(@sec.soundorg), Ord(sfx_pstart));
         end;
+
       perpetualRaise:
         begin
           plat.speed := PLATSPEED;

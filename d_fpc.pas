@@ -569,6 +569,8 @@ function imin(const x1, x2: integer): integer;
 
 function imax(const x1, x2: integer): integer;
 
+procedure logtofile(const fname: string; const str: string);
+
 implementation
 
 uses
@@ -2773,6 +2775,21 @@ begin
     result := x2;
 end;
 
+procedure logtofile(const fname: string; const str: string);
+var
+  f: file;
+begin
+  if not fexists(fname) then
+    fopen(f, fname, fCreate)
+  else
+  begin
+    fopen(f, fname, fOpenReadWrite);
+    system.Seek(f, FileSize(f));
+  end;
+  {$I-}
+  BlockWrite(f, Pointer(str)^, Length(str));
+  close(f);
+end;
 
 end.
 

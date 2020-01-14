@@ -72,7 +72,6 @@ uses
   r_plane,
   r_hires,
   r_draw_column,
-  r_lightmap,
   r_mirror,
   z_memory;
 
@@ -203,6 +202,7 @@ var
   use32: boolean;
   mc2height: integer;
   texturecolumn: integer;
+  t: double;
 begin
   // Calculate light table.
   // Use different light tables
@@ -246,10 +246,11 @@ begin
 
   maskedtexturecol := ds.maskedtexturecol;
 
-  rw_scalestep := ds.scalestep;
-  spryscale := ds.scale1 + (x1 - ds.x1) * rw_scalestep;
   mfloorclip := ds.sprbottomclip;
   mceilingclip := ds.sprtopclip;
+
+  rw_scalestep_dbl := (ds.scale2 - ds.scale1) / (ds.x2 - ds.x1 + 1);
+  spryscale := ds.scale1 + round((x1 - ds.x1) * rw_scalestep_dbl);
 
   // find positioning
   if curline.linedef.flags and ML_DONTPEGBOTTOM <> 0 then
@@ -308,7 +309,16 @@ begin
           rcolumn.dc_colormap32 := R_GetColormap32(rcolumn.dc_colormap);
       end;
 
-      sprtopscreen := centeryfrac - FixedMul(rcolumn.dc_texturemid, spryscale);
+      //t -> double (delphidoom)
+      t := (centeryfrac / FRACUNIT) - (rcolumn.dc_texturemid / FRACUNIT) * (spryscale / FRACUNIT);
+      if (t + (textureheight[texnum] / FRACUNIT) * (spryscale / FRACUNIT) < 0) or (t > SCREENHEIGHT * 2) then
+      begin
+        spryscale := ds.scale1 + Trunc((i - ds.x1) * rw_scalestep_dbl);
+        continue;
+      end;
+      sprtopscreen := Trunc(t * FRACUNIT);
+
+//      sprtopscreen := centeryfrac - FixedMul(rcolumn.dc_texturemid, spryscale);
       rcolumn.dc_iscale := LongWord($ffffffff) div LongWord(spryscale);
 
       texturecolumn := maskedtexturecol[rcolumn.dc_x] shr DC_HIRESBITS;
@@ -328,7 +338,7 @@ begin
       end;
       maskedtexturecol[rcolumn.dc_x] := MAXSHORT;
     end;
-    spryscale := spryscale + rw_scalestep;
+    spryscale := ds.scale1 + Trunc((i - ds.x1) * rw_scalestep_dbl);
   end;
 end;
 
