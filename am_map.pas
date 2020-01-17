@@ -324,13 +324,13 @@ end;
 // how much zoom-in per tic
 function M_ZOOMIN: integer;
 begin
-  result := trunc(1.02 * FRACUNIT);
+  result := Trunc(1.02 * FRACUNIT);
 end;
 
 // how much zoom-out per tic
 function M_ZOOMOUT: integer;
 begin
-  result := trunc(FRACUNIT / 1.02);
+  result := Trunc(FRACUNIT / 1.02);
 end;
 
 function FTOM(x : integer): integer;
@@ -635,7 +635,7 @@ begin
   AM_clearMarks;
 
   AM_findMinMaxBoundaries;
-  scale_mtof := FixedDiv(min_scale_mtof, trunc(0.7 * FRACUNIT));
+  scale_mtof := FixedDiv(min_scale_mtof, Trunc(0.7 * FRACUNIT));
   if scale_mtof > max_scale_mtof then
     scale_mtof := min_scale_mtof;
   scale_ftom := FixedDiv(FRACUNIT, scale_mtof);
@@ -1248,7 +1248,7 @@ begin
 
   // [RH] Calculate a minimum for how long the grid lines should be so that
   // they cover the screen at any rotation.
-  minlen := trunc(sqrt(dw * dw + dh * dh));
+  minlen := Trunc(sqrt(dw * dw + dh * dh));
   extx := (minlen - m_w) div 2;
   exty := (minlen - m_h) div 2;
 
@@ -1707,42 +1707,42 @@ begin
 ////////////////////////////////////////////////////////////////////////////////
 
   pl := @triangle_guy[0];
-  pl.a.x := round(-0.867 * FRACUNIT);
-  pl.a.y := round(-0.5 * FRACUNIT);
-  pl.b.x := round(0.867 * FRACUNIT);
-  pl.b.y := round(-0.5 * FRACUNIT);
+  pl.a.x := Round(-0.867 * FRACUNIT);
+  pl.a.y := Round(-0.5 * FRACUNIT);
+  pl.b.x := Round(0.867 * FRACUNIT);
+  pl.b.y := Round(-0.5 * FRACUNIT);
 
   inc(pl);
-  pl.a.x := round(0.867 * FRACUNIT);
-  pl.a.y := round(-0.5 * FRACUNIT);
+  pl.a.x := Round(0.867 * FRACUNIT);
+  pl.a.y := Round(-0.5 * FRACUNIT);
   pl.b.x := 0;
   pl.b.y := FRACUNIT;
 
   inc(pl);
   pl.a.x := 0;
   pl.a.y := FRACUNIT;
-  pl.b.x := round(-0.867 * FRACUNIT);
-  pl.b.y := round(-0.5 * FRACUNIT);
+  pl.b.x := Round(-0.867 * FRACUNIT);
+  pl.b.y := Round(-0.5 * FRACUNIT);
 
 ////////////////////////////////////////////////////////////////////////////////
 
   pl := @thintriangle_guy[0];
-  pl.a.x := round(-0.5 * FRACUNIT);
-  pl.a.y := round(-0.7 * FRACUNIT);
+  pl.a.x := Round(-0.5 * FRACUNIT);
+  pl.a.y := Round(-0.7 * FRACUNIT);
   pl.b.x := FRACUNIT;
   pl.b.y := 0;
 
   inc(pl);
   pl.a.x := FRACUNIT;
   pl.a.y := 0;
-  pl.b.x := round(-0.5 * FRACUNIT);
-  pl.b.y := round(0.7 * FRACUNIT);
+  pl.b.x := Round(-0.5 * FRACUNIT);
+  pl.b.y := Round(0.7 * FRACUNIT);
 
   inc(pl);
-  pl.a.x := round(-0.5 * FRACUNIT);
-  pl.a.y := round(0.7 * FRACUNIT);
-  pl.b.x := round(-0.5 * FRACUNIT);
-  pl.b.y := round(-0.7 * FRACUNIT);
+  pl.a.x := Round(-0.5 * FRACUNIT);
+  pl.a.y := Round(0.7 * FRACUNIT);
+  pl.b.x := Round(-0.5 * FRACUNIT);
+  pl.b.y := Round(-0.7 * FRACUNIT);
 
 ////////////////////////////////////////////////////////////////////////////////
   cheat_amap.sequence := get_cheatseq_string(cheat_amap_seq);

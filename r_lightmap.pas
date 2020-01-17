@@ -416,18 +416,18 @@ begin
                 begin
                   sc.MustGetFloat;
                   if sc._float > 0.0 then
-                    l.interval := round(1 / sc._float * FRACUNIT * TICRATE);
+                    l.interval := Round(1 / sc._float * FRACUNIT * TICRATE);
                 end;
                9:  // ColorInterval
                 begin
                   sc.MustGetFloat;
                   if sc._float > 0.0 then
-                    l.colorinterval := round(1 / sc._float * FRACUNIT * TICRATE);
+                    l.colorinterval := Round(1 / sc._float * FRACUNIT * TICRATE);
                 end;
               10:  // Chance
                 begin
                   sc.MustGetFloat;
-                  l.chance := round(sc._float * 255);
+                  l.chance := Round(sc._float * 255);
                   if l.chance < 0 then
                     l.chance := 0
                   else if l.chance > 255 then
@@ -436,7 +436,7 @@ begin
               11:  // ColorChance
                 begin
                   sc.MustGetFloat;
-                  l.colorchance := round(sc._float * 255);
+                  l.colorchance := Round(sc._float * 255);
                   if l.colorchance < 0 then
                     l.colorchance := 0
                   else if l.colorchance > 255 then
@@ -815,11 +815,13 @@ var
   psl: Pdlsortitem_t;
   dlights: TDNumberList;
 begin
+  if mo.lightvalidcount = rendervalidcount then
+    exit;
+
   dlights := mo.state.dlights;
   if dlights = nil then
     exit;
-  if mo.lightvalidcount = rendervalidcount then
-    exit;
+
   mo.lightvalidcount := rendervalidcount;
 
   xdist := (viewx - mo.x) / FRACUNIT;
@@ -842,10 +844,10 @@ begin
     dy := ydist - l.z;
     dz := zdist - l.y;
     psl.squaredist := dx * dx + dy * dy + dz * dz;
-    psl.x := mo.x + trunc(FRACUNIT * l.x);
-    psl.y := mo.y + trunc(FRACUNIT * l.z);
-    psl.z := mo.z + trunc(FRACUNIT * l.y);
-    psl.radius := trunc(l.radius * FRACUNIT);
+    psl.x := mo.x + Trunc(FRACUNIT * l.x);
+    psl.y := mo.y + Trunc(FRACUNIT * l.z);
+    psl.z := mo.z + Trunc(FRACUNIT * l.y);
+    psl.radius := Trunc(l.radius * FRACUNIT);
     inc(numdlitems);
   end;
 end;
@@ -1043,13 +1045,13 @@ var
 begin
   vis := psl.vis;
   w := 2 * psl.l.radius * lightwidthfactor / DEFLIGHTWIDTHFACTOR;
-  frac := trunc(vis.startfrac * LIGHTBOOSTSIZE / w);
-  fracstep := trunc(vis.xiscale * LIGHTBOOSTSIZE / w);
-  spryscale := trunc(vis.scale * w / LIGHTBOOSTSIZE);
+  frac := Trunc(vis.startfrac * LIGHTBOOSTSIZE / w);
+  fracstep := Trunc(vis.xiscale * LIGHTBOOSTSIZE / w);
+  spryscale := Trunc(vis.scale * w / LIGHTBOOSTSIZE);
   lcolumn.lightsourcex := psl.x;
   lcolumn.lightsourcey := psl.y;
   lcolumn.dl_iscale := FixedDivEx(FRACUNIT, spryscale);
-  lcolumn.dl_fracstep := FixedDivEx(FRACUNIT, trunc(vis.scale * w / LIGHTBOOSTSIZE));
+  lcolumn.dl_fracstep := FixedDivEx(FRACUNIT, Trunc(vis.scale * w / LIGHTBOOSTSIZE));
   lcolumn.dl_scale := vis.scale;
   ltopscreen := centeryfrac - FixedMul(vis.texturemid, vis.scale);
 
@@ -1101,7 +1103,7 @@ function f2b(const ff: float): byte;
 var
   ii: integer;
 begin
-  ii := trunc(ff * 256);
+  ii := Trunc(ff * 256);
   if ii <= 0 then
     result := 0
   else if ii >= 255 then

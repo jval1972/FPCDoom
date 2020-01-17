@@ -65,7 +65,7 @@ var
   pb: PByteArray;
   tmp: byte;
 begin
-  pb := @((ylookup[y^]^)[columnofs[0]]);
+  pb := @((ylookup8[y^]^)[columnofs[0]]);
   for i := 0 to viewwidth div 2 - 1 do
   begin
     tmp := pb[i];

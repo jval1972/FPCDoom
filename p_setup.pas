@@ -310,6 +310,9 @@ begin
     ss.special := ms.special;
     ss.tag := ms.tag;
     ss.thinglist := nil;
+    // [kb] For R_WiggleFix
+    ss.cachedheight := 0;
+    ss.scaleindex := 0;
     inc(ms);
     inc(ss);
   end;
@@ -445,7 +448,7 @@ begin
         ld.slopetype := ST_NEGATIVE;
     end;
 
-    ld.len := trunc(sqrt(sqr(ld.dx / FRACUNIT) + sqr(ld.dy / FRACUNIT)) * FRACUNIT);
+    ld.len := Trunc(sqrt(sqr(ld.dx / FRACUNIT) + sqr(ld.dy / FRACUNIT)) * FRACUNIT);
 
     if v1.x < v2.x then
     begin

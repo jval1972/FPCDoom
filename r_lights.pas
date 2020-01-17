@@ -75,7 +75,7 @@ begin
       if dist <= (LIGHTBOOSTSIZE shr 1) then
       begin
         inc(lightexturelookup[i].length);
-        c := round(dist * 4);
+        c := Round(dist * 4);
         if c > 255 then
           c := 0
         else

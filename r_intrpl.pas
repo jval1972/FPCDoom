@@ -154,7 +154,7 @@ begin
   if next = prev then
     result := prev
   else
-    result := prev + round((next - prev) / FRACUNIT * frac);
+    result := prev + Round((next - prev) / FRACUNIT * frac);
 end;
 
 function R_InterpolationCalcSIF(const prev, next: smallint; const frac: fixed_t): smallint;
@@ -162,7 +162,7 @@ begin
   if next = prev then
     result := prev
   else
-    result := prev + round((next - prev) / FRACUNIT * frac);
+    result := prev + Round((next - prev) / FRACUNIT * frac);
 end;
 
 procedure R_InterpolationCalcI(const pi: Piitem_t; const frac: fixed_t);
@@ -170,7 +170,7 @@ begin
   if pi.inext = pi.iprev then
     exit;
 
-  PInteger(pi.address)^ := pi.iprev + round((pi.inext - pi.iprev) / FRACUNIT * frac);
+  PInteger(pi.address)^ := pi.iprev + Round((pi.inext - pi.iprev) / FRACUNIT * frac);
 end;
 
 procedure R_InterpolationCalcSI(const pi: Piitem_t; const frac: fixed_t);
@@ -178,7 +178,7 @@ begin
   if pi.sinext = pi.siprev then
     exit;
 
-  PSmallInt(pi.address)^ := pi.siprev + round((pi.sinext - pi.siprev) / FRACUNIT * frac);
+  PSmallInt(pi.address)^ := pi.siprev + Round((pi.sinext - pi.siprev) / FRACUNIT * frac);
 end;
 
 function R_InterpolationCalcB(const prev, next: byte; const frac: fixed_t): byte;
@@ -218,11 +218,11 @@ begin
     end
     else if prev > next then
     begin
-      result := prev - round((prev - next) / FRACUNIT * frac);
+      result := prev - Round((prev - next) / FRACUNIT * frac);
     end
     else
     begin
-      result := prev + round((next - prev) / FRACUNIT * frac);
+      result := prev + Round((next - prev) / FRACUNIT * frac);
     end;
   end;
 end;
@@ -407,7 +407,7 @@ begin
 
   fractime := I_GetFracTime;
   ticfrac := fractime - interpolationstoretime;
-  ticfrac := round(ticfrac / interpolationcount);
+  ticfrac := Round(ticfrac / interpolationcount);
   if ticfrac > FRACUNIT then
   begin
   // JVAL

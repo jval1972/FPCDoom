@@ -908,14 +908,14 @@ begin
         else if sc.MatchString('ALPHA') then
         begin
           sc.GetFloat;
-          mobj.alpha := round(sc._float * FRACUNIT);
+          mobj.alpha := Round(sc._float * FRACUNIT);
           sc.GetString;
         end
 
         else if sc.MatchString('SCALE') then
         begin
           sc.GetFloat;
-          mobj.scale := round(sc._float * FRACUNIT);
+          mobj.scale := Round(sc._float * FRACUNIT);
           sc.GetString;
         end
 
@@ -943,7 +943,7 @@ begin
         else if sc.MatchString('DEFAULTTRANSPARENT') or sc.MatchString('+DEFAULTTRANSPARENT') then
         begin
           mobj.renderstyle := 'TRANSLUCENT';
-          mobj.alpha := round(0.67 * FRACUNIT);
+          mobj.alpha := Round(0.67 * FRACUNIT);
           sc.GetString;
         end
 

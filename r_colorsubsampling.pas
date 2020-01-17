@@ -60,7 +60,7 @@ var
   pb: PByteArray;
   pquant: PByteArray;
 begin
-  pb := @((ylookup[y^]^)[columnofs[0]]);
+  pb := @((ylookup8[y^]^)[columnofs[0]]);
   pquant := @subsampling8tables[colorsubsamplingmode];
   for i := 0 to viewwidth - 1 do
     pb[i] := pquant[pb[i]];

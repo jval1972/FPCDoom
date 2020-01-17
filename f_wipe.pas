@@ -97,7 +97,7 @@ var
   step: integer;
 begin
   for i := 0 to SCREENWIDTH - 1 do
-    SHEIGHTS[i] := trunc(i * 320 / SCREENWIDTH);
+    SHEIGHTS[i] := Trunc(i * 320 / SCREENWIDTH);
   for i := 0 to 319 do
     RANDOMS[i] := I_Random;
 
@@ -253,7 +253,7 @@ begin
   if wipefrac < 0 then
     wipefrac := 0;
 
-  y := SCREENHEIGHT - trunc(wipefrac * SCREENHEIGHT / FRACUNIT);
+  y := SCREENHEIGHT - Trunc(wipefrac * SCREENHEIGHT / FRACUNIT);
 
   for i := 0 to y * SCREENWIDTH - 1 do
     screen32[i] := wipe_scr_end[SCREENWIDTH * (SCREENHEIGHT - y) + i];
@@ -280,13 +280,13 @@ begin
   if wipefrac < 0 then
     wipefrac := 0;
 
-  fizzfrac := round(wipefrac / (320 * 200) * FRACUNIT);
+  fizzfrac := Round(wipefrac / (320 * 200) * FRACUNIT);
 
   for x := 0 to SCREENWIDTH  - 1 do
     for y := 0 to SCREENHEIGHT - 1 do
     begin
       idx := y * SCREENWIDTH + x;
-      if fizzlearray[trunc(x * 320 / SCREENWIDTH), trunc(y * 200 / SCREENHEIGHT)] > fizzfrac then
+      if fizzlearray[Trunc(x * 320 / SCREENWIDTH), Trunc(y * 200 / SCREENHEIGHT)] > fizzfrac then
         screen32[idx] := wipe_scr_end[idx]
       else
         screen32[idx] := wipe_scr_start[idx]

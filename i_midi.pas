@@ -45,6 +45,8 @@ procedure I_ShutDownMidi;
 
 procedure I_SetMusicVolumeMidi(volume: integer);
 
+procedure I_ProcessMidi;
+
 const
   MThd = $6468544D; // Start of file
   MTrk = $6B72544D; // Start of track
@@ -1454,7 +1456,7 @@ begin
   if dwPercent > VOLUME_INIT then
     m_Volumes[dwChannel] := m_volume
   else
-    m_Volumes[dwChannel] := round(dwPercent * m_volume / VOLUME_INIT);
+    m_Volumes[dwChannel] := Round(dwPercent * m_volume / VOLUME_INIT);
   dwEvent := MIDI_CTRLCHANGE or dwChannel or (DWORD(MIDICTRL_VOLUME) shl 8) or (DWORD(m_Volumes[dwChannel] * VOLUME_MAX div 100) shl 16);
   mmrRetVal := midiOutShortMsg(HMIDIOUT(m_hStream), dwEvent);
   if (mmrRetVal <> MMSYSERR_NOERROR) then
@@ -1751,20 +1753,26 @@ begin
   memfree(MidiData, MidiDataSize);
 end;
 
-procedure I_SetMusicVolumeMidi(volume: integer);
 var
-  vol: integer;
+  ws_volume: integer;
+
+procedure I_SetMusicVolumeMidi(volume: integer);
 begin
   if midi <> nil then
   begin
-    vol := volume;
-    if vol < 0 then
-      vol := 0
-    else if vol > 15 then
-      vol := 15;
-    midi.volume := midivolumecontrol[vol];
-//    midi.SetVolume(midivolumecontrol[vol]);
+    ws_volume := volume;
+    if ws_volume < 0 then
+      ws_volume := 0
+    else if ws_volume > 15 then
+      ws_volume := 15;
+    midi.volume := midivolumecontrol[ws_volume];
   end;
+end;
+
+procedure I_ProcessMidi;
+begin
+  if midi <> nil then
+    midi.volume := ws_volume;
 end;
 
 end.

@@ -151,8 +151,8 @@ begin
     cacheddistance[y] := FixedMul(rspan.ds_planeheight, yslope[y]);
     distance := cacheddistance[y];
     slope := (rspan.ds_planeheight / abs(centery - y)) * planerelativeaspect;
-    rspan.ds_xstep := trunc(dviewsin * slope);
-    rspan.ds_ystep := trunc(dviewcos * slope);
+    rspan.ds_xstep := Trunc(dviewsin * slope);
+    rspan.ds_ystep := Trunc(dviewcos * slope);
     cachedxstep[y] := rspan.ds_xstep;
     cachedystep[y] := rspan.ds_ystep;
   end

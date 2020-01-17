@@ -60,7 +60,7 @@ var
   pb: PByteArray;
   pgray: PByteArray;
 begin
-  pb := @((ylookup[y^]^)[columnofs[0]]);
+  pb := @((ylookup8[y^]^)[columnofs[0]]);
   pgray := @grayscale8tables[grayscalemode];
   for i := 0 to viewwidth - 1 do
     pb[i] := pgray[pb[i]];
@@ -87,7 +87,7 @@ begin
   r := (c shr 16) and $ff;
   g := (c shr 8) and $ff;
   b := c and $ff;
-  gray := trunc(r * 0.299 + g * 0.587 + b * 0.114); // Human perceive
+  gray := Trunc(r * 0.299 + g * 0.587 + b * 0.114); // Human perceive
   if gray > 255 then gray := 255;
   result := gray + gray shl 8 + gray shl 16;
 end;
@@ -100,7 +100,7 @@ begin
   r := (c shr 16) and $ff;
   g := (c shr 8) and $ff;
   b := c and $ff;
-  gray := trunc(r * 0.2126 + g * 0.7152 + b * 0.0722); // Luma
+  gray := Trunc(r * 0.2126 + g * 0.7152 + b * 0.0722); // Luma
   if gray > 255 then gray := 255;
   result := gray + gray shl 8 + gray shl 16;
 end;

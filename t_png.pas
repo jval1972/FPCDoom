@@ -4470,7 +4470,7 @@ begin
         for i := 0 to W - 1 do
         begin
           if Stretch then
-            i2 := trunc(i / FactorX)
+            i2 := Trunc(i / FactorX)
           else
             i2 := i;
           {Optmize when we don΄t have transparency}
@@ -4492,7 +4492,7 @@ begin
         {Move pointers}
         inc(Longint(ImageData), BytesPerRowDest);
         if Stretch then
-          j2 := trunc(j / FactorY)
+          j2 := Trunc(j / FactorY)
         else
           j2 := j;
         ImageSource := pOp(ImageSourceOrg, -BytesPerRowSrc * j2);
@@ -4507,7 +4507,7 @@ begin
           with ImageData[i], Header.BitmapInfo do
           begin
             if Stretch then
-              i2 := trunc(i / FactorX)
+              i2 := Trunc(i / FactorX)
             else
               i2 := i;
             rgbRed := (255 + ImageSource[i2] * AlphaSource[i2] +
@@ -4521,7 +4521,7 @@ begin
         {Move pointers}
         ImageData := pOp(ImageData, BytesPerRowDest);
         if Stretch then
-          j2 := trunc(j / FactorY)
+          j2 := Trunc(j / FactorY)
         else
           j2 := j;
         ImageSource := pOp(ImageSourceOrg, - BytesPerRowSrc * j2);
@@ -4540,7 +4540,7 @@ begin
         repeat
           CurBit := 0;
           if Stretch then
-            i2 := trunc(i / FactorX)
+            i2 := Trunc(i / FactorX)
           else
             i2 := i;
           Data := @ImageSource[i2];
@@ -4574,7 +4574,7 @@ begin
 
         {Move pointers}
         ImageData := pOp(ImageData, BytesPerRowDest);
-        if Stretch then j2 := trunc(j / FactorY) else j2 := j;
+        if Stretch then j2 := Trunc(j / FactorY) else j2 := j;
         ImageSource := pOp(ImageSourceOrg, BytesPerRowSrc * j2);
       end
     end {Palette images}

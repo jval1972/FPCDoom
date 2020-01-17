@@ -87,7 +87,7 @@ var
 //
 
 var
-  ylookup: array[0..MAXHEIGHT - 1] of PByteArray;
+  ylookup8: array[0..MAXHEIGHT - 1] of PByteArray;
   ylookup32: array[0..MAXHEIGHT - 1] of PLongWordArray;
   columnofs: array[0..MAXWIDTH - 1] of integer;
 
@@ -170,7 +170,7 @@ begin
   // Preclaculate all row offsets.
   for i := 0 to height - 1 do
   begin
-    ylookup[i] := @screens[SCN_FG][(i + viewwindowy) * SCREENWIDTH];
+    ylookup8[i] := @screens[SCN_FG][(i + viewwindowy) * SCREENWIDTH];
     ylookup32[i] := @screen32[(i + viewwindowy) * SCREENWIDTH];
   end;
 end;

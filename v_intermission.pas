@@ -112,15 +112,15 @@ begin
       begin
         if fullscreen and fullscreenexclusive then
         begin
-          result := round((1 - (4 / 3) / (SCREENWIDTH / SCREENHEIGHT)) * 100);
+          result := Round((1 - (4 / 3) / (SCREENWIDTH / SCREENHEIGHT)) * 100);
         end
         else if fullscreen then
         begin
-          result := round((1 - (4 / 3) / (NATIVEWIDTH / NATIVEHEIGHT)) * 100);
+          result := Round((1 - (4 / 3) / (NATIVEWIDTH / NATIVEHEIGHT)) * 100);
         end
         else
         begin
-          result := round((1 - (4 / 3) / (WINDOWWIDTH / WINDOWHEIGHT)) * 100);
+          result := Round((1 - (4 / 3) / (WINDOWWIDTH / WINDOWHEIGHT)) * 100);
         end
       end;
   else

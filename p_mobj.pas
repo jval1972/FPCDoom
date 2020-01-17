@@ -1092,9 +1092,9 @@ begin
   end;
 
   VectorNormalize(@velocity);
-  th.momx := round(velocity[0] * speed);
-  th.momy := round(velocity[1] * speed);
-  th.momz := round(velocity[2] * speed);
+  th.momx := Round(velocity[0] * speed);
+  th.momy := Round(velocity[1] * speed);
+  th.momz := Round(velocity[2] * speed);
 
   // fuzzy player
   if dest.flags and MF_SHADOW <> 0 then

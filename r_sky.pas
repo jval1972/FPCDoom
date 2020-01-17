@@ -102,15 +102,15 @@ begin
 
     // JVAL Leave 8 * f pixels at 0 %
     minstart := f * (SKYTRNTARGETSIZE - SKYSIZE + 8);
-    start := minstart + trunc((skystretch_pct / 100) * (f * SKYTRNTARGETSIZE - minstart));
+    start := minstart + Trunc((skystretch_pct / 100) * (f * SKYTRNTARGETSIZE - minstart));
 
     for i := f * SKYTRNTARGETSIZE - 1 downto start do
       target[i] := i - f * SKYTRNTARGETSIZE + f * SKYSIZE;
     for i := 0 to start - 1 do
-      target[i] := trunc(i * (start - f * SKYTRNTARGETSIZE + f * SKYSIZE) / start);
+      target[i] := Trunc(i * (start - f * SKYTRNTARGETSIZE + f * SKYSIZE) / start);
 
     for i := f * SKYTRNTARGETSIZE - 1 downto 0 do
-     skytranstable[MAXTEXTUREFACTORBITS][trunc(i * SKYSIZE / SKYTRNTARGETSIZE)] := trunc(target[i] * ORIGINALSKYSIZE / SKYSIZE);
+     skytranstable[MAXTEXTUREFACTORBITS][Trunc(i * SKYSIZE / SKYTRNTARGETSIZE)] := Trunc(target[i] * ORIGINALSKYSIZE / SKYSIZE);
 
     for x := 0 to MAXTEXTUREFACTORBITS - 1 do
     begin
@@ -121,7 +121,7 @@ begin
         skytranstable[x][i] := 0;
         for j := 0 to d - 1 do
           skytranstable[x][i] := skytranstable[x][i] + skytranstable[MAXTEXTUREFACTORBITS][i * d + j];
-        skytranstable[x][i] := trunc(skytranstable[x][i] / d / d);
+        skytranstable[x][i] := Trunc(skytranstable[x][i] / d / d);
       end;
     end;
 

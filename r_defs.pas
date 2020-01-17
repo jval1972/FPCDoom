@@ -137,6 +137,9 @@ type
     // thinker_t for reversable actions
     specialdata: pointer;
 
+    cachedheight: integer;
+    scaleindex: integer;
+
     linecount: integer;
     lines: Pline_tPArray; // [linecount] size
   end;
@@ -309,7 +312,6 @@ type
 
     scale1: fixed_t;
     scale2: fixed_t;
-    scalestep: fixed_t;
 
     // 0=none, 1=bottom, 2=top, 3=both
     silhouette: integer;

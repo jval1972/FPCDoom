@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2019 by Jim Valavanis
+//  Copyright (C) 2017-2020 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -98,7 +98,7 @@ begin
   dy := seg.v2.r_y - seg.v1.r_y;
   dx1 := viewx - seg.v1.r_x;
   dy1 := viewy - seg.v1.r_y;
-  result := trunc((dx * dx1 + dy * dy1) * seg.inv_length);
+  result := Trunc((dx * dx1 + dy * dy1) * seg.inv_length);
   if result < 0 then
     result := -result;
 end;
@@ -131,7 +131,7 @@ begin
   dy := seg.v2.r_y - seg.v1.r_y;
   dx1 := viewx - seg.v1.r_x;
   dy1 := viewy - seg.v1.r_y;
-  result := trunc((dy * dx1 - dx * dy1) * seg.inv_length);
+  result := Trunc((dy * dx1 - dx * dy1) * seg.inv_length);
   if result < 0 then
     result := -result;
 end;
@@ -159,7 +159,6 @@ var
   rw_centerangle: angle_t;
   rw_offset: fixed_t;
   rw_scale: fixed_t;
-  rw_scalestep: fixed_t;
   rw_midtexturemid: fixed_t;
   rw_toptexturemid: fixed_t;
   rw_bottomtexturemid: fixed_t;
@@ -186,6 +185,181 @@ var
 
   bottomfrac_dbl: double;
   bottomstep_dbl: double;
+
+var
+  HEIGHTBITS: integer = 12;
+  HEIGHTUNIT: integer = 1 shl 12;
+  WORLDBIT: integer = 4;
+  WORLDUNIT: integer = 1 shl 4;
+
+const
+  MIN_RWSCALE = 256;
+var
+  MAX_RWSCALE: integer = 64 * FRACUNIT ;
+
+//
+// R_FixWiggle()
+// Dynamic wall/texture rescaler, AKA "WiggleHack II"
+//  by Kurt "kb1" Baumgardner ("kb")
+//
+//  [kb] When the rendered view is positioned, such that the viewer is
+//   looking almost parallel down a wall, the result of the scale
+//   calculation in R_ScaleFromGlobalAngle becomes very large. And, the
+//   taller the wall, the larger that value becomes. If these large
+//   values were used as-is, subsequent calculations would overflow
+//   and crash the program.
+//
+//  Therefore, vanilla Doom clamps this scale calculation, preventing it
+//   from becoming larger than 0x400000 (64*FRACUNIT). This number was
+//   chosen carefully, to allow reasonably-tight angles, with reasonably
+//   tall sectors to be rendered, within the limits of the fixed-point
+//   math system being used. When the scale gets clamped, Doom cannot
+//   properly render the wall, causing an undesirable wall-bending
+//   effect that I call "floor wiggle".
+//
+//  Modern source ports offer higher video resolutions, which worsens
+//   the issue. And, Doom is simply not adjusted for the taller walls
+//   found in many PWADs.
+//
+//  WiggleHack II attempts to correct these issues, by dynamically
+//   adjusting the fixed-point math, and the maximum scale clamp,
+//   on a wall-by-wall basis. This has 2 effects:
+//
+//  1. Floor wiggle is greatly reduced and/or eliminated.
+//  2. Overflow is not longer possible, even in levels with maximum
+//     height sectors.
+//
+//  It is not perfect across all situations. Some floor wiggle can be
+//   seen, and some texture strips may be slight misaligned in extreme
+//   cases. These effects cannot be corrected without increasing the
+//   precision of various renderer variables, and, possibly, suffering
+//   a performance penalty.
+//
+
+var
+  lastheight: integer = 0;
+
+type
+  wiggle_t = record
+    clamp: integer;
+    heightbits: integer;
+  end;
+
+var
+  scale_values: array[0..8] of wiggle_t = (
+    (clamp: 2048 * FRACUNIT; heightbits: 12),
+    (clamp: 1024 * FRACUNIT; heightbits: 12),
+    (clamp: 1024 * FRACUNIT; heightbits: 11),
+    (clamp:  512 * FRACUNIT; heightbits: 11),
+    (clamp:  512 * FRACUNIT; heightbits: 10),
+    (clamp:  256 * FRACUNIT; heightbits: 10),
+    (clamp:  256 * FRACUNIT; heightbits:  9),
+    (clamp:  128 * FRACUNIT; heightbits:  9),
+    (clamp:   64 * FRACUNIT; heightbits:  9)
+  );
+
+procedure R_WiggleFix(sec: Psector_t);
+var
+  height: integer;
+begin
+  height := (sec.ceilingheight - sec.floorheight) div FRACUNIT;
+
+  // disallow negative heights, force cache initialization
+  if height < 1 then
+    height := 1;
+
+  // early out?
+  if height <> lastheight then
+  begin
+    lastheight := height;
+
+    // initialize, or handle moving sector
+    if height <> sec.cachedheight then
+    begin
+      frontsector.cachedheight := height;
+      frontsector.scaleindex := 0;
+      height := height shr  7;
+      // calculate adjustment
+      while true do
+      begin
+        height := height shr 1;
+        if height <> 0 then
+          inc(frontsector.scaleindex)
+        else
+          break;
+      end;
+    end;
+
+    // fine-tune renderer for this wall
+    MAX_RWSCALE := scale_values[frontsector.scaleindex].clamp;
+    HEIGHTBITS := scale_values[frontsector.scaleindex].heightbits;
+    HEIGHTUNIT := 1 shl HEIGHTBITS;
+    WORLDBIT := 16 - HEIGHTBITS;
+    WORLDUNIT := 1 shl WORLDBIT;
+  end;
+end;
+
+//
+// R_ScaleFromGlobalAngle
+// Returns the texture mapping scale
+//  for the current line (horizontal span)
+//  at the given angle.
+// rw_distance must be calculated first.
+//
+function R_ScaleFromGlobalAngle(const visangle: angle_t): fixed_t;
+var
+  anglea: angle_t;
+  angleb: angle_t;
+  num: fixed_t;
+  den: integer;
+begin
+  anglea := ANG90 + (visangle - viewangle);
+  angleb := ANG90 + (visangle - rw_normalangle);
+
+  num := FixedMul(projectiony, finesine[_SHRW(angleb, ANGLETOFINESHIFT)]); // JVAL For correct aspect
+  den := FixedMul(rw_distance, finesine[_SHRW(anglea, ANGLETOFINESHIFT)]);
+
+  if den > FixedInt(num) then
+  begin
+    result := FixedDiv(num, den);
+
+    if result > MAX_RWSCALE then
+      result := MAX_RWSCALE
+    else if result < MIN_RWSCALE then
+      result := MIN_RWSCALE
+  end
+  else
+    result := MAX_RWSCALE;
+end;
+
+function R_ScaleFromGlobalAngle_DBL(const visangle: angle_t): double;
+var
+  anglea: angle_t;
+  angleb: angle_t;
+  num: Double;
+  den: Double;
+begin
+  anglea := ANG90 + (visangle - viewangle);
+  angleb := ANG90 + (visangle - rw_normalangle);
+
+  num := projectiony * Sin(angleb * ANGLE_T_TO_RAD);
+  den := rw_distance * Sin(anglea * ANGLE_T_TO_RAD);
+
+  if den = 0 then
+  begin
+    result := MAX_RWSCALE;
+  end
+  else
+  begin
+    result := (num / den) * FRACUNIT;
+    if result < MIN_RWSCALE then
+      result := MIN_RWSCALE
+    else if result > MAX_RWSCALE then
+      result := MAX_RWSCALE
+  end;
+
+end;
+
 
 // OPTIMIZE: closed two sided lines as single sided
 
@@ -250,7 +424,7 @@ begin
   mceilingclip := ds.sprtopclip;
 
   rw_scalestep_dbl := (ds.scale2 - ds.scale1) / (ds.x2 - ds.x1 + 1);
-  spryscale := ds.scale1 + round((x1 - ds.x1) * rw_scalestep_dbl);
+  spryscale := ds.scale1 + Trunc((x1 - ds.x1) * rw_scalestep_dbl);
 
   // find positioning
   if curline.linedef.flags and ML_DONTPEGBOTTOM <> 0 then
@@ -318,7 +492,6 @@ begin
       end;
       sprtopscreen := Trunc(t * FRACUNIT);
 
-//      sprtopscreen := centeryfrac - FixedMul(rcolumn.dc_texturemid, spryscale);
       rcolumn.dc_iscale := LongWord($ffffffff) div LongWord(spryscale);
 
       texturecolumn := maskedtexturecol[rcolumn.dc_x] shr DC_HIRESBITS;
@@ -350,12 +523,6 @@ end;
 //  textures.
 // CALLED: CORE LOOPING ROUTINE.
 //
-const
-  HEIGHTBITS = 12;
-  HEIGHTUNIT = 1 shl HEIGHTBITS;
-  WORLDBIT = 16 - HEIGHTBITS;
-  WORLDUNIT = 1 shl WORLDBIT;
-
 // Find the column if we are in mirror mode
 function R_MirrorTextureColumn(const seg: Pseg_t; const tc: fixed_t): fixed_t;
 var
@@ -371,6 +538,11 @@ begin
     result := (len + 2 * offs) div FRACUNIT - tc;
   end;
 end;
+
+const
+// JVAL: Changing the rw_scale limits require 64 bit arithmetic in some column drawers
+  MIN_RW_SCALE = 64;
+  MAX_RW_SCALE = 256 * FRACUNIT;
 
 procedure R_RenderSegLoop;
 var
@@ -453,7 +625,7 @@ begin
       texturecolumnhi := texturecolumn shr (FRACBITS - DC_HIRESBITS);
       texturecolumn := texturecolumn shr FRACBITS;
       // calculate lighting
-      index := _SHR(trunc(rw_scale_dbl * 320 / SCREENWIDTH), LIGHTSCALESHIFT);
+      index := _SHR(Trunc(rw_scale_dbl * 320 / SCREENWIDTH), LIGHTSCALESHIFT);
 
       if index >=  MAXLIGHTSCALE then
         index := MAXLIGHTSCALE - 1;
@@ -464,7 +636,7 @@ begin
         rcolumn.dc_colormap32 := R_GetColormap32(rcolumn.dc_colormap);
         if (not forcecolormaps) and (fixedcolormap = nil) then
         begin
-          index := trunc(rw_scale_dbl * 320 / (1 shl (HLL_LIGHTSCALESHIFT + 2)) / SCREENWIDTH);
+          index := Trunc(rw_scale_dbl * 320 / (1 shl (HLL_LIGHTSCALESHIFT + 2)) / SCREENWIDTH);
           if index >= HLL_MAXLIGHTSCALE then
             index := HLL_MAXLIGHTSCALE - 1
           else if index < 0 then
@@ -478,28 +650,11 @@ begin
       end;
 
       rcolumn.dc_x := rwx;
-      if (rw_scale_dbl < 4) and (rw_scale_dbl > -4) then
-      begin
-        if rw_scale_dbl > 0 then
-          rcolumn.dc_iscale := MAXINT div 2
-        else
-          rcolumn.dc_iscale := -MAXINT div 2
-      end
-      else
-      begin
-        rcolumn.dc_iscale := trunc($100000000 / rw_scale_dbl);
-        if rcolumn.dc_iscale > MAXINT div 2 then
-          rcolumn.dc_iscale := MAXINT div 2
-        else if rcolumn.dc_iscale < -MAXINT div 2 then
-          rcolumn.dc_iscale := -MAXINT div 2
-      end;
-      if (rcolumn.dc_iscale < 4) and (rcolumn.dc_iscale > -4) then
-      begin
-        if rcolumn.dc_iscale > 0 then
-          rcolumn.dc_iscale := 4
-        else
-          rcolumn.dc_iscale := -4
-      end;
+      if rw_scale_dbl < MIN_RW_SCALE then
+        rw_scale_dbl := MIN_RW_SCALE
+      else if rw_scale_dbl > MAX_RW_SCALE then
+        rw_scale_dbl := MAX_RW_SCALE;
+      rcolumn.dc_iscale := Trunc($100000000 / rw_scale_dbl);
     end;
 
     // draw the wall tiers
@@ -639,27 +794,26 @@ begin
 
   // calculate scale at both ends and step
   rw_scale_dbl := R_ScaleFromGlobalAngle_DBL(viewangle + xtoviewangle[start]);
-  rw_scale := trunc(rw_scale_dbl);
+  rw_scale := Trunc(rw_scale_dbl);
   pds.scale1 := rw_scale;
 
   if stop > start then
   begin
     rw_scale_dbl2 := R_ScaleFromGlobalAngle_DBL(viewangle + xtoviewangle[stop]);
     rw_scalestep_dbl := (rw_scale_dbl2 - rw_scale_dbl) / (stop - start);
-    pds.scale2 := trunc(rw_scale_dbl2);
-    rw_scalestep := trunc(rw_scalestep_dbl);
-    pds.scalestep := rw_scalestep;
+    pds.scale2 := Trunc(rw_scale_dbl2);
   end
   else
   begin
     pds.scale2 := pds.scale1;
-    pds.scalestep := 0;
   end;
 
   // calculate texture boundaries
   //  and decide if floor / ceiling marks are needed
   worldtop := frontsector.ceilingheight - viewz;
   worldbottom := frontsector.floorheight - viewz;
+
+  R_WiggleFix(frontsector);
 
   midtexture := 0;
   toptexture := 0;
@@ -916,13 +1070,10 @@ begin
     if stop > start then
     begin
       pds.scale2 := R_ScaleFromGlobalAngle(viewangle + xtoviewangle[stop]);
-      rw_scalestep := (pds.scale2 - rw_scale) div (stop - start);
-      pds.scalestep := rw_scalestep;
     end
     else
     begin
       pds.scale2 := pds.scale1;
-      pds.scalestep := 0;
     end;
   end;
 

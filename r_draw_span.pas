@@ -129,7 +129,7 @@ begin
   // We do not check for zero spans here?
   count := parms.ds_x2 - parms.ds_x1;
 
-  dest := @((ylookup[parms.ds_y]^)[columnofs[parms.ds_x1]]);
+  dest := @((ylookup8[parms.ds_y]^)[columnofs[parms.ds_x1]]);
 
   psi := @DSSCALEINFO[parms.ds_scale];
   xfrac := parms.ds_xfrac * psi.frac;

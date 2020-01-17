@@ -352,7 +352,7 @@ begin
       else if ws = wd then
         result := x
       else
-        result := trunc(x * wd / ws);
+        result := Trunc(x * wd / ws);
     end;
   end;
 end;
@@ -386,7 +386,7 @@ begin
       else if hs = hd then
         result := y
       else
-        result := trunc(y * hd / hs);
+        result := Trunc(y * hd / hs);
     end;
   end;
 end;
@@ -1451,10 +1451,10 @@ var
 begin
   // initialize translation tables
   for i := 0 to 319 do
-    preserveX[i] := trunc(i * SCREENWIDTH / 320);
+    preserveX[i] := Trunc(i * SCREENWIDTH / 320);
 
   for i := 0 to 199 do
-    preserveY[i] := trunc(i * SCREENHEIGHT / 200);
+    preserveY[i] := Trunc(i * SCREENHEIGHT / 200);
 end;
 
 //

@@ -131,7 +131,7 @@ var
 begin
   item := R_NewZBufferItem(@Zcolumns[parms.dc_x]);
 
-  item.depth := trunc((FRACUNIT / parms.dc_iscale) * FRACUNIT);
+  item.depth := Trunc((FRACUNIT / parms.dc_iscale) * FRACUNIT);
   item.seg := parms.seg;
   item.rendertype := parms.rendertype;
 

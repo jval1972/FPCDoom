@@ -578,7 +578,7 @@ begin
       velocity[1] := missile.momy;
       velocity[2] := 0.0;
 
-      missilespeed := round(VectorLength(@velocity));
+      missilespeed := Round(VectorLength(@velocity));
 
       missile.angle := missile.angle + angle;
       ang := missile.angle shr ANGLETOFINESHIFT;
@@ -709,9 +709,9 @@ begin
     exit;
   end;
 
-  distance := round(actor.state.params.FloatVal[1] * FRACUNIT) + actor.radius + mobjinfo[mobj_no].radius;
+  distance := Round(actor.state.params.FloatVal[1] * FRACUNIT) + actor.radius + mobjinfo[mobj_no].radius;
 
-  zheight := round(actor.state.params.FloatVal[2] * FRACUNIT);
+  zheight := Round(actor.state.params.FloatVal[2] * FRACUNIT);
   ang := ANG1 * actor.state.params.IntVal[3];
 
   ang := (ang + actor.angle) shr ANGLETOFINESHIFT;
@@ -782,12 +782,12 @@ begin
   end;
 
   // JVAL 20180222 -> IntVal changed to FixedVal
-  xofs := round(actor.state.params.FloatVal[1] * FRACUNIT);
-  yofs := round(actor.state.params.FloatVal[2] * FRACUNIT);
-  zofs := round(actor.state.params.FloatVal[3] * FRACUNIT);
-  momx := round(actor.state.params.FloatVal[4] * FRACUNIT);
-  momy := round(actor.state.params.FloatVal[5] * FRACUNIT);
-  momz := round(actor.state.params.FloatVal[6] * FRACUNIT);
+  xofs := Round(actor.state.params.FloatVal[1] * FRACUNIT);
+  yofs := Round(actor.state.params.FloatVal[2] * FRACUNIT);
+  zofs := Round(actor.state.params.FloatVal[3] * FRACUNIT);
+  momx := Round(actor.state.params.FloatVal[4] * FRACUNIT);
+  momy := Round(actor.state.params.FloatVal[5] * FRACUNIT);
+  momz := Round(actor.state.params.FloatVal[6] * FRACUNIT);
   ang1 := actor.state.params.IntVal[7];
   flags := actor.state.params.IntVal[8];
 
@@ -881,7 +881,7 @@ begin
   else
   begin
     actor.renderstyle := mrs_translucent;
-    actor.alpha := round(FRACUNIT * alpha);
+    actor.alpha := Round(FRACUNIT * alpha);
   end;
 end;
 
@@ -911,10 +911,10 @@ begin
   if actor.target = nil then
     exit;
 
-  spread_xy := round(actor.state.params.FloatVal[0] * ANG1);
+  spread_xy := Round(actor.state.params.FloatVal[0] * ANG1);
   numbullets := actor.state.params.IntVal[1];
   damageperbullet := actor.state.params.IntVal[2];
-  range := round(actor.state.params.FloatVal[3] * FRACUNIT);
+  range := Round(actor.state.params.FloatVal[3] * FRACUNIT);
 
   if range <= 0 then
     range := MISSILERANGE;
@@ -946,7 +946,7 @@ begin
 
   if actor.state.params <> nil then
     if actor.state.params.Count > 0 then
-      reduce := round(actor.state.params.FloatVal[0] * FRACUNIT);
+      reduce := Round(actor.state.params.FloatVal[0] * FRACUNIT);
 
   if actor.renderstyle = mrs_normal then
   begin
@@ -973,7 +973,7 @@ begin
 
   if actor.state.params <> nil then
     if actor.state.params.Count > 0 then
-      incriment := round(actor.state.params.FloatVal[0] * FRACUNIT);
+      incriment := Round(actor.state.params.FloatVal[0] * FRACUNIT);
 
   actor.alpha := actor.alpha + incriment;
   if actor.alpha > FRACUNIT then
@@ -1038,7 +1038,7 @@ begin
   if not P_CheckStateParams(actor, 1) then
     exit;
 
-  offs := round(actor.state.params.FloatVal[0] * FRACUNIT);
+  offs := Round(actor.state.params.FloatVal[0] * FRACUNIT);
 
   ang := actor.angle shr ANGLETOFINESHIFT;
 
@@ -1077,7 +1077,7 @@ begin
   if not P_CheckStateParams(actor, 1) then
     exit;
 
-  actor.momz := actor.momz + round(actor.state.params.FloatVal[0] * FRACUNIT);
+  actor.momz := actor.momz + Round(actor.state.params.FloatVal[0] * FRACUNIT);
 end;
 
 //
@@ -1093,7 +1093,7 @@ begin
   if not P_CheckStateParams(actor, 1) then
     exit;
 
-  thrust := round(actor.state.params.FloatVal[0] * FRACUNIT);
+  thrust := Round(actor.state.params.FloatVal[0] * FRACUNIT);
 
   ang := actor.angle;
   ang := ang shr ANGLETOFINESHIFT;
@@ -1114,7 +1114,7 @@ begin
   if not P_CheckStateParams(actor, 1) then
     exit;
 
-  ang := round(actor.state.params.FloatVal[0] * ANG1);
+  ang := Round(actor.state.params.FloatVal[0] * ANG1);
   actor.angle := actor.angle + ang;
 end;
 
@@ -1146,7 +1146,7 @@ begin
   if target = nil then
     exit;
 
-  dist := round(actor.state.params.FloatVal[0] * FRACUNIT);
+  dist := Round(actor.state.params.FloatVal[0] * FRACUNIT);
   if P_AproxDistance(actor.x - target.x, actor.y - target.y) < dist then
   begin
     offset := actor.state.params.IntVal[1];

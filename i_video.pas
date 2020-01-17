@@ -298,8 +298,8 @@ begin
 
   if stretch then
   begin
-    hpan := trunc(vid_pillarbox_pct * WINDOWWIDTH / 100 / 2);
-    vpan := trunc(vid_letterbox_pct * WINDOWHEIGHT / 100 / 2);
+    hpan := Trunc(vid_pillarbox_pct * WINDOWWIDTH / 100 / 2);
+    vpan := Trunc(vid_letterbox_pct * WINDOWHEIGHT / 100 / 2);
 
     if not oldstretch or
       (vid_pillarbox_pct <> old_pillarbox_pct) or

@@ -141,13 +141,13 @@ begin
     ad := a / FRACUNIT;
     bd := b / FRACUNIT;
     ret := (ad / bd) * FRACUNIT;
-    ret := trunc(ret);
+    ret := Trunc(ret);
     if ret < MININT then
       result := MININT
     else if ret > MAXINT then
       result := MAXINT
     else
-      result := trunc(ret);
+      result := Trunc(ret);
   end;
 end;
 
@@ -167,7 +167,7 @@ end;
 
 function FixedFloat(const f: float): integer;
 begin
-  result := trunc(f * FRACUNIT);
+  result := Trunc(f * FRACUNIT);
 end;
 
 //

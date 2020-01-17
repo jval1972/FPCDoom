@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2019 by Jim Valavanis
+//  Copyright (C) 2017-2020 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -76,8 +76,14 @@ uses
   v_video,
   z_memory;
 
+const
+  FASTTABLESHIFT = 3;
+  FASTTABLEBIT = 1 shl FASTTABLESHIFT;
+  FASTTABLECHANNEL = 256 div FASTTABLEBIT;
+  FASTTABLESIZE = FASTTABLECHANNEL * FASTTABLECHANNEL * FASTTABLECHANNEL;
+
 var
-  approxcolorindexarray: array[0..4095] of byte;
+  approxcolorindexarray: array[0..FASTTABLESIZE - 1] of byte;
 
 procedure R_InitTransparency8Tables;
 var
@@ -131,11 +137,14 @@ begin
   averagetrans8table := trans8tables[NUMTRANS8TABLES div 2];
 
   ptrans8 := @approxcolorindexarray[0];
-  for r := 0 to 15 do
-    for g := 0 to 15 do
-      for b := 0 to 15 do
+  for r := 0 to FASTTABLECHANNEL - 1 do
+    for g := 0 to FASTTABLECHANNEL - 1 do
+      for b := 0 to FASTTABLECHANNEL - 1 do
       begin
-        ptrans8^ := V_FindAproxColorIndex(@palL, r shl 20 + g shl 12 + b shl 4) and $FF;
+        ptrans8^ := V_FindAproxColorIndex(@palL,
+                          r shl (16 + FASTTABLESHIFT) + g shl (8 + FASTTABLESHIFT) + b shl FASTTABLESHIFT +
+                          (((1 shl FASTTABLESHIFT) shr 1) shl 16 + ((1 shl FASTTABLESHIFT) shr 1) shl 8 + ((1 shl FASTTABLESHIFT) shr 1))
+                    ) and $FF;
         inc(ptrans8);
       end;
 
@@ -217,9 +226,9 @@ begin
 
     gray1 := (r + g + b) div 3;  // Average
     if gray1 > 255 then gray1 := 255;
-    gray2 := trunc(r * 0.299 + g * 0.587 + b * 0.114); // Human perceive
+    gray2 := Trunc(r * 0.299 + g * 0.587 + b * 0.114); // Human perceive
     if gray2 > 255 then gray2 := 255;
-    gray3 := trunc(r * 0.2126 + g * 0.7152 + b * 0.0722); // Luma
+    gray3 := Trunc(r * 0.2126 + g * 0.7152 + b * 0.0722); // Luma
     if gray3 > 255 then gray3 := 255;
     gray4 := (min3b(r, g, b) + max3b(r, g, b)) div 2; // Desaturation
     if gray4 > 255 then gray4 := 255;
@@ -267,20 +276,20 @@ function R_FastApproxColorIndex(const c: LongWord): byte;
 var
   r, g, b: LongWord;
 begin
-  b := (c shr 4) and $F;
-  g := (c shr 12) and $F;
-  r := (c shr 20) and $F;
-  result := approxcolorindexarray[r shl 8 + g shl 4 + b];
+  b := (c shr FASTTABLESHIFT) and $FF;
+  g := (c shr (FASTTABLESHIFT + 8)) and $FF;
+  r := (c shr (FASTTABLESHIFT + 16)) and $FF;
+  result := approxcolorindexarray[r shl (16 - FASTTABLESHIFT - FASTTABLESHIFT) + g shl (8 - FASTTABLESHIFT) + b];
 end;
 
 function R_FastApproxColorIndex(const r, g, b: byte): byte; overload;
 var
   r1, g1, b1: LongWord;
 begin
-  b1 := b shr 4;
-  g1 := g shr 4;
-  r1 := r shr 4;
-  result := approxcolorindexarray[r1 shl 8 + g1 shl 4 + b1];
+  b1 := b shr FASTTABLESHIFT;
+  g1 := g shr FASTTABLESHIFT;
+  r1 := r shr FASTTABLESHIFT;
+  result := approxcolorindexarray[r1 shl (16 - FASTTABLESHIFT - FASTTABLESHIFT) + g1 shl (8 - FASTTABLESHIFT) + b1];
 end;
 
 procedure R_FreeTransparency8Tables;

@@ -100,10 +100,6 @@ function R_PointToAngle(x1, y1: fixed_t; x2, y2: fixed_t): angle_t; overload;
 
 function P_PointToAngle(const x1: fixed_t; const y1: fixed_t; const x2: fixed_t; const y2: fixed_t): angle_t;
 
-function R_ScaleFromGlobalAngle(const visangle: angle_t): fixed_t;
-
-function R_ScaleFromGlobalAngle_DBL(const visangle: angle_t): double;
-
 function R_PointInSubsector(const x: fixed_t; const y: fixed_t): Psubsector_t;
 
 procedure R_AddPointToBox(const x: integer; const y: integer; box: Pfixed_tArray);
@@ -424,7 +420,7 @@ end;
 //
 function R_PointToAngle(x: fixed_t; y: fixed_t): angle_t;
 begin
-  result := round(683565275 * (arctan2(y - viewy, x - viewx)));
+  result := Round(683565275 * (arctan2(y - viewy, x - viewx)));
 end;
 
 function R_PointToAngle(x1, y1: fixed_t; x2, y2: fixed_t): angle_t;
@@ -525,74 +521,6 @@ begin
 end;
 
 //
-// R_ScaleFromGlobalAngle
-// Returns the texture mapping scale
-//  for the current line (horizontal span)
-//  at the given angle.
-// rw_distance must be calculated first.
-//
-function R_ScaleFromGlobalAngle(const visangle: angle_t): fixed_t;
-var
-  anglea: angle_t;
-  angleb: angle_t;
-  num: fixed_t;
-  den: integer;
-begin
-  anglea := ANG90 + (visangle - viewangle);
-  angleb := ANG90 + (visangle - rw_normalangle);
-
-  num := FixedMul(projectiony, finesine[_SHRW(angleb, ANGLETOFINESHIFT)]); // JVAL For correct aspect
-  den := FixedMul(rw_distance, finesine[_SHRW(anglea, ANGLETOFINESHIFT)]);
-
-  if den > FixedInt(num) then
-  begin
-    result := FixedDiv(num, den);
-
-    if result > 64 * FRACUNIT then
-      result := 64 * FRACUNIT
-    else if result < 256 then
-      result := 256
-  end
-  else
-    result := 64 * FRACUNIT;
-end;
-
-const
-  MINSCALE = -FRACUNIT * (FRACUNIT / 4);
-  MAXSCALE = FRACUNIT * (FRACUNIT / 4);
-
-function R_ScaleFromGlobalAngle_DBL(const visangle: angle_t): double;
-var
-  anglea: angle_t;
-  angleb: angle_t;
-  num: Double;
-  den: Double;
-begin
-  anglea := ANG90 + (visangle - viewangle);
-  angleb := ANG90 + (visangle - rw_normalangle);
-
-  num := projectiony * Sin(angleb * ANGLE_T_TO_RAD);
-  den := rw_distance * Sin(anglea * ANGLE_T_TO_RAD);
-
-  if den = 0 then
-  begin
-    if num < 0 then
-      result := MINSCALE
-    else
-      result := MAXSCALE;
-  end
-  else
-  begin
-    result := (num / den) * FRACUNIT;
-    if result < MINSCALE then
-      result := MINSCALE
-    else if result > MAXSCALE then
-      result := MAXSCALE
-  end;
-
-end;
-
-//
 // R_InitTables
 //
 procedure R_InitTables;
@@ -626,7 +554,7 @@ begin
   if monitor_relative_aspect = 1.0 then
     fov := ANG90 shr ANGLETOFINESHIFT
   else
-    fov := round(arctan(monitor_relative_aspect) * FINEANGLES / D_PI);
+    fov := Round(arctan(monitor_relative_aspect) * FINEANGLES / D_PI);
   focallength := FixedDiv(centerxfrac, finetangent[FINEANGLES div 4 + fov div 2]);
 
   for i := 0 to FINEANGLES div 2 - 1 do
@@ -848,7 +776,7 @@ begin
   // JVAL: Widescreen support
   monitor_relative_aspect := R_GetRelativeAspect;
   projection := Round(centerx / monitor_relative_aspect * FRACUNIT);
-  projectiony := round(((SCREENHEIGHT * centerx * 320) / 200) / SCREENWIDTH * FRACUNIT); // JVAL for correct aspect
+  projectiony := Round(((SCREENHEIGHT * centerx * 320) / 200) / SCREENWIDTH * FRACUNIT); // JVAL for correct aspect
 
   if olddetail <> setdetail then
   begin

@@ -404,7 +404,7 @@ begin
   begin
     ranges[0].start := 0;
     for i := 1 to nt - 1 do
-      ranges[i].start := round(i * rip.numitems / nt);
+      ranges[i].start := Round(i * rip.numitems / nt);
     for i := 0 to nt - 2 do
       ranges[i].stop := ranges[i + 1].start - 1;
     ranges[nt - 1].stop := rip.numitems - 1;
@@ -415,7 +415,7 @@ begin
   begin
     ranges[0].start := 0;
     for i := 1 to nt - 1 do
-      ranges[i].start := round(i * rip.pint^ / nt);
+      ranges[i].start := Round(i * rip.pint^ / nt);
     for i := 0 to nt - 2 do
       ranges[i].stop := ranges[i + 1].start - 1;
     ranges[nt - 1].stop := rip.pint^ - 1;

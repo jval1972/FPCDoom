@@ -445,6 +445,7 @@ begin
 
   fc_x := mfloorclip[rcolumn.dc_x];
   cc_x := mceilingclip[rcolumn.dc_x];
+
   column := col;
   while column.topdelta <> $ff do
   begin

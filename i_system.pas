@@ -236,12 +236,12 @@ end;
 
 function I_GetTime: integer;
 begin
-  result := trunc(I_GetSysTime * TICRATE);
+  result := Trunc(I_GetSysTime * TICRATE);
 end;
 
 function I_GetFracTime: integer;
 begin
-  result := trunc(I_GetSysTime * TICRATE * FRACUNIT);
+  result := Trunc(I_GetSysTime * TICRATE * FRACUNIT);
 end;
 
 //

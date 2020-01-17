@@ -173,9 +173,9 @@ begin
       for b := 0 to 15 do
       begin
         vid_color12to8[(r shl 8) or (g shl 4) or b] :=
-            ofs + (36 * trunc(b / 2.66666666)) + // Blue Lookup
-            (6 * trunc(g / 2.66666666)) + // Green Lookup
-            (trunc(r / 2.66666666)); // Red Lookup
+            ofs + (36 * Trunc(b / 2.66666666)) + // Blue Lookup
+            (6 * Trunc(g / 2.66666666)) + // Green Lookup
+            (Trunc(r / 2.66666666)); // Red Lookup
       end;
   for y := 0 to 255 do
   begin

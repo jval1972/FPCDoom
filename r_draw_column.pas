@@ -121,9 +121,9 @@ procedure R_DrawColumnMedium(const parms: Pcolumnparams_t);
 var
   count: integer;
   dest: PByte;
-  frac: fixed_t;
+  frac: int64;
   fracstep: fixed_t;
-  fracstop: fixed_t;
+  fracstop: int64;
   dc_source8: PByteArray;
   b: byte;
 begin
@@ -136,7 +136,7 @@ begin
   // Framebuffer destination address.
   // Use ylookup LUT to avoid multiply with ScreenWidth.
   // Use columnofs LUT for subwindows?
-  dest := @((ylookup[parms.dc_yl]^)[columnofs[parms.dc_x]]);
+  dest := @((ylookup8[parms.dc_yl]^)[columnofs[parms.dc_x]]);
 
   // Determine scaling,
   //  which is the only mapping to be done.
@@ -183,9 +183,9 @@ procedure R_DrawColumnHi(const parms: Pcolumnparams_t);
 var
   count: integer;
   destl: PLongWord;
-  frac: fixed_t;
+  frac: int64;
   fracstep: fixed_t;
-  fracstop: fixed_t;
+  fracstop: int64;
   and_mask: integer;
   dc_source32: PLongWordArray;
   l: LongWord;
@@ -240,9 +240,9 @@ procedure R_DrawMaskedColumnNormal(const parms: Pcolumnparams_t);
 var
   count: integer;
   destl: PLongWord;
-  frac: fixed_t;
+  frac: int64;
   fracstep: fixed_t;
-  fracstop: fixed_t;
+  fracstop: int64;
   dc_source8: PByteArray;
   l: LongWord;
 begin
@@ -287,9 +287,9 @@ procedure R_DrawMaskedColumnHi32(const parms: Pcolumnparams_t);
 var
   count: integer;
   destl: PLongWord;
-  frac: fixed_t;
+  frac: int64;
   fracstep: fixed_t;
-  fracstop: fixed_t;
+  fracstop: int64;
   and_mask: integer;
   c, l: LongWord;
   dc_source32: PLongWordArray;
@@ -353,9 +353,9 @@ procedure R_DrawColumnAlphaMedium(const parms: Pcolumnparams_t);
 var
   count: integer;
   dest: PByte;
-  frac: fixed_t;
+  frac: int64;
   fracstep: fixed_t;
-  fracstop: fixed_t;
+  fracstop: int64;
   dc_source8: PByteArray;
 begin
   count := parms.dc_yh - parms.dc_yl;
@@ -363,7 +363,7 @@ begin
   if count < 0 then
     exit;
 
-  dest := @((ylookup[parms.dc_yl]^)[columnofs[parms.dc_x]]);
+  dest := @((ylookup8[parms.dc_yl]^)[columnofs[parms.dc_x]]);
 
   fracstep := parms.dc_iscale;
   frac := parms.dc_texturemid + (parms.dc_yl - centery) * fracstep;
@@ -382,9 +382,9 @@ procedure R_DrawColumnAlphaHi(const parms: Pcolumnparams_t);
 var
   count: integer;
   destl: PLongWord;
-  frac: fixed_t;
+  frac: int64;
   fracstep: fixed_t;
-  fracstop: fixed_t;
+  fracstop: int64;
   dc_source8: PByteArray;
 begin
   count := parms.dc_yh - parms.dc_yl;
@@ -411,9 +411,9 @@ procedure R_DrawColumnAverageMedium(const parms: Pcolumnparams_t);
 var
   count: integer;
   dest: PByte;
-  frac: fixed_t;
+  frac: int64;
   fracstep: fixed_t;
-  fracstop: fixed_t;
+  fracstop: int64;
   dc_source8: PByteArray;
 begin
   count := parms.dc_yh - parms.dc_yl;
@@ -421,7 +421,7 @@ begin
   if count < 0 then
     exit;
 
-  dest := @((ylookup[parms.dc_yl]^)[columnofs[parms.dc_x]]);
+  dest := @((ylookup8[parms.dc_yl]^)[columnofs[parms.dc_x]]);
 
   fracstep := parms.dc_iscale;
   frac := parms.dc_texturemid + (parms.dc_yl - centery) * fracstep;
@@ -440,9 +440,9 @@ procedure R_DrawColumnAverageHi(const parms: Pcolumnparams_t);
 var
   count: integer;
   destl: PLongWord;
-  frac: fixed_t;
+  frac: int64;
   fracstep: fixed_t;
-  fracstop: fixed_t;
+  fracstop: int64;
   dc_source8: PByteArray;
 begin
   count := parms.dc_yh - parms.dc_yl;
@@ -461,7 +461,7 @@ begin
   begin
     destl^ := R_ColorMidAverage(destl^, parms.dc_colormap32[dc_source8[(LongWord(frac) shr FRACBITS) and 127]]);
     inc(destl, SCREENWIDTH);
-    frac := frac + fracstep;
+    inc(frac, fracstep);
   end;
 end;
 
@@ -527,7 +527,7 @@ begin
   fuzzpos := fuzzpos mod FUZZTABLE;
 
   // Does not work with blocky mode.
-  dest := @((ylookup[parms.dc_yl]^)[columnofs[parms.dc_x]]);
+  dest := @((ylookup8[parms.dc_yl]^)[columnofs[parms.dc_x]]);
 
   // Looks like an attempt at dithering,
   //  using the colormap #6 (of 0-31, a bit
@@ -608,9 +608,9 @@ procedure R_DrawSkyColumn(const parms: Pcolumnparams_t);
 var
   count: integer;
   dest: PByte;
-  frac: fixed_t;
+  frac: int64;
   fracstep: fixed_t;
-  fracstop: fixed_t;
+  fracstop: int64;
   spot: integer;
   dc_source8: PByteArray;
   b: byte;
@@ -621,7 +621,7 @@ begin
   if count < 0 then
     exit;
 
-  dest := @((ylookup[parms.dc_yl]^)[columnofs[parms.dc_x]]);
+  dest := @((ylookup8[parms.dc_yl]^)[columnofs[parms.dc_x]]);
 
   fracstep := parms.dc_iscale;
   frac := parms.dc_texturemid + (parms.dc_yl - centery) * fracstep;
@@ -669,9 +669,9 @@ procedure R_DrawSkyColumnHi(const parms: Pcolumnparams_t);
 var
   count: integer;
   destl: PLongWord;
-  frac: fixed_t;
+  frac: int64;
   fracstep: fixed_t;
-  fracstop: fixed_t;
+  fracstop: int64;
   factor: integer;
   spot: integer;
   and_mask: integer;
@@ -745,9 +745,9 @@ procedure R_DrawTranslatedColumn(const parms: Pcolumnparams_t);
 var
   count: integer;
   dest: PByte;
-  frac: fixed_t;
+  frac: int64;
   fracstep: fixed_t;
-  fracstop: fixed_t;
+  fracstop: int64;
   dc_source8: PByteArray;
   b: byte;
 begin
@@ -757,7 +757,7 @@ begin
     exit;
 
   // FIXME. As above.
-  dest := @((ylookup[parms.dc_yl]^)[columnofs[parms.dc_x]]);
+  dest := @((ylookup8[parms.dc_yl]^)[columnofs[parms.dc_x]]);
 
   // Looks familiar.
   fracstep := parms.dc_iscale;
@@ -807,9 +807,9 @@ procedure R_DrawTranslatedColumnHi(const parms: Pcolumnparams_t);
 var
   count: integer;
   destl: PLongWord;
-  frac: fixed_t;
+  frac: int64;
   fracstep: fixed_t;
-  fracstop: fixed_t;
+  fracstop: int64;
   dc_source8: PByteArray;
   l: LongWord;
 begin
