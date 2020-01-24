@@ -33,13 +33,13 @@ interface
 
 // Returns a number from 0 to 255,
 // from a lookup table.
-function M_Random: integer;
+function M_Random: integer; inline;
 
 // As M_Random, but used only by the play simulation.
-function P_Random: integer;
+function P_Random: integer; inline;
 
 // JVAL: As P_Random, but used only if no compatibility mode.
-function N_Random: integer;
+function N_Random: integer; inline;
 
 // Fix randoms for demos.
 procedure M_ClearRandom;
@@ -51,7 +51,7 @@ procedure P_RestoreRandom;
 function I_Random: integer;
 
 // JVAL: Using custom seed
-function C_Random(var idx: integer): integer;
+function C_Random(var idx: integer): integer; inline;
 
 var
   rndindex: integer = 0;
@@ -88,19 +88,19 @@ const
   );
 
 // Which one is deterministic?
-function M_Random: integer;
+function M_Random: integer; inline;
 begin
   rndindex := (rndindex + 1) and $ff;
   result := rndtable[rndindex];
 end;
 
-function P_Random: integer;
+function P_Random: integer; inline;
 begin
   prndindex := (prndindex + 1) and $ff;
   result := rndtable[prndindex];
 end;
 
-function N_Random: integer;
+function N_Random: integer; inline;
 begin
   nrndindex := (nrndindex + 1) and $ff;
   result := rndtable[nrndindex];
@@ -133,7 +133,7 @@ begin
   result := Random(256);
 end;
 
-function C_Random(var idx: integer): integer;
+function C_Random(var idx: integer): integer; inline;
 begin
   idx := (idx + 1) and $ff;
   result := rndtable[idx];

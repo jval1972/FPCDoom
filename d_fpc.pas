@@ -434,7 +434,7 @@ function strremovespaces(const s: string): string;
 
 function _SHL(const x: integer; const bits: integer): integer;
 
-function _SHLW(const x: LongWord; const bits: LongWord): LongWord;
+function _SHLW(const x: LongWord; const bits: LongWord): LongWord; inline;
 
 function _SHR(const x: integer; const bits: integer): integer;
 function _SHR1(const x: integer): integer;
@@ -442,7 +442,7 @@ function _SHR2(const x: integer): integer;
 function _SHR8(const x: integer): integer;
 function _SHR14(const x: integer): integer; 
 
-function _SHRW(const x: LongWord; const bits: LongWord): LongWord;
+function _SHRW(const x: LongWord; const bits: LongWord): LongWord; inline;
 
 function StringVal(const Str: PChar): string;
 
@@ -557,17 +557,17 @@ function NowTime: TDateTime;
 
 function formatDateTimeAsString(const Format: string; DateTime: TDateTime): string;
 
-function min3b(const a, b, c: byte): byte;
+function min3b(const a, b, c: byte): byte; inline;
 
-function max3b(const a, b, c: byte): byte;
+function max3b(const a, b, c: byte): byte; inline;
 
-function ibetween(const x: integer; const x1, x2: integer): integer;
+function ibetween(const x: integer; const x1, x2: integer): integer; inline;
 
 function pOp(const p: pointer; const offs: integer): pointer; inline;
 
-function imin(const x1, x2: integer): integer;
+function imin(const x1, x2: integer): integer; inline;
 
-function imax(const x1, x2: integer): integer;
+function imax(const x1, x2: integer): integer; inline;
 
 procedure logtofile(const fname: string; const str: string);
 
@@ -2302,7 +2302,7 @@ asm
   sal eax, cl
 end;
 
-function _SHLW(const x: LongWord; const bits: LongWord): LongWord;
+function _SHLW(const x: LongWord; const bits: LongWord): LongWord; inline;
 begin
   result := x shl bits;
 end;
@@ -2333,7 +2333,7 @@ asm
   sar eax, 14
 end;
 
-function _SHRW(const x: LongWord; const bits: LongWord): LongWord;
+function _SHRW(const x: LongWord; const bits: LongWord): LongWord; inline;
 begin
   result := x shr bits;
 end;
@@ -2726,7 +2726,7 @@ begin
   DateTimeToString(Result, Format, DateTime);
 end;
 
-function min3b(const a, b, c: byte): byte;
+function min3b(const a, b, c: byte): byte; inline;
 begin
   result := a;
   if b < result then
@@ -2735,7 +2735,7 @@ begin
     result := c;
 end;
 
-function max3b(const a, b, c: byte): byte;
+function max3b(const a, b, c: byte): byte; inline;
 begin
   result := a;
   if b > result then
@@ -2744,7 +2744,7 @@ begin
     result := c;
 end;
 
-function ibetween(const x: integer; const x1, x2: integer): integer;
+function ibetween(const x: integer; const x1, x2: integer): integer; inline;
 begin
   if x <= x1 then
     result := x1
@@ -2759,7 +2759,7 @@ begin
   result := pointer(PCAST(p) + offs);
 end;
 
-function imin(const x1, x2: integer): integer;
+function imin(const x1, x2: integer): integer; inline;
 begin
   if x1 > x2 then
     result := x2
@@ -2767,7 +2767,7 @@ begin
     result := x1;
 end;
 
-function imax(const x1, x2: integer): integer;
+function imax(const x1, x2: integer): integer; inline;
 begin
   if x1 > x2 then
     result := x1

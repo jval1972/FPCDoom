@@ -66,7 +66,7 @@ procedure R_DrawColumnToZBuffer(const parms: Pcolumnparams_t);
 // Returns the z buffer value at (x, y) or screen
 // Lower value means far away
 // no z-buffer is sky (or render glitch) - we do not write o zbuffer in skycolfunc
-function R_ZBufferAt(const x, y: integer): Pzbufferitem_t;
+function R_ZBufferAt(const x, y: integer): Pzbufferitem_t; inline;
 
 procedure R_InitZBuffer;
 
@@ -76,9 +76,9 @@ procedure R_StartZBuffer;
 
 procedure R_CalcZBuffer;
 
-function R_ZGetCriticalX(const x: integer): boolean;
+function R_ZGetCriticalX(const x: integer): boolean; inline;
 
-procedure R_ZSetCriticalX(const x: integer; const value: boolean);
+procedure R_ZSetCriticalX(const x: integer; const value: boolean); inline;
 
 procedure R_StopZBuffer;
 
@@ -94,7 +94,7 @@ uses
 var
   zcriticalx: array[0..MAXWIDTH] of boolean;
 
-function R_NewZBufferItem(const Z: Pzbuffer_t): Pzbufferitem_t;
+function R_NewZBufferItem(const Z: Pzbuffer_t): Pzbufferitem_t; inline;
 const
   GROWSTEP = 4;
 begin
@@ -148,7 +148,7 @@ var
     rendertype: RIT_NONE;
   );
 
-function R_ZBufferAt(const x, y: integer): Pzbufferitem_t;
+function R_ZBufferAt(const x, y: integer): Pzbufferitem_t; inline;
 var
   Z: Pzbuffer_t;
   pi, pistop: Pzbufferitem_t;
@@ -227,12 +227,12 @@ procedure R_StartZBuffer;
 begin
 end;
 
-function R_ZGetCriticalX(const x: integer): boolean;
+function R_ZGetCriticalX(const x: integer): boolean; inline;
 begin
   result := zcriticalx[x];
 end;
 
-procedure R_ZSetCriticalX(const x: integer; const value: boolean);
+procedure R_ZSetCriticalX(const x: integer; const value: boolean); inline;
 begin
   zcriticalx[x] := value;
 end;

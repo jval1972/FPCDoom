@@ -61,6 +61,8 @@ procedure M_Drawer;
 { loads the config file. }
 procedure M_Init;
 
+procedure M_ShutDown;
+
 { Called by intro code to force menu up upon a keypress, }
 { does nothing if menu is already up. }
 procedure M_StartControlPanel;
@@ -914,6 +916,23 @@ var
   ReadMenu2: array[0..0] of menuitem_t;
   ReadDef2: menu_t;
 
+//  https://www.doomworld.com/forum/topic/111465-boom-extended-help-screens-an-undocumented-feature/
+// JVAL 20200122 - Extended help screens
+var
+  extrahelpscreens: TDNumberList;
+  extrahelpscreens_idx: integer = -1;
+
+type
+  read_ext = (
+    rdthsemptyext,
+    readext_end
+  );
+
+var
+  ReadMenuExt: array[0..0] of menuitem_t;
+  ReadDefExt: menu_t;
+
+
 type
 //
 // SOUND MENU
@@ -1548,6 +1567,12 @@ begin
     registered:
       V_PageDrawer(pg_HELP2);
   end;
+end;
+
+procedure M_DrawReadThisExt;
+begin
+  inhelpscreens := true;
+  V_PageDrawer(char8tostring(W_GetNameForNum(extrahelpscreens.Numbers[extrahelpscreens_idx])));
 end;
 
 //
@@ -2895,7 +2920,23 @@ end;
 
 procedure M_FinishReadThis(choice: integer);
 begin
-  M_SetupNextMenu(@MainDef);
+  if extrahelpscreens.Count > 0 then
+  begin
+    extrahelpscreens_idx := 0;
+    M_SetupNextMenu(@ReadDefExt);
+  end
+  else
+    M_SetupNextMenu(@MainDef);
+end;
+
+procedure M_FinishReadExtThis(choice: integer);
+begin
+  inc(extrahelpscreens_idx);
+  if extrahelpscreens_idx >= extrahelpscreens.Count then
+  begin
+    extrahelpscreens_idx := 0;
+    M_SetupNextMenu(@MainDef);
+  end;
 end;
 
 //
@@ -3607,7 +3648,13 @@ begin
     KEY_BACKSPACE:
       begin
         currentMenu.lastOn := itemOn;
-        if mouseback or (menukeyescfunc = 0) then
+        // JVAL 20200122 - Extended help screens
+        if (currentMenu = @ReadDefExt) and (extrahelpscreens_idx > 0) then
+        begin
+          dec(extrahelpscreens_idx);
+          M_SwtchnSound;
+        end
+        else if mouseback or (menukeyescfunc = 0) then
           if currentMenu.prevMenu <> nil then
           begin
             currentMenu := currentMenu.prevMenu;
@@ -3762,6 +3809,9 @@ end;
 // M_Init
 //
 procedure M_Init;
+var
+  i: integer;
+  lump: integer;
 begin
   currentMenu := @MainDef;
   menuactive := false;
@@ -3808,6 +3858,16 @@ begin
       end;
   end;
 
+  // JVAL 20200122 - Extended help screens
+  extrahelpscreens := TDNumberList.Create;
+  for i := 1 to 99 do
+  begin
+    lump := W_CheckNumForName('HELP' + IntToStrzFill(2, i));
+    if lump >= 0 then
+      extrahelpscreens.Add(lump);
+  end;
+  extrahelpscreens_idx := 0;
+
   C_AddCmd('keyboardmode', @M_CmdKeyboardMode);
   C_AddCmd('exit, quit', @M_CmdQuit);
   C_AddCmd('halt', @I_Quit);
@@ -3833,6 +3893,11 @@ begin
   C_AddCmd('menu_optionssystem, menu_systemoptions, menu_system', @M_CmdMenuSystemDef);
   C_AddCmd('menu_load, menu_loadgame', @M_CmdMenuLoadDef);
   C_AddCmd('menu_save, menu_savegame', @M_CmdMenuSaveDef);
+end;
+
+procedure M_ShutDown;
+begin
+  extrahelpscreens.Free;
 end;
 
 //
@@ -5213,6 +5278,29 @@ begin
   ReadDef2.lastOn := 0; // last item user was on in menu
   ReadDef2.itemheight := LINEHEIGHT;
   ReadDef2.texturebk := false;
+
+// JVAL 20200122 - Extended help screens
+////////////////////////////////////////////////////////////////////////////////
+//ReadMenuExt
+  pmi := @ReadMenuExt[0];
+  pmi.status := 1;
+  pmi.name := '';
+  pmi.cmd := '';
+  pmi.routine := @M_FinishReadExtThis;
+  pmi.pBoolVal := nil;
+  pmi.alphaKey := #0;
+
+////////////////////////////////////////////////////////////////////////////////
+//ReadDefExt
+  ReadDefExt.numitems := Ord(readext_end); // # of menu items
+  ReadDefExt.prevMenu := @ReadDef2; // previous menu
+  ReadDefExt.menuitems := Pmenuitem_tArray(@ReadMenuExt);  // menu items
+  ReadDefExt.drawproc := @M_DrawReadThisExt;  // draw routine
+  ReadDefExt.x := 330;
+  ReadDefExt.y := 165; // x,y of menu
+  ReadDefExt.lastOn := 0; // last item user was on in menu
+  ReadDefExt.itemheight := LINEHEIGHT;
+  ReadDefExt.texturebk := false;
 
 ////////////////////////////////////////////////////////////////////////////////
 //SoundMenu

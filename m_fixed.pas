@@ -58,17 +58,17 @@ function FixedIntMul(const a, b: fixed_t): fixed_t;
 
 function IntFixedMul(const a, b: fixed_t): fixed_t;
 
-function FixedDiv(const a, b: fixed_t): fixed_t;
+function FixedDiv(const a, b: fixed_t): fixed_t; inline;
 
-function FixedDivEx(const a, b: fixed_t): fixed_t;
+function FixedDivEx(const a, b: fixed_t): fixed_t; inline;
 
 function FixedDiv2(const a, b: fixed_t): fixed_t;
 
 function FixedInt(const x: integer): integer;
 
-function FixedFloat(const f: float): integer;
+function FixedFloat(const f: float): integer; inline;
 
-function FixedInt64(const x: int64): integer;
+function FixedInt64(const x: int64): integer; inline;
 
 implementation
 
@@ -110,7 +110,7 @@ asm
   shrd eax, edx, 16
 end;
 
-function FixedDiv(const a, b: fixed_t): fixed_t;
+function FixedDiv(const a, b: fixed_t): fixed_t; inline;
 begin
   if _SHR14(abs(a)) >= abs(b) then
   begin
@@ -123,7 +123,7 @@ begin
     result := FixedDiv2(a, b);
 end;
 
-function FixedDivEx(const a, b: fixed_t): fixed_t;
+function FixedDivEx(const a, b: fixed_t): fixed_t; inline;
 var
   ret: Double;
   ad: Double;
@@ -165,7 +165,7 @@ asm
   sar eax, FRACBITS
 end;
 
-function FixedFloat(const f: float): integer;
+function FixedFloat(const f: float): integer; inline;
 begin
   result := Trunc(f * FRACUNIT);
 end;
@@ -174,7 +174,7 @@ end;
 // FixedInt64
 // JVAL: This is 30 times faster than using  result := x div FRACUNIT;
 //
-function FixedInt64(const x: int64): integer;
+function FixedInt64(const x: int64): integer; inline;
 var
   x2: int64;
 begin

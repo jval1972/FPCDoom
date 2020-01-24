@@ -220,7 +220,7 @@ begin
   setrenderingthreadslist.Free;
 end;
 
-procedure R_AddRenderTaskId(const proc: PPointerParmProcedure; const flags: LongWord; id: integer; const parms: pointer);
+procedure R_AddRenderTaskId(const proc: PPointerParmProcedure; const flags: LongWord; id: integer; const parms: pointer); inline;
 const
   GROWSTEP = 256;
 var
@@ -249,7 +249,7 @@ begin
     item.iparam := PInteger(parms)^
 end;
 
-procedure R_AddRenderTask(const proc: PPointerParmProcedure; const flags: LongWord; const parms: pointer);
+procedure R_AddRenderTask(const proc: PPointerParmProcedure; const flags: LongWord; const parms: pointer); inline;
 begin
   if flags and RF_WALL <> 0 then
   begin
@@ -306,7 +306,7 @@ begin
   end;
 end;
 
-procedure R_RenderTask(const r: Prenderitem_t);
+procedure R_RenderTask(const r: Prenderitem_t); inline;
 begin
   r.proc(@r.params);
 end;

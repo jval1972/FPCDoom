@@ -407,7 +407,7 @@ begin
 
   fractime := I_GetFracTime;
   ticfrac := fractime - interpolationstoretime;
-  ticfrac := Round(ticfrac / interpolationcount);
+//  ticfrac := Round(ticfrac / interpolationcount);
   if ticfrac > FRACUNIT then
   begin
   // JVAL

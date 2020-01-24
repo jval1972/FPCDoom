@@ -1954,6 +1954,8 @@ begin
   PAK_ShutDown;
   printf('W_ShutDown: Shut down WAD file system.'#13#10);
   W_ShutDown;
+  printf('M_ShutDown: Shut down menus.'#13#10);
+  M_ShutDown;
   printf('E_ShutDown: Shut down ENDOOM screen.'#13#10);
   E_ShutDown;
   printf('Z_ShutDown: Shut down zone memory allocation daemon.'#13#10);

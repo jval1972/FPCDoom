@@ -154,7 +154,7 @@ end;
 
 procedure R_DrawColumnLightmap(const parms: Plightparams_t);
 var
-  count, y: integer;
+  count, x, y: integer;
   frac: fixed_t;
   fracstep: fixed_t;
   db: Pzbufferitem_t;
@@ -171,7 +171,8 @@ var
   skip: boolean;
   sameseg: boolean;
 begin
-  if xcolumnsteplm[parms.dl_x] <= 0 then
+  x := parms.dl_x;
+  if xcolumnsteplm[x] <= 0 then
     exit;
 
   count := parms.dl_yh - parms.dl_yl;
@@ -205,7 +206,7 @@ begin
       dls := parms.dl_source32[(LongWord(frac) shr FRACBITS) and 127];
       if dls <> 0 then
       begin
-        db := R_ZBufferAt(parms.dl_x, y);
+        db := R_ZBufferAt(x, y);
         if ((seg <> db.seg) or (rendertype <> db.rendertype)) and (db.depth >= dbmin) and (db.depth <= dbmax) then
         begin
           sameseg := (seg = db.seg) and (seg <> nil);

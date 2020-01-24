@@ -465,29 +465,30 @@ begin
       rcolumn.dc_texturemid := skytexturemid;
       flipsky := (mirrormode and MR_ENVIROMENT <> 0) <> (mirrormode and MR_SKY <> 0);
       for x := pl.minx to pl.maxx do
-      begin
-        rcolumn.dc_yl := pl.top[x];
-        rcolumn.dc_yh := pl.bottom[x];
-
-        if rcolumn.dc_yl <= rcolumn.dc_yh then
+        if pl.top[x] < viewheight then
         begin
-          if flipsky then
-            angle := (ANGLE_MAX - viewangle - xtoviewangle[x]) div ANGLETOSKYUNIT
-          else
-            angle := (viewangle + xtoviewangle[x]) div ANGLETOSKYUNIT;
-          rcolumn.dc_texturemod := 0;
-          rcolumn.dc_mod := 0;
-          rcolumn.dc_x := x;
-          R_GetDCs(skytexture, angle);
-          // Sky is allways drawn full bright,
-          //  i.e. colormaps[0] is used.
-          //  Because of this hack, sky is not affected
-          //  by INVUL inverse mapping.
-          // JVAL
-          //  call skycolfunc(), not colfunc(), does not use colormaps!
-          R_AddRenderTask(skycolfunc, RF_WALL, @rcolumn);
+          rcolumn.dc_yl := pl.top[x];
+          rcolumn.dc_yh := pl.bottom[x];
+
+          if rcolumn.dc_yl <= rcolumn.dc_yh then
+          begin
+            if flipsky then
+              angle := (ANGLE_MAX - viewangle - xtoviewangle[x]) div ANGLETOSKYUNIT
+            else
+              angle := (viewangle + xtoviewangle[x]) div ANGLETOSKYUNIT;
+            rcolumn.dc_texturemod := 0;
+            rcolumn.dc_mod := 0;
+            rcolumn.dc_x := x;
+            R_GetDCs(skytexture, angle);
+            // Sky is allways drawn full bright,
+            //  i.e. colormaps[0] is used.
+            //  Because of this hack, sky is not affected
+            //  by INVUL inverse mapping.
+            // JVAL
+            //  call skycolfunc(), not colfunc(), does not use colormaps!
+            R_AddRenderTask(skycolfunc, RF_WALL, @rcolumn);
+          end;
         end;
-      end;
       continue;
     end;
 

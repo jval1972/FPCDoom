@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2019 by Jim Valavanis
+//  Copyright (C) 2017-2020 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -383,6 +383,29 @@ begin
 end;
 
 //
+// R_MaskedAdjustY
+// Adjust yl if we have a negative frac.
+// Adapted from DelphiDoom 2.0.5
+//
+procedure R_MaskedAdjustY;
+var
+  testfrac: fixed_t;
+begin
+  if rcolumn.rendertype <> RIT_SPRITE then
+    exit;
+  testfrac := rcolumn.dc_texturemid + (rcolumn.dc_yl - centery) * rcolumn.dc_iscale;
+  while true do
+  begin
+    if testfrac >= 0 then
+      exit;
+    inc(rcolumn.dc_yl);
+    if rcolumn.dc_yl > rcolumn.dc_yh then
+      exit;
+    testfrac := testfrac + rcolumn.dc_iscale;
+  end;
+end;
+
+//
 // R_DrawMaskedColumn
 // Used for sprites and masked mid textures.
 // Masked means: partly transparent, i.e. stored
@@ -421,6 +444,7 @@ begin
     begin
       rcolumn.dc_source := pOp(column, 3);
       rcolumn.dc_texturemid := basetexturemid - (column.topdelta * FRACUNIT);
+      R_MaskedAdjustY;
       // Drawn by either R_DrawColumn
       //  or (SHADOW) R_DrawFuzzColumn
       //  or R_DrawColumnAverage
@@ -466,6 +490,7 @@ begin
     begin
       rcolumn.dc_source := pOp(column, 3);
       rcolumn.dc_texturemid := basetexturemid - (column.topdelta * FRACUNIT);
+      R_MaskedAdjustY;
       // Drawn by either R_DrawColumn
       //  or (SHADOW) R_DrawFuzzColumn
       //  or R_DrawColumnAverage

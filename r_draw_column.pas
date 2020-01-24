@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2019 by Jim Valavanis
+//  Copyright (C) 2017-2020 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -121,10 +121,10 @@ procedure R_DrawColumnMedium(const parms: Pcolumnparams_t);
 var
   count: integer;
   dest: PByte;
-  frac: int64;
+  frac: fixed_t;
   fracstep: fixed_t;
-  fracstop: int64;
   dc_source8: PByteArray;
+  dc_pitch: integer;
   b: byte;
 begin
   count := parms.dc_yh - parms.dc_yl;
@@ -137,12 +137,12 @@ begin
   // Use ylookup LUT to avoid multiply with ScreenWidth.
   // Use columnofs LUT for subwindows?
   dest := @((ylookup8[parms.dc_yl]^)[columnofs[parms.dc_x]]);
+  dc_pitch := SCREENWIDTH;
 
   // Determine scaling,
   //  which is the only mapping to be done.
   fracstep := parms.dc_iscale;
   frac := parms.dc_texturemid + (parms.dc_yl - centery) * fracstep;
-  fracstop := frac + count * fracstep;
   dc_source8 := parms.dc_source;
 
   // Inner loop that does the actual texture mapping,
@@ -153,29 +153,31 @@ begin
   begin
     frac := frac + fracstep div 2;
     fracstep := fracstep * 2;
-    while frac < fracstop do
+    while count > 0 do
     begin
     // Re-map color indices from wall texture column
     //  using a lighting/special effects LUT.
-      b := parms.dc_colormap[dc_source8[(LongWord(frac) shr FRACBITS) and 127]];
+      b := parms.dc_colormap[dc_source8[(frac shr FRACBITS) and 127]];
       dest^ := b;
-      inc(dest, SCREENWIDTH);
+      inc(dest, dc_pitch);
       dest^ := b;
-      inc(dest, SCREENWIDTH);
+      inc(dest, dc_pitch);
       inc(frac, fracstep);
+      dec(count, 2);
     end;
     fracstep := fracstep div 2;
     frac := frac - fracstep div 2;
   end;
 
-  while frac <= fracstop do
+  while count >= 0 do
   begin
   // Re-map color indices from wall texture column
   //  using a lighting/special effects LUT.
-    dest^ := parms.dc_colormap[dc_source8[(LongWord(frac) shr FRACBITS) and 127]];
+    dest^ := parms.dc_colormap[dc_source8[(frac shr FRACBITS) and 127]];
 
-    inc(dest, SCREENWIDTH);
+    inc(dest, dc_pitch);
     inc(frac, fracstep);
+    dec(count);
   end;
 end;
 
@@ -183,19 +185,20 @@ procedure R_DrawColumnHi(const parms: Pcolumnparams_t);
 var
   count: integer;
   destl: PLongWord;
-  frac: int64;
+  frac: fixed_t;
   fracstep: fixed_t;
-  fracstop: int64;
   and_mask: integer;
   dc_source32: PLongWordArray;
+  dc_pitch: integer;
   l: LongWord;
-begin 
+begin
   count := parms.dc_yh - parms.dc_yl;
 
   if count < 0 then
     exit;
 
   destl := @((ylookup32[parms.dc_yl]^)[columnofs[parms.dc_x]]);
+  dc_pitch := SCREENWIDTH;
 
   fracstep := parms.dc_iscale;
   frac := parms.dc_texturemid + (parms.dc_yl - centery) * fracstep;
@@ -208,31 +211,32 @@ begin
   end
   else
     and_mask := 127;
-  fracstop := frac + count * fracstep;
   dc_source32 := parms.dc_source;
 
   if lowrescolumndraw and (count > 0) then
   begin
     frac := frac + fracstep div 2;
     fracstep := fracstep * 2;
-    while frac < fracstop do
+    while count > 0 do
     begin
-      l := R_ColorLightEx(dc_source32[(LongWord(frac) shr FRACBITS) and and_mask], parms.dc_lightlevel);
+      l := R_ColorLightEx(dc_source32[(frac shr FRACBITS) and and_mask], parms.dc_lightlevel);
       destl^ := l;
-      inc(destl, SCREENWIDTH);
+      inc(destl, dc_pitch);
       destl^ := l;
-      inc(destl, SCREENWIDTH);
+      inc(destl, dc_pitch);
       inc(frac, fracstep);
+      dec(count, 2);
     end;
     fracstep := fracstep div 2;
     frac := frac - fracstep div 2;
   end;
 
-  while frac <= fracstop do
+  while count >= 0 do
   begin
-    destl^ := R_ColorLightEx(dc_source32[(LongWord(frac) shr FRACBITS) and and_mask], parms.dc_lightlevel);
-    inc(destl, SCREENWIDTH);
+    destl^ := R_ColorLightEx(dc_source32[(frac shr FRACBITS) and and_mask], parms.dc_lightlevel);
+    inc(destl, dc_pitch);
     inc(frac, fracstep);
+    dec(count);
   end;
 end;
 
@@ -240,10 +244,10 @@ procedure R_DrawMaskedColumnNormal(const parms: Pcolumnparams_t);
 var
   count: integer;
   destl: PLongWord;
-  frac: int64;
+  frac: fixed_t;
   fracstep: fixed_t;
-  fracstop: int64;
   dc_source8: PByteArray;
+  dc_pitch: integer;
   l: LongWord;
 begin
   count := parms.dc_yh - parms.dc_yl;
@@ -252,34 +256,36 @@ begin
     exit;
 
   destl := @((ylookup32[parms.dc_yl]^)[columnofs[parms.dc_x]]);
+  dc_pitch := SCREENWIDTH;
 
   fracstep := parms.dc_iscale;
   frac := parms.dc_texturemid + (parms.dc_yl - centery) * fracstep;
-  fracstop := frac + count * fracstep;
   dc_source8 := parms.dc_source;
 
   if lowrescolumndraw and (count > 0) then
   begin
     frac := frac + fracstep div 2;
     fracstep := fracstep * 2;
-    while frac < fracstop do
+    while count > 0 do
     begin
-      l := R_ColorLightEx(curpal[dc_source8[(LongWord(frac) shr FRACBITS) and 127]], parms.dc_lightlevel);
+      l := R_ColorLightEx(curpal[dc_source8[(frac shr FRACBITS) and 127]], parms.dc_lightlevel);
       destl^ := l;
-      inc(destl, SCREENWIDTH);
+      inc(destl, dc_pitch);
       destl^ := l;
-      inc(destl, SCREENWIDTH);
+      inc(destl, dc_pitch);
       inc(frac, fracstep);
+      dec(count, 2);
     end;
     fracstep := fracstep div 2;
     frac := frac - fracstep div 2;
   end;
 
-  while frac <= fracstop do
+  while count >= 0 do
   begin
-    destl^ := R_ColorLightEx(curpal[dc_source8[(LongWord(frac) shr FRACBITS) and 127]], parms.dc_lightlevel);
-    inc(destl, SCREENWIDTH);
+    destl^ := R_ColorLightEx(curpal[dc_source8[(frac shr FRACBITS) and 127]], parms.dc_lightlevel);
+    inc(destl, dc_pitch);
     inc(frac, fracstep);
+    dec(count)
   end;
 end;
 
@@ -287,12 +293,12 @@ procedure R_DrawMaskedColumnHi32(const parms: Pcolumnparams_t);
 var
   count: integer;
   destl: PLongWord;
-  frac: int64;
+  frac: fixed_t;
   fracstep: fixed_t;
-  fracstop: int64;
   and_mask: integer;
   c, l: LongWord;
   dc_source32: PLongWordArray;
+  dc_pitch: integer;
 begin
   count := parms.dc_yh - parms.dc_yl;
 
@@ -300,6 +306,7 @@ begin
     exit;
 
   destl := @((ylookup32[parms.dc_yl]^)[columnofs[parms.dc_x]]);
+  dc_pitch := SCREENWIDTH;
 
   fracstep := parms.dc_iscale;
   frac := parms.dc_texturemid + (parms.dc_yl - centery) * fracstep;
@@ -313,39 +320,40 @@ begin
   else
     and_mask := 127;
 
-  fracstop := frac + count * fracstep;
   dc_source32 := parms.dc_source;
 
   if lowrescolumndraw and (count > 0) then
   begin
     frac := frac + fracstep div 2;
     fracstep := fracstep * 2;
-    while frac < fracstop do
+    while count > 0 do
     begin
-      c := dc_source32[(LongWord(frac) shr FRACBITS) and and_mask];
+      c := dc_source32[(frac shr FRACBITS) and and_mask];
       if c <> 0 then
       begin
         l := R_ColorLightEx(c, parms.dc_lightlevel);
         destl^ := l;
-        inc(destl, SCREENWIDTH);
+        inc(destl, dc_pitch);
         destl^ := l;
-        inc(destl, SCREENWIDTH);
+        inc(destl, dc_pitch);
       end
       else
-        inc(destl, 2 * SCREENWIDTH);
+        inc(destl, 2 * dc_pitch);
       inc(frac, fracstep);
+      dec(count, 2);
     end;
     fracstep := fracstep div 2;
     frac := frac - fracstep div 2;
   end;
 
-  while frac <= fracstop do
+  while count >= 0 do
   begin
-    c := dc_source32[(LongWord(frac) shr FRACBITS) and and_mask];
+    c := dc_source32[(frac shr FRACBITS) and and_mask];
     if c <> 0 then
       destl^ := R_ColorLightEx(c, parms.dc_lightlevel);
-    inc(destl, SCREENWIDTH);
+    inc(destl, dc_pitch);
     inc(frac, fracstep);
+    dec(count);
   end;
 end;
 
@@ -353,10 +361,10 @@ procedure R_DrawColumnAlphaMedium(const parms: Pcolumnparams_t);
 var
   count: integer;
   dest: PByte;
-  frac: int64;
+  frac: fixed_t;
   fracstep: fixed_t;
-  fracstop: int64;
   dc_source8: PByteArray;
+  dc_pitch: integer;
 begin
   count := parms.dc_yh - parms.dc_yl;
 
@@ -364,17 +372,18 @@ begin
     exit;
 
   dest := @((ylookup8[parms.dc_yl]^)[columnofs[parms.dc_x]]);
+  dc_pitch := SCREENWIDTH;
 
   fracstep := parms.dc_iscale;
   frac := parms.dc_texturemid + (parms.dc_yl - centery) * fracstep;
-  fracstop := frac + count * fracstep;
   dc_source8 := parms.dc_source;
 
-  while frac <= fracstop do
+  while count >= 0 do
   begin
-    dest^ := parms.curtrans8table[dest^ + (parms.dc_colormap[dc_source8[(LongWord(frac) shr FRACBITS) and 127]] shl 8)];
-    inc(dest, SCREENWIDTH);
+    dest^ := parms.curtrans8table[dest^ + (parms.dc_colormap[dc_source8[(frac shr FRACBITS) and 127]] shl 8)];
+    inc(dest, dc_pitch);
     inc(frac, fracstep);
+    dec(count);
   end;
 end;
 
@@ -382,10 +391,10 @@ procedure R_DrawColumnAlphaHi(const parms: Pcolumnparams_t);
 var
   count: integer;
   destl: PLongWord;
-  frac: int64;
+  frac: fixed_t;
   fracstep: fixed_t;
-  fracstop: int64;
   dc_source8: PByteArray;
+  dc_pitch: integer;
 begin
   count := parms.dc_yh - parms.dc_yl;
 
@@ -393,17 +402,18 @@ begin
     exit;
 
   destl := @((ylookup32[parms.dc_yl]^)[columnofs[parms.dc_x]]);
+  dc_pitch := SCREENWIDTH;
 
   fracstep := parms.dc_iscale;
   frac := parms.dc_texturemid + (parms.dc_yl - centery) * fracstep;
-  fracstop := frac + fracstep * count;
   dc_source8 := parms.dc_source;
 
-  while frac <= fracstop do
+  while count >= 0 do
   begin
-    destl^ := parms.alphafunc(destl^, parms.dc_colormap32[dc_source8[(LongWord(frac) shr FRACBITS) and 127]], parms.dc_alpha);
-    inc(destl, SCREENWIDTH);
+    destl^ := parms.alphafunc(destl^, parms.dc_colormap32[dc_source8[(frac shr FRACBITS) and 127]], parms.dc_alpha);
+    inc(destl, dc_pitch);
     inc(frac, fracstep);
+    dec(count);
   end;
 end;
 
@@ -411,10 +421,10 @@ procedure R_DrawColumnAverageMedium(const parms: Pcolumnparams_t);
 var
   count: integer;
   dest: PByte;
-  frac: int64;
+  frac: fixed_t;
   fracstep: fixed_t;
-  fracstop: int64;
   dc_source8: PByteArray;
+  dc_pitch: integer;
 begin
   count := parms.dc_yh - parms.dc_yl;
 
@@ -422,17 +432,18 @@ begin
     exit;
 
   dest := @((ylookup8[parms.dc_yl]^)[columnofs[parms.dc_x]]);
+  dc_pitch := SCREENWIDTH;
 
   fracstep := parms.dc_iscale;
   frac := parms.dc_texturemid + (parms.dc_yl - centery) * fracstep;
-  fracstop := frac + count * fracstep;
   dc_source8 := parms.dc_source;
 
-  while frac <= fracstop do
+  while count >= 0 do
   begin
-    dest^ := averagetrans8table[(dest^ shl 8) + parms.dc_colormap[dc_source8[(LongWord(frac) shr FRACBITS) and 127]]];
-    inc(dest, SCREENWIDTH);
+    dest^ := averagetrans8table[(dest^ shl 8) + parms.dc_colormap[dc_source8[(frac shr FRACBITS) and 127]]];
+    inc(dest, dc_pitch);
     inc(frac, fracstep);
+    dec(count);
   end;
 end;
 
@@ -440,10 +451,10 @@ procedure R_DrawColumnAverageHi(const parms: Pcolumnparams_t);
 var
   count: integer;
   destl: PLongWord;
-  frac: int64;
+  frac: fixed_t;
   fracstep: fixed_t;
-  fracstop: int64;
   dc_source8: PByteArray;
+  dc_pitch: integer;
 begin
   count := parms.dc_yh - parms.dc_yl;
 
@@ -451,17 +462,18 @@ begin
     exit;
 
   destl := @((ylookup32[parms.dc_yl]^)[columnofs[parms.dc_x]]);
+  dc_pitch := SCREENWIDTH;
 
   fracstep := parms.dc_iscale;
   frac := parms.dc_texturemid + (parms.dc_yl - centery) * fracstep;
-  fracstop := frac + count * fracstep;
   dc_source8 := parms.dc_source;
 
-  while frac <= fracstop do
+  while count >= 0 do
   begin
-    destl^ := R_ColorMidAverage(destl^, parms.dc_colormap32[dc_source8[(LongWord(frac) shr FRACBITS) and 127]]);
-    inc(destl, SCREENWIDTH);
+    destl^ := R_ColorMidAverage(destl^, parms.dc_colormap32[dc_source8[(frac shr FRACBITS) and 127]]);
+    inc(destl, dc_pitch);
     inc(frac, fracstep);
+    dec(count);
   end;
 end;
 
@@ -508,6 +520,7 @@ var
   i: integer;
   dest: PByteArray;
   fuzzpos: integer;
+  dc_pitch: integer;
 begin
   // Adjust borders. Low...
   if parms.dc_yl = 0 then
@@ -528,6 +541,7 @@ begin
 
   // Does not work with blocky mode.
   dest := @((ylookup8[parms.dc_yl]^)[columnofs[parms.dc_x]]);
+  dc_pitch := SCREENWIDTH;
 
   // Looks like an attempt at dithering,
   //  using the colormap #6 (of 0-31, a bit
@@ -539,7 +553,7 @@ begin
     //  left or right of the current one.
     // Add index from colormap to index.
     dest[0] := colormaps[6 * 256 + dest[sfuzzoffset[fuzzpos]]];
-    dest := @dest[SCREENWIDTH];
+    dest := @dest[dc_pitch];
     // Clamp table lookup index.
     inc(fuzzpos);
     if fuzzpos = FUZZTABLE then
@@ -553,6 +567,7 @@ var
   i: integer;
   destl: PLongWordArray;
   fuzzpos: integer;
+  dc_pitch: integer;
 begin
   if parms.dc_yl = 0 then
     parms.dc_yl := 1;
@@ -569,11 +584,12 @@ begin
   fuzzpos := fuzzpos mod FUZZTABLE;
 
   destl := @((ylookup32[parms.dc_yl]^)[columnofs[parms.dc_x]]);
+  dc_pitch := SCREENWIDTH;
 
   for i := 0 to count do
   begin
     destl[0] := R_ColorLight(destl[sfuzzoffset[fuzzpos]], $C000);
-    destl := @destl[SCREENWIDTH];
+    destl := @destl[dc_pitch];
     inc(fuzzpos);
     if fuzzpos = FUZZTABLE then
       fuzzpos := 0;
@@ -585,6 +601,7 @@ var
   count: integer;
   i: integer;
   destl: PLongWord;
+  dc_pitch: integer;
 begin
   count := parms.dc_yh - parms.dc_yl;
 
@@ -593,11 +610,12 @@ begin
     exit;
 
   destl := @((ylookup32[parms.dc_yl]^)[columnofs[parms.dc_x]]);
+  dc_pitch := SCREENWIDTH;
 
   for i := 0 to count do
   begin
     destl^ := R_FuzzLight(destl^);
-    inc(destl, SCREENWIDTH);
+    inc(destl, dc_pitch);
   end;
 end;
 
@@ -608,11 +626,11 @@ procedure R_DrawSkyColumn(const parms: Pcolumnparams_t);
 var
   count: integer;
   dest: PByte;
-  frac: int64;
+  frac: fixed_t;
   fracstep: fixed_t;
-  fracstop: int64;
   spot: integer;
   dc_source8: PByteArray;
+  dc_pitch: integer;
   b: byte;
   strn: Pskytransarray_t;
 begin
@@ -622,10 +640,10 @@ begin
     exit;
 
   dest := @((ylookup8[parms.dc_yl]^)[columnofs[parms.dc_x]]);
+  dc_pitch := SCREENWIDTH;
 
   fracstep := parms.dc_iscale;
   frac := parms.dc_texturemid + (parms.dc_yl - centery) * fracstep;
-  fracstop := frac + count * fracstep;
   dc_source8 := parms.dc_source;
   strn := @skytranstable[0];
 
@@ -633,35 +651,37 @@ begin
   begin
     frac := frac + fracstep div 2;
     fracstep := fracstep * 2;
-    while frac < fracstop do
+    while count > 0 do
     begin
       // Invert Sky Texture if below horizont level
-      spot := LongWord(frac) shr (FRACBITS - 1);
+      spot := frac shr (FRACBITS - 1);
       if spot > 255 then
         spot := 255 - (spot and 255);
 
       b := dc_source8[strn[spot]];
       dest^ := b;
-      inc(dest, SCREENWIDTH);
+      inc(dest, dc_pitch);
       dest^ := b;
-      inc(dest, SCREENWIDTH);
+      inc(dest, dc_pitch);
       inc(frac, fracstep);
+      dec(count, 2);
     end;
     fracstep := fracstep div 2;
     frac := frac - fracstep div 2;
   end;
 
-  while frac <= fracstop do
+  while count >= 0 do
   begin
     // Invert Sky Texture if below horizont level
-    spot := LongWord(frac) shr (FRACBITS - 1);
+    spot := frac shr (FRACBITS - 1);
     if spot > 255 then
       spot := 255 - (spot and 255);
 
     dest^ := dc_source8[strn[spot]];
 
-    inc(dest, SCREENWIDTH);
+    inc(dest, dc_pitch);
     inc(frac, fracstep);
+    dec(count);
   end;
 end;
 
@@ -669,13 +689,13 @@ procedure R_DrawSkyColumnHi(const parms: Pcolumnparams_t);
 var
   count: integer;
   destl: PLongWord;
-  frac: int64;
+  frac: fixed_t;
   fracstep: fixed_t;
-  fracstop: int64;
   factor: integer;
   spot: integer;
   and_mask: integer;
   dc_source32: PLongWordArray;
+  dc_pitch: integer;
   l: LongWord;
   strn: Pskytransarray_t;
 begin
@@ -685,6 +705,7 @@ begin
     exit;
 
   destl := @((ylookup32[parms.dc_yl]^)[columnofs[parms.dc_x]]);
+  dc_pitch := SCREENWIDTH;
 
   fracstep := parms.dc_iscale;
   frac := parms.dc_texturemid + (parms.dc_yl - centery) * fracstep;
@@ -692,7 +713,6 @@ begin
   factor := 1 shl parms.dc_texturefactorbits;
   fracstep := fracstep * factor;
   frac := frac * factor;
-  fracstop := frac + count * fracstep;
   and_mask := 256 * factor - 1;
 
   dc_source32 := parms.dc_source;
@@ -702,32 +722,34 @@ begin
   begin
     frac := frac + fracstep div 2;
     fracstep := fracstep * 2;
-    while frac <= fracstop do
+    while count > 0 do
     begin
       // Invert Sky Texture if below horizont level
-      spot := LongWord(frac) shr (FRACBITS - 1);
+      spot := frac shr (FRACBITS - 1);
       if spot > and_mask then
         spot := and_mask - (spot and and_mask);
       l := dc_source32[strn[spot]];
       destl^ := l;
-      inc(destl, SCREENWIDTH);
+      inc(destl, dc_pitch);
       destl^ := l;
-      inc(destl, SCREENWIDTH);
+      inc(destl, dc_pitch);
       inc(frac, fracstep);
+      dec(count, 2);
     end;
     fracstep := fracstep div 2;
     frac := frac - fracstep div 2;
   end;
 
-  while frac <= fracstop do
+  while count >= 0 do
   begin
     // Invert Sky Texture if below horizont level
-    spot := LongWord(frac) shr (FRACBITS - 1);
+    spot := frac shr (FRACBITS - 1);
     if spot > and_mask then
       spot := and_mask - (spot and and_mask);
     destl^ := dc_source32[strn[spot]];
-    inc(destl, SCREENWIDTH);
+    inc(destl, dc_pitch);
     inc(frac, fracstep);
+    dec(count);
   end;
 end;
 
@@ -745,10 +767,10 @@ procedure R_DrawTranslatedColumn(const parms: Pcolumnparams_t);
 var
   count: integer;
   dest: PByte;
-  frac: int64;
+  frac: fixed_t;
   fracstep: fixed_t;
-  fracstop: int64;
   dc_source8: PByteArray;
+  dc_pitch: integer;
   b: byte;
 begin
   count := parms.dc_yh - parms.dc_yl;
@@ -758,48 +780,50 @@ begin
 
   // FIXME. As above.
   dest := @((ylookup8[parms.dc_yl]^)[columnofs[parms.dc_x]]);
+  dc_pitch := SCREENWIDTH;
 
   // Looks familiar.
   fracstep := parms.dc_iscale;
   frac := parms.dc_texturemid + (parms.dc_yl - centery) * fracstep;
-  fracstop := frac + count * fracstep;
   dc_source8 := parms.dc_source;
 
   if lowrescolumndraw and (count > 0) then
   begin
     frac := frac + fracstep div 2;
     fracstep := fracstep * 2;
-    while frac < fracstop do
+    while count > 0 do
     begin
       // Translation tables are used
       //  to map certain colorramps to other ones,
       //  used with PLAY sprites.
       // Thus the "green" ramp of the player 0 sprite
       //  is mapped to gray, red, black/indigo.
-      b := parms.dc_colormap[dc_translation[dc_source8[LongWord(frac) shr FRACBITS]]];
+      b := parms.dc_colormap[dc_translation[dc_source8[(frac shr FRACBITS) and 127]]];
       dest^ := b;
-      inc(dest, SCREENWIDTH);
+      inc(dest, dc_pitch);
       dest^ := b;
-      inc(dest, SCREENWIDTH);
+      inc(dest, dc_pitch);
 
       inc(frac, fracstep);
+      dec(count, 2);
     end;
     fracstep := fracstep div 2;
     frac := frac - fracstep div 2;
   end;
 
   // Here we do an additional index re-mapping.
-  while frac <= fracstop do
+  while count >= 0 do
   begin
     // Translation tables are used
     //  to map certain colorramps to other ones,
     //  used with PLAY sprites.
     // Thus the "green" ramp of the player 0 sprite
     //  is mapped to gray, red, black/indigo.
-    dest^ := parms.dc_colormap[dc_translation[dc_source8[LongWord(frac) shr FRACBITS]]];
-    inc(dest, SCREENWIDTH);
+    dest^ := parms.dc_colormap[dc_translation[dc_source8[(frac shr FRACBITS) and 127]]];
+    inc(dest, dc_pitch);
 
     inc(frac, fracstep);
+    dec(count);
   end;
 end;
 
@@ -807,10 +831,10 @@ procedure R_DrawTranslatedColumnHi(const parms: Pcolumnparams_t);
 var
   count: integer;
   destl: PLongWord;
-  frac: int64;
+  frac: fixed_t;
   fracstep: fixed_t;
-  fracstop: int64;
   dc_source8: PByteArray;
+  dc_pitch: integer;
   l: LongWord;
 begin
   count := parms.dc_yh - parms.dc_yl;
@@ -820,48 +844,50 @@ begin
 
   // FIXME. As above.
   destl := @((ylookup32[parms.dc_yl]^)[columnofs[parms.dc_x]]);
+  dc_pitch := SCREENWIDTH;
 
   // Looks familiar.
   fracstep := parms.dc_iscale;
   frac := parms.dc_texturemid + (parms.dc_yl - centery) * fracstep;
-  fracstop := frac + count * fracstep;
   dc_source8 := parms.dc_source;
 
   if lowrescolumndraw and (count > 0) then
   begin
     frac := frac + fracstep div 2;
     fracstep := fracstep * 2;
-    while frac < fracstop do
+    while count > 0 do
     begin
       // Translation tables are used
       //  to map certain colorramps to other ones,
       //  used with PLAY sprites.
       // Thus the "green" ramp of the player 0 sprite
       //  is mapped to gray, red, black/indigo.
-      l := parms.dc_colormap32[dc_translation[dc_source8[LongWord(frac) shr FRACBITS]]];
+      l := parms.dc_colormap32[dc_translation[dc_source8[(frac shr FRACBITS) and 127]]];
       destl^ := l;
-      inc(destl, SCREENWIDTH);
+      inc(destl, dc_pitch);
       destl^ := l;
-      inc(destl, SCREENWIDTH);
+      inc(destl, dc_pitch);
 
       inc(frac, fracstep);
+      dec(count, 2);
     end;
     fracstep := fracstep div 2;
     frac := frac - fracstep div 2;
   end;
 
   // Here we do an additional index re-mapping.
-  while frac <= fracstop do
+  while count >= 0 do
   begin
     // Translation tables are used
     //  to map certain colorramps to other ones,
     //  used with PLAY sprites.
     // Thus the "green" ramp of the player 0 sprite
     //  is mapped to gray, red, black/indigo.
-    destl^ := parms.dc_colormap32[dc_translation[dc_source8[LongWord(frac) shr FRACBITS]]];
-    inc(destl, SCREENWIDTH);
+    destl^ := parms.dc_colormap32[dc_translation[dc_source8[(frac shr FRACBITS) and 127]]];
+    inc(destl, dc_pitch);
 
     inc(frac, fracstep);
+    dec(count);
   end;
 end;
 

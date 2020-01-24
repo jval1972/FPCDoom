@@ -590,6 +590,10 @@ begin
         ceilingplane.bottom[rwx] := bottom;
       end;
       // SoM: this should be set here
+      if bottom > viewheight then
+        bottom := viewheight
+      else if bottom < 0 then
+        bottom := -1;
       pceilingclip^ := bottom;
     end;
 
@@ -610,6 +614,11 @@ begin
         floorplane.bottom[rwx] := bottom;
       end;
       // SoM: this should be set here to prevent overdraw
+      if top > viewheight then
+        top := viewheight
+      else if top < -1 then
+        top := -1
+      else
       pfloorclip^ := top;
     end;
 
