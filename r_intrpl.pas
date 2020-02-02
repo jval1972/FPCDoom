@@ -42,7 +42,7 @@ procedure R_InitInterpolations;
 
 procedure R_ResetInterpolationBuffer;
 
-procedure R_StoreInterpolationData(const tick: integer; const counts: integer);
+procedure R_StoreInterpolationData;
 
 procedure R_RestoreInterpolationData;
 
@@ -56,6 +56,7 @@ var
   interpolate: boolean;
   didinterpolations: boolean;
   ticfrac: fixed_t;
+  interpolationstoretime: fixed_t = 0;
 
 implementation
 
@@ -286,15 +287,13 @@ begin
 end;
 
 var
-  interpolationstoretime: fixed_t = 0;
-  interpolationcount: integer = 0;
   prevtic: fixed_t = 0;
 
 // JVAL: Skip interpolation if we have teleport
 var
   skipinterpolationticks: integer = -1;
 
-procedure R_StoreInterpolationData(const tick: integer; const counts: integer);
+procedure R_StoreInterpolationData;
 var
   sec: Psector_t;
   li: Pline_t;
@@ -308,8 +307,6 @@ begin
       exit;
 
   prevtic := gametic;
-  interpolationstoretime := tick * FRACUNIT;
-  interpolationcount := counts;
   istruct.numitems := 0;
   numismobjs := 0;
 
@@ -407,7 +404,6 @@ begin
 
   fractime := I_GetFracTime;
   ticfrac := fractime - interpolationstoretime;
-//  ticfrac := Round(ticfrac / interpolationcount);
   if ticfrac > FRACUNIT then
   begin
   // JVAL

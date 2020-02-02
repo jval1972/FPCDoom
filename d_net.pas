@@ -162,6 +162,7 @@ implementation
 
 uses
   m_menu,
+  m_fixed,
   e_endoom,
   c_con,
   i_system,
@@ -892,9 +893,7 @@ begin
     if interpolate and (gamestate = GS_LEVEL) and (oldgamestate = Ord(GS_LEVEL)) then
     begin
       if not didinterpolations then
-      begin
-        R_StoreInterpolationData(entertime, counts * ticdup);
-      end;
+        R_StoreInterpolationData;
       if R_Interpolate then
       begin
         didinterpolations := true;
@@ -925,6 +924,7 @@ begin
       E_Ticker;
       M_Ticker;
       C_Ticker;
+      interpolationstoretime := I_GetTime * FRACUNIT;
       G_Ticker;
       inc(gametic);
 
