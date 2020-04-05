@@ -472,7 +472,13 @@ begin
 
           if rcolumn.dc_yl <= rcolumn.dc_yh then
           begin
-            if flipsky then
+            if billboardsky then
+            begin
+              angle := round(128 + viewangle / $FFFFFFFF * 1024 - x * 256 / viewwidth) and 1023;
+              if flipsky then
+                angle := 1024 - angle;
+            end
+            else if flipsky then
               angle := (ANGLE_MAX - viewangle - xtoviewangle[x]) div ANGLETOSKYUNIT
             else
               angle := (viewangle + xtoviewangle[x]) div ANGLETOSKYUNIT;

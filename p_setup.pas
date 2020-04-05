@@ -478,7 +478,10 @@ begin
     if ld.sidenum[0] <> -1 then
       ld.frontsector := sides[ld.sidenum[0]].sector
     else
-      ld.frontsector := nil;
+    begin
+      ld.sidenum[0] := 0;
+      ld.frontsector := sides[0].sector;
+    end;
 
     if ld.sidenum[1] <> -1 then
       ld.backsector := sides[ld.sidenum[1]].sector

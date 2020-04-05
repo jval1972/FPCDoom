@@ -74,8 +74,6 @@ type
   Plumpinfo_tArray = ^lumpinfo_tArray;
 
 
-  PTransProcedure = procedure (const src: pointer; const size: integer; const dest: PPointer; const tag: integer);
-
 function char8tostring(src: char8_t): string;
 
 function stringtochar8(src: string): char8_t;

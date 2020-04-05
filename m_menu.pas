@@ -830,6 +830,7 @@ type
     odc_skystretchpct,
     odc_filler1,
     odc_filler2,
+    odc_billboardsky,
     odc_chasecamera,
     odc_chasecameraxy,
     odc_filler3,
@@ -2753,11 +2754,11 @@ begin
   M_WriteColorText(ppos.x, ppos.y, itoa(skystretch_pct) + '%', 'CRGRAY');
 
   chasecamera_viewxy := ibetween(chasecamera_viewxy, CHASECAMERA_XY_MIN, CHASECAMERA_XY_MAX);
-  ppos := M_WriteText(OptionsDisplayCameraDef.x, OptionsDisplayCameraDef.y + OptionsDisplayCameraDef.itemheight * Ord(odc_chasecameraxy), 'Chase Camera XY postion: ');
+  ppos := M_WriteText(OptionsDisplayCameraDef.x, OptionsDisplayCameraDef.y + OptionsDisplayCameraDef.itemheight * Ord(odc_chasecameraxy), 'Chase Camera XY position: ');
   M_WriteColorText(ppos.x, ppos.y, itoa(chasecamera_viewxy), 'CRGRAY');
 
   chasecamera_viewz := ibetween(chasecamera_viewz, CHASECAMERA_Z_MIN, CHASECAMERA_Z_MAX);
-  ppos := M_WriteText(OptionsDisplayCameraDef.x, OptionsDisplayCameraDef.y + OptionsDisplayCameraDef.itemheight * Ord(odc_chasecameraz), 'Chase Camera Z postion: ');
+  ppos := M_WriteText(OptionsDisplayCameraDef.x, OptionsDisplayCameraDef.y + OptionsDisplayCameraDef.itemheight * Ord(odc_chasecameraz), 'Chase Camera Z position: ');
   M_WriteColorText(ppos.x, ppos.y, itoa(chasecamera_viewz), 'CRGRAY');
 
   M_DrawThermo(
@@ -4919,6 +4920,14 @@ begin
 
   inc(pmi);
   pmi.status := 1;
+  pmi.name := '!Billboard sky drawing';
+  pmi.cmd := 'billboardsky';
+  pmi.routine := @M_BoolCmd;
+  pmi.pBoolVal := @billboardsky;
+  pmi.alphaKey := 'b';
+
+  inc(pmi);
+  pmi.status := 1;
   pmi.name := '!Chase camera';
   pmi.cmd := 'chasecamera';
   pmi.routine := @M_BoolCmd;
@@ -4927,7 +4936,7 @@ begin
 
   inc(pmi);
   pmi.status := 2;
-  pmi.name := '!Chase Camera XY postion';
+  pmi.name := '!Chase Camera XY position';
   pmi.cmd := '';
   pmi.routine := @M_ChangeCameraXY;
   pmi.pBoolVal := nil;
@@ -4951,7 +4960,7 @@ begin
 
   inc(pmi);
   pmi.status := 2;
-  pmi.name := '!Chase Camera Z postion';
+  pmi.name := '!Chase Camera Z position';
   pmi.cmd := '';
   pmi.routine := @M_ChangeCameraZ;
   pmi.pBoolVal := nil;

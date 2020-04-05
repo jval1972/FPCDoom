@@ -93,7 +93,7 @@ type
   Pdefault_t = ^default_t;
 
 const
-  NUMDEFAULTS = 148;
+  NUMDEFAULTS = 149;
 
   defaults: array[0..NUMDEFAULTS - 1] of default_t = (
     (name: 'Display';
@@ -191,6 +191,14 @@ const
      defaultivalue: 50;
      defaultbvalue: true;
      _type: tInteger),
+
+    (name: 'billboardsky';
+     location: @billboardsky;
+     setable: DFS_ALWAYS;
+     defaultsvalue: '';
+     defaultivalue: 0;
+     defaultbvalue: false;
+     _type: tBoolean),
 
     (name: 'chasecamera';
      location: @chasecamera;

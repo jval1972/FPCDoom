@@ -150,7 +150,7 @@ begin
   numismobjs := 0;
 end;
 
-function R_InterpolationCalcIF(const prev, next: fixed_t; const frac: fixed_t): fixed_t;
+function R_InterpolationCalcIF(const prev, next: fixed_t; const frac: fixed_t): fixed_t; inline;
 begin
   if next = prev then
     result := prev
@@ -158,7 +158,7 @@ begin
     result := prev + Round((next - prev) / FRACUNIT * frac);
 end;
 
-function R_InterpolationCalcSIF(const prev, next: smallint; const frac: fixed_t): smallint;
+function R_InterpolationCalcSIF(const prev, next: smallint; const frac: fixed_t): smallint; inline;
 begin
   if next = prev then
     result := prev
@@ -166,7 +166,7 @@ begin
     result := prev + Round((next - prev) / FRACUNIT * frac);
 end;
 
-procedure R_InterpolationCalcI(const pi: Piitem_t; const frac: fixed_t);
+procedure R_InterpolationCalcI(const pi: Piitem_t; const frac: fixed_t); inline;
 begin
   if pi.inext = pi.iprev then
     exit;
@@ -174,7 +174,7 @@ begin
   PInteger(pi.address)^ := pi.iprev + Round((pi.inext - pi.iprev) / FRACUNIT * frac);
 end;
 
-procedure R_InterpolationCalcSI(const pi: Piitem_t; const frac: fixed_t);
+procedure R_InterpolationCalcSI(const pi: Piitem_t; const frac: fixed_t); inline;
 begin
   if pi.sinext = pi.siprev then
     exit;
@@ -182,7 +182,7 @@ begin
   PSmallInt(pi.address)^ := pi.siprev + Round((pi.sinext - pi.siprev) / FRACUNIT * frac);
 end;
 
-function R_InterpolationCalcB(const prev, next: byte; const frac: fixed_t): byte;
+function R_InterpolationCalcB(const prev, next: byte; const frac: fixed_t): byte; inline;
 begin
   if next = prev then
     result := prev
@@ -194,7 +194,7 @@ begin
     result := prev + (next - prev) * frac div FRACUNIT;
 end;
 
-function R_InterpolationCalcA(const prev, next: angle_t; const frac: fixed_t): angle_t;
+function R_InterpolationCalcA(const prev, next: angle_t; const frac: fixed_t): angle_t; inline;
 var
   prev_e, next_e, mid_e: Extended;
 begin
@@ -228,7 +228,7 @@ begin
   end;
 end;
 
-procedure R_AddInterpolationItem(const addr: pointer; const typ: itype);
+procedure R_AddInterpolationItem(const addr: pointer; const typ: itype); inline;
 var
   newrealsize: integer;
   pi: Piitem_t;
@@ -314,7 +314,7 @@ begin
   player := @players[displayplayer];
   R_AddInterpolationItem(@player.lookupdown, iinteger); // JVAL Look Up/Down
   R_AddInterpolationItem(@player.lookleftright, ibyte);
-  R_AddInterpolationItem(@player.viewz, iinteger);
+//  R_AddInterpolationItem(@player.viewz, iinteger);
   R_AddInterpolationItem(@teleporttics[displayplayer], iinteger);
 
   // Interpolate Sectors

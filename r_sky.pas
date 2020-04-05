@@ -57,6 +57,7 @@ var
   skytexturemid: integer;
   skystretch_pct: integer = 100;
   skytranstable: array[0..MAXTEXTUREFACTORBITS] of skytransarray_t;
+  billboardsky: boolean = false;
 
 procedure R_InitSkyMap;
 
