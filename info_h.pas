@@ -34,6 +34,7 @@ interface
 uses
   d_fpc,
   d_think,
+  r_renderstyle,
   sc_params;
 
 type
@@ -417,11 +418,6 @@ type
     MT_SLUDGESPLASH,
 
     DO_NUMMOBJTYPES
-  );
-
-type
-  mobjrenderstyle_t = (
-    mrs_normal, mrs_translucent, mrs_add, NUMMOBJRENDERSTYLES
   );
 
 const

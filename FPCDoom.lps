@@ -310,7 +310,7 @@
       <Unit38>
         <Filename Value="m_defs.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="7"/>
         <TopLine Value="179"/>
         <CursorPos X="21" Y="201"/>
         <ExtraEditorCount Value="1"/>
@@ -333,10 +333,9 @@
       <Unit40>
         <Filename Value="m_menu.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="3"/>
-        <TopLine Value="4938"/>
-        <CursorPos X="36" Y="4964"/>
+        <TopLine Value="964"/>
+        <CursorPos X="9" Y="980"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit40>
@@ -391,10 +390,12 @@
       <Unit47>
         <Filename Value="p_enemy.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="1846"/>
-        <CursorPos X="46" Y="1854"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="246"/>
+        <CursorPos X="27" Y="253"/>
         <UsageCount Value="204"/>
+        <Loaded Value="True"/>
       </Unit47>
       <Unit48>
         <Filename Value="p_extra.pas"/>
@@ -496,10 +497,11 @@
       <Unit60>
         <Filename Value="p_saveg.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="690"/>
-        <CursorPos X="21" Y="666"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="428"/>
+        <CursorPos X="21" Y="440"/>
         <UsageCount Value="204"/>
+        <Loaded Value="True"/>
       </Unit60>
       <Unit61>
         <Filename Value="p_setup.pas"/>
@@ -651,7 +653,7 @@
       <Unit79>
         <Filename Value="r_sky.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="6"/>
         <TopLine Value="38"/>
         <CursorPos X="15" Y="60"/>
         <UsageCount Value="204"/>
@@ -1033,121 +1035,125 @@
         <UsageCount Value="6"/>
       </Unit127>
     </Units>
-    <JumpHistory Count="29" HistoryIndex="28">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="m_menu.pas"/>
-        <Caret Line="2414" Column="53" TopLine="2388"/>
+        <Caret Line="2729" Column="22" TopLine="2702"/>
       </Position1>
       <Position2>
         <Filename Value="m_menu.pas"/>
-        <Caret Line="2416" Column="66" TopLine="2390"/>
+        <Caret Line="2731" Column="69" TopLine="2704"/>
       </Position2>
       <Position3>
         <Filename Value="m_menu.pas"/>
-        <Caret Line="2687" Column="52" TopLine="2661"/>
+        <Caret Line="2755" Column="13" TopLine="2726"/>
       </Position3>
       <Position4>
         <Filename Value="m_menu.pas"/>
-        <Caret Line="2688" Column="27" TopLine="2662"/>
+        <Caret Line="2766" Column="116" TopLine="2739"/>
       </Position4>
       <Position5>
         <Filename Value="m_menu.pas"/>
-        <Caret Line="2707" Column="26" TopLine="2679"/>
+        <Caret Line="4804" Column="39" TopLine="4779"/>
       </Position5>
       <Position6>
         <Filename Value="m_menu.pas"/>
-        <Caret Line="2729" Column="22" TopLine="2702"/>
+        <Caret Line="4927" Column="21" TopLine="4901"/>
       </Position6>
       <Position7>
         <Filename Value="m_menu.pas"/>
-        <Caret Line="2731" Column="69" TopLine="2704"/>
       </Position7>
       <Position8>
-        <Filename Value="m_menu.pas"/>
-        <Caret Line="2755" Column="13" TopLine="2726"/>
+        <Filename Value="r_plane.pas"/>
+        <Caret Line="478" Column="22" TopLine="447"/>
       </Position8>
       <Position9>
-        <Filename Value="m_menu.pas"/>
-        <Caret Line="2766" Column="116" TopLine="2739"/>
+        <Filename Value="r_plane.pas"/>
+        <Caret Line="479" TopLine="462"/>
       </Position9>
       <Position10>
-        <Filename Value="m_menu.pas"/>
-        <Caret Line="4804" Column="39" TopLine="4779"/>
+        <Filename Value="m_defs.pas"/>
+        <Caret Line="195" Column="25" TopLine="176"/>
       </Position10>
       <Position11>
-        <Filename Value="m_menu.pas"/>
-        <Caret Line="4927" Column="21" TopLine="4901"/>
+        <Filename Value="m_defs.pas"/>
+        <Caret Line="64" TopLine="49"/>
       </Position11>
       <Position12>
         <Filename Value="m_menu.pas"/>
+        <Caret Line="4926" Column="19" TopLine="4911"/>
       </Position12>
       <Position13>
-        <Filename Value="r_plane.pas"/>
-        <Caret Line="478" Column="22" TopLine="447"/>
+        <Filename Value="m_menu.pas"/>
+        <Caret Line="137" Column="6" TopLine="116"/>
       </Position13>
       <Position14>
-        <Filename Value="r_plane.pas"/>
-        <Caret Line="479" TopLine="462"/>
+        <Filename Value="m_menu.pas"/>
+        <Caret Line="4926" Column="19" TopLine="4910"/>
       </Position14>
       <Position15>
         <Filename Value="m_defs.pas"/>
-        <Caret Line="195" Column="25" TopLine="176"/>
+        <Caret Line="64" TopLine="49"/>
       </Position15>
       <Position16>
         <Filename Value="m_defs.pas"/>
-        <Caret Line="64" TopLine="49"/>
+        <Caret Line="1290" Column="43" TopLine="1276"/>
       </Position16>
       <Position17>
-        <Filename Value="m_menu.pas"/>
-        <Caret Line="4926" Column="19" TopLine="4911"/>
-      </Position17>
-      <Position18>
-        <Filename Value="m_menu.pas"/>
-        <Caret Line="137" Column="6" TopLine="116"/>
-      </Position18>
-      <Position19>
-        <Filename Value="m_menu.pas"/>
-        <Caret Line="4926" Column="19" TopLine="4910"/>
-      </Position19>
-      <Position20>
-        <Filename Value="m_defs.pas"/>
-        <Caret Line="64" TopLine="49"/>
-      </Position20>
-      <Position21>
-        <Filename Value="m_defs.pas"/>
-        <Caret Line="1290" Column="43" TopLine="1276"/>
-      </Position21>
-      <Position22>
         <Filename Value="r_plane.pas"/>
         <Caret Line="479" Column="38" TopLine="462"/>
-      </Position22>
-      <Position23>
+      </Position17>
+      <Position18>
         <Filename Value="r_plane.pas"/>
         <Caret Line="477" Column="69" TopLine="462"/>
-      </Position23>
-      <Position24>
+      </Position18>
+      <Position19>
         <Filename Value="r_intrpl.pas"/>
         <Caret Line="430" Column="38" TopLine="371"/>
-      </Position24>
-      <Position25>
+      </Position19>
+      <Position20>
         <Filename Value="r_intrpl.pas"/>
         <Caret Line="379" TopLine="348"/>
-      </Position25>
-      <Position26>
+      </Position20>
+      <Position21>
         <Filename Value="r_intrpl.pas"/>
-      </Position26>
-      <Position27>
+      </Position21>
+      <Position22>
         <Filename Value="m_menu.pas"/>
         <Caret Line="4922" Column="54" TopLine="4911"/>
-      </Position27>
-      <Position28>
+      </Position22>
+      <Position23>
         <Filename Value="m_menu.pas"/>
         <Caret Line="2762" Column="158" TopLine="2741"/>
-      </Position28>
-      <Position29>
+      </Position23>
+      <Position24>
         <Filename Value="m_menu.pas"/>
         <Caret Line="4940" Column="37" TopLine="4914"/>
+      </Position24>
+      <Position25>
+        <Filename Value="p_saveg.pas"/>
+        <Caret Line="701" Column="26" TopLine="690"/>
+      </Position25>
+      <Position26>
+        <Filename Value="p_saveg.pas"/>
+        <Caret Line="335" Column="5" TopLine="304"/>
+      </Position26>
+      <Position27>
+        <Filename Value="p_saveg.pas"/>
+        <Caret Line="352" Column="67" TopLine="327"/>
+      </Position27>
+      <Position28>
+        <Filename Value="p_saveg.pas"/>
+        <Caret Line="443" Column="48" TopLine="428"/>
+      </Position28>
+      <Position29>
+        <Filename Value="p_saveg.pas"/>
+        <Caret Line="440" Column="21" TopLine="428"/>
       </Position29>
+      <Position30>
+        <Filename Value="m_menu.pas"/>
+        <Caret Line="980" Column="9" TopLine="964"/>
+      </Position30>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>

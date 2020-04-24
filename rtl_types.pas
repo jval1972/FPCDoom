@@ -48,6 +48,7 @@ type
   rtl_mobjinfo_t = record
     name: string;
     inheritsfrom: string;
+    replacesid: integer;
     doomednum: integer;
     spawnstate: integer;
     spawnhealth: integer;

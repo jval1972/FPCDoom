@@ -268,7 +268,11 @@ begin
   for i := 0 to sec.linecount - 1 do
   begin
     check := sec.Lines[i];
-    if (check.flags and ML_TWOSIDED) = 0 then
+    if check.flags and ML_TWOSIDED = 0 then
+      continue;
+
+    // JVAL: 20200424 - Avoid crash in false ML_TWOSIDED flag
+    if (check.sidenum[1] < 0) or (check.sidenum[0] < 0) then
       continue;
 
     P_LineOpening(check);

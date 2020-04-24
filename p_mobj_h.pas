@@ -35,6 +35,7 @@ uses
   m_fixed,
   info_h,
   doomdata,
+  r_renderstyle,
   tables, // angle_t
   d_think; // We need the thinker_t stuff.
 
