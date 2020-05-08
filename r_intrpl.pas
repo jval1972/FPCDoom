@@ -314,7 +314,7 @@ begin
   player := @players[displayplayer];
   R_AddInterpolationItem(@player.lookupdown, iinteger); // JVAL Look Up/Down
   R_AddInterpolationItem(@player.lookleftright, ibyte);
-//  R_AddInterpolationItem(@player.viewz, iinteger);
+  R_AddInterpolationItem(@player.viewz, iinteger);
   R_AddInterpolationItem(@teleporttics[displayplayer], iinteger);
 
   // Interpolate Sectors

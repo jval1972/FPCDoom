@@ -25,7 +25,7 @@
       <MajorVersionNr Value="1"/>
       <MinorVersionNr Value="12"/>
       <RevisionNr Value="6"/>
-      <BuildNr Value="126"/>
+      <BuildNr Value="127"/>
       <StringTable Comments="http://sourceforge.net/projects/fpcdoom/" CompanyName="Jim Valavanis" FileDescription="Source port of the game Doom developed in FPC/Lazarus" InternalName="FPCDoom" LegalCopyright="Copyright 2005 - 2020, Jim Valavanis" LegalTrademarks="Copyright 2005 - 2020, Jim Valavanis" OriginalFilename="FPCDoom.exe" ProductName="FPCDoom" ProductVersion="1.12"/>
     </VersionInfo>
     <BuildModes Count="1">
