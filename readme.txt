@@ -42,7 +42,10 @@ Features:
 History - Change log
 --------------------
 
+Version 1.12.6.127 (20200630)
+----------------------------
 Avoid crash in false ML_TWOSIDED flag in P_RecursiveSound()
+Fixes to uncapped framerate, runs smoother.
 
 Version 1.12.6.126 (20200405)
 ----------------------------
