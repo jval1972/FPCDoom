@@ -940,7 +940,8 @@ begin
     if P_LookForPlayers(actor, True) then
       exit; // got a new target
 
-    P_SetMobjState(actor, statenum_t(actor.info.spawnstate));
+    if actor.state <> @states[actor.info.spawnstate] then
+      P_SetMobjState(actor, statenum_t(actor.info.spawnstate));
     exit;
   end;
 
