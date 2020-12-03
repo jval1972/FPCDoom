@@ -32,7 +32,7 @@
       <Unit3>
         <Filename Value="c_con.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="6"/>
         <TopLine Value="701"/>
         <CursorPos X="21" Y="718"/>
         <UsageCount Value="204"/>
@@ -41,10 +41,12 @@
       <Unit4>
         <Filename Value="deh_main.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="25"/>
         <TopLine Value="634"/>
-        <CursorPos X="46" Y="649"/>
+        <CursorPos X="71" Y="655"/>
         <UsageCount Value="204"/>
+        <Loaded Value="True"/>
       </Unit4>
       <Unit5>
         <Filename Value="d_english.pas"/>
@@ -65,7 +67,7 @@
       <Unit7>
         <Filename Value="d_fpc.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="6"/>
+        <EditorIndex Value="7"/>
         <TopLine Value="2703"/>
         <CursorPos X="16" Y="2726"/>
         <UsageCount Value="204"/>
@@ -83,7 +85,7 @@
       <Unit9>
         <Filename Value="d_main.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="13"/>
+        <EditorIndex Value="14"/>
         <TopLine Value="574"/>
         <CursorPos X="22" Y="589"/>
         <UsageCount Value="204"/>
@@ -100,8 +102,8 @@
       <Unit11>
         <Filename Value="d_player.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="4"/>
-        <TopLine Value="221"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="220"/>
         <CursorPos X="16" Y="233"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
@@ -133,10 +135,9 @@
       <Unit15>
         <Filename Value="doomdef.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="16"/>
-        <TopLine Value="94"/>
-        <CursorPos X="13" Y="110"/>
+        <EditorIndex Value="17"/>
+        <TopLine Value="121"/>
+        <CursorPos X="33" Y="135"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit15>
@@ -151,7 +152,7 @@
       <Unit17>
         <Filename Value="doomtype.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="19"/>
+        <EditorIndex Value="20"/>
         <TopLine Value="11"/>
         <CursorPos X="35" Y="22"/>
         <UsageCount Value="204"/>
@@ -176,7 +177,7 @@
       <Unit20>
         <Filename Value="g_game.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="12"/>
+        <EditorIndex Value="13"/>
         <TopLine Value="972"/>
         <CursorPos X="21" Y="987"/>
         <UsageCount Value="204"/>
@@ -199,7 +200,7 @@
       <Unit23>
         <Filename Value="i_input.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="20"/>
+        <EditorIndex Value="21"/>
         <TopLine Value="62"/>
         <CursorPos X="9" Y="72"/>
         <UsageCount Value="204"/>
@@ -216,7 +217,7 @@
       <Unit25>
         <Filename Value="i_main.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="14"/>
+        <EditorIndex Value="15"/>
         <TopLine Value="4"/>
         <CursorPos X="43" Y="135"/>
         <UsageCount Value="204"/>
@@ -256,7 +257,7 @@
       <Unit30>
         <Filename Value="i_system.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="9"/>
+        <EditorIndex Value="10"/>
         <TopLine Value="248"/>
         <CursorPos Y="265"/>
         <UsageCount Value="204"/>
@@ -265,7 +266,7 @@
       <Unit31>
         <Filename Value="i_video.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="15"/>
+        <EditorIndex Value="16"/>
         <TopLine Value="99"/>
         <CursorPos X="34" Y="113"/>
         <UsageCount Value="204"/>
@@ -324,7 +325,7 @@
         <Filename Value="m_defs.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="24"/>
-        <TopLine Value="179"/>
+        <TopLine Value="278"/>
         <CursorPos X="21" Y="201"/>
         <ExtraEditorCount Value="1"/>
         <ExtraEditor1>
@@ -338,7 +339,7 @@
       <Unit39>
         <Filename Value="m_fixed.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="18"/>
+        <EditorIndex Value="19"/>
         <TopLine Value="104"/>
         <CursorPos X="19" Y="118"/>
         <UsageCount Value="204"/>
@@ -347,7 +348,7 @@
       <Unit40>
         <Filename Value="m_menu.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="7"/>
+        <EditorIndex Value="8"/>
         <TopLine Value="964"/>
         <CursorPos X="9" Y="980"/>
         <UsageCount Value="204"/>
@@ -356,7 +357,7 @@
       <Unit41>
         <Filename Value="m_misc.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="11"/>
+        <EditorIndex Value="12"/>
         <TopLine Value="320"/>
         <CursorPos X="26" Y="333"/>
         <UsageCount Value="204"/>
@@ -405,8 +406,8 @@
       <Unit47>
         <Filename Value="p_enemy.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="8"/>
-        <TopLine Value="246"/>
+        <EditorIndex Value="9"/>
+        <TopLine Value="456"/>
         <CursorPos X="36" Y="260"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
@@ -592,7 +593,7 @@
       <Unit70>
         <Filename Value="r_data.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="4"/>
         <TopLine Value="440"/>
         <CursorPos X="57" Y="456"/>
         <UsageCount Value="204"/>
@@ -626,8 +627,8 @@
         <Filename Value="r_intrpl.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="306"/>
-        <CursorPos Y="317"/>
+        <TopLine Value="303"/>
+        <CursorPos X="34" Y="309"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit74>
@@ -792,8 +793,8 @@
       <Unit94>
         <Filename Value="v_video.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="17"/>
-        <TopLine Value="266"/>
+        <EditorIndex Value="18"/>
+        <TopLine Value="167"/>
         <CursorPos X="40" Y="283"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
@@ -816,7 +817,7 @@
       <Unit97>
         <Filename Value="wi_stuff.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="3"/>
         <TopLine Value="777"/>
         <CursorPos X="21" Y="789"/>
         <UsageCount Value="204"/>
@@ -897,7 +898,7 @@
       <Unit107>
         <Filename Value="t_png.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="10"/>
+        <EditorIndex Value="11"/>
         <TopLine Value="4215"/>
         <CursorPos X="45" Y="4238"/>
         <UsageCount Value="200"/>
@@ -922,10 +923,11 @@
       <Unit110>
         <Filename Value="r_render.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="360"/>
-        <CursorPos X="18" Y="391"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="341"/>
+        <CursorPos X="31" Y="539"/>
         <UsageCount Value="200"/>
+        <Loaded Value="True"/>
       </Unit110>
       <Unit111>
         <Filename Value="r_lightmap.pas"/>
@@ -1055,14 +1057,13 @@
       </Unit127>
       <Unit128>
         <Filename Value="C:\lazarus\fpc\3.0.4\source\rtl\win\wininc\defines.inc"/>
-        <EditorIndex Value="21"/>
-        <TopLine Value="4825"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="5047"/>
         <CursorPos X="6" Y="4841"/>
-        <UsageCount Value="15"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="17"/>
       </Unit128>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="29">
+    <JumpHistory Count="29" HistoryIndex="28">
       <Position1>
         <Filename Value="t_png.pas"/>
       </Position1>
@@ -1163,24 +1164,21 @@
         <Caret Line="393" Column="21" TopLine="385"/>
       </Position25>
       <Position26>
-        <Filename Value="C:\lazarus\fpc\3.0.4\source\rtl\win\wininc\defines.inc"/>
-      </Position26>
-      <Position27>
         <Filename Value="r_intrpl.pas"/>
         <Caret Line="310" Column="31" TopLine="306"/>
-      </Position27>
-      <Position28>
+      </Position26>
+      <Position27>
         <Filename Value="c_con.pas"/>
         <Caret Line="718" Column="21" TopLine="701"/>
-      </Position28>
-      <Position29>
+      </Position27>
+      <Position28>
         <Filename Value="r_intrpl.pas"/>
         <Caret Line="317" TopLine="306"/>
-      </Position29>
-      <Position30>
+      </Position28>
+      <Position29>
         <Filename Value="d_main.pas"/>
         <Caret Line="589" Column="22" TopLine="574"/>
-      </Position30>
+      </Position29>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
