@@ -46,4 +46,20 @@ Accurate software rendering.
 [version 1.11.1.18 (20180114 - win32)](https://sourceforge.net/projects/fpcdoom/files/FPCDoom_1.11.1.18/FPCDoom_1.11.1.18_bin.zip/download)
 
 
+## Screenshots
+
+![Screenshot 1](https://i.postimg.cc/nrMS7L9G/LIGHTMAP-01.png "Screenshot 1")
+
+
+![Screenshot 2](https://i.postimg.cc/pTW6WC27/PALETTE-4-4-4-02.png "Screenshot 2")
+
+
+![Screenshot 3](https://i.postimg.cc/hGbYR6qT/menu-1-detail.jpg "Screenshot 3")
+
+
+![Screenshot 4](https://i.postimg.cc/tgHcfy89/menu-2-aspect.jpg "Screenshot 4")
+
+
+![Screenshot 5](https://i.postimg.cc/ryhvpBR9/menu-5-mirror.jpg "Screenshot 5")
+
 
