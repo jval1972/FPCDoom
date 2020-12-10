@@ -14,7 +14,7 @@ Dynamic lights.
 
 Accurate software rendering.
 
-## Binaries
+## Downloads
 [version 1.12.6.127 (202000630 - win32)](https://sourceforge.net/projects/fpcdoom/files/FPCDoom_1.12.6.127/FPCDoom_1.12.6.127_bin.zip/download)
 
 [version 1.12.6.126 (202000405 - win32)](https://sourceforge.net/projects/fpcdoom/files/FPCDoom_1.12.6.126/FPCDoom_1.12.6.126_bin.zip/download)
