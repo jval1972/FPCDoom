@@ -43,6 +43,7 @@ History - Change log
 --------------------
 Corrected dehacked parsing of the "CODEP FRAME" keyword.
 Prevent infinite loop for erronous A_Chase() placement.
+Fixed serious bug while deallocating thinkers.
 
 Version 1.12.6.127 (20200630)
 ----------------------------

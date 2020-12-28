@@ -113,6 +113,7 @@ end;
 procedure P_RunThinkers;
 var
   currentthinker: Pthinker_t;
+  nextthinker: Pthinker_t;
 begin
   currentthinker := thinkercap.next;
   while currentthinker <> @thinkercap do
@@ -122,18 +123,22 @@ begin
       // time to remove it
       currentthinker.next.prev := currentthinker.prev;
       currentthinker.prev.next := currentthinker.next;
+      nextthinker := currentthinker.next;
       Z_Free(currentthinker);
+      currentthinker := nextthinker;
     end
     else
     begin
       if Assigned(currentthinker._function.acp1) then
-      if not isgamefreezed then
-        currentthinker._function.acp1(currentthinker)
-      else if @currentthinker._function.acp1 = @P_MobjThinker then
-        if Pmobj_t(currentthinker).player <> nil then
-          currentthinker._function.acp1(currentthinker);
+      begin
+        if not isgamefreezed then
+          currentthinker._function.acp1(currentthinker)
+        else if @currentthinker._function.acp1 = @P_MobjThinker then
+          if Pmobj_t(currentthinker).player <> nil then
+            currentthinker._function.acp1(currentthinker);
+      end;
+      currentthinker := currentthinker.next;
     end;
-    currentthinker := currentthinker.next;
   end;
 end;
 
@@ -154,7 +159,7 @@ begin
     exit;
 
   if (not demoplayback) and (not demorecording) and C_IsConsoleActive and (not netgame) and (leveltime <> 0) then
-    exit;   
+    exit;
 
   for i := 0 to MAXPLAYERS - 1 do
     if playeringame[i] then
