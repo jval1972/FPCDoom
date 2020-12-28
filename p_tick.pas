@@ -123,9 +123,9 @@ begin
       // time to remove it
       currentthinker.next.prev := currentthinker.prev;
       currentthinker.prev.next := currentthinker.next;
-      nextthinker := currentthinker.next;
+      nextthinker := currentthinker.next; // JVAL: 20201228 - Keep next pointer in nextthinker
       Z_Free(currentthinker);
-      currentthinker := nextthinker;
+      currentthinker := nextthinker;      // JVAL: 20201228 - Set currentthinker to next pointer
     end
     else
     begin

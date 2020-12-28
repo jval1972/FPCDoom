@@ -40,10 +40,9 @@
       <Unit4>
         <Filename Value="deh_main.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
         <TopLine Value="34"/>
-        <CursorPos X="25" Y="10"/>
+        <CursorPos X="13" Y="40"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit4>
@@ -542,10 +541,12 @@
       <Unit66>
         <Filename Value="p_tick.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="102"/>
-        <CursorPos X="26" Y="128"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="108"/>
+        <CursorPos Y="128"/>
         <UsageCount Value="204"/>
+        <Loaded Value="True"/>
       </Unit66>
       <Unit67>
         <Filename Value="p_user.pas"/>
@@ -614,10 +615,11 @@
       <Unit75>
         <Filename Value="r_main.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="503"/>
-        <CursorPos Y="523"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="1221"/>
+        <CursorPos X="12" Y="1360"/>
         <UsageCount Value="204"/>
+        <Loaded Value="True"/>
       </Unit75>
       <Unit76>
         <Filename Value="r_mmx.pas"/>
