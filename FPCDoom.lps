@@ -101,9 +101,9 @@
       <Unit11>
         <Filename Value="d_player.pas"/>
         <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="7"/>
-        <TopLine Value="220"/>
-        <CursorPos X="16" Y="233"/>
+        <CursorPos Y="27"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit11>
@@ -257,8 +257,7 @@
         <Filename Value="i_system.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="17"/>
-        <TopLine Value="248"/>
-        <CursorPos X="27" Y="261"/>
+        <CursorPos X="26" Y="6"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit30>
@@ -561,10 +560,9 @@
       <Unit66>
         <Filename Value="p_tick.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="3"/>
-        <TopLine Value="105"/>
-        <CursorPos X="37" Y="128"/>
+        <TopLine Value="102"/>
+        <CursorPos X="26" Y="128"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit66>
@@ -1069,124 +1067,124 @@
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="i_input.pas"/>
-        <Caret Line="393" Column="21" TopLine="385"/>
-      </Position1>
-      <Position2>
         <Filename Value="r_intrpl.pas"/>
         <Caret Line="310" Column="31" TopLine="306"/>
-      </Position2>
-      <Position3>
+      </Position1>
+      <Position2>
         <Filename Value="c_con.pas"/>
         <Caret Line="718" Column="21" TopLine="701"/>
-      </Position3>
-      <Position4>
+      </Position2>
+      <Position3>
         <Filename Value="r_intrpl.pas"/>
         <Caret Line="317" TopLine="306"/>
-      </Position4>
-      <Position5>
+      </Position3>
+      <Position4>
         <Filename Value="d_main.pas"/>
         <Caret Line="589" Column="22" TopLine="574"/>
+      </Position4>
+      <Position5>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="643" Column="52" TopLine="634"/>
       </Position5>
       <Position6>
         <Filename Value="deh_main.pas"/>
-        <Caret Line="643" Column="52" TopLine="634"/>
+        <Caret Line="1957" Column="41" TopLine="1941"/>
       </Position6>
       <Position7>
-        <Filename Value="deh_main.pas"/>
-        <Caret Line="1957" Column="41" TopLine="1941"/>
+        <Filename Value="p_enemy.pas"/>
+        <Caret Line="52" Column="18" TopLine="36"/>
       </Position7>
       <Position8>
         <Filename Value="p_enemy.pas"/>
-        <Caret Line="52" Column="18" TopLine="36"/>
+        <Caret Line="944" Column="64" TopLine="927"/>
       </Position8>
       <Position9>
-        <Filename Value="p_enemy.pas"/>
-        <Caret Line="944" Column="64" TopLine="927"/>
-      </Position9>
-      <Position10>
         <Filename Value="m_menu.pas"/>
         <Caret Line="977" Column="36" TopLine="964"/>
+      </Position9>
+      <Position10>
+        <Filename Value="w_wad.pas"/>
+        <Caret Line="638" Column="10" TopLine="622"/>
       </Position10>
       <Position11>
         <Filename Value="w_wad.pas"/>
-        <Caret Line="638" Column="10" TopLine="622"/>
+        <Caret Line="617" Column="14" TopLine="601"/>
       </Position11>
       <Position12>
         <Filename Value="w_wad.pas"/>
-        <Caret Line="617" Column="14" TopLine="601"/>
+        <Caret Line="614" Column="14" TopLine="601"/>
       </Position12>
       <Position13>
-        <Filename Value="w_wad.pas"/>
-        <Caret Line="614" Column="14" TopLine="601"/>
-      </Position13>
-      <Position14>
         <Filename Value="wi_stuff.pas"/>
         <Caret Line="1537" Column="15" TopLine="1522"/>
+      </Position13>
+      <Position14>
+        <Filename Value="w_wad.pas"/>
+        <Caret Line="99" Column="10" TopLine="83"/>
       </Position14>
       <Position15>
         <Filename Value="w_wad.pas"/>
-        <Caret Line="99" Column="10" TopLine="83"/>
+        <Caret Line="614" Column="14" TopLine="598"/>
       </Position15>
       <Position16>
-        <Filename Value="w_wad.pas"/>
-        <Caret Line="614" Column="14" TopLine="598"/>
+        <Filename Value="sc_actordef.pas"/>
+        <Caret Line="829" Column="38" TopLine="720"/>
       </Position16>
       <Position17>
         <Filename Value="sc_actordef.pas"/>
-        <Caret Line="829" Column="38" TopLine="720"/>
+        <Caret Line="130" Column="38" TopLine="113"/>
       </Position17>
       <Position18>
-        <Filename Value="sc_actordef.pas"/>
-        <Caret Line="130" Column="38" TopLine="113"/>
+        <Filename Value="sc_params.pas"/>
+        <Caret Line="87" Column="36" TopLine="80"/>
       </Position18>
       <Position19>
         <Filename Value="sc_params.pas"/>
-        <Caret Line="87" Column="36" TopLine="80"/>
+        <Caret Line="95" Column="9" TopLine="80"/>
       </Position19>
       <Position20>
-        <Filename Value="sc_params.pas"/>
-        <Caret Line="95" Column="9" TopLine="80"/>
+        <Filename Value="sc_actordef.pas"/>
+        <Caret Line="130" Column="33" TopLine="113"/>
       </Position20>
       <Position21>
         <Filename Value="sc_actordef.pas"/>
-        <Caret Line="130" Column="33" TopLine="113"/>
+        <Caret Line="193" Column="12" TopLine="178"/>
       </Position21>
       <Position22>
         <Filename Value="sc_actordef.pas"/>
-        <Caret Line="193" Column="12" TopLine="178"/>
+        <Caret Line="208" Column="14" TopLine="182"/>
       </Position22>
       <Position23>
-        <Filename Value="sc_actordef.pas"/>
-        <Caret Line="208" Column="14" TopLine="182"/>
-      </Position23>
-      <Position24>
         <Filename Value="r_lightmap.pas"/>
         <Caret Line="307" Column="7" TopLine="291"/>
+      </Position23>
+      <Position24>
+        <Filename Value="r_draw_span.pas"/>
+        <Caret Line="169" Column="45" TopLine="138"/>
       </Position24>
       <Position25>
         <Filename Value="r_draw_span.pas"/>
-        <Caret Line="169" Column="45" TopLine="138"/>
+        <Caret Line="51" Column="10" TopLine="42"/>
       </Position25>
       <Position26>
         <Filename Value="r_draw_span.pas"/>
-        <Caret Line="51" Column="10" TopLine="42"/>
+        <Caret Line="212" Column="15" TopLine="199"/>
       </Position26>
       <Position27>
-        <Filename Value="r_draw_span.pas"/>
-        <Caret Line="212" Column="15" TopLine="199"/>
-      </Position27>
-      <Position28>
         <Filename Value="p_tick.pas"/>
         <Caret Line="114" Column="10" TopLine="100"/>
-      </Position28>
-      <Position29>
+      </Position27>
+      <Position28>
         <Filename Value="p_setup.pas"/>
         <Caret Line="773" Column="3" TopLine="756"/>
+      </Position28>
+      <Position29>
+        <Filename Value="p_tick.pas"/>
+        <Caret Line="59" Column="3" TopLine="43"/>
       </Position29>
       <Position30>
         <Filename Value="p_tick.pas"/>
-        <Caret Line="59" Column="3" TopLine="43"/>
+        <Caret Line="128" Column="26" TopLine="102"/>
       </Position30>
     </JumpHistory>
     <RunParams>
