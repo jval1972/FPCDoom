@@ -42,6 +42,8 @@ Features:
 History - Change log
 --------------------
 
+Displays a warning if no player start found.
+
 version 1.13.16.128 (20201228)
 ------------------------------
 Corrected dehacked parsing of the "CODEP FRAME" keyword.
