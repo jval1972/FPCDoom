@@ -332,10 +332,12 @@
       <Unit40>
         <Filename Value="m_menu.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="964"/>
-        <CursorPos X="36" Y="977"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="1159"/>
+        <CursorPos Y="1182"/>
         <UsageCount Value="204"/>
+        <Loaded Value="True"/>
       </Unit40>
       <Unit41>
         <Filename Value="m_misc.pas"/>
@@ -541,7 +543,6 @@
       <Unit66>
         <Filename Value="p_tick.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="3"/>
         <TopLine Value="108"/>
         <CursorPos Y="128"/>
@@ -1036,11 +1037,23 @@
         <UsageCount Value="16"/>
       </Unit128>
     </Units>
-    <JumpHistory Count="1">
+    <JumpHistory Count="4" HistoryIndex="3">
       <Position1>
         <Filename Value="doomdef.pas"/>
         <Caret Line="135" Column="33" TopLine="121"/>
       </Position1>
+      <Position2>
+        <Filename Value="m_menu.pas"/>
+        <Caret Line="977" Column="36" TopLine="964"/>
+      </Position2>
+      <Position3>
+        <Filename Value="m_menu.pas"/>
+        <Caret Line="1151" Column="28" TopLine="1127"/>
+      </Position3>
+      <Position4>
+        <Filename Value="m_menu.pas"/>
+        <Caret Line="1153" Column="13" TopLine="1127"/>
+      </Position4>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
