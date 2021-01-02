@@ -42,6 +42,7 @@ Features:
 History - Change log
 --------------------
 
+Key bindings can now accept SHIFT & CTRL keys.
 Displays a warning if no player start found.
 
 version 1.13.16.128 (20201228)
