@@ -1709,7 +1709,7 @@ begin
   if (p <> 0) and (p < myargc - 1) then
     autoexecfile := myargv[p + 1]
   else
-    autoexecfile := DEFAUTOEXEC;
+    autoexecfile := M_SaveFileName(DEFAUTOEXEC);
 
   printf('M_InitMenus: Initializing menus.'#13#10);
   M_InitMenus;
