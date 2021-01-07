@@ -114,8 +114,7 @@ uses
   hu_stuff,
   s_sound,
   info,
-  info_rnd,
-  doomstat;
+  info_rnd;
 
 //
 // P_SetMobjState
@@ -1378,6 +1377,7 @@ begin
   if G_NeedsCompatibilityMode then
     exit;
 
+
   // don't splash if landing on the edge above water/lava/etc....
   if thing.floorz <> Psubsector_t(thing.subsector).sector.floorheight then
     exit;
@@ -1392,11 +1392,14 @@ begin
         begin
           P_SpawnMobj(thing.x, thing.y, ONFLOORZ, P_ResolveMobjType('SPLASH 2', @MT_SPLASHBASE));
           mo := P_SpawnMobj(thing.x, thing.y, ONFLOORZ, P_ResolveMobjType('SPLASH', @MT_SPLASH));
-          mo.target := thing;
-          mo.momx := (P_Random - P_Random) * 256;
-          mo.momy := (P_Random - P_Random) * 256;
-          mo.momz := 2 * FRACUNIT + (P_Random * 256);
-          S_StartSound(mo, Ord(sfx_gloop));
+          if mo <> nil then
+          begin
+            mo.target := thing;
+            mo.momx := (P_Random - P_Random) * 256;
+            mo.momy := (P_Random - P_Random) * 256;
+            mo.momz := 2 * FRACUNIT + (P_Random * 256);
+            S_StartSound(mo, Ord(sfx_gloop));
+          end;
         end;
         result := FLOOR_WATER;
         exit;
@@ -1407,8 +1410,11 @@ begin
         begin
           P_SpawnMobj(thing.x, thing.y, ONFLOORZ, P_ResolveMobjType('LAVA SPLASH', @MT_LAVASPLASH));
           mo := P_SpawnMobj(thing.x, thing.y, ONFLOORZ, P_ResolveMobjType('LAVA SMOKE', @MT_LAVASMOKE));
-          mo.momz := FRACUNIT + (P_Random * 128);
-          S_StartSound(mo, Ord(sfx_burn));
+          if mo <> nil then
+          begin
+            mo.momz := FRACUNIT + (P_Random * 128);
+            S_StartSound(mo, Ord(sfx_burn));
+          end;
         end;
         result := FLOOR_LAVA;
         exit;
@@ -1419,10 +1425,13 @@ begin
         begin
           P_SpawnMobj(thing.x, thing.y, ONFLOORZ, P_ResolveMobjType('SLUDGE SPLASH', @MT_SLUDGESPLASH));
           mo := P_SpawnMobj(thing.x, thing.y, ONFLOORZ, P_ResolveMobjType('SLUDGE CHUNK', @MT_SLUDGECHUNK));
-          mo.target := thing;
-          mo.momx := (P_Random - P_Random) * 256;
-          mo.momy := (P_Random - P_Random) * 256;
-          mo.momz := FRACUNIT + (P_Random * 256);
+          if mo <> nil then
+          begin
+            mo.target := thing;
+            mo.momx := (P_Random - P_Random) * 256;
+            mo.momy := (P_Random - P_Random) * 256;
+            mo.momz := FRACUNIT + (P_Random * 256);
+          end;
         end;
         result := FLOOR_SLUDGE;
         exit;
@@ -1433,10 +1442,13 @@ begin
         begin
           P_SpawnMobj(thing.x, thing.y, ONFLOORZ, P_ResolveMobjType('NUKAGE SPLASH', @MT_NUKAGESPLASH));
           mo := P_SpawnMobj(thing.x, thing.y, ONFLOORZ, P_ResolveMobjType('NUKAGE CHUNK', @MT_NUKAGECHUNK));
-          mo.target := thing;
-          mo.momx := (P_Random - P_Random) * 256;
-          mo.momy := (P_Random - P_Random) * 256;
-          mo.momz := FRACUNIT + (P_Random * 256);
+          if mo <> nil then
+          begin
+            mo.target := thing;
+            mo.momx := (P_Random - P_Random) * 256;
+            mo.momy := (P_Random - P_Random) * 256;
+            mo.momz := FRACUNIT + (P_Random * 256);
+          end;
         end;
         result := FLOOR_SLUDGE;
         exit;
