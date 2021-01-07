@@ -104,6 +104,7 @@ uses
   p_spec in 'p_spec.pas',
   p_switch in 'p_switch.pas',
   p_telept in 'p_telept.pas',
+  p_terrain in 'p_terrain.pas',
   p_tick in 'p_tick.pas',
   p_user in 'p_user.pas',
   r_aspect in 'r_aspect.pas',
