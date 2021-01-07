@@ -1366,6 +1366,7 @@ end;
 function P_HitFloor(thing: Pmobj_t): integer;
 var
   mo: Pmobj_t;
+  typ: integer;
 begin
   result := FLOOR_SOLID;
 
@@ -1390,10 +1391,13 @@ begin
       // then we force splashes
         if allowterrainsplashes or demorecording or demoplayback then
         begin
-          P_SpawnMobj(thing.x, thing.y, ONFLOORZ, P_ResolveMobjType('SPLASH 2', @MT_SPLASHBASE));
-          mo := P_SpawnMobj(thing.x, thing.y, ONFLOORZ, P_ResolveMobjType('SPLASH', @MT_SPLASH));
-          if mo <> nil then
+          typ := P_ResolveMobjType('SPLASH 2', @MT_SPLASHBASE);
+          if typ >= 0 then
+            P_SpawnMobj(thing.x, thing.y, ONFLOORZ, typ);
+          typ := P_ResolveMobjType('SPLASH', @MT_SPLASH);
+          if typ >= 0 then
           begin
+            mo := P_SpawnMobj(thing.x, thing.y, ONFLOORZ, typ);
             mo.target := thing;
             mo.momx := (P_Random - P_Random) * 256;
             mo.momy := (P_Random - P_Random) * 256;
@@ -1408,10 +1412,13 @@ begin
       begin
         if allowterrainsplashes or demorecording or demoplayback then
         begin
-          P_SpawnMobj(thing.x, thing.y, ONFLOORZ, P_ResolveMobjType('LAVA SPLASH', @MT_LAVASPLASH));
-          mo := P_SpawnMobj(thing.x, thing.y, ONFLOORZ, P_ResolveMobjType('LAVA SMOKE', @MT_LAVASMOKE));
-          if mo <> nil then
+          typ := P_ResolveMobjType('LAVA SPLASH', @MT_LAVASPLASH);
+          if typ >= 0 then
+            P_SpawnMobj(thing.x, thing.y, ONFLOORZ, typ);
+          typ := P_ResolveMobjType('LAVA SMOKE', @MT_LAVASMOKE);
+          if typ >= 0 then
           begin
+            mo := P_SpawnMobj(thing.x, thing.y, ONFLOORZ, typ);
             mo.momz := FRACUNIT + (P_Random * 128);
             S_StartSound(mo, Ord(sfx_burn));
           end;
@@ -1423,10 +1430,13 @@ begin
       begin
         if allowterrainsplashes or demorecording or demoplayback then
         begin
-          P_SpawnMobj(thing.x, thing.y, ONFLOORZ, P_ResolveMobjType('SLUDGE SPLASH', @MT_SLUDGESPLASH));
-          mo := P_SpawnMobj(thing.x, thing.y, ONFLOORZ, P_ResolveMobjType('SLUDGE CHUNK', @MT_SLUDGECHUNK));
-          if mo <> nil then
+          typ := P_ResolveMobjType('SLUDGE SPLASH', @MT_SLUDGESPLASH);
+          if typ >= 0 then
+            P_SpawnMobj(thing.x, thing.y, ONFLOORZ, typ);
+          typ := P_ResolveMobjType('SLUDGE CHUNK', @MT_SLUDGECHUNK);
+          if typ >= 0 then
           begin
+            mo := P_SpawnMobj(thing.x, thing.y, ONFLOORZ, typ);
             mo.target := thing;
             mo.momx := (P_Random - P_Random) * 256;
             mo.momy := (P_Random - P_Random) * 256;
@@ -1440,10 +1450,13 @@ begin
       begin
         if allowterrainsplashes or demorecording or demoplayback then
         begin
-          P_SpawnMobj(thing.x, thing.y, ONFLOORZ, P_ResolveMobjType('NUKAGE SPLASH', @MT_NUKAGESPLASH));
-          mo := P_SpawnMobj(thing.x, thing.y, ONFLOORZ, P_ResolveMobjType('NUKAGE CHUNK', @MT_NUKAGECHUNK));
-          if mo <> nil then
+          typ := P_ResolveMobjType('NUKAGE SPLASH', @MT_NUKAGESPLASH);
+          if typ >= 0 then
+            P_SpawnMobj(thing.x, thing.y, ONFLOORZ, typ);
+          typ := P_ResolveMobjType('NUKAGE CHUNK', @MT_NUKAGECHUNK);
+          if typ >= 0 then
           begin
+            mo := P_SpawnMobj(thing.x, thing.y, ONFLOORZ, typ);
             mo.target := thing;
             mo.momx := (P_Random - P_Random) * 256;
             mo.momy := (P_Random - P_Random) * 256;
