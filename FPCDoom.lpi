@@ -36,13 +36,13 @@
     </PublishOptions>
     <RunParams>
       <local>
-        <CommandLineParams Value="-geom 1920x1080 -iwad doom2.wad"/>
+        <CommandLineParams Value="-nofullscreen -geom 1366x768 -iwad doom2.wad BlackOps.wad"/>
       </local>
       <FormatVersion Value="2"/>
       <Modes Count="1">
         <Mode0 Name="default">
           <local>
-            <CommandLineParams Value="-geom 1920x1080 -iwad doom2.wad"/>
+            <CommandLineParams Value="-nofullscreen -geom 1366x768 -iwad doom2.wad BlackOps.wad"/>
           </local>
         </Mode0>
       </Modes>

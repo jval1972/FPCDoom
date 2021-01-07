@@ -4,7 +4,7 @@
     <PathDelim Value="\"/>
     <Version Value="11"/>
     <BuildModes Active="Default"/>
-    <Units Count="129">
+    <Units Count="130">
       <Unit0>
         <Filename Value="FPCDoom.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -40,9 +40,9 @@
       <Unit4>
         <Filename Value="deh_main.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="8"/>
         <TopLine Value="34"/>
-        <CursorPos X="13" Y="40"/>
+        <CursorPos X="15" Y="42"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit4>
@@ -82,10 +82,11 @@
       <Unit9>
         <Filename Value="d_main.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="574"/>
-        <CursorPos X="22" Y="589"/>
+        <EditorIndex Value="6"/>
+        <TopLine Value="1671"/>
+        <CursorPos X="33" Y="1671"/>
         <UsageCount Value="204"/>
+        <Loaded Value="True"/>
       </Unit9>
       <Unit10>
         <Filename Value="d_net.pas"/>
@@ -130,7 +131,8 @@
       <Unit15>
         <Filename Value="doomdef.pas"/>
         <IsPartOfProject Value="True"/>
-        <CursorPos X="24" Y="5"/>
+        <TopLine Value="34"/>
+        <CursorPos X="6" Y="44"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit15>
@@ -169,9 +171,8 @@
       <Unit20>
         <Filename Value="g_game.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="5"/>
-        <CursorPos Y="795"/>
+        <EditorIndex Value="12"/>
+        <CursorPos X="22" Y="2"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit20>
@@ -262,18 +263,21 @@
       <Unit32>
         <Filename Value="info.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="11572"/>
-        <CursorPos X="12" Y="11588"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="16038"/>
+        <CursorPos X="18" Y="16053"/>
         <UsageCount Value="204"/>
+        <Loaded Value="True"/>
       </Unit32>
       <Unit33>
         <Filename Value="info_h.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="21"/>
-        <CursorPos X="17" Y="37"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="47"/>
+        <CursorPos Y="71"/>
         <UsageCount Value="204"/>
+        <Loaded Value="True"/>
       </Unit33>
       <Unit34>
         <Filename Value="info_rnd.pas"/>
@@ -333,7 +337,7 @@
       <Unit40>
         <Filename Value="m_menu.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="11"/>
         <TopLine Value="1159"/>
         <CursorPos Y="1182"/>
         <UsageCount Value="204"/>
@@ -455,18 +459,20 @@
       <Unit55>
         <Filename Value="p_mobj.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="1079"/>
-        <CursorPos X="19" Y="1097"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="1362"/>
+        <CursorPos X="26" Y="1374"/>
         <UsageCount Value="204"/>
+        <Loaded Value="True"/>
       </Unit55>
       <Unit56>
         <Filename Value="p_mobj_h.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="342"/>
-        <CursorPos X="18" Y="370"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="250"/>
+        <CursorPos X="25" Y="258"/>
         <UsageCount Value="204"/>
+        <Loaded Value="True"/>
       </Unit56>
       <Unit57>
         <Filename Value="p_plats.pas"/>
@@ -543,7 +549,7 @@
       <Unit66>
         <Filename Value="p_tick.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="10"/>
         <TopLine Value="108"/>
         <CursorPos Y="128"/>
         <UsageCount Value="204"/>
@@ -616,7 +622,7 @@
       <Unit75>
         <Filename Value="r_main.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="9"/>
         <TopLine Value="1221"/>
         <CursorPos X="12" Y="1360"/>
         <UsageCount Value="204"/>
@@ -804,9 +810,11 @@
       <Unit98>
         <Filename Value="sc_actordef.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos X="14" Y="208"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="133"/>
+        <CursorPos X="23" Y="144"/>
         <UsageCount Value="200"/>
+        <Loaded Value="True"/>
       </Unit98>
       <Unit99>
         <Filename Value="z_memory.pas"/>
@@ -1036,32 +1044,134 @@
         <CursorPos X="6" Y="4841"/>
         <UsageCount Value="16"/>
       </Unit128>
+      <Unit129>
+        <Filename Value="p_terrain.pas"/>
+        <EditorIndex Value="7"/>
+        <TopLine Value="17"/>
+        <CursorPos X="20" Y="44"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit129>
     </Units>
-    <JumpHistory Count="6" HistoryIndex="5">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="doomdef.pas"/>
-        <Caret Line="135" Column="33" TopLine="121"/>
+        <Filename Value="info.pas"/>
+        <Caret Line="1825" TopLine="1825"/>
       </Position1>
       <Position2>
-        <Filename Value="m_menu.pas"/>
-        <Caret Line="977" Column="36" TopLine="964"/>
+        <Filename Value="info.pas"/>
+        <Caret Line="10701" Column="28" TopLine="10698"/>
       </Position2>
       <Position3>
-        <Filename Value="m_menu.pas"/>
-        <Caret Line="1151" Column="28" TopLine="1127"/>
+        <Filename Value="info.pas"/>
+        <Caret Line="10734" Column="69" TopLine="10710"/>
       </Position3>
       <Position4>
-        <Filename Value="m_menu.pas"/>
-        <Caret Line="1153" Column="13" TopLine="1127"/>
+        <Filename Value="p_mobj.pas"/>
+        <Caret Line="1362" Column="13" TopLine="1354"/>
       </Position4>
       <Position5>
-        <Filename Value="m_menu.pas"/>
-        <Caret Line="1182" TopLine="1159"/>
+        <Filename Value="info.pas"/>
+        <Caret Line="11374" Column="27" TopLine="11367"/>
       </Position5>
       <Position6>
-        <Filename Value="g_game.pas"/>
-        <Caret Line="302" Column="11" TopLine="285"/>
+        <Filename Value="info.pas"/>
+        <Caret Line="61" Column="34" TopLine="45"/>
       </Position6>
+      <Position7>
+        <Filename Value="info.pas"/>
+        <Caret Line="62" Column="32" TopLine="45"/>
+      </Position7>
+      <Position8>
+        <Filename Value="info.pas"/>
+        <Caret Line="16040" Column="34" TopLine="16028"/>
+      </Position8>
+      <Position9>
+        <Filename Value="info.pas"/>
+        <Caret Line="16054" Column="38" TopLine="16047"/>
+      </Position9>
+      <Position10>
+        <Filename Value="info.pas"/>
+        <Caret Line="16079" Column="32" TopLine="16070"/>
+      </Position10>
+      <Position11>
+        <Filename Value="p_mobj.pas"/>
+        <Caret Line="1414" Column="12" TopLine="1394"/>
+      </Position11>
+      <Position12>
+        <Filename Value="p_mobj.pas"/>
+        <Caret Line="1425" Column="19" TopLine="1399"/>
+      </Position12>
+      <Position13>
+        <Filename Value="p_mobj.pas"/>
+        <Caret Line="1417" Column="26" TopLine="1399"/>
+      </Position13>
+      <Position14>
+        <Filename Value="p_mobj.pas"/>
+        <Caret Line="1425" Column="27" TopLine="1399"/>
+      </Position14>
+      <Position15>
+        <Filename Value="p_mobj.pas"/>
+        <Caret Line="1414" Column="5" TopLine="1399"/>
+      </Position15>
+      <Position16>
+        <Filename Value="p_mobj.pas"/>
+        <Caret Line="1418" Column="31" TopLine="1399"/>
+      </Position16>
+      <Position17>
+        <Filename Value="p_terrain.pas"/>
+        <Caret Line="81" Column="42" TopLine="57"/>
+      </Position17>
+      <Position18>
+        <Filename Value="p_mobj.pas"/>
+        <Caret Line="1432" Column="38" TopLine="1411"/>
+      </Position18>
+      <Position19>
+        <Filename Value="p_mobj.pas"/>
+        <Caret Line="1434" Column="40" TopLine="1362"/>
+      </Position19>
+      <Position20>
+        <Filename Value="info.pas"/>
+        <Caret Line="10734" Column="62" TopLine="10719"/>
+      </Position20>
+      <Position21>
+        <Filename Value="info.pas"/>
+        <Caret Line="10686" Column="25" TopLine="10676"/>
+      </Position21>
+      <Position22>
+        <Filename Value="info.pas"/>
+      </Position22>
+      <Position23>
+        <Filename Value="info_h.pas"/>
+        <Caret Line="325" Column="55" TopLine="309"/>
+      </Position23>
+      <Position24>
+        <Filename Value="info_h.pas"/>
+      </Position24>
+      <Position25>
+        <Filename Value="info_h.pas"/>
+        <Caret Line="71" TopLine="47"/>
+      </Position25>
+      <Position26>
+        <Filename Value="info.pas"/>
+        <Caret Line="10734" Column="75" TopLine="10719"/>
+      </Position26>
+      <Position27>
+        <Filename Value="info.pas"/>
+        <Caret Line="10727" Column="24" TopLine="10719"/>
+      </Position27>
+      <Position28>
+        <Filename Value="p_mobj.pas"/>
+        <Caret Line="1374" Column="26" TopLine="1362"/>
+      </Position28>
+      <Position29>
+        <Filename Value="sc_actordef.pas"/>
+        <Caret Line="144" Column="23" TopLine="133"/>
+      </Position29>
+      <Position30>
+        <Filename Value="d_main.pas"/>
+        <Caret Line="1671" Column="33" TopLine="1671"/>
+      </Position30>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
@@ -1069,6 +1179,15 @@
     </RunParams>
   </ProjectSession>
   <Debugging>
+    <BreakPoints Count="1">
+      <Item1>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsLocal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="info.pas"/>
+        <Line Value="16054"/>
+      </Item1>
+    </BreakPoints>
     <Watches Count="8">
       <Item1>
         <Expression Value="frontsector"/>

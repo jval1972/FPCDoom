@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -41,6 +41,7 @@ const
   FLOOR_WATER = 1;
   FLOOR_LAVA = 2;
   FLOOR_SLUDGE = 3;
+  FLOOR_NUKAGE = 4;
 
 implementation
 
@@ -76,9 +77,9 @@ var
     (name: 'SLIME10'; _type: FLOOR_SLUDGE),
     (name: 'SLIME11'; _type: FLOOR_SLUDGE),
     (name: 'SLIME12'; _type: FLOOR_SLUDGE),
-    (name: 'NUKAGE1'; _type: FLOOR_SLUDGE),
-    (name: 'NUKAGE2'; _type: FLOOR_SLUDGE),
-    (name: 'NUKAGE3'; _type: FLOOR_SLUDGE),
+    (name: 'NUKAGE1'; _type: FLOOR_NUKAGE),
+    (name: 'NUKAGE2'; _type: FLOOR_NUKAGE),
+    (name: 'NUKAGE3'; _type: FLOOR_NUKAGE),
     (name: 'END'; _type: -1)
   );
 

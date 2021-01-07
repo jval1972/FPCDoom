@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -67,10 +67,6 @@ type
     SPR_SMGT, SPR_SMRT, SPR_HDB1, SPR_HDB2, SPR_HDB3,
     SPR_HDB4, SPR_HDB5, SPR_HDB6, SPR_POB1, SPR_POB2,
     SPR_BRS1, SPR_TLMP, SPR_TLP2,
-
-    SPR_SPSH,
-    SPR_LVAS,
-    SPR_SLDG,
 
     SPR_NULL,
     
@@ -321,39 +317,6 @@ type
     S_TECHLAMP3,      S_TECHLAMP4,      S_TECH2LAMP,      S_TECH2LAMP2,
     S_TECH2LAMP3,     S_TECH2LAMP4,
 
-    S_SPLASH1,
-    S_SPLASH2,
-    S_SPLASH3,
-    S_SPLASH4,
-    S_SPLASHX,
-    S_SPLASHBASE1,
-    S_SPLASHBASE2,
-    S_SPLASHBASE3,
-    S_SPLASHBASE4,
-    S_SPLASHBASE5,
-    S_SPLASHBASE6,
-    S_SPLASHBASE7,
-    S_LAVASPLASH1,
-    S_LAVASPLASH2,
-    S_LAVASPLASH3,
-    S_LAVASPLASH4,
-    S_LAVASPLASH5,
-    S_LAVASPLASH6,
-    S_LAVASMOKE1,
-    S_LAVASMOKE2,
-    S_LAVASMOKE3,
-    S_LAVASMOKE4,
-    S_LAVASMOKE5,
-    S_SLUDGECHUNK1,
-    S_SLUDGECHUNK2,
-    S_SLUDGECHUNK3,
-    S_SLUDGECHUNK4,
-    S_SLUDGECHUNKX,
-    S_SLUDGESPLASH1,
-    S_SLUDGESPLASH2,
-    S_SLUDGESPLASH3,
-    S_SLUDGESPLASH4,
-
     DO_NUMSTATES
   );
 
@@ -409,13 +372,6 @@ type
     MT_MISC78,        MT_MISC79,        MT_MISC80,        MT_MISC81,
     MT_MISC82,        MT_MISC83,        MT_MISC84,        MT_MISC85,
     MT_MISC86,
-
-    MT_SPLASH,
-    MT_SPLASHBASE,
-    MT_LAVASPLASH,
-    MT_LAVASMOKE,
-    MT_SLUDGECHUNK,
-    MT_SLUDGESPLASH,
 
     DO_NUMMOBJTYPES
   );

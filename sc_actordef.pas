@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -136,17 +136,25 @@ type
 
 function TActordefScriptEngine.MatchFlag(const flag: string): boolean;
 begin
-  result := MatchString(flag) or MatchString('+' + flag) or MatchString('MF_' + flag);
+  result :=
+    MatchString(flag) or MatchString('+' + flag) or
+    MatchString('MF_' + flag) or MatchString('+MF_' + flag);
 end;
 
 function TActordefScriptEngine.MatchFlagEx(const flag_ex: string): boolean;
 begin
-  result := MatchString(flag_ex) or MatchString('+' + flag_ex) or MatchString('MF_' + flag_ex) or MatchString('MF_EX_' + flag_ex);
+  result :=
+    MatchString(flag_ex) or MatchString('+' + flag_ex) or
+    MatchString('MF_' + flag_ex) or MatchString('+MF_' + flag_ex) or
+    MatchString('MF_EX_' + flag_ex) or MatchString('+MF_EX_' + flag_ex);
 end;
 
 function TActordefScriptEngine.MatchFlag2Ex(const flag2_ex: string): boolean;
 begin
-  result := MatchString(flag2_ex) or MatchString('+' + flag2_ex) or MatchString('MF2_' + flag2_ex) or MatchString('MF2_EX_' + flag2_ex);
+  result :=
+    MatchString(flag2_ex) or MatchString('+' + flag2_ex) or
+    MatchString('MF2_' + flag2_ex) or MatchString('+MF2_' + flag2_ex) or
+    MatchString('MF2_EX_' + flag2_ex) or MatchString('+MF2_EX_' + flag2_ex);
 end;
 
 

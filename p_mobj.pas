@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -1340,6 +1340,30 @@ end;
 // FUNC P_HitFloor
 //
 //---------------------------------------------------------------------------
+var
+  MT_SPLASHBASE: integer = -2;
+  MT_SPLASH: integer = -2;
+  MT_LAVASPLASH: integer = -2;
+  MT_LAVASMOKE: integer = -2;
+  MT_SLUDGESPLASH: integer = -2;
+  MT_SLUDGECHUNK: integer = -2;
+  MT_NUKAGECHUNK: integer = -2;
+  MT_NUKAGESPLASH: integer = -2;
+
+function P_ResolveMobjType(const name: string; const mt: PInteger): integer;
+begin
+  if mt^ >= 0 then
+  begin
+    result := mt^;
+    exit;
+  end;
+
+  if mt^ = -2 then
+    mt^ := Info_GetMobjNumForName(name);
+
+  result := mt^;
+end;
+
 function P_HitFloor(thing: Pmobj_t): integer;
 var
   mo: Pmobj_t;
@@ -1366,8 +1390,8 @@ begin
       // then we force splashes
         if allowterrainsplashes or demorecording or demoplayback then
         begin
-          P_SpawnMobj(thing.x, thing.y, ONFLOORZ, Ord(MT_SPLASHBASE));
-          mo := P_SpawnMobj(thing.x, thing.y, ONFLOORZ, Ord(MT_SPLASH));
+          P_SpawnMobj(thing.x, thing.y, ONFLOORZ, P_ResolveMobjType('SPLASH 2', @MT_SPLASHBASE));
+          mo := P_SpawnMobj(thing.x, thing.y, ONFLOORZ, P_ResolveMobjType('SPLASH', @MT_SPLASH));
           mo.target := thing;
           mo.momx := (P_Random - P_Random) * 256;
           mo.momy := (P_Random - P_Random) * 256;
@@ -1381,8 +1405,8 @@ begin
       begin
         if allowterrainsplashes or demorecording or demoplayback then
         begin
-          P_SpawnMobj(thing.x, thing.y, ONFLOORZ, Ord(MT_LAVASPLASH));
-          mo := P_SpawnMobj(thing.x, thing.y, ONFLOORZ, Ord(MT_LAVASMOKE));
+          P_SpawnMobj(thing.x, thing.y, ONFLOORZ, P_ResolveMobjType('LAVA SPLASH', @MT_LAVASPLASH));
+          mo := P_SpawnMobj(thing.x, thing.y, ONFLOORZ, P_ResolveMobjType('LAVA SMOKE', @MT_LAVASMOKE));
           mo.momz := FRACUNIT + (P_Random * 128);
           S_StartSound(mo, Ord(sfx_burn));
         end;
@@ -1393,8 +1417,22 @@ begin
       begin
         if allowterrainsplashes or demorecording or demoplayback then
         begin
-          P_SpawnMobj(thing.x, thing.y, ONFLOORZ, Ord(MT_SLUDGESPLASH));
-          mo := P_SpawnMobj(thing.x, thing.y, ONFLOORZ, Ord(MT_SLUDGECHUNK));
+          P_SpawnMobj(thing.x, thing.y, ONFLOORZ, P_ResolveMobjType('SLUDGE SPLASH', @MT_SLUDGESPLASH));
+          mo := P_SpawnMobj(thing.x, thing.y, ONFLOORZ, P_ResolveMobjType('SLUDGE CHUNK', @MT_SLUDGECHUNK));
+          mo.target := thing;
+          mo.momx := (P_Random - P_Random) * 256;
+          mo.momy := (P_Random - P_Random) * 256;
+          mo.momz := FRACUNIT + (P_Random * 256);
+        end;
+        result := FLOOR_SLUDGE;
+        exit;
+      end;
+    FLOOR_NUKAGE:
+      begin
+        if allowterrainsplashes or demorecording or demoplayback then
+        begin
+          P_SpawnMobj(thing.x, thing.y, ONFLOORZ, P_ResolveMobjType('NUKAGE SPLASH', @MT_NUKAGESPLASH));
+          mo := P_SpawnMobj(thing.x, thing.y, ONFLOORZ, P_ResolveMobjType('NUKAGE CHUNK', @MT_NUKAGECHUNK));
           mo.target := thing;
           mo.momx := (P_Random - P_Random) * 256;
           mo.momy := (P_Random - P_Random) * 256;

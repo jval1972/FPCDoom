@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -1676,11 +1676,6 @@ begin
     if not DEH_ParseLumpName('GAMEDEF') then
       I_Warning('DEH_ParseLumpName(): GAMEDEF lump not found, using defaults.'#13#10);
 
-  printf('SC_Init: Initializing script engine.'#13#10);
-  SC_Init;
-  printf('SC_ParseActordefLumps(): Parsing ACTORDEF lumps.'#13#10);
-  SC_ParseActordefLumps;
-
   if M_CheckParm('-nowaddehacked') = 0 then
     if not DEH_ParseLumpName('DEHACKED') then
       printf('DEH_ParseLumpName(): DEHACKED lump not found.'#13#10);
@@ -1688,6 +1683,11 @@ begin
   // JVAL Adding dehached files
   D_AddDEHFiles('-deh');
   D_AddDEHFiles('-bex');
+
+  printf('SC_Init: Initializing script engine.'#13#10);
+  SC_Init;
+  printf('SC_ParseActordefLumps(): Parsing ACTORDEF lumps.'#13#10);
+  SC_ParseActordefLumps;
 
   for i := 0 to NUM_STARTUPMESSAGES - 1 do
     if startmsg[i] <> '' then
