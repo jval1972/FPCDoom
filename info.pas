@@ -73,6 +73,7 @@ uses
   i_system,
   m_fixed,
   p_enemy,
+  p_extra,
   p_pspr,
   p_mobj_h,
   r_renderstyle,
@@ -10715,1205 +10716,1205 @@ const
     flags_ex: 0;
    ),                          // S_TECH2LAMP4
 
-  // New states
-  (
-   sprite: Ord(SPR_TNT1);
-   frame: 0;
-   tics: -1;
-   action: (acp1: NULL);
-   nextstate: S_TNT1;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_TNT1
-
-  (
-   sprite: Ord(SPR_MISL);
-   frame: 32768;
-   tics: 1000;
-   action: (acp1: A_Die);
-   nextstate: S_GRENADE;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_GRENADE
-
-  (
-   sprite: Ord(SPR_MISL);
-   frame: 32769;
-   tics: 4;
-   action: (acp1: A_Scream);
-   nextstate: S_DETONATE2;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_DETONATE
-
-  (
-   sprite: Ord(SPR_MISL);
-   frame: 32770;
-   tics: 6;
-   action: (acp1: A_Detonate);
-   nextstate: S_DETONATE3;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_DETONATE2
-
-  (
-   sprite: Ord(SPR_MISL);
-   frame: 32771;
-   tics: 10;
-   action: (acp1: NULL);
-   nextstate: S_NULL;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_DETONATE3
-
-  (
-   sprite: Ord(SPR_DOGS);
-   frame: 0;
-   tics: 10;
-   action: (acp1: A_Look);
-   nextstate: S_DOGS_STND2;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_DOGS_STND
-
-  (
-   sprite: Ord(SPR_DOGS);
-   frame: 1;
-   tics: 10;
-   action: (acp1: A_Look);
-   nextstate: S_DOGS_STND;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_DOGS_STND2
-
-  (
-   sprite: Ord(SPR_DOGS);
-   frame: 0;
-   tics: 2;
-   action: (acp1: A_Chase);
-   nextstate: S_DOGS_RUN2;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_DOGS_RUN1
-
-  (
-   sprite: Ord(SPR_DOGS);
-   frame: 0;
-   tics: 2;
-   action: (acp1: A_Chase);
-   nextstate: S_DOGS_RUN3;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_DOGS_RUN2
-
-  (
-   sprite: Ord(SPR_DOGS);
-   frame: 1;
-   tics: 2;
-   action: (acp1: A_Chase);
-   nextstate: S_DOGS_RUN4;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_DOGS_RUN3
-
-  (
-   sprite: Ord(SPR_DOGS);
-   frame: 1;
-   tics: 2;
-   action: (acp1: A_Chase);
-   nextstate: S_DOGS_RUN5;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_DOGS_RUN4
-
-  (
-   sprite: Ord(SPR_DOGS);
-   frame: 2;
-   tics: 2;
-   action: (acp1: A_Chase);
-   nextstate: S_DOGS_RUN6;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_DOGS_RUN5
-
-  (
-   sprite: Ord(SPR_DOGS);
-   frame: 2;
-   tics: 2;
-   action: (acp1: A_Chase);
-   nextstate: S_DOGS_RUN7;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_DOGS_RUN6
-
-  (
-   sprite: Ord(SPR_DOGS);
-   frame: 3;
-   tics: 2;
-   action: (acp1: A_Chase);
-   nextstate: S_DOGS_RUN8;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_DOGS_RUN7
-
-  (
-   sprite: Ord(SPR_DOGS);
-   frame: 3;
-   tics: 2;
-   action: (acp1: A_Chase);
-   nextstate: S_DOGS_RUN1;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_DOGS_RUN8
-
-  (
-   sprite: Ord(SPR_DOGS);
-   frame: 4;
-   tics: 8;
-   action: (acp1: A_FaceTarget);
-   nextstate: S_DOGS_ATK2;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_DOGS_ATK1
-
-  (
-   sprite: Ord(SPR_DOGS);
-   frame: 5;
-   tics: 8;
-   action: (acp1: A_FaceTarget);
-   nextstate: S_DOGS_ATK3;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_DOGS_ATK2
-
-  (
-   sprite: Ord(SPR_DOGS);
-   frame: 6;
-   tics: 8;
-   action: (acp1: A_SargAttack);
-   nextstate: S_DOGS_RUN1;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_DOGS_ATK3
-
-  (
-   sprite: Ord(SPR_DOGS);
-   frame: 7;
-   tics: 2;
-   action: (acp1: NULL);
-   nextstate: S_DOGS_PAIN2;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_DOGS_PAIN
-
-  (
-   sprite: Ord(SPR_DOGS);
-   frame: 7;
-   tics: 2;
-   action: (acp1: A_Pain);
-   nextstate: S_DOGS_RUN1;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_DOGS_PAIN2
-
-  (
-   sprite: Ord(SPR_DOGS);
-   frame: 8;
-   tics: 8;
-   action: (acp1: NULL);
-   nextstate: S_DOGS_DIE2;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_DOGS_DIE1
-
-  (
-   sprite: Ord(SPR_DOGS);
-   frame: 9;
-   tics: 8;
-   action: (acp1: A_Scream);
-   nextstate: S_DOGS_DIE3;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_DOGS_DIE2
-
-  (
-   sprite: Ord(SPR_DOGS);
-   frame: 10;
-   tics: 4;
-   action: (acp1: NULL);
-   nextstate: S_DOGS_DIE4;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_DOGS_DIE3
-
-  (
-   sprite: Ord(SPR_DOGS);
-   frame: 11;
-   tics: 4;
-   action: (acp1: A_Fall);
-   nextstate: S_DOGS_DIE5;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_DOGS_DIE4
-
-  (
-   sprite: Ord(SPR_DOGS);
-   frame: 12;
-   tics: 4;
-   action: (acp1: NULL);
-   nextstate: S_DOGS_DIE6;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_DOGS_DIE5
-
-  (
-   sprite: Ord(SPR_DOGS);
-   frame: 13;
-   tics: -1;
-   action: (acp1: NULL);
-   nextstate: S_NULL;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_DOGS_DIE6
-
-  (
-   sprite: Ord(SPR_DOGS);
-   frame: 13;
-   tics: 5;
-   action: (acp1: NULL);
-   nextstate: S_DOGS_RAISE2;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_DOGS_RAISE1
-
-  (
-   sprite: Ord(SPR_DOGS);
-   frame: 12;
-   tics: 5;
-   action: (acp1: NULL);
-   nextstate: S_DOGS_RAISE3;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_DOGS_RAISE2
-
-  (
-   sprite: Ord(SPR_DOGS);
-   frame: 11;
-   tics: 5;
-   action: (acp1: NULL);
-   nextstate: S_DOGS_RAISE4;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_DOGS_RAISE3
-
-  (
-   sprite: Ord(SPR_DOGS);
-   frame: 10;
-   tics: 5;
-   action: (acp1: NULL);
-   nextstate: S_DOGS_RAISE5;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_DOGS_RAISE4
-
-  (
-   sprite: Ord(SPR_DOGS);
-   frame: 9;
-   tics: 5;
-   action: (acp1: NULL);
-   nextstate: S_DOGS_RAISE6;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_DOGS_RAISE5
-
-  (
-   sprite: Ord(SPR_DOGS);
-   frame: 8;
-   tics: 5;
-   action: (acp1: NULL);
-   nextstate: S_DOGS_RUN1;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_DOGS_RAISE6
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 0;
-   tics: 10;
-   action: (acp1: A_BFGsound);
-   nextstate: S_OLDBFG1+1;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG1
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG3;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG2
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG4;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG3
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG5;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG4
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG6;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG5
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG7;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG6
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG8;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG7
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG9;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG8
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG10;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG9
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG11;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG10
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG12;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG11
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG13;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG12
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG14;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG13
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG15;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG14
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG16;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG15
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG17;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG16
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG18;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG17
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG19;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG18
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG20;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG19
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG21;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG20
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG22;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG21
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG23;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG22
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG24;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG23
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG25;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG24
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG26;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG25
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG27;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG26
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG28;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG27
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG29;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG28
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG30;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG29
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG31;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG30
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG32;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG31
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG33;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG32
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG34;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG33
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG35;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG34
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG36;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG35
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG37;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG36
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG38;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG37
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG39;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG38
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG40;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG39
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG41;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG40
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 1;
-   action: (acp1: A_FireOldBFG);
-   nextstate: S_OLDBFG42;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG41
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 0;
-   action: (acp1: A_Light0);
-   nextstate: S_OLDBFG43;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG42
-
-  (
-   sprite: Ord(SPR_BFGG);
-   frame: 1;
-   tics: 20;
-   action: (acp1: A_ReFire);
-   nextstate: S_BFG;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_OLDBFG43
-
-  (
-   sprite: Ord(SPR_PLS1);
-   frame: 32768;
-   tics: 6;
-   action: (acp1: NULL);
-   nextstate: S_PLS1BALL2;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_PLS1BALL
-
-  (
-   sprite: Ord(SPR_PLS1);
-   frame: 32769;
-   tics: 6;
-   action: (acp1: NULL);
-   nextstate: S_PLS1BALL;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_PLS1BALL2
-
-  (
-   sprite: Ord(SPR_PLS1);
-   frame: 32770;
-   tics: 4;
-   action: (acp1: NULL);
-   nextstate: S_PLS1EXP2;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_PLS1EXP
-
-  (
-   sprite: Ord(SPR_PLS1);
-   frame: 32771;
-   tics: 4;
-   action: (acp1: NULL);
-   nextstate: S_PLS1EXP3;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_PLS1EXP2
-
-  (
-   sprite: Ord(SPR_PLS1);
-   frame: 32772;
-   tics: 4;
-   action: (acp1: NULL);
-   nextstate: S_PLS1EXP4;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_PLS1EXP3
-
-  (
-   sprite: Ord(SPR_PLS1);
-   frame: 32773;
-   tics: 4;
-   action: (acp1: NULL);
-   nextstate: S_PLS1EXP5;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_PLS1EXP4
-
-  (
-   sprite: Ord(SPR_PLS1);
-   frame: 32774;
-   tics: 4;
-   action: (acp1: NULL);
-   nextstate: S_NULL;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_PLS1EXP5
-
-  (
-   sprite: Ord(SPR_PLS2);
-   frame: 32768;
-   tics: 4;
-   action: (acp1: NULL);
-   nextstate: S_PLS2BALL2;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_PLS2BALL
-
-  (
-   sprite: Ord(SPR_PLS2);
-   frame: 32769;
-   tics: 4;
-   action: (acp1: NULL);
-   nextstate: S_PLS2BALL;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_PLS2BALL2
-
-  (
-   sprite: Ord(SPR_PLS2);
-   frame: 32770;
-   tics: 6;
-   action: (acp1: NULL);
-   nextstate: S_PLS2BALLX2;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_PLS2BALLX1
-
-  (
-   sprite: Ord(SPR_PLS2);
-   frame: 32771;
-   tics: 6;
-   action: (acp1: NULL);
-   nextstate: S_PLS2BALLX3;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_PLS2BALLX2
-
-  (
-   sprite: Ord(SPR_PLS2);
-   frame: 32772;
-   tics: 6;
-   action: (acp1: NULL);
-   nextstate: S_NULL;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_PLS2BALLX3
-
-  (
-   sprite: Ord(SPR_BON3);
-   frame: 0;
-   tics: 6;
-   action: (acp1: NULL);
-   nextstate: S_BON3;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_BON3
-
-  (
-   sprite: Ord(SPR_BON4);
-   frame: 0;
-   tics: 6;
-   action: (acp1: NULL);
-   nextstate: S_BON4;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_BON4
-
-  (
-   sprite: Ord(SPR_SKUL);
-   frame: 0;
-   tics: 10;
-   action: (acp1: A_Look);
-   nextstate: S_BSKUL_STND;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_BSKUL_STND
-
-  (
-   sprite: Ord(SPR_SKUL);
-   frame: 1;
-   tics: 5;
-   action: (acp1: A_Chase);
-   nextstate: S_BSKUL_RUN2;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_BSKUL_RUN1
-
-  (
-   sprite: Ord(SPR_SKUL);
-   frame: 2;
-   tics: 5;
-   action: (acp1: A_Chase);
-   nextstate: S_BSKUL_RUN3;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_BSKUL_RUN2
-
-  (
-   sprite: Ord(SPR_SKUL);
-   frame: 3;
-   tics: 5;
-   action: (acp1: A_Chase);
-   nextstate: S_BSKUL_RUN4;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_BSKUL_RUN3
-
-  (
-   sprite: Ord(SPR_SKUL);
-   frame: 0;
-   tics: 5;
-   action: (acp1: A_Chase);
-   nextstate: S_BSKUL_RUN1;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_BSKUL_RUN4
-
-  (
-   sprite: Ord(SPR_SKUL);
-   frame: 4;
-   tics: 4;
-   action: (acp1: A_FaceTarget);
-   nextstate: S_BSKUL_ATK2;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_BSKUL_ATK1
-
-  (
-   sprite: Ord(SPR_SKUL);
-   frame: 5;
-   tics: 5;
-   action: (acp1: A_BetaSkullAttack);
-   nextstate: S_BSKUL_ATK3;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_BSKUL_ATK2
-
-  (
-   sprite: Ord(SPR_SKUL);
-   frame: 5;
-   tics: 4;
-   action: (acp1: NULL);
-   nextstate: S_BSKUL_RUN1;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_BSKUL_ATK3
-
-  (
-   sprite: Ord(SPR_SKUL);
-   frame: 6;
-   tics: 4;
-   action: (acp1: NULL);
-   nextstate: S_BSKUL_PAIN2;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_BSKUL_PAIN1
-
-  (
-   sprite: Ord(SPR_SKUL);
-   frame: 7;
-   tics: 2;
-   action: (acp1: A_Pain);
-   nextstate: S_BSKUL_RUN1;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_BSKUL_PAIN2
-
-  (
-   sprite: Ord(SPR_SKUL);
-   frame: 8;
-   tics: 4;
-   action: (acp1: NULL);
-   nextstate: S_BSKUL_RUN1;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_BSKUL_PAIN3
-
-  (
-   sprite: Ord(SPR_SKUL);
-   frame: 9;
-   tics: 5;
-   action: (acp1: NULL);
-   nextstate: S_BSKUL_DIE2;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_BSKUL_DIE1
-
-  (
-   sprite: Ord(SPR_SKUL);
-   frame: 10;
-   tics: 5;
-   action: (acp1: NULL);
-   nextstate: S_BSKUL_DIE3;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_BSKUL_DIE2
-
-  (
-   sprite: Ord(SPR_SKUL);
-   frame: 11;
-   tics: 5;
-   action: (acp1: NULL);
-   nextstate: S_BSKUL_DIE4;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_BSKUL_DIE3
-
-  (
-   sprite: Ord(SPR_SKUL);
-   frame: 12;
-   tics: 5;
-   action: (acp1: NULL);
-   nextstate: S_BSKUL_DIE5;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_BSKUL_DIE4
-
-  (
-   sprite: Ord(SPR_SKUL);
-   frame: 13;
-   tics: 5;
-   action: (acp1: A_Scream);
-   nextstate: S_BSKUL_DIE6;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_BSKUL_DIE5
-
-  (
-   sprite: Ord(SPR_SKUL);
-   frame: 14;
-   tics: 5;
-   action: (acp1: NULL);
-   nextstate: S_BSKUL_DIE7;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_BSKUL_DIE6
-
-  (
-   sprite: Ord(SPR_SKUL);
-   frame: 15;
-   tics: 5;
-   action: (acp1: A_Fall);
-   nextstate: S_BSKUL_DIE8;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_BSKUL_DIE7
-
-  (
-   sprite: Ord(SPR_SKUL);
-   frame: 16;
-   tics: 5;
-   action: (acp1: A_Stop);
-   nextstate: S_BSKUL_DIE8;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  ),                          // S_BSKUL_DIE8
-
-  (
-   sprite: Ord(SPR_MISL);
-   frame: 32769;
-   tics: 8;
-   action: (acp1: A_Mushroom);
-   nextstate: S_EXPLODE2;
-   misc1: 0;
-   misc2: 0;
-   flags_ex: 0;
-  )                           // S_MUSHROOM
+   // New states
+   (
+    sprite: Ord(SPR_TNT1);
+    frame: 0;
+    tics: -1;
+    action: (acp1: nil);
+    nextstate: S_TNT1;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_TNT1
+
+   (
+    sprite: Ord(SPR_MISL);
+    frame: 32768;
+    tics: 1000;
+    action: (acp1: nil);
+    nextstate: S_GRENADE;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_GRENADE
+
+   (
+    sprite: Ord(SPR_MISL);
+    frame: 32769;
+    tics: 4;
+    action: (acp1: nil);
+    nextstate: S_DETONATE2;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_DETONATE
+
+   (
+    sprite: Ord(SPR_MISL);
+    frame: 32770;
+    tics: 6;
+    action: (acp1: nil);
+    nextstate: S_DETONATE3;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_DETONATE2
+
+   (
+    sprite: Ord(SPR_MISL);
+    frame: 32771;
+    tics: 10;
+    action: (acp1: nil);
+    nextstate: S_NULL;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_DETONATE3
+
+   (
+    sprite: Ord(SPR_DOGS);
+    frame: 0;
+    tics: 10;
+    action: (acp1: nil);
+    nextstate: S_DOGS_STND2;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_DOGS_STND
+
+   (
+    sprite: Ord(SPR_DOGS);
+    frame: 1;
+    tics: 10;
+    action: (acp1: nil);
+    nextstate: S_DOGS_STND;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_DOGS_STND2
+
+   (
+    sprite: Ord(SPR_DOGS);
+    frame: 0;
+    tics: 2;
+    action: (acp1: nil);
+    nextstate: S_DOGS_RUN2;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_DOGS_RUN1
+
+   (
+    sprite: Ord(SPR_DOGS);
+    frame: 0;
+    tics: 2;
+    action: (acp1: nil);
+    nextstate: S_DOGS_RUN3;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_DOGS_RUN2
+
+   (
+    sprite: Ord(SPR_DOGS);
+    frame: 1;
+    tics: 2;
+    action: (acp1: nil);
+    nextstate: S_DOGS_RUN4;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_DOGS_RUN3
+
+   (
+    sprite: Ord(SPR_DOGS);
+    frame: 1;
+    tics: 2;
+    action: (acp1: nil);
+    nextstate: S_DOGS_RUN5;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_DOGS_RUN4
+
+   (
+    sprite: Ord(SPR_DOGS);
+    frame: 2;
+    tics: 2;
+    action: (acp1: nil);
+    nextstate: S_DOGS_RUN6;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_DOGS_RUN5
+
+   (
+    sprite: Ord(SPR_DOGS);
+    frame: 2;
+    tics: 2;
+    action: (acp1: nil);
+    nextstate: S_DOGS_RUN7;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_DOGS_RUN6
+
+   (
+    sprite: Ord(SPR_DOGS);
+    frame: 3;
+    tics: 2;
+    action: (acp1: nil);
+    nextstate: S_DOGS_RUN8;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_DOGS_RUN7
+
+   (
+    sprite: Ord(SPR_DOGS);
+    frame: 3;
+    tics: 2;
+    action: (acp1: nil);
+    nextstate: S_DOGS_RUN1;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_DOGS_RUN8
+
+   (
+    sprite: Ord(SPR_DOGS);
+    frame: 4;
+    tics: 8;
+    action: (acp1: nil);
+    nextstate: S_DOGS_ATK2;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_DOGS_ATK1
+
+   (
+    sprite: Ord(SPR_DOGS);
+    frame: 5;
+    tics: 8;
+    action: (acp1: nil);
+    nextstate: S_DOGS_ATK3;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_DOGS_ATK2
+
+   (
+    sprite: Ord(SPR_DOGS);
+    frame: 6;
+    tics: 8;
+    action: (acp1: nil);
+    nextstate: S_DOGS_RUN1;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_DOGS_ATK3
+
+   (
+    sprite: Ord(SPR_DOGS);
+    frame: 7;
+    tics: 2;
+    action: (acp1: nil);
+    nextstate: S_DOGS_PAIN2;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_DOGS_PAIN
+
+   (
+    sprite: Ord(SPR_DOGS);
+    frame: 7;
+    tics: 2;
+    action: (acp1: nil);
+    nextstate: S_DOGS_RUN1;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_DOGS_PAIN2
+
+   (
+    sprite: Ord(SPR_DOGS);
+    frame: 8;
+    tics: 8;
+    action: (acp1: nil);
+    nextstate: S_DOGS_DIE2;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_DOGS_DIE1
+
+   (
+    sprite: Ord(SPR_DOGS);
+    frame: 9;
+    tics: 8;
+    action: (acp1: nil);
+    nextstate: S_DOGS_DIE3;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_DOGS_DIE2
+
+   (
+    sprite: Ord(SPR_DOGS);
+    frame: 10;
+    tics: 4;
+    action: (acp1: nil);
+    nextstate: S_DOGS_DIE4;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_DOGS_DIE3
+
+   (
+    sprite: Ord(SPR_DOGS);
+    frame: 11;
+    tics: 4;
+    action: (acp1: nil);
+    nextstate: S_DOGS_DIE5;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_DOGS_DIE4
+
+   (
+    sprite: Ord(SPR_DOGS);
+    frame: 12;
+    tics: 4;
+    action: (acp1: nil);
+    nextstate: S_DOGS_DIE6;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_DOGS_DIE5
+
+   (
+    sprite: Ord(SPR_DOGS);
+    frame: 13;
+    tics: -1;
+    action: (acp1: nil);
+    nextstate: S_NULL;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_DOGS_DIE6
+
+   (
+    sprite: Ord(SPR_DOGS);
+    frame: 13;
+    tics: 5;
+    action: (acp1: nil);
+    nextstate: S_DOGS_RAISE2;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_DOGS_RAISE1
+
+   (
+    sprite: Ord(SPR_DOGS);
+    frame: 12;
+    tics: 5;
+    action: (acp1: nil);
+    nextstate: S_DOGS_RAISE3;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_DOGS_RAISE2
+
+   (
+    sprite: Ord(SPR_DOGS);
+    frame: 11;
+    tics: 5;
+    action: (acp1: nil);
+    nextstate: S_DOGS_RAISE4;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_DOGS_RAISE3
+
+   (
+    sprite: Ord(SPR_DOGS);
+    frame: 10;
+    tics: 5;
+    action: (acp1: nil);
+    nextstate: S_DOGS_RAISE5;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_DOGS_RAISE4
+
+   (
+    sprite: Ord(SPR_DOGS);
+    frame: 9;
+    tics: 5;
+    action: (acp1: nil);
+    nextstate: S_DOGS_RAISE6;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_DOGS_RAISE5
+
+   (
+    sprite: Ord(SPR_DOGS);
+    frame: 8;
+    tics: 5;
+    action: (acp1: nil);
+    nextstate: S_DOGS_RUN1;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_DOGS_RAISE6
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 0;
+    tics: 10;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG2;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG1
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG3;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG2
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG4;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG3
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG5;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG4
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG6;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG5
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG7;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG6
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG8;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG7
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG9;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG8
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG10;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG9
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG11;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG10
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG12;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG11
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG13;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG12
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG14;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG13
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG15;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG14
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG16;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG15
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG17;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG16
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG18;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG17
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG19;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG18
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG20;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG19
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG21;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG20
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG22;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG21
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG23;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG22
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG24;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG23
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG25;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG24
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG26;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG25
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG27;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG26
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG28;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG27
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG29;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG28
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG30;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG29
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG31;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG30
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG32;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG31
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG33;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG32
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG34;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG33
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG35;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG34
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG36;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG35
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG37;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG36
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG38;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG37
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG39;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG38
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG40;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG39
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG41;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG40
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 1;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG42;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG41
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 0;
+    action: (acp1: nil);
+    nextstate: S_OLDBFG43;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG42
+
+   (
+    sprite: Ord(SPR_BFGG);
+    frame: 1;
+    tics: 20;
+    action: (acp1: nil);
+    nextstate: S_BFG;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_OLDBFG43
+
+   (
+    sprite: Ord(SPR_PLS1);
+    frame: 32768;
+    tics: 6;
+    action: (acp1: nil);
+    nextstate: S_PLS1BALL2;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_PLS1BALL
+
+   (
+    sprite: Ord(SPR_PLS1);
+    frame: 32769;
+    tics: 6;
+    action: (acp1: nil);
+    nextstate: S_PLS1BALL;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_PLS1BALL2
+
+   (
+    sprite: Ord(SPR_PLS1);
+    frame: 32770;
+    tics: 4;
+    action: (acp1: nil);
+    nextstate: S_PLS1EXP2;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_PLS1EXP
+
+   (
+    sprite: Ord(SPR_PLS1);
+    frame: 32771;
+    tics: 4;
+    action: (acp1: nil);
+    nextstate: S_PLS1EXP3;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_PLS1EXP2
+
+   (
+    sprite: Ord(SPR_PLS1);
+    frame: 32772;
+    tics: 4;
+    action: (acp1: nil);
+    nextstate: S_PLS1EXP4;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_PLS1EXP3
+
+   (
+    sprite: Ord(SPR_PLS1);
+    frame: 32773;
+    tics: 4;
+    action: (acp1: nil);
+    nextstate: S_PLS1EXP5;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_PLS1EXP4
+
+   (
+    sprite: Ord(SPR_PLS1);
+    frame: 32774;
+    tics: 4;
+    action: (acp1: nil);
+    nextstate: S_NULL;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_PLS1EXP5
+
+   (
+    sprite: Ord(SPR_PLS2);
+    frame: 32768;
+    tics: 4;
+    action: (acp1: nil);
+    nextstate: S_PLS2BALL2;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_PLS2BALL
+
+   (
+    sprite: Ord(SPR_PLS2);
+    frame: 32769;
+    tics: 4;
+    action: (acp1: nil);
+    nextstate: S_PLS2BALL;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_PLS2BALL2
+
+   (
+    sprite: Ord(SPR_PLS2);
+    frame: 32770;
+    tics: 6;
+    action: (acp1: nil);
+    nextstate: S_PLS2BALLX2;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_PLS2BALLX1
+
+   (
+    sprite: Ord(SPR_PLS2);
+    frame: 32771;
+    tics: 6;
+    action: (acp1: nil);
+    nextstate: S_PLS2BALLX3;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_PLS2BALLX2
+
+   (
+    sprite: Ord(SPR_PLS2);
+    frame: 32772;
+    tics: 6;
+    action: (acp1: nil);
+    nextstate: S_NULL;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_PLS2BALLX3
+
+   (
+    sprite: Ord(SPR_BON3);
+    frame: 0;
+    tics: 6;
+    action: (acp1: nil);
+    nextstate: S_BON3;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_BON3
+
+   (
+    sprite: Ord(SPR_BON4);
+    frame: 0;
+    tics: 6;
+    action: (acp1: nil);
+    nextstate: S_BON4;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_BON4
+
+   (
+    sprite: Ord(SPR_SKUL);
+    frame: 0;
+    tics: 10;
+    action: (acp1: nil);
+    nextstate: S_BSKUL_STND;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_BSKUL_STND
+
+   (
+    sprite: Ord(SPR_SKUL);
+    frame: 1;
+    tics: 5;
+    action: (acp1: nil);
+    nextstate: S_BSKUL_RUN2;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_BSKUL_RUN1
+
+   (
+    sprite: Ord(SPR_SKUL);
+    frame: 2;
+    tics: 5;
+    action: (acp1: nil);
+    nextstate: S_BSKUL_RUN3;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_BSKUL_RUN2
+
+   (
+    sprite: Ord(SPR_SKUL);
+    frame: 3;
+    tics: 5;
+    action: (acp1: nil);
+    nextstate: S_BSKUL_RUN4;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_BSKUL_RUN3
+
+   (
+    sprite: Ord(SPR_SKUL);
+    frame: 0;
+    tics: 5;
+    action: (acp1: nil);
+    nextstate: S_BSKUL_RUN1;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_BSKUL_RUN4
+
+   (
+    sprite: Ord(SPR_SKUL);
+    frame: 4;
+    tics: 4;
+    action: (acp1: nil);
+    nextstate: S_BSKUL_ATK2;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_BSKUL_ATK1
+
+   (
+    sprite: Ord(SPR_SKUL);
+    frame: 5;
+    tics: 5;
+    action: (acp1: nil);
+    nextstate: S_BSKUL_ATK3;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_BSKUL_ATK2
+
+   (
+    sprite: Ord(SPR_SKUL);
+    frame: 5;
+    tics: 4;
+    action: (acp1: nil);
+    nextstate: S_BSKUL_RUN1;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_BSKUL_ATK3
+
+   (
+    sprite: Ord(SPR_SKUL);
+    frame: 6;
+    tics: 4;
+    action: (acp1: nil);
+    nextstate: S_BSKUL_PAIN2;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_BSKUL_PAIN1
+
+   (
+    sprite: Ord(SPR_SKUL);
+    frame: 7;
+    tics: 2;
+    action: (acp1: nil);
+    nextstate: S_BSKUL_RUN1;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_BSKUL_PAIN2
+
+   (
+    sprite: Ord(SPR_SKUL);
+    frame: 8;
+    tics: 4;
+    action: (acp1: nil);
+    nextstate: S_BSKUL_RUN1;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_BSKUL_PAIN3
+
+   (
+    sprite: Ord(SPR_SKUL);
+    frame: 9;
+    tics: 5;
+    action: (acp1: nil);
+    nextstate: S_BSKUL_DIE2;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_BSKUL_DIE1
+
+   (
+    sprite: Ord(SPR_SKUL);
+    frame: 10;
+    tics: 5;
+    action: (acp1: nil);
+    nextstate: S_BSKUL_DIE3;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_BSKUL_DIE2
+
+   (
+    sprite: Ord(SPR_SKUL);
+    frame: 11;
+    tics: 5;
+    action: (acp1: nil);
+    nextstate: S_BSKUL_DIE4;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_BSKUL_DIE3
+
+   (
+    sprite: Ord(SPR_SKUL);
+    frame: 12;
+    tics: 5;
+    action: (acp1: nil);
+    nextstate: S_BSKUL_DIE5;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_BSKUL_DIE4
+
+   (
+    sprite: Ord(SPR_SKUL);
+    frame: 13;
+    tics: 5;
+    action: (acp1: nil);
+    nextstate: S_BSKUL_DIE6;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_BSKUL_DIE5
+
+   (
+    sprite: Ord(SPR_SKUL);
+    frame: 14;
+    tics: 5;
+    action: (acp1: nil);
+    nextstate: S_BSKUL_DIE7;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_BSKUL_DIE6
+
+   (
+    sprite: Ord(SPR_SKUL);
+    frame: 15;
+    tics: 5;
+    action: (acp1: nil);
+    nextstate: S_BSKUL_DIE8;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_BSKUL_DIE7
+
+   (
+    sprite: Ord(SPR_SKUL);
+    frame: 16;
+    tics: 5;
+    action: (acp1: nil);
+    nextstate: S_BSKUL_DIE8;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   ),                          // S_BSKUL_DIE8
+
+   (
+    sprite: Ord(SPR_MISL);
+    frame: 32769;
+    tics: 8;
+    action: (acp1: nil);
+    nextstate: S_EXPLODE2;
+    misc1: 0;
+    misc2: 0;
+    flags_ex: 0;
+   )                           // S_MUSHROOM
 
   );
 
