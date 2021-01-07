@@ -261,8 +261,9 @@
       <Unit32>
         <Filename Value="info.pas"/>
         <IsPartOfProject Value="True"/>
-        <TopLine Value="10721"/>
-        <CursorPos X="61" Y="10733"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="16021"/>
+        <CursorPos X="16" Y="16038"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit32>
@@ -270,8 +271,8 @@
         <Filename Value="info_h.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="4"/>
-        <TopLine Value="53"/>
-        <CursorPos X="51" Y="69"/>
+        <TopLine Value="397"/>
+        <CursorPos X="16" Y="416"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit33>
@@ -778,7 +779,6 @@
       <Unit95>
         <Filename Value="w_wad.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="3"/>
         <TopLine Value="643"/>
         <CursorPos X="22" Y="664"/>
@@ -804,8 +804,8 @@
         <Filename Value="sc_actordef.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="1196"/>
-        <CursorPos X="73" Y="1223"/>
+        <TopLine Value="1154"/>
+        <CursorPos X="73" Y="1220"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit98>
@@ -1045,7 +1045,7 @@
         <UsageCount Value="12"/>
       </Unit129>
     </Units>
-    <JumpHistory Count="23" HistoryIndex="22">
+    <JumpHistory Count="24" HistoryIndex="23">
       <Position1>
         <Filename Value="info.pas"/>
         <Caret Line="11055" Column="83" TopLine="11040"/>
@@ -1138,6 +1138,10 @@
         <Filename Value="sc_actordef.pas"/>
         <Caret Line="1223" Column="73" TopLine="1196"/>
       </Position23>
+      <Position24>
+        <Filename Value="info_h.pas"/>
+        <Caret Line="74" Column="33" TopLine="66"/>
+      </Position24>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
@@ -1145,36 +1149,6 @@
     </RunParams>
   </ProjectSession>
   <Debugging>
-    <BreakPoints Count="4">
-      <Item1>
-        <Kind Value="bpkSource"/>
-        <WatchScope Value="wpsLocal"/>
-        <WatchKind Value="wpkWrite"/>
-        <Source Value="info.pas"/>
-        <Line Value="16050"/>
-      </Item1>
-      <Item2>
-        <Kind Value="bpkSource"/>
-        <WatchScope Value="wpsLocal"/>
-        <WatchKind Value="wpkWrite"/>
-        <Source Value="d_main.pas"/>
-        <Line Value="1690"/>
-      </Item2>
-      <Item3>
-        <Kind Value="bpkSource"/>
-        <WatchScope Value="wpsLocal"/>
-        <WatchKind Value="wpkWrite"/>
-        <Source Value="sc_actordef.pas"/>
-        <Line Value="1215"/>
-      </Item3>
-      <Item4>
-        <Kind Value="bpkSource"/>
-        <WatchScope Value="wpsLocal"/>
-        <WatchKind Value="wpkWrite"/>
-        <Source Value="w_wad.pas"/>
-        <Line Value="668"/>
-      </Item4>
-    </BreakPoints>
     <Watches Count="8">
       <Item1>
         <Expression Value="frontsector"/>
