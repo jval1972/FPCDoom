@@ -17328,6 +17328,7 @@ begin
   ZeroMemory(@mobjinfo[nummobjtypes], SizeOf(mobjinfo_t));
   mobjinfo[nummobjtypes].inheritsfrom := -1; // Set to -1
   mobjinfo[nummobjtypes].doomednum := -1; // Set to -1
+  mobjinfo[nummobjtypes].scale := FRACUNIT;
   result := nummobjtypes;
   inc(nummobjtypes);
 end;
