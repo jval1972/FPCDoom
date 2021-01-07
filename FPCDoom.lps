@@ -40,10 +40,11 @@
       <Unit4>
         <Filename Value="deh_main.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="34"/>
-        <CursorPos X="15" Y="42"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="428"/>
+        <CursorPos X="53" Y="447"/>
         <UsageCount Value="204"/>
+        <Loaded Value="True"/>
       </Unit4>
       <Unit5>
         <Filename Value="d_english.pas"/>
@@ -81,7 +82,7 @@
       <Unit9>
         <Filename Value="d_main.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="6"/>
         <TopLine Value="1665"/>
         <CursorPos Y="1690"/>
         <UsageCount Value="204"/>
@@ -262,15 +263,15 @@
         <Filename Value="info.pas"/>
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="11891"/>
-        <CursorPos X="5" Y="11916"/>
+        <TopLine Value="17307"/>
+        <CursorPos X="44" Y="17331"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit32>
       <Unit33>
         <Filename Value="info_h.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="9"/>
         <TopLine Value="397"/>
         <CursorPos X="16" Y="416"/>
         <UsageCount Value="204"/>
@@ -342,10 +343,11 @@
       <Unit41>
         <Filename Value="m_misc.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="320"/>
-        <CursorPos X="26" Y="333"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="588"/>
+        <CursorPos X="22" Y="592"/>
         <UsageCount Value="204"/>
+        <Loaded Value="True"/>
       </Unit41>
       <Unit42>
         <Filename Value="m_rnd.pas"/>
@@ -398,10 +400,11 @@
       <Unit48>
         <Filename Value="p_extra.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="1122"/>
-        <CursorPos X="16" Y="1149"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="136"/>
+        <CursorPos X="23" Y="155"/>
         <UsageCount Value="204"/>
+        <Loaded Value="True"/>
       </Unit48>
       <Unit49>
         <Filename Value="p_floor.pas"/>
@@ -583,10 +586,11 @@
       <Unit71>
         <Filename Value="r_defs.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="550"/>
-        <CursorPos X="3" Y="579"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="401"/>
+        <CursorPos X="5" Y="417"/>
         <UsageCount Value="204"/>
+        <Loaded Value="True"/>
       </Unit71>
       <Unit72>
         <Filename Value="r_draw.pas"/>
@@ -655,8 +659,9 @@
       <Unit80>
         <Filename Value="r_things.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos X="28" Y="6"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="938"/>
+        <CursorPos X="69" Y="955"/>
         <ExtraEditorCount Value="1"/>
         <ExtraEditor1>
           <EditorIndex Value="-1"/>
@@ -664,6 +669,7 @@
           <CursorPos X="28" Y="694"/>
         </ExtraEditor1>
         <UsageCount Value="204"/>
+        <Loaded Value="True"/>
       </Unit80>
       <Unit81>
         <Filename Value="rtl_types.pas"/>
@@ -779,7 +785,7 @@
       <Unit95>
         <Filename Value="w_wad.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="8"/>
         <TopLine Value="643"/>
         <CursorPos X="22" Y="664"/>
         <UsageCount Value="204"/>
@@ -803,7 +809,7 @@
       <Unit98>
         <Filename Value="sc_actordef.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="7"/>
         <TopLine Value="1154"/>
         <CursorPos X="73" Y="1220"/>
         <UsageCount Value="200"/>
@@ -995,153 +1001,175 @@
         <Filename Value="r_ccache.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="40"/>
-        <UsageCount Value="90"/>
+        <UsageCount Value="89"/>
       </Unit122>
       <Unit123>
         <Filename Value="r_scache.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="5"/>
         <CursorPos Y="48"/>
-        <UsageCount Value="90"/>
+        <UsageCount Value="89"/>
       </Unit123>
       <Unit124>
         <Filename Value="F:\Δημήτρης\Documents\GitHub\DelphiDoom\Strife\R_DrawSkyColumnMedium.inc"/>
         <EditorIndex Value="-1"/>
         <WindowIndex Value="1"/>
-        <UsageCount Value="1"/>
+        <UsageCount Value="0"/>
       </Unit124>
       <Unit125>
         <Filename Value="w_sprite.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="99"/>
         <CursorPos X="19" Y="112"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit125>
       <Unit126>
         <Filename Value="FPCDoom.inc"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="37" Y="16"/>
-        <UsageCount Value="1"/>
+        <UsageCount Value="0"/>
       </Unit126>
       <Unit127>
         <Filename Value="C:\lazarus\fpc\3.0.4\source\rtl\objpas\sysutils\datih.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="141"/>
         <CursorPos X="11" Y="157"/>
-        <UsageCount Value="8"/>
+        <UsageCount Value="7"/>
       </Unit127>
       <Unit128>
         <Filename Value="C:\lazarus\fpc\3.0.4\source\rtl\win\wininc\defines.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="5047"/>
         <CursorPos X="6" Y="4841"/>
-        <UsageCount Value="16"/>
+        <UsageCount Value="15"/>
       </Unit128>
       <Unit129>
         <Filename Value="p_terrain.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="72"/>
         <CursorPos X="25" Y="84"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="11"/>
       </Unit129>
     </Units>
-    <JumpHistory Count="24" HistoryIndex="23">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="info.pas"/>
-        <Caret Line="11055" Column="83" TopLine="11040"/>
+        <Filename Value="p_extra.pas"/>
+        <Caret Line="1597" TopLine="1569"/>
       </Position1>
       <Position2>
-        <Filename Value="d_main.pas"/>
-        <Caret Line="1679" TopLine="1671"/>
+        <Filename Value="p_extra.pas"/>
+        <Caret Line="189" TopLine="176"/>
       </Position2>
       <Position3>
-        <Filename Value="d_main.pas"/>
-        <Caret Line="1680" TopLine="1671"/>
+        <Filename Value="p_extra.pas"/>
+        <Caret Line="1578" TopLine="1546"/>
       </Position3>
       <Position4>
-        <Filename Value="d_main.pas"/>
-        <Caret Line="1684" TopLine="1671"/>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="2155" Column="15" TopLine="2145"/>
       </Position4>
       <Position5>
-        <Filename Value="d_main.pas"/>
-        <Caret Line="1685" TopLine="1671"/>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="59" Column="22" TopLine="43"/>
       </Position5>
       <Position6>
-        <Filename Value="d_main.pas"/>
-        <Caret Line="1687" TopLine="1671"/>
+        <Filename Value="p_extra.pas"/>
+        <Caret Line="1124" Column="48" TopLine="1108"/>
       </Position6>
       <Position7>
-        <Filename Value="d_main.pas"/>
-        <Caret Line="1688" TopLine="1671"/>
+        <Filename Value="p_extra.pas"/>
+        <Caret Line="1566" Column="16" TopLine="1549"/>
       </Position7>
       <Position8>
-        <Filename Value="d_main.pas"/>
-        <Caret Line="1689" TopLine="1671"/>
+        <Filename Value="p_extra.pas"/>
+        <Caret Line="1587" Column="11" TopLine="1571"/>
       </Position8>
       <Position9>
-        <Filename Value="d_main.pas"/>
-        <Caret Line="1679" TopLine="1671"/>
+        <Filename Value="info.pas"/>
+        <Caret Line="17240" Column="42" TopLine="17225"/>
       </Position9>
       <Position10>
-        <Filename Value="d_main.pas"/>
-        <Caret Line="1690" TopLine="1671"/>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="2099" Column="40" TopLine="2084"/>
       </Position10>
       <Position11>
-        <Filename Value="sc_actordef.pas"/>
-        <Caret Line="1175" TopLine="1159"/>
+        <Filename Value="p_extra.pas"/>
+        <Caret Line="101" Column="11" TopLine="85"/>
       </Position11>
       <Position12>
-        <Filename Value="sc_actordef.pas"/>
-        <Caret Line="1178" TopLine="1159"/>
+        <Filename Value="info.pas"/>
+        <Caret Line="17240" Column="47" TopLine="17225"/>
       </Position12>
       <Position13>
-        <Filename Value="sc_actordef.pas"/>
-        <Caret Line="1179" TopLine="1169"/>
+        <Filename Value="info.pas"/>
       </Position13>
       <Position14>
-        <Filename Value="sc_actordef.pas"/>
-        <Caret Line="1215" TopLine="1196"/>
+        <Filename Value="info.pas"/>
+        <Caret Line="76" Column="11" TopLine="59"/>
       </Position14>
       <Position15>
-        <Filename Value="w_wad.pas"/>
-        <Caret Line="648" TopLine="632"/>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="2153" Column="31" TopLine="2140"/>
       </Position15>
       <Position16>
-        <Filename Value="w_wad.pas"/>
-        <Caret Line="649" TopLine="632"/>
+        <Filename Value="r_things.pas"/>
+        <Caret Line="863" Column="23" TopLine="848"/>
       </Position16>
       <Position17>
-        <Filename Value="w_wad.pas"/>
-        <Caret Line="655" TopLine="644"/>
+        <Filename Value="r_things.pas"/>
+        <Caret Line="861" Column="7" TopLine="848"/>
       </Position17>
       <Position18>
-        <Filename Value="w_wad.pas"/>
-        <Caret Line="656" TopLine="643"/>
+        <Filename Value="r_things.pas"/>
+        <Caret Line="858" Column="64" TopLine="848"/>
       </Position18>
       <Position19>
-        <Filename Value="w_wad.pas"/>
-        <Caret Line="658" TopLine="643"/>
+        <Filename Value="p_extra.pas"/>
+        <Caret Line="155" Column="23" TopLine="136"/>
       </Position19>
       <Position20>
-        <Filename Value="w_wad.pas"/>
-        <Caret Line="668" TopLine="641"/>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="1455" Column="19" TopLine="1434"/>
       </Position20>
       <Position21>
-        <Filename Value="d_main.pas"/>
-        <Caret Line="1690" TopLine="1665"/>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="950" Column="76" TopLine="930"/>
       </Position21>
       <Position22>
-        <Filename Value="w_wad.pas"/>
-        <Caret Line="668" TopLine="623"/>
+        <Filename Value="deh_main.pas"/>
       </Position22>
       <Position23>
-        <Filename Value="sc_actordef.pas"/>
-        <Caret Line="1223" Column="73" TopLine="1196"/>
+        <Filename Value="info.pas"/>
+        <Caret Line="76" Column="11" TopLine="59"/>
       </Position23>
       <Position24>
-        <Filename Value="info_h.pas"/>
-        <Caret Line="74" Column="33" TopLine="66"/>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="447" Column="53" TopLine="428"/>
       </Position24>
+      <Position25>
+        <Filename Value="info.pas"/>
+        <Caret Line="60" Column="29" TopLine="54"/>
+      </Position25>
+      <Position26>
+        <Filename Value="info.pas"/>
+        <Caret Line="17109" Column="29" TopLine="17102"/>
+      </Position26>
+      <Position27>
+        <Filename Value="info.pas"/>
+        <Caret Line="545" TopLine="545"/>
+      </Position27>
+      <Position28>
+        <Filename Value="info.pas"/>
+        <Caret Line="12967" Column="66" TopLine="12951"/>
+      </Position28>
+      <Position29>
+        <Filename Value="info.pas"/>
+        <Caret Line="17354" TopLine="17324"/>
+      </Position29>
+      <Position30>
+        <Filename Value="info.pas"/>
+        <Caret Line="60" Column="29" TopLine="44"/>
+      </Position30>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
@@ -1149,7 +1177,7 @@
     </RunParams>
   </ProjectSession>
   <Debugging>
-    <Watches Count="8">
+    <Watches Count="9">
       <Item1>
         <Expression Value="frontsector"/>
       </Item1>
@@ -1172,8 +1200,11 @@
         <Expression Value="skyflatnum"/>
       </Item7>
       <Item8>
-        <Expression Value="visplanes[27].bottom[900]"/>
+        <Expression Value="sprframe"/>
       </Item8>
+      <Item9>
+        <Expression Value="psp.state"/>
+      </Item9>
     </Watches>
   </Debugging>
 </CONFIG>
