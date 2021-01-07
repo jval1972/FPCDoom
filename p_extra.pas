@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -145,6 +145,14 @@ procedure A_BulletAttack(actor: Pmobj_t);
 procedure A_MediumGravity(actor: Pmobj_t);
 
 procedure A_Wander(actor: Pmobj_t);
+
+procedure A_Detonate(actor: Pmobj_t);
+
+procedure A_Mushroom(actor: Pmobj_t);
+
+procedure A_BetaSkullAttack(actor: Pmobj_t);
+
+procedure A_FireOldBFG(actor: Pmobj_t);
 
 const
   FLOATBOBSIZE = 64;
@@ -1112,7 +1120,10 @@ var
   ang: angle_t;
 begin
   if not P_CheckStateParams(actor, 1) then
+  begin
+    actor.angle := actor.angle + LongWord(actor.state.misc1) * ANG1; // JVAL: 20210107 - Compensate with MBF ?
     exit;
+  end;
 
   ang := Round(actor.state.params.FloatVal[0] * ANG1);
   actor.angle := actor.angle + ang;
@@ -1502,6 +1513,97 @@ begin
     P_RandomChaseDir(actor);
     actor.movecount := actor.movecount + 5;
   end;
+end;
+
+//
+// A_Detonate
+// killough 8/9/98: same as A_Explode, except that the damage is variable
+//
+procedure A_Detonate(actor: Pmobj_t);
+begin
+  P_RadiusAttack(actor, actor.target, actor.info.damage);
+end;
+
+//
+// killough 9/98: a mushroom explosion effect, sorta :)
+// Original idea: Linguica
+//
+procedure A_Mushroom(actor: Pmobj_t);
+var
+  i, j, n: integer;
+  misc1, misc2: fixed_t;
+  target: mobj_t;
+  mo: Pmobj_t;
+begin
+  n := actor.info.damage;
+
+  // Mushroom parameters are part of code pointer's state
+  if actor.state.misc1 <> 0 then
+    misc1 := actor.state.misc1
+  else
+    misc1 := 4 * FRACUNIT;
+
+  if actor.state.misc2 <> 0 then
+    misc1 := actor.state.misc2
+  else
+    misc2 := 4 * FRACUNIT;
+
+  A_Explode(actor);               // make normal explosion
+
+  i := -n;
+  while i <= n do    // launch mushroom cloud
+  begin
+    j := -n;
+    while j <= n do
+    begin
+      target := actor^;
+      target.x := target.x + i * FRACUNIT;   // Aim in many directions from source
+      target.y := target.y + j * FRACUNIT;
+      target.z := target.z + P_AproxDistance(i, j) * misc1; // Aim fairly high
+      mo := P_SpawnMissile(actor, @target, Ord(MT_FATSHOT));    // Launch fireball
+      mo.momx := FixedMul(mo.momx, misc2);
+      mo.momy := FixedMul(mo.momy, misc2); // Slow down a bit
+      mo.momz := FixedMul(mo.momz, misc2);
+      mo.flags := mo.flags and not MF_NOGRAVITY;// Make debris fall under gravity
+      j := j + 8;
+    end;
+    i := i + 8;
+  end;
+end;
+
+//
+// A_BetaSkullAttack()
+// killough 10/98: this emulates the beta version's lost soul attacks
+//
+procedure A_BetaSkullAttack(actor: Pmobj_t);
+var
+  damage: integer;
+begin
+  if (actor.target = nil) or (actor.target._type = Ord(MT_SKULL)) then
+    exit;
+
+  S_StartSound(actor, actor.info.attacksound);
+  A_FaceTarget(actor);
+  damage := (P_Random mod 8 + 1) * actor.info.damage;
+  P_DamageMobj(actor.target, actor, actor, damage);
+end;
+
+//
+// This allows linedef effects to be activated inside deh frames.
+//
+
+//
+// A_FireOldBFG
+//
+// This function emulates Doom's Pre-Beta BFG
+// By Lee Killough 6/6/98, 7/11/98, 7/19/98, 8/20/98
+//
+// This code may not be used in other mods without appropriate credit given.
+// Code leeches will be telefragged.
+
+procedure A_FireOldBFG(actor: Pmobj_t);
+begin
+  // Hmmm?
 end;
 
 end.

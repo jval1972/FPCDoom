@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -56,7 +56,7 @@ procedure DEH_Init;
 procedure DEH_ShutDown;
 
 const
-  DEHNUMACTIONS = 129;
+  DEHNUMACTIONS = 133;
 
 type
   deh_action_t = record
@@ -2152,7 +2152,14 @@ begin
   deh_actions[127].name := strupper('Wander');
   deh_actions[128].action.acp1 := @A_SpawnItemEx;
   deh_actions[128].name := strupper('SpawnItemEx');
-
+  deh_actions[129].action.acp1 := @A_Detonate;
+  deh_actions[129].name := strupper('Detonate');
+  deh_actions[130].action.acp1 := @A_Mushroom;
+  deh_actions[130].name := strupper('Mushroom');
+  deh_actions[131].action.acp1 := @A_BetaSkullAttack;
+  deh_actions[131].name := strupper('BetaSkullAttack');
+  deh_actions[132].action.acp1 := @A_FireOldBFG;
+  deh_actions[132].name := strupper('FireOldBFG');
 
   deh_strings.numstrings := 0;
   deh_strings.realnumstrings := 0;

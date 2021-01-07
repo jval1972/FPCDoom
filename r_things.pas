@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -152,12 +152,12 @@ begin
   begin
     // the lump should be used for all rotations
     if sprtemp[frame].rotate = 0 then
-      I_Warning('R_InitSprites(): Sprite %s frame %s has multip rot=0 lump'#13#10,
+      I_DevWarning('R_InitSprites(): Sprite %s frame %s has multip rot=0 lump'#13#10,
         [spritename, Chr(Ord('A') + frame)]);
 
     if sprtemp[frame].rotate = 1 then
-      I_Warning('R_InitSprites(): Sprite %s frame %s has rotations and a rot=0 lump'#13#10,
-        [spritename, Chr(Ord('A') + frame)]);
+      I_DevWarning('R_InitSprites(): Sprite %s frame %s has rotations and a rot=0 lump'#13#10,
+          [spritename, Chr(Ord('A') + frame)]);
 
     sprtemp[frame].rotate := 0;
     for r := 0 to 7 do
