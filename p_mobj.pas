@@ -1463,7 +1463,7 @@ begin
             mo.momz := FRACUNIT + (P_Random * 256);
           end;
         end;
-        result := FLOOR_SLUDGE;
+        result := FLOOR_NUKAGE;
         exit;
       end;
   end;
