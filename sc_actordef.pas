@@ -610,9 +610,9 @@ var
     if mobj.replacesid >= 0 then
       AddRes('Thing ' + itoa(mobj.replacesid + 1)) // JVAL DEH patches start Think numbers from 1
     else
-      AddRes('NewThing ' + mobj.name);
+      AddRes('NewThing "' + mobj.name + '"');
     if mobj.inheritsfrom <> '' then
-      AddRes('Inheritsfrom = ' + mobj.inheritsfrom)
+      AddRes('Inheritsfrom = "' + mobj.inheritsfrom + '"')
     else
       AddRes('Inheritsfrom = -1');
     AddRes('Id # = ' + itoa(mobj.doomednum));

@@ -16758,7 +16758,6 @@ const // Doom Original mobjinfo
 procedure Info_Init(const usethinkers: boolean);
 var
   i: integer;
-  mi: integer;
 begin
   if states = nil then
   begin
