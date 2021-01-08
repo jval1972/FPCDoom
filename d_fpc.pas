@@ -581,6 +581,8 @@ function imax(const x1, x2: integer): integer; {$IFDEF FPC}inline;{$ENDIF}
 
 procedure logtofile(const fname: string; const str: string);
 
+function RemoveQuotesFromString(const s: string): string;
+
 implementation
 
 uses
@@ -2883,6 +2885,17 @@ begin
   {$I-}
   BlockWrite(f, Pointer(str)^, Length(str));
   close(f);
+end;
+
+function RemoveQuotesFromString(const s: string): string;
+begin
+  Result := s;
+  if Result = '' then
+    Exit;
+  if Result[1] = '"' then
+    Delete(Result, 1, 1);
+  if (Result <> '') and (Result[Length(Result)] = '"') then
+    Delete(Result, Length(Result), 1);
 end;
 
 end.

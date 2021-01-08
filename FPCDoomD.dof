@@ -100,7 +100,7 @@ Conditionals=
 DebugSourceDirs=
 UsePackages=0
 [Parameters]
-RunParams=-geom 640x400 test_splashes.wad
+RunParams=-nofullscreen -geom 1366x768 BlackOps.wad
 HostApplication=
 Launcher=
 UseLauncher=0
