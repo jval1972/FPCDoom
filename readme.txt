@@ -46,6 +46,7 @@ Key bindings can now accept SHIFT & CTRL keys.
 Displays a warning if no player start found.
 A_Detonate(), A_Mushroom(), A_BetaSkullAttack() & A_FireOldBFG() codepointers.
 Extra sprites for use in Dehacked.
+100 extra mobjinfo for use in Dehacked.
 
 version 1.13.16.128 (20201228)
 ------------------------------

@@ -67,6 +67,9 @@ procedure Info_ShutDown;
 
 function Info_GetInheritance(const imo: Pmobjinfo_t): integer;
 
+const
+  EXTRAMOBJINFO = 100; // JVAL: 20210108 - 100 extra mobjs for Dehacked
+
 implementation
 
 uses
@@ -16757,7 +16760,7 @@ const // Doom Original mobjinfo
 
 procedure Info_Init(const usethinkers: boolean);
 var
-  i: integer;
+  i, mi: integer;
 begin
   if states = nil then
   begin
@@ -16780,6 +16783,11 @@ begin
   begin
     mobjinfo := malloc(Ord(DO_NUMMOBJTYPES) * SizeOf(mobjinfo_t));
     memcpy(mobjinfo, @DO_mobjinfo, Ord(DO_NUMMOBJTYPES) * SizeOf(mobjinfo_t));
+    for i := 0 to EXTRAMOBJINFO - 1 do
+    begin
+      mi := Info_GetNewMobjInfo;
+      mobjinfo[mi].name := 'MT_EXTRA' + IntToStrzFill(2, i);
+    end;
   end;
 
   if not usethinkers then
