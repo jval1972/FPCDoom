@@ -170,7 +170,7 @@ begin
 
   // the lump is only used for one rotation
   if sprtemp[frame].rotate = 0 then
-    I_DevError('R_InitSprites(): Sprite %s frame %s has rotations and a rot=0 lump'#13#10,
+    I_DevWarning('R_InitSprites(): Sprite %s frame %s has rotations and a rot=0 lump'#13#10,
       [spritename, Chr(Ord('A') + frame)]);
 
   sprtemp[frame].rotate := 1;
