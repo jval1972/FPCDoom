@@ -69,6 +69,7 @@ function Info_GetInheritance(const imo: Pmobjinfo_t): integer;
 
 const
   EXTRAMOBJINFO = 100; // JVAL: 20210108 - 100 extra mobjs for Dehacked
+  BASEEXTRAMOBJINFO = 150; // JVAL: 20210108 - From #150
 
 implementation
 
@@ -16755,7 +16756,216 @@ const // Doom Original mobjinfo
     explosionradius: 0;               // explosionradius
     meleedamage: 0;                   // meleedamage
     scale: FRACUNIT;                  // scale
+   ),
+
+   (    // MT_PUSH
+    doomednum: 5001;
+    spawnstate: Ord(S_TNT1);
+    spawnhealth: 1000;
+    seestate: Ord(S_NULL);
+    seesound: Ord(sfx_None);
+    reactiontime: 8;
+    attacksound: Ord(sfx_None);
+    painstate: Ord(S_NULL);
+    painchance: 0;
+    painsound: Ord(sfx_None);
+    meleestate: Ord(S_NULL);
+    missilestate: Ord(S_NULL);
+    deathstate: Ord(S_NULL);
+    xdeathstate: Ord(S_NULL);
+    deathsound: Ord(sfx_None);
+    speed: 0;
+    radius: 8;
+    height: 8;
+    mass: 10;
+    damage: 0;
+    activesound: Ord(sfx_None);
+    flags: MF_NOBLOCKMAP;
+    raisestate: Ord(S_NULL);
+   ),
+
+   (    // MT_PULL
+    doomednum: 5002;
+    spawnstate: Ord(S_TNT1);
+    spawnhealth: 1000;
+    seestate: Ord(S_NULL);
+    seesound: Ord(sfx_None);
+    reactiontime: 8;
+    attacksound: Ord(sfx_None);
+    painstate: Ord(S_NULL);
+    painchance: 0;
+    painsound: Ord(sfx_None);
+    meleestate: Ord(S_NULL);
+    missilestate: Ord(S_NULL);
+    deathstate: Ord(S_NULL);
+    xdeathstate: Ord(S_NULL);
+    deathsound: Ord(sfx_None);
+    speed: 0;
+    radius: 8;
+    height: 8;
+    mass: 10;
+    damage: 0;
+    activesound: Ord(sfx_None);
+    flags: MF_NOBLOCKMAP;
+    raisestate: Ord(S_NULL);
+   ),
+
+   (    // MT_DOGS
+    doomednum: 888;
+    spawnstate: Ord(S_DOGS_STND);
+    spawnhealth: 500;
+    seestate: Ord(S_DOGS_RUN1);
+    seesound: Ord(sfx_dgsit);
+    reactiontime: 8;
+    attacksound: Ord(sfx_dgatk);
+    painstate: Ord(S_DOGS_PAIN);
+    painchance: 180;
+    painsound: Ord(sfx_dgpain);
+    meleestate: Ord(S_DOGS_ATK1);
+    missilestate: Ord(0);
+    deathstate: Ord(S_DOGS_DIE1);
+    xdeathstate: Ord(S_NULL);
+    deathsound: Ord(sfx_dgdth);
+    speed: 10;
+    radius: 12 * FRACUNIT;
+    height: 28 * FRACUNIT;
+    mass: 100;
+    damage: 0;
+    activesound: Ord(sfx_dgact);
+    flags: MF_SOLID or MF_SHOOTABLE or MF_COUNTKILL;
+    raisestate: Ord(S_DOGS_RAISE1);
+   ),
+
+   (    // MT_PLASMA1
+    doomednum: -1;
+    spawnstate: Ord(S_PLS1BALL);
+    spawnhealth: 1000;
+    seestate: Ord(S_NULL);
+    seesound: Ord(sfx_plasma);
+    reactiontime: 8;
+    attacksound: Ord(sfx_None);
+    painstate: Ord(S_NULL);
+    painchance: 0;
+    painsound: Ord(sfx_None);
+    meleestate: Ord(S_NULL);
+    missilestate: Ord(S_NULL);
+    deathstate: Ord(S_PLS1EXP);
+    xdeathstate: Ord(S_NULL);
+    deathsound: Ord(sfx_firxpl);
+    speed: 25 * FRACUNIT;
+    radius: 13 * FRACUNIT;
+    height: 8 * FRACUNIT;
+    mass: 100;
+    damage: 4;
+    activesound: Ord(sfx_None);
+    flags: MF_NOBLOCKMAP or MF_MISSILE or MF_DROPOFF or MF_NOGRAVITY;
+    raisestate: Ord(S_NULL);
+   ),
+
+   (    // MT_PLASMA2
+    doomednum: -1;
+    spawnstate: Ord(S_PLS2BALL);
+    spawnhealth: 1000;
+    seestate: Ord(S_NULL);
+    seesound: Ord(sfx_plasma);
+    reactiontime: 8;
+    attacksound: Ord(sfx_None);
+    painstate: Ord(S_NULL);
+    painchance: 0;
+    painsound: Ord(sfx_None);
+    meleestate: Ord(S_NULL);
+    missilestate: Ord(S_NULL);
+    deathstate: Ord(S_PLS2BALLX1);
+    xdeathstate: Ord(S_NULL);
+    deathsound: Ord(sfx_firxpl);
+    speed: 25 * FRACUNIT;
+    radius: 6 * FRACUNIT;
+    height: 8 * FRACUNIT;
+    mass: 100;
+    damage: 4;
+    activesound: Ord(sfx_None);
+    flags: MF_NOBLOCKMAP or MF_MISSILE or MF_DROPOFF or MF_NOGRAVITY;
+    raisestate: Ord(S_NULL);
+   ),
+
+   (    // MT_SCEPTRE
+    doomednum: 2016;
+    spawnstate: Ord(S_BON3);
+    spawnhealth: 1000;
+    seestate: Ord(S_NULL);
+    seesound: Ord(sfx_None);
+    reactiontime: 8;
+    attacksound: Ord(sfx_None);
+    painstate: Ord(S_NULL);
+    painchance: 0;
+    painsound: Ord(sfx_None);
+    meleestate: Ord(S_NULL);
+    missilestate: Ord(S_NULL);
+    deathstate: Ord(S_NULL);
+    xdeathstate: Ord(S_NULL);
+    deathsound: Ord(sfx_None);
+    speed: 0;
+    radius: 10 * FRACUNIT;
+    height: 16 * FRACUNIT;
+    mass: 100;
+    damage: 0;
+    activesound: Ord(sfx_None);
+    flags: MF_SPECIAL or MF_COUNTITEM;
+    raisestate: Ord(S_NULL);
+   ),
+
+   (    // MT_BIBLE
+    doomednum: 2017;
+    spawnstate: Ord(S_BON4);
+    spawnhealth: 1000;
+    seestate: Ord(S_NULL);
+    seesound: Ord(sfx_None);
+    reactiontime: 8;
+    attacksound: Ord(sfx_None);
+    painstate: Ord(S_NULL);
+    painchance: 0;
+    painsound: Ord(sfx_None);
+    meleestate: Ord(S_NULL);
+    missilestate: Ord(S_NULL);
+    deathstate: Ord(S_NULL);
+    xdeathstate: Ord(S_NULL);
+    deathsound: Ord(sfx_None);
+    speed: 0;
+    radius: 20 * FRACUNIT;
+    height: 10 * FRACUNIT;
+    mass: 100;
+    damage: 0;
+    activesound: Ord(sfx_None);
+    flags: MF_SPECIAL or MF_COUNTITEM;
+    raisestate: Ord(S_NULL);
+   ),
+
+   (    // MT_MUSICSOURCE
+    doomednum: 14164;
+    spawnstate: Ord(S_TNT1);
+    spawnhealth: 1000;
+    seestate: Ord(S_NULL);
+    seesound: Ord(sfx_None);
+    reactiontime: 8;
+    attacksound: Ord(sfx_None);
+    painstate: Ord(S_NULL);
+    painchance: 0;
+    painsound: Ord(sfx_None);
+    meleestate: Ord(S_NULL);
+    missilestate: Ord(S_NULL);
+    deathstate: Ord(S_NULL);
+    xdeathstate: Ord(S_NULL);
+    deathsound: Ord(sfx_None);
+    speed: 0;
+    radius: 16;
+    height: 16;
+    mass: 100;
+    damage: 0;
+    activesound: Ord(sfx_None);
+    flags: MF_NOBLOCKMAP;
+    raisestate: Ord(S_NULL);
    )
+
   );
 
 procedure Info_Init(const usethinkers: boolean);
@@ -16783,10 +16993,18 @@ begin
   begin
     mobjinfo := malloc(Ord(DO_NUMMOBJTYPES) * SizeOf(mobjinfo_t));
     memcpy(mobjinfo, @DO_mobjinfo, Ord(DO_NUMMOBJTYPES) * SizeOf(mobjinfo_t));
-    for i := 0 to EXTRAMOBJINFO - 1 do
+    for i := 0 to BASEEXTRAMOBJINFO - Ord(DO_NUMMOBJTYPES) - 1 do
     begin
       mi := Info_GetNewMobjInfo;
-      mobjinfo[mi].name := 'MT_EXTRA' + IntToStrzFill(2, i);
+      mobjinfo[mi].name := 'MT_BASEEXTRA' + IntToStrzFill(2, i);
+    end;
+    for i := 0 to EXTRAMOBJINFO - 1 do
+    begin
+      if i + Ord(DO_NUMMOBJTYPES) >= BASEEXTRAMOBJINFO then
+      begin
+        mi := Info_GetNewMobjInfo;
+        mobjinfo[mi].name := 'MT_EXTRA' + IntToStrzFill(2, i);
+      end;
     end;
   end;
 

@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -301,6 +301,12 @@ type
     sfx_gloop,
     // JVAL 9 December 2007, for lava terrain
     sfx_burn,
+    // JVAL: 20210108 - Additional
+    sfx_dgsit,
+    sfx_dgatk,
+    sfx_dgact,
+    sfx_dgdth,
+    sfx_dgpain,
     DO_NUMSFX
   );
 
@@ -502,6 +508,11 @@ const
     (name: 'radio';  singularity: false; priority:  60; link: nil; pitch: -1; volume: -1; data: nil; usefulness: 0; lumpnum: 0; randomsoundlist: nil),
     (name: 'gloop';  singularity: false; priority:  60; link: nil; pitch: -1; volume: -1; data: nil; usefulness: 0; lumpnum: 0; randomsoundlist: nil),
     (name: 'burn';   singularity: false; priority:  60; link: nil; pitch: -1; volume: -1; data: nil; usefulness: 0; lumpnum: 0; randomsoundlist: nil),
+    (name: 'dgsit'),
+    (name: 'dgatk'),
+    (name: 'dgact'),
+    (name: 'dgdth'),
+    (name: 'dgpain'),
     (name: ''),
     (name: ''),
     (name: ''),

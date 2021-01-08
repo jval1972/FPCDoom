@@ -469,6 +469,17 @@ type
     MT_MISC82,        MT_MISC83,        MT_MISC84,        MT_MISC85,
     MT_MISC86,
 
+    // [crispy] additional BOOM and MBF states, sprites and code pointers
+    MT_PUSH,
+    MT_PULL,
+    MT_DOGS,
+    MT_PLASMA1,
+    MT_PLASMA2,
+    MT_SCEPTRE,
+    MT_BIBLE,
+    // [crispy] support MUSINFO lump (dynamic music changing)
+    MT_MUSICSOURCE,
+
     DO_NUMMOBJTYPES
   );
 
