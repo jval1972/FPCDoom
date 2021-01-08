@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -33,13 +33,13 @@ interface
 
 // Returns a number from 0 to 255,
 // from a lookup table.
-function M_Random: integer; inline;
+function M_Random: integer; {$IFDEF FPC}inline;{$ENDIF}
 
 // As M_Random, but used only by the play simulation.
-function P_Random: integer; inline;
+function P_Random: integer; {$IFDEF FPC}inline;{$ENDIF}
 
 // JVAL: As P_Random, but used only if no compatibility mode.
-function N_Random: integer; inline;
+function N_Random: integer; {$IFDEF FPC}inline;{$ENDIF}
 
 // Fix randoms for demos.
 procedure M_ClearRandom;
@@ -51,7 +51,7 @@ procedure P_RestoreRandom;
 function I_Random: integer;
 
 // JVAL: Using custom seed
-function C_Random(var idx: integer): integer; inline;
+function C_Random(var idx: integer): integer; {$IFDEF FPC}inline;{$ENDIF}
 
 var
   rndindex: integer = 0;
@@ -88,19 +88,19 @@ const
   );
 
 // Which one is deterministic?
-function M_Random: integer; inline;
+function M_Random: integer; {$IFDEF FPC}inline;{$ENDIF}
 begin
   rndindex := (rndindex + 1) and $ff;
   result := rndtable[rndindex];
 end;
 
-function P_Random: integer; inline;
+function P_Random: integer; {$IFDEF FPC}inline;{$ENDIF}
 begin
   prndindex := (prndindex + 1) and $ff;
   result := rndtable[prndindex];
 end;
 
-function N_Random: integer; inline;
+function N_Random: integer; {$IFDEF FPC}inline;{$ENDIF}
 begin
   nrndindex := (nrndindex + 1) and $ff;
   result := rndtable[nrndindex];
@@ -133,7 +133,7 @@ begin
   result := Random(256);
 end;
 
-function C_Random(var idx: integer): integer; inline;
+function C_Random(var idx: integer): integer; {$IFDEF FPC}inline;{$ENDIF}
 begin
   idx := (idx + 1) and $ff;
   result := rndtable[idx];

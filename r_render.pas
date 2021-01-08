@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -220,7 +220,7 @@ begin
   setrenderingthreadslist.Free;
 end;
 
-procedure R_AddRenderTaskId(const proc: PPointerParmProcedure; const flags: LongWord; id: integer; const parms: pointer); inline;
+procedure R_AddRenderTaskId(const proc: PPointerParmProcedure; const flags: LongWord; id: integer; const parms: pointer); {$IFDEF FPC}inline;{$ENDIF}
 const
   GROWSTEP = 256;
 var
@@ -230,7 +230,7 @@ begin
   rip := @ritems[id];
   if rip.numitems >= rip.realnumitems then
   begin
-    realloc(rip.data, rip.realnumitems * SizeOf(renderitem_t), (GROWSTEP + rip.realnumitems) * SizeOf(renderitem_t));
+    {$IFNDEF FPC}rip.data := {$ENDIF}realloc(rip.data, rip.realnumitems * SizeOf(renderitem_t), (GROWSTEP + rip.realnumitems) * SizeOf(renderitem_t));
     rip.realnumitems := rip.realnumitems + GROWSTEP;
   end;
   item := @rip.data[rip.numitems];
@@ -249,7 +249,7 @@ begin
     item.iparam := PInteger(parms)^
 end;
 
-procedure R_AddRenderTask(const proc: PPointerParmProcedure; const flags: LongWord; const parms: pointer); inline;
+procedure R_AddRenderTask(const proc: PPointerParmProcedure; const flags: LongWord; const parms: pointer); {$IFDEF FPC}inline;{$ENDIF}
 begin
   if flags and RF_WALL <> 0 then
   begin
@@ -306,7 +306,7 @@ begin
   end;
 end;
 
-procedure R_RenderTask(const r: Prenderitem_t); inline;
+procedure R_RenderTask(const r: Prenderitem_t); {$IFDEF FPC}inline;{$ENDIF}
 begin
   r.proc(@r.params);
 end;

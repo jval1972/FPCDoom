@@ -2,7 +2,7 @@
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -618,7 +618,7 @@ begin
   newSize := 4 + AWidth * AHeight * FBytesPerPixel;
   NewImage := malloc(newSize);
   PWord(newImage)^ := AWidth;
-  PWord(newImage + 2)^ := AHeight;
+  PWord(pOp(newImage, 2))^ := AHeight;
   edi := pOp(newImage, 4);
   ys := 0;
   for y := 0 to AHeight - 1 do
@@ -677,7 +677,7 @@ begin
     newSize := 4 + Value * FHeight * FBytesPerPixel;
     newImage := malloc(newSize);
     PWord(newImage)^ := Value;
-    PWord(newImage + 2)^ := FHeight;
+    PWord(pOp(newImage, 2))^ := FHeight;
     if FData <> nil then
     begin
       for y := 0 to FHeight - 1 do
@@ -721,7 +721,7 @@ begin
       memfree(FData, FSize);
     end;
     PWord(newImage)^ := FWidth;
-    PWord(newImage + 2)^ := Value;
+    PWord(pOp(newImage, 2))^ := Value;
     FData := newImage;
     FSize := newSize;
     FHeight := Value;

@@ -647,6 +647,14 @@ const
   NUMSTEAMAPPS = 3;
   steamapps: array[0..NUMSTEAMAPPS - 1] of integer = (2280, 2290, 2300);
 
+{$IFNDEF FPC}
+const
+  HKEY_LOCAL_MACHINE = LongWord($80000002);
+  KEY_WOW64_64KEY = $100;
+  KEY_WOW64_32KEY = $200;
+  KEY_READ = 983065;
+{$ENDIF}
+
 function QuerySteamDirectory(const flags, dirid: integer): string;
 var
   reg: TRegistry;

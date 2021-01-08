@@ -17317,7 +17317,7 @@ end;
 
 function Info_GetNewState: integer;
 begin
-  realloc(states, numstates * SizeOf(state_t), (numstates + 1) * SizeOf(state_t));
+  {$IFNDEF FPC}states := {$ENDIF}realloc(states, numstates * SizeOf(state_t), (numstates + 1) * SizeOf(state_t));
   ZeroMemory(@states[numstates], SizeOf(state_t));
   result := numstates;
   inc(numstates);
@@ -17325,7 +17325,7 @@ end;
 
 function Info_GetNewMobjInfo: integer;
 begin
-  realloc(mobjinfo, nummobjtypes * SizeOf(mobjinfo_t), (nummobjtypes + 1) * SizeOf(mobjinfo_t));
+  {$IFNDEF FPC}mobjinfo := {$ENDIF}realloc(mobjinfo, nummobjtypes * SizeOf(mobjinfo_t), (nummobjtypes + 1) * SizeOf(mobjinfo_t));
   ZeroMemory(@mobjinfo[nummobjtypes], SizeOf(mobjinfo_t));
   mobjinfo[nummobjtypes].inheritsfrom := -1; // Set to -1
   mobjinfo[nummobjtypes].doomednum := -1; // Set to -1
@@ -17369,7 +17369,7 @@ begin
 
   sprnames[numsprites] := check;
   inc(numsprites);
-  realloc(sprnames, numsprites * 4, (numsprites + 1) * 4);
+  {$IFNDEF FPC}sprnames := {$ENDIF}realloc(sprnames, numsprites * 4, (numsprites + 1) * 4);
   sprnames[numsprites] := 0;
 end;
 

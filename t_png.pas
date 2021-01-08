@@ -2,7 +2,7 @@
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -236,7 +236,11 @@ interface
 uses
   windows,
   d_fpc,
+  {$IFDEF FPC}
   paszlib,
+  {$ELSE}
+  zlib,
+  {$ENDIF}
   t_main;
 
 const
@@ -722,7 +726,7 @@ type
   {ZLIB Decompression extra information}
   TZStreamRec2 = packed record
     {From ZLIB}
-    ZLIB: TZStream;
+    ZLIB: {$IFDEF FPC}TZStream{$ELSE}TZStreamRec{$ENDIF};
     {Additional info}
     Data: Pointer;
     fStream: TStream;
@@ -1185,7 +1189,7 @@ begin
   end;
 
   {Init decompression}
-  InflateInit_(Result.zlib, zlib_version, SizeOf(TZStream));
+  InflateInit_(Result.zlib, zlib_version, SizeOf({$IFDEF FPC}TZStream{$ELSE}TZStreamRec{$ENDIF}));
 end;
 
 {Initializes ZLIB for compression}
@@ -1205,7 +1209,7 @@ begin
   end;
 
   {Inits compression}
-  deflateInit_(Result.zlib, Level, zlib_version, SizeOf(TZStream));
+  deflateInit_(Result.zlib, Level, zlib_version, SizeOf({$IFDEF FPC}TZStream{$ELSE}TZStreamRec{$ENDIF}));
 end;
 
 {Terminates ZLIB for compression}
@@ -1231,7 +1235,7 @@ function DecompressZLIB(const Input: Pointer; InputSize: Integer;
   var Output: Pointer; var OutputSize: Integer;
   var ErrorOutput: String): Boolean;
 var
-  StreamRec : TZStream;
+  StreamRec : {$IFDEF FPC}TZStream{$ELSE}TZStreamRec{$ENDIF};
   Buffer    : array[Byte] of Byte;
   InflateRet: Integer;
 begin
@@ -1242,8 +1246,8 @@ begin
     OutputSize := 0;
 
     {Prepares the data to decompress}
-    FillChar(StreamRec, SizeOf(TZStream), #0);
-    InflateInit_(StreamRec, zlib_version, SizeOf(TZStream));
+    FillChar(StreamRec, SizeOf({$IFDEF FPC}TZStream{$ELSE}TZStreamRec{$ENDIF}), #0);
+    InflateInit_(StreamRec, zlib_version, SizeOf({$IFDEF FPC}TZStream{$ELSE}TZStreamRec{$ENDIF}));
     next_in := Input;
     avail_in := InputSize;
 
@@ -1289,7 +1293,7 @@ function CompressZLIB(Input: Pointer; InputSize, CompressionLevel: Integer;
   var Output: Pointer; var OutputSize: Integer;
   var ErrorOutput: String): Boolean;
 var
-  StreamRec : TZStream;
+  StreamRec : {$IFDEF FPC}TZStream{$ELSE}TZStreamRec{$ENDIF};
   Buffer    : array[Byte] of Byte;
   DeflateRet: Integer;
 begin
@@ -1298,8 +1302,8 @@ begin
     Result := true; {By default returns TRUE as everything might have gone ok}
     OutputSize := 0; {Initialize}
     {Prepares the data to compress}
-    FillChar(StreamRec, SizeOf(TZStream), #0);
-    DeflateInit_(StreamRec, CompressionLevel,zlib_version, SizeOf(TZStream));
+    FillChar(StreamRec, SizeOf({$IFDEF FPC}TZStream{$ELSE}TZStreamRec{$ENDIF}), #0);
+    DeflateInit_(StreamRec, CompressionLevel,zlib_version, SizeOf({$IFDEF FPC}TZStream{$ELSE}TZStreamRec{$ENDIF}));
 
     next_in := Input;
     avail_in := InputSize;

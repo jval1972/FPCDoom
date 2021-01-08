@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -58,17 +58,17 @@ function FixedIntMul(const a, b: fixed_t): fixed_t;
 
 function IntFixedMul(const a, b: fixed_t): fixed_t;
 
-function FixedDiv(const a, b: fixed_t): fixed_t; inline;
+function FixedDiv(const a, b: fixed_t): fixed_t; {$IFDEF FPC}inline;{$ENDIF}
 
-function FixedDivEx(const a, b: fixed_t): fixed_t; inline;
+function FixedDivEx(const a, b: fixed_t): fixed_t; {$IFDEF FPC}inline;{$ENDIF}
 
 function FixedDiv2(const a, b: fixed_t): fixed_t;
 
 function FixedInt(const x: integer): integer;
 
-function FixedFloat(const f: float): integer; inline;
+function FixedFloat(const f: float): integer; {$IFDEF FPC}inline;{$ENDIF}
 
-function FixedInt64(const x: int64): integer; inline;
+function FixedInt64(const x: int64): integer; {$IFDEF FPC}inline;{$ENDIF}
 
 implementation
 
@@ -110,7 +110,7 @@ asm
   shrd eax, edx, 16
 end;
 
-function FixedDiv(const a, b: fixed_t): fixed_t; inline;
+function FixedDiv(const a, b: fixed_t): fixed_t; {$IFDEF FPC}inline;{$ENDIF}
 begin
   if _SHR14(abs(a)) >= abs(b) then
   begin
@@ -123,7 +123,7 @@ begin
     result := FixedDiv2(a, b);
 end;
 
-function FixedDivEx(const a, b: fixed_t): fixed_t; inline;
+function FixedDivEx(const a, b: fixed_t): fixed_t; {$IFDEF FPC}inline;{$ENDIF}
 var
   ret: Double;
   ad: Double;
@@ -165,7 +165,7 @@ asm
   sar eax, FRACBITS
 end;
 
-function FixedFloat(const f: float): integer; inline;
+function FixedFloat(const f: float): integer; {$IFDEF FPC}inline;{$ENDIF}
 begin
   result := Trunc(f * FRACUNIT);
 end;
@@ -174,7 +174,7 @@ end;
 // FixedInt64
 // JVAL: This is 30 times faster than using  result := x div FRACUNIT;
 //
-function FixedInt64(const x: int64): integer; inline;
+function FixedInt64(const x: int64): integer; {$IFDEF FPC}inline;{$ENDIF}
 var
   x2: int64;
 begin

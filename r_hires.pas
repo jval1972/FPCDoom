@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -89,9 +89,9 @@ function R_ColorMidAverage(const c1, c2: LongWord): LongWord;
 
 function R_ColorArrayAverage(const A: array of const): LongWord;
 
-function R_ColorLight(const c: LongWord; const lfactor: fixed_t): LongWord; inline;
-function R_ColorLightEx(const c: LongWord; const lfactor: fixed_t): LongWord; inline;
-function R_FuzzLight(const c: LongWord): LongWord; inline;
+function R_ColorLight(const c: LongWord; const lfactor: fixed_t): LongWord; {$IFDEF FPC}inline;{$ENDIF}
+function R_ColorLightEx(const c: LongWord; const lfactor: fixed_t): LongWord; {$IFDEF FPC}inline;{$ENDIF}
+function R_FuzzLight(const c: LongWord): LongWord; {$IFDEF FPC}inline;{$ENDIF}
 
 procedure R_CalcHiResTables;
 
@@ -539,7 +539,7 @@ end;
 // If lfactor is zero returns black.
 // If lfactor is equal to FRACUNIT - 1 returns the input color c.
 //
-function R_ColorLight(const c: LongWord; const lfactor: fixed_t): LongWord; inline;
+function R_ColorLight(const c: LongWord; const lfactor: fixed_t): LongWord; {$IFDEF FPC}inline;{$ENDIF}
 var
   r1, g1, b1: byte;
   r, g, b: LongWord;
@@ -557,7 +557,7 @@ end;
 //  R_ColorLightEx
 //  if lfactor = -1 then returns the inverse color
 //
-function R_ColorLightEx(const c: LongWord; const lfactor: fixed_t): LongWord; inline;
+function R_ColorLightEx(const c: LongWord; const lfactor: fixed_t): LongWord; {$IFDEF FPC}inline;{$ENDIF}
 var
   r1, g1, b1: byte;
   r, g, b: LongWord;
@@ -580,7 +580,7 @@ begin
   end;
 end;
 
-function R_FuzzLight(const c: LongWord): LongWord; inline;
+function R_FuzzLight(const c: LongWord): LongWord; {$IFDEF FPC}inline;{$ENDIF}
 var
   r1, g1, b1: byte;
   r, g, b: LongWord;

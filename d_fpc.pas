@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -31,14 +31,15 @@ unit d_fpc;
 
 interface
 
+uses
+  Windows;
+
 type
-  {$if defined(Win32)}
+  {$IFDEF WIN32}
   PCAST = LongWord;
-  {$elseif defined(Win64)}
+  {$ELSE}
   PCAST = QWORD;
-  {$else}
-     {$error this code is written for win32 or win64}
-  {$endif}
+  {$ENDIF}
 
   PPointer = ^Pointer;
   
@@ -138,9 +139,13 @@ function mallocA(var Size: integer; const Align: integer; var original: pointer)
 
 function mallocz(const size: integer): Pointer;
 
+{$IFDEF FPC}
 procedure realloc(var p: pointer; const oldsize, newsize: integer);
+{$ELSE}
+function realloc(p: pointer; const oldsize, newsize: integer): pointer;
+{$ENDIF}
 
-procedure memfree(var p: pointer; const size: integer);
+procedure memfree({$IFDEF FPC}var {$ENDIF}p: pointer; const size: integer);
 
 var
   memoryusage: integer = 0;
@@ -173,7 +178,7 @@ function decide(const condition: integer;
 function decide(const condition: integer;
   const iftrue: pointer; const iffalse: pointer): pointer; overload;
 
-function incp(var p: pointer; const size: integer = 1): pointer;
+function incp({$IFDEF FPC}var {$ENDIF}p: pointer; const size: integer = 1): pointer;
 
 function pDiff(const p1, p2: pointer; const size: integer): integer;
 
@@ -205,7 +210,7 @@ type
   public
     OnBeginBusy: PProcedure;
     OnEndBusy: PProcedure;
-    constructor Create; 
+    constructor Create;
     function Read(var Buffer; Count: Longint): Longint; virtual; abstract;
     function Write(const Buffer; Count: Longint): Longint; virtual; abstract;
     function Seek(Offset: Longint; Origin: Word): Longint; virtual; abstract;
@@ -319,7 +324,6 @@ const
 
 type
 { TDStrings class }
-
   TDStrings = class
   private
     function GetCommaText: string;
@@ -408,6 +412,7 @@ type
     procedure Insert(Index: Integer; const S: string); override;
   end;
 
+
 function findfile(const mask: string): string;
 
 function findfiles(const mask: string): TDStringList;
@@ -434,15 +439,15 @@ function strremovespaces(const s: string): string;
 
 function _SHL(const x: integer; const bits: integer): integer;
 
-function _SHLW(const x: LongWord; const bits: LongWord): LongWord; inline;
+function _SHLW(const x: LongWord; const bits: LongWord): LongWord; {$IFDEF FPC}inline;{$ENDIF}
 
 function _SHR(const x: integer; const bits: integer): integer;
 function _SHR1(const x: integer): integer;
 function _SHR2(const x: integer): integer;
 function _SHR8(const x: integer): integer;
-function _SHR14(const x: integer): integer; 
+function _SHR14(const x: integer): integer;
 
-function _SHRW(const x: LongWord; const bits: LongWord): LongWord; inline;
+function _SHRW(const x: LongWord; const bits: LongWord): LongWord; {$IFDEF FPC}inline;{$ENDIF}
 
 function StringVal(const Str: PChar): string;
 
@@ -486,14 +491,17 @@ var
   mmxMachine: byte = 0;
   AMD3DNowMachine: byte = 0;
 
+{$IFDEF FPC}
 function GetEnvironmentVariable(lpName: PChar; lpBuffer: PChar; nSize: DWORD): DWORD; stdcall;
+{$ENDIF}
 
 function AllocMemSize: integer;
 
 type
+{$IFDEF FPC}
   PKeyboardState = ^TKeyboardState;
   TKeyboardState = array[0..255] of byte;
-
+{$ENDIF}
   TImageFileHeader = packed record
     Machine: Word;
     NumberOfSections: Word;
@@ -557,24 +565,23 @@ function NowTime: TDateTime;
 
 function formatDateTimeAsString(const Format: string; DateTime: TDateTime): string;
 
-function min3b(const a, b, c: byte): byte; inline;
+function min3b(const a, b, c: byte): byte; {$IFDEF FPC}inline;{$ENDIF}
 
-function max3b(const a, b, c: byte): byte; inline;
+function max3b(const a, b, c: byte): byte; {$IFDEF FPC}inline;{$ENDIF}
 
-function ibetween(const x: integer; const x1, x2: integer): integer; inline;
+function ibetween(const x: integer; const x1, x2: integer): integer; {$IFDEF FPC}inline;{$ENDIF}
 
-function pOp(const p: pointer; const offs: integer): pointer; inline;
+function pOp(const p: pointer; const offs: integer): pointer; {$IFDEF FPC}inline;{$ENDIF}
 
-function imin(const x1, x2: integer): integer; inline;
+function imin(const x1, x2: integer): integer; {$IFDEF FPC}inline;{$ENDIF}
 
-function imax(const x1, x2: integer): integer; inline;
+function imax(const x1, x2: integer): integer; {$IFDEF FPC}inline;{$ENDIF}
 
 procedure logtofile(const fname: string; const str: string);
 
 implementation
 
 uses
-  Windows,
   SysUtils;
 
 procedure sprintf(var s: string; const Fmt: string; const Args: array of const);
@@ -677,6 +684,7 @@ begin
   result := atof(s, 0.0);
 end;
 
+{$IFDEF FPC}
 function atof(const s: string; const default: single): single;
 var
   fmt: TFormatSettings;
@@ -690,6 +698,42 @@ begin
     exit;
   result := default;
 end;
+{$ELSE}
+function atof(const s: string; const default: single): single;
+var
+  code: integer;
+  i: integer;
+  str: string;
+begin
+  ThousandSeparator := #0;
+  DecimalSeparator := '.';
+
+  val(s, result, code);
+  if code <> 0 then
+  begin
+    str := s;
+    for i := 1 to Length(str) do
+      if str[i] in ['.', ','] then
+        str[i] := DecimalSeparator;
+    val(str, result, code);
+    if code = 0 then
+      exit;
+    for i := 1 to Length(str) do
+      if str[i] in ['.', ','] then
+        str[i] := '.';
+    val(str, result, code);
+    if code = 0 then
+      exit;
+    for i := 1 to Length(str) do
+      if str[i] in ['.', ','] then
+        str[i] := ',';
+    val(str, result, code);
+    if code = 0 then
+      exit;
+    result := default;
+  end;
+end;
+{$ENDIF}
 
 procedure memcpy_MMX8(const dst: pointer; const src: pointer; const len: integer); assembler;
 asm
@@ -1027,23 +1071,40 @@ begin
     ZeroMemory(result, size);
 end;
 
+{$IFDEF FPC}
 procedure realloc(var p: pointer; const oldsize, newsize: integer);
+{$ELSE}
+function realloc(p: pointer; const oldsize, newsize: integer): pointer;
+{$ENDIF}
 begin
   if newsize = 0 then
-    memfree(p, oldsize)
-  else if newsize <> oldsize then
   begin
-    reallocmem(p, newsize);
-    memoryusage := memoryusage - oldsize + newsize;
+    memfree(p, oldsize);
+    {$IFNDEF FPC}
+    result := nil;
+    {$ENDIF}
+  end
+  else
+  begin
+    if newsize <> oldsize then
+    begin
+      reallocmem(p, newsize);
+      memoryusage := memoryusage - oldsize + newsize;
+    end;
+    {$IFNDEF FPC}
+    result := p;
+    {$ENDIF}
   end;
 end;
 
-procedure memfree(var p: pointer; const size: integer);
+procedure memfree({$IFDEF FPC}var {$ENDIF}p: pointer; const size: integer);
 begin
   if p <> nil then
   begin
     FreeMem(p, size);
+    {$IFDEF FPC}
     p := nil;
+    {$ENDIF}
     memoryusage := memoryusage - size;
   end;
 end;
@@ -1139,10 +1200,12 @@ begin
     result := iffalse;
 end;
 
-function incp(var p: pointer; const size: integer = 1): pointer;
+function incp({$IFDEF FPC}var {$ENDIF}p: pointer; const size: integer = 1): pointer;
 begin
   result := pOp(p, size);
+  {$IFDEF FPC}
   p := result;
+  {$ENDIF}
 end;
 
 function pDiff(const p1, p2: pointer; const size: integer): integer;
@@ -1369,7 +1432,7 @@ end;
 
 procedure TDNumberList.Add(const value: integer);
 begin
-  realloc(fList, fNumItems * SizeOf(integer), (fNumItems + 1) * SizeOf(integer));
+  {$IFNDEF FPC}fList := {$ENDIF}realloc(fList, fNumItems * SizeOf(integer), (fNumItems + 1) * SizeOf(integer));
   Put(fNumItems, value);
   inc(fNumItems);
 end;
@@ -1395,7 +1458,7 @@ begin
   for i := Index + 1 to fNumItems - 1 do
     fList[i - 1] := fList[i];
 
-  realloc(fList, fNumItems * SizeOf(integer), (fNumItems - 1) * SizeOf(integer));
+  {$IFNDEF FPC}fList := {$ENDIF}realloc(fList, fNumItems * SizeOf(integer), (fNumItems - 1) * SizeOf(integer));
   dec(fNumItems);
 
   result := true;
@@ -1416,7 +1479,7 @@ end;
 
 procedure TDNumberList.Clear;
 begin
-  realloc(fList, fNumItems * SizeOf(integer), 0);
+  {$IFNDEF FPC}fList := {$ENDIF}realloc(fList, fNumItems * SizeOf(integer), 0);
   fList := nil;
   fNumItems := 0;
 end;
@@ -1489,7 +1552,7 @@ begin
       newsize := fRealSize + 128
     else
       newsize := fRealSize + 256;
-    realloc(fList, fRealSize * SizeOf(pointer), newsize * SizeOf(pointer));
+    {$IFNDEF FPC}fList := {$ENDIF}realloc(fList, fRealSize * SizeOf(pointer), newsize * SizeOf(pointer));
     fRealSize := newsize;
   end;
   fList[fNumItems] := value;
@@ -1585,7 +1648,7 @@ end;
 
 procedure TDTextList.Add(const value: string);
 begin
-  realloc(fList, fNumItems * 256, (fNumItems + 1) * 256);
+  {$IFNDEF FPC}fList := {$ENDIF}realloc(fList, fNumItems * 256, (fNumItems + 1) * 256);
   Put(fNumItems, value);
   inc(fNumItems);
 end;
@@ -1611,7 +1674,7 @@ begin
   for i := Index + 1 to fNumItems - 1 do
     fList[i - 1] := fList[i];
 
-  realloc(fList, fNumItems * 256, (fNumItems - 1) * 256);
+  {$IFNDEF FPC}fList := {$ENDIF}realloc(fList, fNumItems * 256, (fNumItems - 1) * 256);
   dec(fNumItems);
 
   result := true;
@@ -1632,7 +1695,7 @@ end;
 
 procedure TDTextList.Clear;
 begin
-  realloc(fList, fNumItems * 256, 0);
+  {$IFNDEF FPC}fList := {$ENDIF}realloc(fList, fNumItems * 256, 0);
   fList := nil;
   fNumItems := 0;
 end;
@@ -2123,10 +2186,9 @@ end;
 
 procedure TDStringList.SetCapacity(NewCapacity: Integer);
 begin
-  realloc(FList, FCapacity * SizeOf(TStringItem), NewCapacity * SizeOf(TStringItem));
+  {$IFNDEF FPC}FList := {$ENDIF}realloc(FList, FCapacity * SizeOf(TStringItem), NewCapacity * SizeOf(TStringItem));
   FCapacity := NewCapacity;
 end;
-
 ////////////////////////////////////////////////////////////////////////////////
 
 function getenv(const env: string): string;
@@ -2302,7 +2364,7 @@ asm
   sal eax, cl
 end;
 
-function _SHLW(const x: LongWord; const bits: LongWord): LongWord; inline;
+function _SHLW(const x: LongWord; const bits: LongWord): LongWord; {$IFDEF FPC}inline;{$ENDIF}
 begin
   result := x shl bits;
 end;
@@ -2333,7 +2395,7 @@ asm
   sar eax, 14
 end;
 
-function _SHRW(const x: LongWord; const bits: LongWord): LongWord; inline;
+function _SHRW(const x: LongWord; const bits: LongWord): LongWord; {$IFDEF FPC}inline;{$ENDIF}
 begin
   result := x shr bits;
 end;
@@ -2709,7 +2771,9 @@ begin
   CreateDir(dir);
 end;
 
+{$IFDEF FPC}
 function GetEnvironmentVariable(lpName: PChar; lpBuffer: PChar; nSize: DWORD): DWORD; stdcall; external 'kernel32.dll' name 'GetEnvironmentVariableA';
+{$ENDIF}
 
 function AllocMemSize: integer;
 begin
@@ -2726,7 +2790,7 @@ begin
   DateTimeToString(Result, Format, DateTime);
 end;
 
-function min3b(const a, b, c: byte): byte; inline;
+function min3b(const a, b, c: byte): byte; {$IFDEF FPC}inline;{$ENDIF}
 begin
   result := a;
   if b < result then
@@ -2735,7 +2799,7 @@ begin
     result := c;
 end;
 
-function max3b(const a, b, c: byte): byte; inline;
+function max3b(const a, b, c: byte): byte; {$IFDEF FPC}inline;{$ENDIF}
 begin
   result := a;
   if b > result then
@@ -2744,7 +2808,7 @@ begin
     result := c;
 end;
 
-function ibetween(const x: integer; const x1, x2: integer): integer; inline;
+function ibetween(const x: integer; const x1, x2: integer): integer; {$IFDEF FPC}inline;{$ENDIF}
 begin
   if x <= x1 then
     result := x1
@@ -2754,12 +2818,12 @@ begin
     result := x;
 end;
 
-function pOp(const p: pointer; const offs: integer): pointer; inline;
+function pOp(const p: pointer; const offs: integer): pointer; {$IFDEF FPC}inline;{$ENDIF}
 begin
   result := pointer(PCAST(p) + offs);
 end;
 
-function imin(const x1, x2: integer): integer; inline;
+function imin(const x1, x2: integer): integer; {$IFDEF FPC}inline;{$ENDIF}
 begin
   if x1 > x2 then
     result := x2
@@ -2767,7 +2831,7 @@ begin
     result := x1;
 end;
 
-function imax(const x1, x2: integer): integer; inline;
+function imax(const x1, x2: integer): integer; {$IFDEF FPC}inline;{$ENDIF}
 begin
   if x1 > x2 then
     result := x1

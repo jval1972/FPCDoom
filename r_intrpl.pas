@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -150,7 +150,7 @@ begin
   numismobjs := 0;
 end;
 
-function R_InterpolationCalcIF(const prev, next: fixed_t; const frac: fixed_t): fixed_t; inline;
+function R_InterpolationCalcIF(const prev, next: fixed_t; const frac: fixed_t): fixed_t; {$IFDEF FPC}inline;{$ENDIF}
 begin
   if next = prev then
     result := prev
@@ -158,7 +158,7 @@ begin
     result := prev + Round((next - prev) / FRACUNIT * frac);
 end;
 
-function R_InterpolationCalcSIF(const prev, next: smallint; const frac: fixed_t): smallint; inline;
+function R_InterpolationCalcSIF(const prev, next: smallint; const frac: fixed_t): smallint; {$IFDEF FPC}inline;{$ENDIF}
 begin
   if next = prev then
     result := prev
@@ -166,7 +166,7 @@ begin
     result := prev + Round((next - prev) / FRACUNIT * frac);
 end;
 
-procedure R_InterpolationCalcI(const pi: Piitem_t; const frac: fixed_t); inline;
+procedure R_InterpolationCalcI(const pi: Piitem_t; const frac: fixed_t); {$IFDEF FPC}inline;{$ENDIF}
 begin
   if pi.inext = pi.iprev then
     exit;
@@ -174,7 +174,7 @@ begin
   PInteger(pi.address)^ := pi.iprev + Round((pi.inext - pi.iprev) / FRACUNIT * frac);
 end;
 
-procedure R_InterpolationCalcSI(const pi: Piitem_t; const frac: fixed_t); inline;
+procedure R_InterpolationCalcSI(const pi: Piitem_t; const frac: fixed_t); {$IFDEF FPC}inline;{$ENDIF}
 begin
   if pi.sinext = pi.siprev then
     exit;
@@ -182,7 +182,7 @@ begin
   PSmallInt(pi.address)^ := pi.siprev + Round((pi.sinext - pi.siprev) / FRACUNIT * frac);
 end;
 
-function R_InterpolationCalcB(const prev, next: byte; const frac: fixed_t): byte; inline;
+function R_InterpolationCalcB(const prev, next: byte; const frac: fixed_t): byte; {$IFDEF FPC}inline;{$ENDIF}
 begin
   if next = prev then
     result := prev
@@ -194,7 +194,7 @@ begin
     result := prev + (next - prev) * frac div FRACUNIT;
 end;
 
-function R_InterpolationCalcA(const prev, next: angle_t; const frac: fixed_t): angle_t; inline;
+function R_InterpolationCalcA(const prev, next: angle_t; const frac: fixed_t): angle_t; {$IFDEF FPC}inline;{$ENDIF}
 var
   prev_e, next_e, mid_e: Extended;
 begin
@@ -228,7 +228,7 @@ begin
   end;
 end;
 
-procedure R_AddInterpolationItem(const addr: pointer; const typ: itype); inline;
+procedure R_AddInterpolationItem(const addr: pointer; const typ: itype); {$IFDEF FPC}inline;{$ENDIF}
 var
   newrealsize: integer;
   pi: Piitem_t;
@@ -253,7 +253,7 @@ begin
   if istruct.realsize <= istruct.numitems then
   begin
     newrealsize := istruct.realsize + IGROWSTEP;
-    realloc(istruct.items, istruct.realsize * SizeOf(iitem_t), newrealsize * SizeOf(iitem_t));
+    {$IFNDEF FPC}istruct.items := {$ENDIF}realloc(istruct.items, istruct.realsize * SizeOf(iitem_t), newrealsize * SizeOf(iitem_t));
     ZeroMemory(@istruct.items[istruct.realsize], IGROWSTEP * SizeOf(iitem_t));
     istruct.realsize := newrealsize;
   end;

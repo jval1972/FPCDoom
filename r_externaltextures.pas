@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -145,7 +145,7 @@ begin
   end
   else if p.columnsize32 <> columnsize then
   begin
-    realloc(p.dc32, (p.columnsize32 + 1) * SizeOf(LongWord), (columnsize + 1) * SizeOf(LongWord));
+    {$IFNDEF FPC}p.dc32 := {$ENDIF}realloc(p.dc32, (p.columnsize32 + 1) * SizeOf(LongWord), (columnsize + 1) * SizeOf(LongWord));
     p.columnsize32 := columnsize;
   end;
   result := p.dc32;
@@ -486,7 +486,7 @@ begin
       l[i] := p.dc32[i div factor];
     l[factor * p.columnsize32] := p.dc32[lastid];
 
-    realloc(p.dc32, (p.columnsize32 + 1) * SizeOf(LongWord), (factor * oldcolumnsize + 1) * SizeOf(LongWord));
+    {$IFNDEF FPC}p.dc32 := {$ENDIF}realloc(p.dc32, (p.columnsize32 + 1) * SizeOf(LongWord), (factor * oldcolumnsize + 1) * SizeOf(LongWord));
     p.columnsize32 := factor * oldcolumnsize;
     p.dc32[0] := proc(l[p.columnsize32], l[0], l[1], 64);
     for i := 1 to p.columnsize32 - 1 do

@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -167,7 +167,7 @@ begin
   if realsize <= fnumitems then
   begin
     realsize := (realsize * 4 div 3 + 64) and (not 7);
-    realloc(fitems, fnumitems * SizeOf(Pmemmanageritem_t), realsize * SizeOf(Pmemmanageritem_t));
+    {$IFNDEF FPC}fitems := {$ENDIF}realloc(fitems, fnumitems * SizeOf(Pmemmanageritem_t), realsize * SizeOf(Pmemmanageritem_t));
     for i := fnumitems + 1 to realsize - 1 do
       fitems[i] := nil;
   end;

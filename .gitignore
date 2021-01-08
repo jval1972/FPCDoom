@@ -1,3 +1,5 @@
 backup/*.*
 lib/*.*
 lib/i386-win32/*.*
+*.~*
+*.dsk

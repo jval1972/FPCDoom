@@ -1540,6 +1540,9 @@ var
   a, b, c: integer;
   vcheck: string;
   vsaved: string;
+  {$IFNDEF FPC}
+  p: pointer;
+  {$ENDIF}
 begin
   gameaction := ga_nothing;
 
@@ -1550,7 +1553,12 @@ begin
     exit;
   end;
 
+  {$IFNDEF FPC}
+  len := M_ReadFile(savename, p);
+  savebuffer := p;
+  {$ELSE}
   len := M_ReadFile(savename, savebuffer);
+  {$ENDIF}
   save_p := @savebuffer[SAVESTRINGSIZE];
 
   savegameversion := VERSION; // Assume current version
@@ -2273,10 +2281,20 @@ var
   lump: integer;
   len: integer;
   oldspawnrandommonsters: boolean;
+  {$IFNDEF FPC}
+  p: pointer;
+  {$ENDIF}
 begin
   gameaction := ga_nothing;
   if externaldemo then
-    len := M_ReadFile(defdemoname, demobuffer)
+  begin
+    {$IFNDEF FPC}
+    len := M_ReadFile(defdemoname, p);
+    demobuffer := p;
+    {$ELSE}
+    len := M_ReadFile(defdemoname, demobuffer);
+    {$ENDIF}
+  end
   else
   begin
     lump := W_GetNumForName(defdemoname);

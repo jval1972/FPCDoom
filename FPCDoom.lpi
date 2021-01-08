@@ -94,18 +94,18 @@
     </PublishOptions>
     <RunParams>
       <local>
-        <CommandLineParams Value="-geom 1366x768 -nofullscreen -iwad doom2.wad test_splashes.wad -devpam"/>
+        <CommandLineParams Value="-geom 1366x768 -nofullscreen -iwad doom2.wad test_splashes.wad -devparm"/>
       </local>
       <FormatVersion Value="2"/>
       <Modes Count="1">
         <Mode0 Name="default">
           <local>
-            <CommandLineParams Value="-geom 1366x768 -nofullscreen -iwad doom2.wad test_splashes.wad -devpam"/>
+            <CommandLineParams Value="-geom 1366x768 -nofullscreen -iwad doom2.wad test_splashes.wad -devparm"/>
           </local>
         </Mode0>
       </Modes>
     </RunParams>
-    <Units Count="122">
+    <Units Count="123">
       <Unit0>
         <Filename Value="FPCDoom.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -594,6 +594,10 @@
         <Filename Value="r_renderstyle.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit121>
+      <Unit122>
+        <Filename Value="p_terrain.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit122>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

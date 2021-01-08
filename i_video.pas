@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -164,7 +164,7 @@ begin
   I_ClearInterface(IInterface(g_pDDSPrimary));
   I_ClearInterface(IInterface(g_pDD));
   I_EnableAltTab;
-  realloc(displaymodes, numdisplaymodes * SizeOf(displaymode_t), 0);
+  {$IFNDEF FPC}displaymodes := {$ENDIF}realloc(displaymodes, numdisplaymodes * SizeOf(displaymode_t), 0);
   numdisplaymodes := 0;
   memfree(oscreen, allocscreensize);
   if screen16 <> nil then
@@ -560,7 +560,7 @@ begin
   begin
     if (dm.dmPelsWidth >= 320) and (dm.dmPelsHeight >= 200) and (dm.dmBitsPerPel = 32) and not IsAvailableScreenResolution(dm.dmPelsWidth, dm.dmPelsHeight) then
     begin
-      realloc(displaymodes, numdisplaymodes * SizeOf(displaymode_t), (numdisplaymodes + 1) * SizeOf(displaymode_t));
+      {$IFNDEF FPC}displaymodes := {$ENDIF}realloc(displaymodes, numdisplaymodes * SizeOf(displaymode_t), (numdisplaymodes + 1) * SizeOf(displaymode_t));
       displaymodes[numdisplaymodes].width := dm.dmPelsWidth;
       displaymodes[numdisplaymodes].height := dm.dmPelsHeight;
       displaymodes[numdisplaymodes].bpp := dm.dmBitsPerPel;
@@ -574,7 +574,7 @@ begin
     begin
       if (dm.dmPelsWidth >= 640) and (dm.dmPelsHeight >= 400) and (dm.dmBitsPerPel >= 16) and not IsAvailableScreenResolution(dm.dmPelsWidth, dm.dmPelsHeight) then
       begin
-        realloc(displaymodes, numdisplaymodes * SizeOf(displaymode_t), (numdisplaymodes + 1) * SizeOf(displaymode_t));
+        {$IFNDEF FPC}displaymodes := {$ENDIF}realloc(displaymodes, numdisplaymodes * SizeOf(displaymode_t), (numdisplaymodes + 1) * SizeOf(displaymode_t));
         displaymodes[numdisplaymodes].width := dm.dmPelsWidth;
         displaymodes[numdisplaymodes].height := dm.dmPelsHeight;
         displaymodes[numdisplaymodes].bpp := dm.dmBitsPerPel;

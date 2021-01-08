@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -124,7 +124,7 @@ var
   lm_spartspan: integer = MAXWIDTH + 1;
   lm_stopspan: integer = -1;
 
-function LM_Screen2LMx(const screenx: integer): integer; inline;
+function LM_Screen2LMx(const screenx: integer): integer; {$IFDEF FPC}inline;{$ENDIF}
 begin
   result := screenx;
   if result < 0 then
@@ -133,7 +133,7 @@ begin
     result := LMWIDTH - 1;
 end;
 
-function LM_Screen2LMy(const screeny: integer): integer; inline;
+function LM_Screen2LMy(const screeny: integer): integer; {$IFDEF FPC}inline;{$ENDIF}
 begin
   result := (screeny + LM_YMOD) div LM_YACCURACY;
   if result < 0 then
@@ -142,7 +142,7 @@ begin
     result := LMHEIGHT - 1;
 end;
 
-function R_LightmapBufferAt(const x, y: integer): Plightmapitem_t; inline;
+function R_LightmapBufferAt(const x, y: integer): Plightmapitem_t; {$IFDEF FPC}inline;{$ENDIF}
 begin
   result := Plightmapitem_t(@((ylookuplm[LM_Screen2LMy(y)]^)[columnofs[LM_Screen2LMx(x)]]));
 end;

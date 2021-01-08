@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -104,7 +104,7 @@ end;
 destructor TCustomParamList.Destroy;
 begin
   if fNumItems > 0 then
-    realloc(fList, fNumItems * SizeOf(customparam_t), 0);
+    {$IFNDEF FPC}fList := {$ENDIF}realloc(fList, fNumItems * SizeOf(customparam_t), 0);
 end;
 
 procedure TCustomParamList.Add(const value: string);
@@ -113,7 +113,7 @@ var
   fval: single;
   token, token1, token2: string;
 begin
-  realloc(fList, fNumItems * SizeOf(customparam_t), (fNumItems + 1) * SizeOf(customparam_t));
+  {$IFNDEF FPC}fList := {$ENDIF}realloc(fList, fNumItems * SizeOf(customparam_t), (fNumItems + 1) * SizeOf(customparam_t));
   splitstring(value, token1, token);
   if strupper(token1) = 'RANDOM' then
   begin

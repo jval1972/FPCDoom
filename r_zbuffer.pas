@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -66,7 +66,7 @@ procedure R_DrawColumnToZBuffer(const parms: Pcolumnparams_t);
 // Returns the z buffer value at (x, y) or screen
 // Lower value means far away
 // no z-buffer is sky (or render glitch) - we do not write o zbuffer in skycolfunc
-function R_ZBufferAt(const x, y: integer): Pzbufferitem_t; inline;
+function R_ZBufferAt(const x, y: integer): Pzbufferitem_t; {$IFDEF FPC}inline;{$ENDIF}
 
 procedure R_InitZBuffer;
 
@@ -76,9 +76,9 @@ procedure R_StartZBuffer;
 
 procedure R_CalcZBuffer;
 
-function R_ZGetCriticalX(const x: integer): boolean; inline;
+function R_ZGetCriticalX(const x: integer): boolean; {$IFDEF FPC}inline;{$ENDIF}
 
-procedure R_ZSetCriticalX(const x: integer; const value: boolean); inline;
+procedure R_ZSetCriticalX(const x: integer; const value: boolean); {$IFDEF FPC}inline;{$ENDIF}
 
 procedure R_StopZBuffer;
 
@@ -94,13 +94,13 @@ uses
 var
   zcriticalx: array[0..MAXWIDTH] of boolean;
 
-function R_NewZBufferItem(const Z: Pzbuffer_t): Pzbufferitem_t; inline;
+function R_NewZBufferItem(const Z: Pzbuffer_t): Pzbufferitem_t; {$IFDEF FPC}inline;{$ENDIF}
 const
   GROWSTEP = 4;
 begin
   if Z.numitems >= Z.numrealitems then
   begin
-    realloc(Z.items, Z.numrealitems * SizeOf(zbufferitem_t), (Z.numrealitems + GROWSTEP) * SizeOf(zbufferitem_t));
+    {$IFNDEF FPC}Z.items := {$ENDIF}realloc(Z.items, Z.numrealitems * SizeOf(zbufferitem_t), (Z.numrealitems + GROWSTEP) * SizeOf(zbufferitem_t));
     Z.numrealitems := Z.numrealitems + GROWSTEP;
   end;
   result := @Z.items[Z.numitems];
@@ -148,7 +148,7 @@ var
     rendertype: RIT_NONE;
   );
 
-function R_ZBufferAt(const x, y: integer): Pzbufferitem_t; inline;
+function R_ZBufferAt(const x, y: integer): Pzbufferitem_t; {$IFDEF FPC}inline;{$ENDIF}
 var
   Z: Pzbuffer_t;
   pi, pistop: Pzbufferitem_t;
@@ -227,12 +227,12 @@ procedure R_StartZBuffer;
 begin
 end;
 
-function R_ZGetCriticalX(const x: integer): boolean; inline;
+function R_ZGetCriticalX(const x: integer): boolean; {$IFDEF FPC}inline;{$ENDIF}
 begin
   result := zcriticalx[x];
 end;
 
-procedure R_ZSetCriticalX(const x: integer; const value: boolean); inline;
+procedure R_ZSetCriticalX(const x: integer; const value: boolean); {$IFDEF FPC}inline;{$ENDIF}
 begin
   zcriticalx[x] := value;
 end;

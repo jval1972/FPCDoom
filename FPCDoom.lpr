@@ -130,7 +130,8 @@ uses
   r_draw_light in 'r_draw_light.pas',
   r_mirror in 'r_mirror.pas',
   r_grayscale in 'r_grayscale.pas',
-  r_colorsubsampling in 'r_colorsubsubling.pas',
+  r_colorsubsampling in 'r_colorsubsampling.pas',
+  r_renderstyle in 'r_renderstyle.pas',
   r_zbuffer in 'r_zbuffer.pas',
   rtl_types in 'rtl_types.pas',
   sounds in 'sounds.pas',
@@ -154,7 +155,7 @@ uses
   w_wad in 'w_wad.pas',
   w_pak in 'w_pak.pas',
   wi_stuff in 'wi_stuff.pas',
-  z_memory in 'z_memory.pas', r_renderstyle;
+  z_memory in 'z_memory.pas';
 
 var
   Saved8087CW: Word;

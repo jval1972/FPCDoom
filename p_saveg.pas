@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -138,7 +138,7 @@ begin
     if savegameversion = VERSION then
     begin
       memcpy(@players[i], save_p, SizeOf(player_t));
-      incp(save_p, SizeOf(player_t));
+      {$IFNDEF FPC}save_p := {$ENDIF}incp(save_p, SizeOf(player_t));
     end
     else
       I_Error('P_UnArchivePlayers(): Unsupported saved game version: %d', [savegameversion]);
@@ -328,7 +328,7 @@ begin
       PADSAVEP(save_p);
       mobj := Pmobj_t(save_p);
       memcpy(mobj, th, SizeOf(mobj_t));
-      incp(save_p, SizeOf(mobj_t));
+      {$IFNDEF FPC}save_p := {$ENDIF}incp(save_p, SizeOf(mobj_t));
       mobj.state := Pstate_t(pDiff(mobj.state, @states[0], SizeOf(state_t)));
 
       if mobj.player <> nil then
@@ -347,7 +347,7 @@ begin
       old_p := @old_p[1];
       PADSAVEP(old_p);
       mobj := Pmobj_t(old_p);
-      incp(old_p, SizeOf(mobj_t));
+      {$IFNDEF FPC}old_p := {$ENDIF}incp(old_p, SizeOf(mobj_t));
       mobj.tracer := Pmobj_t((lst.IndexOf(mobj.tracer) and $FFFF) or (LongWord(mobj.state) shl 16));
       mobj.target := Pmobj_t((lst.IndexOf(mobj.target) and $FFFF) or (LongWord(mobj.state) shl 16));
     end;
@@ -408,7 +408,7 @@ begin
           if savegameversion = VERSION then
           begin
             memcpy(mobj, save_p, SizeOf(mobj_t));
-            incp(save_p, SizeOf(mobj_t));
+            {$IFNDEF FPC}save_p := {$ENDIF}incp(save_p, SizeOf(mobj_t));
           end
           else
             I_Error('P_UnArchiveThinkers(): Unsupported saved game version: %d', [savegameversion]);
@@ -530,7 +530,7 @@ begin
         PADSAVEP(save_p);
         ceiling := Pceiling_t(save_p);
         memcpy(ceiling, th, SizeOf(ceiling_t));
-        incp(save_p, SizeOf(ceiling_t));
+        {$IFNDEF FPC}save_p := {$ENDIF}incp(save_p, SizeOf(ceiling_t));
         ceiling.sector := Psector_t(pDiff(ceiling.sector, @sectors[0], SizeOf(sector_t)));
       end;
       continue;
@@ -543,7 +543,7 @@ begin
       PADSAVEP(save_p);
       ceiling := Pceiling_t(save_p);
       memcpy(ceiling, th, SizeOf(ceiling_t));
-      incp(save_p, SizeOf(ceiling_t));
+      {$IFNDEF FPC}save_p := {$ENDIF}incp(save_p, SizeOf(ceiling_t));
       ceiling.sector := Psector_t(pDiff(ceiling.sector, @sectors[0], SizeOf(sector_t)));
       continue;
     end;
@@ -555,7 +555,7 @@ begin
       PADSAVEP(save_p);
       door := Pvldoor_t(save_p);
       memcpy(door, th, SizeOf(vldoor_t));
-      incp(save_p, SizeOf(vldoor_t));
+      {$IFNDEF FPC}save_p := {$ENDIF}incp(save_p, SizeOf(vldoor_t));
       door.sector := Psector_t(pDiff(door.sector, @sectors[0], SizeOf(sector_t)));
       continue;
     end;
@@ -567,7 +567,7 @@ begin
       PADSAVEP(save_p);
       floor := Pfloormove_t(save_p);
       memcpy(floor, th, SizeOf(floormove_t));
-      incp(save_p, SizeOf(floormove_t));
+      {$IFNDEF FPC}save_p := {$ENDIF}incp(save_p, SizeOf(floormove_t));
       floor.sector := Psector_t(pDiff(floor.sector, @sectors[0], SizeOf(sector_t)));
       continue;
     end;
@@ -579,7 +579,7 @@ begin
       PADSAVEP(save_p);
       plat := Pplat_t(save_p);
       memcpy(plat, th, SizeOf(plat_t));
-      incp(save_p, SizeOf(plat_t));
+      {$IFNDEF FPC}save_p := {$ENDIF}incp(save_p, SizeOf(plat_t));
       plat.sector := Psector_t(pDiff(plat.sector, @sectors[0], SizeOf(sector_t)));
       continue;
     end;
@@ -591,7 +591,7 @@ begin
       PADSAVEP(save_p);
       flash := Plightflash_t(save_p);
       memcpy(flash, th, SizeOf(lightflash_t));
-      incp(save_p, SizeOf(lightflash_t));
+      {$IFNDEF FPC}save_p := {$ENDIF}incp(save_p, SizeOf(lightflash_t));
       flash.sector := Psector_t(pDiff(flash.sector, @sectors[0], SizeOf(sector_t)));
       continue;
     end;
@@ -603,7 +603,7 @@ begin
       PADSAVEP(save_p);
       strobe := Pstrobe_t(save_p);
       memcpy(strobe, th, SizeOf(strobe_t));
-      incp(save_p, SizeOf(strobe_t));
+      {$IFNDEF FPC}save_p := {$ENDIF}incp(save_p, SizeOf(strobe_t));
       strobe.sector := Psector_t(pDiff(strobe.sector, @sectors[0], SizeOf(sector_t)));
       continue;
     end;
@@ -615,7 +615,7 @@ begin
       PADSAVEP(save_p);
       glow := Pglow_t(save_p);
       memcpy(glow, th, SizeOf(glow_t));
-      incp(save_p, SizeOf(glow_t));
+      {$IFNDEF FPC}save_p := {$ENDIF}incp(save_p, SizeOf(glow_t));
       glow.sector := Psector_t(pDiff(glow.sector, @sectors[0], SizeOf(sector_t)));
       continue;
     end;
@@ -627,7 +627,7 @@ begin
       PADSAVEP(save_p);
       flicker := Pfireflicker_t(save_p);
       memcpy(flicker, th, SizeOf(fireflicker_t));
-      incp(save_p, SizeOf(fireflicker_t));
+      {$IFNDEF FPC}save_p := {$ENDIF}incp(save_p, SizeOf(fireflicker_t));
       flicker.sector := Psector_t(pDiff(flicker.sector, @sectors[0], SizeOf(sector_t)));
       continue;
     end;
@@ -668,7 +668,7 @@ begin
           PADSAVEP(save_p);
           ceiling := Z_Malloc(SizeOf(ceiling_t), PU_LEVEL, nil);
           memcpy(ceiling, save_p, SizeOf(ceiling_t));
-          incp(save_p, SizeOf(ceiling_t));
+          {$IFNDEF FPC}save_p := {$ENDIF}incp(save_p, SizeOf(ceiling_t));
           ceiling.sector := @sectors[PCAST(ceiling.sector)];
           ceiling.sector.specialdata := ceiling;
 
@@ -684,7 +684,7 @@ begin
           PADSAVEP(save_p);
           door := Z_Malloc(SizeOf(vldoor_t), PU_LEVEL, nil);
           memcpy(door, save_p, SizeOf(vldoor_t));
-          incp(save_p, SizeOf(vldoor_t));
+          {$IFNDEF FPC}save_p := {$ENDIF}incp(save_p, SizeOf(vldoor_t));
           door.sector := @sectors[PCAST(door.sector)];
           door.sector.specialdata := door;
           @door.thinker._function.acp1 := @T_VerticalDoor;
@@ -696,7 +696,7 @@ begin
           PADSAVEP(save_p);
           floor := Z_Malloc(SizeOf(floormove_t), PU_LEVEL, nil);
           memcpy(floor, save_p, SizeOf(floormove_t));
-          incp(save_p, SizeOf(floormove_t));
+          {$IFNDEF FPC}save_p := {$ENDIF}incp(save_p, SizeOf(floormove_t));
           floor.sector := @sectors[PCAST(floor.sector)];
           floor.sector.specialdata := floor;
           @floor.thinker._function.acp1 := @T_MoveFloor;
@@ -708,7 +708,7 @@ begin
           PADSAVEP(save_p);
           plat := Z_Malloc(SizeOf(plat_t), PU_LEVEL, nil);
           memcpy(plat, save_p, SizeOf(plat_t));
-          incp(save_p, SizeOf(plat_t));
+          {$IFNDEF FPC}save_p := {$ENDIF}incp(save_p, SizeOf(plat_t));
           plat.sector := @sectors[PCAST(plat.sector)];
           plat.sector.specialdata := plat;
 
@@ -724,7 +724,7 @@ begin
           PADSAVEP(save_p);
           flash := Z_Malloc(Sizeof(lightflash_t), PU_LEVEL, nil);
           memcpy(flash, save_p, SizeOf(lightflash_t));
-          incp(save_p, SizeOf(lightflash_t));
+          {$IFNDEF FPC}save_p := {$ENDIF}incp(save_p, SizeOf(lightflash_t));
           flash.sector := @sectors[PCAST(flash.sector)];
           @flash.thinker._function.acp1 := @T_LightFlash;
           P_AddThinker(@flash.thinker);
@@ -735,7 +735,7 @@ begin
           PADSAVEP(save_p);
           strobe := Z_Malloc(SizeOf(strobe_t), PU_LEVEL, nil);
           memcpy(strobe, save_p, SizeOf(strobe_t));
-          incp(save_p, SizeOf(strobe_t));
+          {$IFNDEF FPC}save_p := {$ENDIF}incp(save_p, SizeOf(strobe_t));
           strobe.sector := @sectors[PCAST(strobe.sector)];
           @strobe.thinker._function.acp1 := @T_StrobeFlash;
           P_AddThinker(@strobe.thinker);
@@ -746,7 +746,7 @@ begin
           PADSAVEP(save_p);
           glow := Z_Malloc(SizeOf(glow_t), PU_LEVEL, nil);
           memcpy(glow, save_p, SizeOf(glow_t));
-          incp(save_p, SizeOf(glow_t));
+          {$IFNDEF FPC}save_p := {$ENDIF}incp(save_p, SizeOf(glow_t));
           glow.sector := @sectors[PCAST(glow.sector)];
           @glow.thinker._function.acp1 := @T_Glow;
           P_AddThinker(@glow.thinker);
@@ -757,7 +757,7 @@ begin
           PADSAVEP(save_p);
           flicker := Z_Malloc(SizeOf(fireflicker_t), PU_LEVEL, nil);
           memcpy(flicker, save_p, SizeOf(fireflicker_t));
-          incp(save_p, SizeOf(fireflicker_t));
+          {$IFNDEF FPC}save_p := {$ENDIF}incp(save_p, SizeOf(fireflicker_t));
           @flicker.thinker._function.acp1 := @T_FireFlicker;
           flicker.sector := @sectors[PCAST(flicker.sector)];
           P_AddThinker(@flicker.thinker);

@@ -254,8 +254,8 @@ begin
   if deh_strings.numstrings = deh_strings.realnumstrings then
   begin
     deh_strings.realnumstrings := deh_strings.realnumstrings + 64;
-    realloc(
-      pointer(deh_strings._array),
+    {$IFNDEF FPC}deh_strings._array := {$ENDIF}realloc(
+      deh_strings._array,
       deh_strings.numstrings * SizeOf(deh_string_t),
       deh_strings.realnumstrings * SizeOf(deh_string_t));
   end;
@@ -1411,7 +1411,7 @@ begin
     else if (token1 = 'SUBMITNEWSTATES') or (token1 = 'SUBMITNEWFRAMES') then
     begin
     // JVAL: 20201203 - Preserve initial actions
-      realloc(pointer(code_ptrs), deh_initialstates * SizeOf(actionf_t), numstates * SizeOf(actionf_t));
+      {$IFNDEF FPC}code_ptrs := {$ENDIF}realloc(code_ptrs, deh_initialstates * SizeOf(actionf_t), numstates * SizeOf(actionf_t));
       for i := 0 to numstates - 1 do
         code_ptrs[i] := states[i].action;
 
@@ -2487,7 +2487,7 @@ begin
   FreeAndNil(renderstyle_tokens);
   FreeAndNil(misc_tokens);
 
-  realloc(deh_strings._array, deh_strings.realnumstrings * SizeOf(deh_string_t), 0);
+  {$IFNDEF FPC}deh_strings._array := {$ENDIF}realloc(deh_strings._array, deh_strings.realnumstrings * SizeOf(deh_string_t), 0);
 end;
 
 
