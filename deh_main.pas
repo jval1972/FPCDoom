@@ -452,7 +452,7 @@ begin
           continue;
         end;
 
-        if (mobj_no <= 0) or (mobj_no > Ord(DO_NUMMOBJTYPES)) then
+        if (mobj_no <= 0) or (mobj_no > nummobjtypes) then
         begin
           I_Warning('DEH_Parse(): Wrong think number = %d'#13#10, [mobj_no]);
           continue;
