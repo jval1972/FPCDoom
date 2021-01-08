@@ -67,10 +67,6 @@ procedure Info_ShutDown;
 
 function Info_GetInheritance(const imo: Pmobjinfo_t): integer;
 
-const
-  EXTRAMOBJINFO = 100; // JVAL: 20210108 - 100 extra mobjs for Dehacked
-  BASEEXTRAMOBJINFO = 150; // JVAL: 20210108 - From #150
-
 implementation
 
 uses
@@ -16976,6 +16972,10 @@ begin
   begin
     states := malloc(Ord(DO_NUMSTATES) * SizeOf(state_t));
     memcpy(states, @DO_states, Ord(DO_NUMSTATES) * SizeOf(state_t));
+
+    {$IFNDEF FPC}states := {$ENDIF}realloc(states, Ord(DO_NUMSTATES) * SizeOf(state_t), EXTRANUMSTATES * SizeOf(state_t));
+    ZeroMemory(@states[Ord(DO_NUMSTATES)], SizeOf(state_t) * (EXTRANUMSTATES - Ord(DO_NUMSTATES)));
+    numstates := EXTRANUMSTATES;
   end;
 
   if sprnames = nil then

@@ -532,6 +532,11 @@ type
 
   Pmobjinfo_t = ^mobjinfo_t;
 
+const
+  EXTRAMOBJINFO = 100; // JVAL: 20210108 - 100 extra mobjs for Dehacked
+  BASEEXTRAMOBJINFO = 150; // JVAL: 20210108 - From #150
+  EXTRANUMSTATES = 4000;
+
 implementation
 
 end.
