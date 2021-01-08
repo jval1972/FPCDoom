@@ -16975,6 +16975,8 @@ begin
 
     {$IFNDEF FPC}states := {$ENDIF}realloc(states, Ord(DO_NUMSTATES) * SizeOf(state_t), EXTRANUMSTATES * SizeOf(state_t));
     ZeroMemory(@states[Ord(DO_NUMSTATES)], SizeOf(state_t) * (EXTRANUMSTATES - Ord(DO_NUMSTATES)));
+    for i := Ord(DO_NUMSTATES) to EXTRANUMSTATES - 1 do
+      states[i].tics := -1;
     numstates := EXTRANUMSTATES;
   end;
 
