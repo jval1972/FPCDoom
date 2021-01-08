@@ -1544,7 +1544,7 @@ begin
     misc1 := 4 * FRACUNIT;
 
   if actor.state.misc2 <> 0 then
-    misc1 := actor.state.misc2
+    misc2 := actor.state.misc2
   else
     misc2 := 4 * FRACUNIT;
 
