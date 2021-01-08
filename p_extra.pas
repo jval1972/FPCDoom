@@ -1548,7 +1548,7 @@ begin
   else
     misc2 := 4 * FRACUNIT;
 
-  A_Explode(actor);               // make normal explosion
+  A_Explode(actor);  // make normal explosion
 
   i := -n;
   while i <= n do    // launch mushroom cloud
