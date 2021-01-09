@@ -298,9 +298,14 @@ var
 begin
   for i := 0 to NUMTRANS8TABLES do
   begin
-    memfree(pointer(trans8tables[i]), SizeOf(trans8table_t));
-    memfree(pointer(additive8tables[i]), SizeOf(trans8table_t));
-    memfree(pointer(subtractive8tables[i]), SizeOf(trans8table_t));
+    memfree(trans8tables[i], SizeOf(trans8table_t));
+    memfree(additive8tables[i], SizeOf(trans8table_t));
+    memfree(subtractive8tables[i], SizeOf(trans8table_t));
+    {$IFNDEF FPC}
+    trans8tables[i] := nil;
+    additive8tables[i] := nil;
+    subtractive8tables[i] := nil;
+    {$ENDIF}
   end;
 
   memfree(coloraddtrans8table, SizeOf(trans8table_t));

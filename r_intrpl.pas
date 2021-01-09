@@ -145,6 +145,9 @@ end;
 procedure R_ResetInterpolationBuffer;
 begin
   memfree(istruct.items, istruct.realsize * SizeOf(iitem_t));
+  {$IFNDEF FPC}
+  istruct.items := nil;
+  {$ENDIF}
   istruct.numitems := 0;
   istruct.realsize := 0;
   numismobjs := 0;

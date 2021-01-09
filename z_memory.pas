@@ -134,7 +134,12 @@ begin
   if fitems[i].user <> nil then
     fitems[i].user^ := nil;
   if fitems[i] <> nil then
+  begin
     memfree(fitems[i], fitems[i].size + SizeOf(memmanageritem_t));
+    {$IFNDEF FPC}
+    fitems[i] := nil;
+    {$ENDIF}
+  end;
   if i < fnumitems - 1 then
   begin
     fitems[i] := fitems[fnumitems - 1];
