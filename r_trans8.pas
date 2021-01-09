@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -297,7 +297,11 @@ var
   i: integer;
 begin
   for i := 0 to NUMTRANS8TABLES do
-    memfree(trans8tables[i], SizeOf(trans8table_t));
+  begin
+    memfree(pointer(trans8tables[i]), SizeOf(trans8table_t));
+    memfree(pointer(additive8tables[i]), SizeOf(trans8table_t));
+    memfree(pointer(subtractive8tables[i]), SizeOf(trans8table_t));
+  end;
 
   memfree(coloraddtrans8table, SizeOf(trans8table_t));
 
