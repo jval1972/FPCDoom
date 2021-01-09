@@ -622,7 +622,7 @@ type
   );
 
 var
-  MainMenu: array[0..5] of menuitem_t;
+  MainMenu: array[0..Ord(main_end) - 1] of menuitem_t;
   MainDef: menu_t;
 
 type
@@ -638,7 +638,7 @@ type
   );
 
 var
-  EpisodeMenu: array[0..3] of menuitem_t;
+  EpisodeMenu: array[0..Ord(ep_end) - 1] of menuitem_t;
   EpiDef: menu_t;
 
 type
@@ -655,7 +655,7 @@ type
   );
 
 var
-  NewGameMenu: array[0..4] of menuitem_t;
+  NewGameMenu: array[0..Ord(newg_end) - 1] of menuitem_t;
   NewDef: menu_t;
 
 type
@@ -904,7 +904,7 @@ type
   );
 
 var
-  ReadMenu1: array[0..0] of menuitem_t;
+  ReadMenu1: array[0..Ord(read1_end) - 1] of menuitem_t;
   ReadDef1: menu_t;
 
 type
@@ -914,7 +914,7 @@ type
   );
 
 var
-  ReadMenu2: array[0..0] of menuitem_t;
+  ReadMenu2: array[0..Ord(read2_end) - 1] of menuitem_t;
   ReadDef2: menu_t;
 
 //  https://www.doomworld.com/forum/topic/111465-boom-extended-help-screens-an-undocumented-feature/
@@ -930,7 +930,7 @@ type
   );
 
 var
-  ReadMenuExt: array[0..0] of menuitem_t;
+  ReadMenuExt: array[0..Ord(readext_end) - 1] of menuitem_t;
   ReadDefExt: menu_t;
 
 
@@ -1459,17 +1459,24 @@ begin
   M_ReadSaveStrings;
 end;
 
+procedure M_StartSound(origin: pointer; sfx_id: integer);
+begin
+  if gamestate = GS_ENDOOM then
+    exit;
+  S_StartSound(origin, sfx_id);
+end;
+
 //
 //      M_QuickSave
 //
 procedure M_SwtchnSound;
 begin
-  S_StartSound(nil, Ord(sfx_swtchn));
+  M_StartSound(nil, Ord(sfx_swtchn));
 end;
 
 procedure M_SwtchxSound;
 begin
-  S_StartSound(nil, Ord(sfx_swtchx));
+  M_StartSound(nil, Ord(sfx_swtchx));
 end;
 
 
@@ -1488,7 +1495,7 @@ var
 begin
   if not usergame then
   begin
-    S_StartSound(nil, Ord(sfx_oof));
+    M_StartSound(nil, Ord(sfx_oof));
     exit;
   end;
 
@@ -2891,7 +2898,7 @@ procedure M_CmdEndGame;
 begin
   if not usergame then
   begin
-    S_StartSound(nil, Ord(sfx_oof));
+    M_StartSound(nil, Ord(sfx_oof));
     exit;
   end;
 
@@ -2975,9 +2982,9 @@ begin
   if not netgame then
   begin
     if gamemode = commercial then
-      S_StartSound(nil, quitsounds2[_SHR(gametic, 2) and 7])
+      M_StartSound(nil, quitsounds2[_SHR(gametic, 2) and 7])
     else
-      S_StartSound(nil, quitsounds[_SHR(gametic, 2) and 7]);
+      M_StartSound(nil, quitsounds[_SHR(gametic, 2) and 7]);
     I_WaitVBL(1000);
   end;
   G_Quit;
@@ -3178,6 +3185,12 @@ var
   palette: PByteArray;
   mouseback: boolean;
 begin
+  if gamestate = GS_ENDOOM then
+  begin
+    result := false;
+    exit;
+  end;
+
   if (ev.data1 = KEY_RALT) or (ev.data1 = KEY_LALT) then
   begin
     m_altdown := ev._type = ev_keydown;
@@ -3390,7 +3403,7 @@ begin
             exit;
           end;
           M_SizeDisplay(0);
-          S_StartSound(nil, Ord(sfx_stnmov));
+          M_StartSound(nil, Ord(sfx_stnmov));
           result := true;
           exit;
         end;
@@ -3402,7 +3415,7 @@ begin
             exit;
           end;
           M_SizeDisplay(1);
-          S_StartSound(nil, Ord(sfx_stnmov));
+          M_StartSound(nil, Ord(sfx_stnmov));
           result := true;
           exit;
         end;
@@ -3533,7 +3546,7 @@ begin
         itemOn := -1;
         repeat
           inc(itemOn);
-          S_StartSound(nil, Ord(sfx_pstop));
+          M_StartSound(nil, Ord(sfx_pstop));
         until currentMenu.menuitems[itemOn].status <> -1;
         result := true;
         exit;
@@ -3543,7 +3556,7 @@ begin
         itemOn := currentMenu.numitems;
         repeat
           dec(itemOn);
-          S_StartSound(nil, Ord(sfx_pstop));
+          M_StartSound(nil, Ord(sfx_pstop));
         until currentMenu.menuitems[itemOn].status <> -1;
         result := true;
         exit;
@@ -3555,7 +3568,7 @@ begin
             itemOn := 0
           else
             inc(itemOn);
-          S_StartSound(nil, Ord(sfx_pstop));
+          M_StartSound(nil, Ord(sfx_pstop));
         until currentMenu.menuitems[itemOn].status <> -1;
         result := true;
         exit;
@@ -3567,7 +3580,7 @@ begin
             itemOn := currentMenu.numitems - 1
           else
             dec(itemOn);
-          S_StartSound(nil, Ord(sfx_pstop));
+          M_StartSound(nil, Ord(sfx_pstop));
         until currentMenu.menuitems[itemOn].status <> -1;
         result := true;
         exit;
@@ -3577,7 +3590,7 @@ begin
         if Assigned(currentMenu.menuitems[itemOn].routine) and
           (currentMenu.menuitems[itemOn].status = 2) then
         begin
-          S_StartSound(nil, Ord(sfx_stnmov));
+          M_StartSound(nil, Ord(sfx_stnmov));
           currentMenu.menuitems[itemOn].routine(0);
         end
         else if (currentMenu.leftMenu <> nil) and not (ev._type in [ev_mouse, ev_joystick]) then
@@ -3595,7 +3608,7 @@ begin
         if Assigned(currentMenu.menuitems[itemOn].routine) and
           (currentMenu.menuitems[itemOn].status = 2) then
         begin
-          S_StartSound(nil, Ord(sfx_stnmov));
+          M_StartSound(nil, Ord(sfx_stnmov));
           currentMenu.menuitems[itemOn].routine(1);
         end
         else if (currentMenu.rightMenu <> nil) and not (ev._type in [ev_mouse, ev_joystick]) then
@@ -3620,12 +3633,12 @@ begin
               currentMenu.menuitems[itemOn].routine(0) // left arrow
             else
               currentMenu.menuitems[itemOn].routine(1); // right arrow
-            S_StartSound(nil, Ord(sfx_stnmov));
+            M_StartSound(nil, Ord(sfx_stnmov));
           end
           else
           begin
             currentMenu.menuitems[itemOn].routine(itemOn);
-            S_StartSound(nil, Ord(sfx_pistol));
+            M_StartSound(nil, Ord(sfx_pistol));
           end;
         end;
         result := true;
@@ -3675,7 +3688,7 @@ begin
         if currentMenu.menuitems[i].alphaKey = Chr(ch) then
         begin
           itemOn := i;
-          S_StartSound(nil, Ord(sfx_pstop));
+          M_StartSound(nil, Ord(sfx_pstop));
           result := true;
           exit;
         end;
@@ -3683,7 +3696,7 @@ begin
         if currentMenu.menuitems[i].alphaKey = Chr(ch) then
         begin
           itemOn := i;
-          S_StartSound(nil, Ord(sfx_pstop));
+          M_StartSound(nil, Ord(sfx_pstop));
           result := true;
           exit;
         end;
