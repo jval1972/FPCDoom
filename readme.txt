@@ -50,6 +50,7 @@ Extra sprites for use in Dehacked.
 Extra states (up to 4000) for use in Dehacked.
 Added -noactordef command line parameter, prevent parsing of ACTORDEF lumps.
 Added -nodehextra command line parameter, prevent creating additional states & things for DEHEXTRA.
+Extra sounds for Dehacked FRE000-FREE199 (indexed at 500-699).
 
 version 1.13.16.128 (20201228)
 ------------------------------

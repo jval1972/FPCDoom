@@ -258,21 +258,23 @@ begin
   // no sounds are playing, and they are not mus_paused
   mus_paused := false;
 
+  if M_CheckParm('-NODEHEXTRA') = 0 then
+  begin
+    for i := 500 to 699 do
+    begin
+      S_sfx[i].name := 'fre' + IntToStrZfill(3, i - 500);
+      S_sfx[i].priority := 127;
+      S_sfx[i].lumpnum := -1;
+    end;
+    numsfx := 700;
+  end;
+
   // Note that sounds have not been cached (yet).
   for i := 1 to numsfx - 1 do
   begin
     S_sfx[i].lumpnum := -1;
     S_sfx[i].usefulness := -1;
   end;
-
-  if M_CheckParm('-NODEHEXTRA') = 0 then
-    for i := 500 to 699 do
-    begin
-      S_sfx[i].name := 'fre' + IntToStrZfill(3, i - 500);
-      S_sfx[i].priority := 127;
-      S_sfx[i].lumpnum := -1;
-      S_sfx[i].usefulness := -1;
-    end;
 
   C_AddCmd('useexternalwav', @S_CmdUseExternalWav);
   C_AddCmd('miditempo', @S_CmdMidiTempo);
