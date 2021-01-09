@@ -1603,7 +1603,6 @@ begin
   end;
 
   // JVAL: Not found, we will add a new sound
-
   if numsfx >= MAX_NUMSFX - 1 then // JVAL: Limit exceeded, we will use default pistol sound :(
   begin
     I_Warning('S_GetSoundNumForName(): Can not add %s sound, limit of %d sounds exceeded'#13#10, [sfx_name, numsfx]);
@@ -1612,7 +1611,6 @@ begin
   end;
 
   // JVAL: Register the new sound
-
   if Pos('DS', name) = 1 then
     name := Copy(name, 3, Length(name) - 2);
   if name = '' then // JVAL: Normally this should not happen!
@@ -1635,7 +1633,6 @@ begin
   sfx.lumpnum := -1; // JVAL: was = 0;
   sfx.randomsoundlist := nil;
   inc(numsfx);
-
 end;
 
 function S_GetSoundNameForNum(const sfx_num: integer): string;
