@@ -1685,7 +1685,7 @@ begin
       I_Warning('DEH_ParseLumpName(): GAMEDEF lump not found, using defaults.'#13#10);
 
   if M_CheckParm('-nowaddehacked') = 0 then
-    if not DEH_ParseLumpName('DEHACKED') then
+    if not DEH_ParseLumpNames('DEHACKED') then
       printf('DEH_ParseLumpName(): DEHACKED lump not found.'#13#10);
 
   // JVAL Adding dehached files

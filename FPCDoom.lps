@@ -43,8 +43,8 @@
         <Filename Value="deh_main.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="446"/>
-        <CursorPos X="60" Y="456"/>
+        <TopLine Value="178"/>
+        <CursorPos X="24" Y="185"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit4>
@@ -85,9 +85,10 @@
       <Unit9>
         <Filename Value="d_main.pas"/>
         <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="14"/>
-        <TopLine Value="1681"/>
-        <CursorPos X="38" Y="1694"/>
+        <TopLine Value="1673"/>
+        <CursorPos X="12" Y="1688"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit9>
@@ -555,8 +556,7 @@
         <Filename Value="p_tick.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="11"/>
-        <TopLine Value="150"/>
-        <CursorPos X="14" Y="152"/>
+        <CursorPos X="8" Y="157"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit66>
@@ -628,7 +628,7 @@
         <Filename Value="r_main.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="10"/>
-        <TopLine Value="1220"/>
+        <TopLine Value="1219"/>
         <CursorPos X="12" Y="1360"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
@@ -699,10 +699,9 @@
       <Unit83>
         <Filename Value="s_sound.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="241"/>
-        <CursorPos X="19" Y="269"/>
+        <TopLine Value="247"/>
+        <CursorPos X="8" Y="269"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit83>
@@ -821,8 +820,8 @@
         <Filename Value="sc_actordef.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="5"/>
-        <TopLine Value="711"/>
-        <CursorPos X="32" Y="720"/>
+        <TopLine Value="1190"/>
+        <CursorPos X="21" Y="1220"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit98>
@@ -1013,9 +1012,9 @@
         <Filename Value="p_terrain.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="12"/>
-        <TopLine Value="58"/>
-        <CursorPos X="39" Y="77"/>
-        <UsageCount Value="45"/>
+        <TopLine Value="60"/>
+        <CursorPos X="36" Y="68"/>
+        <UsageCount Value="47"/>
         <Loaded Value="True"/>
       </Unit122>
       <Unit123>
@@ -1069,123 +1068,122 @@
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="sounds.pas"/>
-        <Caret Line="314" Column="75" TopLine="292"/>
+        <Caret Line="1760" TopLine="1719"/>
       </Position1>
       <Position2>
-        <Filename Value="sounds.pas"/>
-        <Caret Line="697" TopLine="687"/>
+        <Filename Value="s_sound.pas"/>
+        <Caret Line="262" Column="19" TopLine="248"/>
       </Position2>
       <Position3>
-        <Filename Value="sounds.pas"/>
-        <Caret Line="76" TopLine="76"/>
+        <Filename Value="s_sound.pas"/>
+        <Caret Line="269" Column="8" TopLine="247"/>
       </Position3>
       <Position4>
-        <Filename Value="sounds.pas"/>
-        <Caret Line="310" TopLine="298"/>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="952" Column="26" TopLine="937"/>
       </Position4>
       <Position5>
-        <Filename Value="sounds.pas"/>
-        <Caret Line="756" Column="3" TopLine="742"/>
+        <Filename Value="d_main.pas"/>
+        <Caret Line="1688" Column="26" TopLine="1681"/>
       </Position5>
       <Position6>
-        <Filename Value="sounds.pas"/>
-        <Caret Line="524" TopLine="510"/>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="42" Column="27" TopLine="26"/>
       </Position6>
       <Position7>
-        <Filename Value="sounds.pas"/>
-        <Caret Line="495" Column="16" TopLine="492"/>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="204" TopLine="175"/>
       </Position7>
       <Position8>
-        <Filename Value="sounds.pas"/>
-        <Caret Line="1039" Column="15" TopLine="1010"/>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="194" Column="20" TopLine="179"/>
       </Position8>
       <Position9>
-        <Filename Value="sounds.pas"/>
-        <Caret Line="1552" TopLine="1522"/>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="198" Column="58" TopLine="179"/>
       </Position9>
       <Position10>
-        <Filename Value="sounds.pas"/>
-        <Caret Line="1039" Column="16" TopLine="1025"/>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="199" Column="67" TopLine="179"/>
       </Position10>
       <Position11>
-        <Filename Value="sounds.pas"/>
-        <Caret Line="526" Column="16" TopLine="513"/>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="198" Column="67" TopLine="179"/>
       </Position11>
       <Position12>
-        <Filename Value="sounds.pas"/>
-        <Caret Line="315" Column="37" TopLine="299"/>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="48" Column="20" TopLine="33"/>
       </Position12>
       <Position13>
-        <Filename Value="sounds.pas"/>
-        <Caret Line="511" Column="29" TopLine="503"/>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="50" Column="20" TopLine="33"/>
       </Position13>
       <Position14>
-        <Filename Value="s_sound.pas"/>
-        <Caret Line="263" Column="11" TopLine="251"/>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="156" Column="20" TopLine="131"/>
       </Position14>
       <Position15>
-        <Filename Value="sounds.pas"/>
-        <Caret Line="1558" Column="3" TopLine="1543"/>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="163" Column="14" TopLine="138"/>
       </Position15>
       <Position16>
-        <Filename Value="s_sound.pas"/>
-        <Caret Line="270" Column="16" TopLine="245"/>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="210" Column="12" TopLine="185"/>
       </Position16>
       <Position17>
-        <Filename Value="sounds.pas"/>
-        <Caret Line="1554" TopLine="1539"/>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="266" Column="14" TopLine="242"/>
       </Position17>
       <Position18>
-        <Filename Value="s_sound.pas"/>
-        <Caret Line="267" Column="6" TopLine="252"/>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="200" Column="63" TopLine="179"/>
       </Position18>
       <Position19>
-        <Filename Value="s_sound.pas"/>
-        <Caret Line="117" Column="10" TopLine="92"/>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="198" Column="16" TopLine="183"/>
       </Position19>
       <Position20>
-        <Filename Value="s_sound.pas"/>
-        <Caret Line="271" Column="45" TopLine="257"/>
+        <Filename Value="sc_actordef.pas"/>
+        <Caret Line="722" Column="45" TopLine="642"/>
       </Position20>
       <Position21>
-        <Filename Value="d_fpc.pas"/>
-        <Caret Line="153" Column="23" TopLine="137"/>
+        <Filename Value="sc_actordef.pas"/>
+        <Caret Line="37" Column="21" TopLine="22"/>
       </Position21>
       <Position22>
-        <Filename Value="s_sound.pas"/>
-        <Caret Line="271" Column="46" TopLine="256"/>
+        <Filename Value="sc_actordef.pas"/>
+        <Caret Line="167" Column="21" TopLine="141"/>
       </Position22>
       <Position23>
-        <Filename Value="s_sound.pas"/>
-        <Caret Line="273" Column="21" TopLine="253"/>
+        <Filename Value="sc_actordef.pas"/>
+        <Caret Line="726" Column="23" TopLine="702"/>
       </Position23>
       <Position24>
-        <Filename Value="info.pas"/>
-        <Caret Line="17013" Column="25" TopLine="17008"/>
+        <Filename Value="sc_actordef.pas"/>
+        <Caret Line="1220" Column="21" TopLine="1190"/>
       </Position24>
       <Position25>
-        <Filename Value="info.pas"/>
-        <Caret Line="17015" Column="19" TopLine="17007"/>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="169" Column="24" TopLine="165"/>
       </Position25>
       <Position26>
-        <Filename Value="s_sound.pas"/>
-        <Caret Line="262" Column="19" TopLine="248"/>
+        <Filename Value="d_main.pas"/>
+        <Caret Line="1688" Column="12" TopLine="1673"/>
       </Position26>
       <Position27>
-        <Filename Value="sounds.pas"/>
-        <Caret Line="1559" Column="3" TopLine="1551"/>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="184" TopLine="165"/>
       </Position27>
       <Position28>
-        <Filename Value="sounds.pas"/>
-        <Caret Line="330" Column="29" TopLine="311"/>
+        <Filename Value="deh_main.pas"/>
       </Position28>
       <Position29>
-        <Filename Value="sounds.pas"/>
-        <Caret Line="1760" TopLine="1719"/>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="44" Column="28" TopLine="26"/>
       </Position29>
       <Position30>
-        <Filename Value="s_sound.pas"/>
-        <Caret Line="262" Column="19" TopLine="248"/>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="185" Column="24" TopLine="178"/>
       </Position30>
     </JumpHistory>
     <RunParams>

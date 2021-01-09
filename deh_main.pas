@@ -41,6 +41,8 @@ uses
 
 function DEH_ParseLumpName(const lumpname: string): boolean;
 
+function DEH_ParseLumpNames(const lumpname: string): boolean;
+
 procedure DEH_ParseLumpNum(const lump: integer);
 
 procedure DEH_ParseFile(const filename: string);
@@ -178,6 +180,24 @@ begin
   end
   else
     result := false;
+end;
+
+function DEH_ParseLumpNames(const lumpname: string): boolean;
+var
+  i: integer;
+  cnt: integer;
+  uName: string;
+begin
+  cnt := 0;
+  uName := strupper(lumpname);
+  for i := 0 to W_NumLumps - 1 do
+    if char8tostring(W_GetNameForNum(i)) = uName then
+    begin
+      DEH_Parse(W_TextLumpNum(i));
+      inc(cnt);
+    end;
+
+  result := cnt > 0;
 end;
 
 procedure DEH_ParseLumpNum(const lump: integer);
