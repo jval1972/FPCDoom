@@ -1441,6 +1441,7 @@ begin
             mo.momx := (P_Random - P_Random) * 256;
             mo.momy := (P_Random - P_Random) * 256;
             mo.momz := FRACUNIT + (P_Random * 256);
+            S_StartSound(mo, Ord(sfx_sgloop));
           end;
         end;
         result := FLOOR_SLUDGE;
@@ -1461,6 +1462,7 @@ begin
             mo.momx := (P_Random - P_Random) * 256;
             mo.momy := (P_Random - P_Random) * 256;
             mo.momz := FRACUNIT + (P_Random * 256);
+            S_StartSound(mo, Ord(sfx_sgloo2));
           end;
         end;
         result := FLOOR_NUKAGE;
