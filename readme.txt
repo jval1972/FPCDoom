@@ -54,6 +54,7 @@ Extra sounds for Dehacked FRE000-FREE199 (indexed at 500-699).
 Support for multiple DEHACKED files inside WAD.
 No delay to return to desktop when finished.
 Does not play menu sound on end screen.
+Added A_Spawn, A_Face, A_Scratch, A_RandomJump & A_LineEffect functions.
 
 version 1.13.16.128 (20201228)
 ------------------------------

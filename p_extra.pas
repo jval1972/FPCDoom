@@ -37,6 +37,7 @@ interface
 
 uses
   m_fixed,
+  p_pspr_h,
   p_mobj_h;
 
 procedure A_CustomSound1(mo: Pmobj_t);
@@ -154,6 +155,16 @@ procedure A_BetaSkullAttack(actor: Pmobj_t);
 
 procedure A_FireOldBFG(actor: Pmobj_t);
 
+procedure A_Spawn(actor: Pmobj_t);
+
+procedure A_Face(actor: Pmobj_t);
+
+procedure A_Scratch(actor: Pmobj_t);
+
+procedure A_RandomJump(obj: pointer; psp: Ppspdef_t);
+
+procedure A_LineEffect(actor: Pmobj_t);
+
 const
   FLOATBOBSIZE = 64;
   FLOATBOBMASK = FLOATBOBSIZE - 1;
@@ -181,6 +192,7 @@ implementation
 
 uses
   d_fpc,
+  d_player,
   i_system,
   info_h,
   info,
@@ -193,8 +205,12 @@ uses
   p_maputl,
   p_local,
   p_pspr,
+  p_setup,
   p_sounds,
+  p_spec,
+  p_switch,
   r_renderstyle,
+  r_defs,
   sounds,
   s_sound,
   tables;
@@ -1604,6 +1620,106 @@ end;
 procedure A_FireOldBFG(actor: Pmobj_t);
 begin
   // Hmmm?
+end;
+
+//
+// killough 11/98
+//
+// The following were inspired by Len Pitre
+//
+// A small set of highly-sought-after code pointers
+//
+procedure A_Spawn(actor: Pmobj_t);
+var
+  mo: Pmobj_t;
+begin
+  if actor.state.misc1 > 0 then
+    mo := P_SpawnMobj(actor.x, actor.y, actor.state.misc2 * FRACUNIT + actor.z, actor.state.misc1 - 1);
+end;
+
+//
+// A_Face
+//
+procedure A_Face(actor: Pmobj_t);
+begin
+  actor.angle := actor.angle + actor.state.misc1 * ANG1;
+end;
+
+//
+// A_Scratch
+//
+procedure A_Scratch(actor: Pmobj_t);
+begin
+  if actor.target <> nil then
+  begin
+    A_FaceTarget(actor);
+    if P_CheckMeleeRange(actor) then
+    begin
+      if actor.state.misc2 > 0 then
+        S_StartSound(actor, actor.state.misc2);
+      P_DamageMobj(actor.target, actor, actor, actor.state.misc1);
+    end;
+  end;
+end;
+
+//
+// A_RandomJump
+//
+// [crispy] this is pretty much the only action pointer that makes sense for both mobj and pspr states
+// JVAL: modified to hold both a player_t and a mobj_t in first parameter
+procedure A_RandomJump(obj: pointer; psp: Ppspdef_t);
+var
+  player: Pplayer_t;
+  mo: Pmobj_t;
+  id: integer;
+begin
+  if obj = nil then
+    exit;
+
+  // [crispy] first, try to apply to pspr states
+  // JVAL: Check if obj is a player_t
+  player := obj;
+  id := PlayerToId(player);
+  if (psp <> nil) and (id >= 0) then
+  begin
+    if N_Random < psp.state.misc2 then
+      P_SetPSprite(player, pdiff(psp, @player.psprites[0], SizeOf(pspdef_t)), statenum_t(psp.state.misc1));
+    exit;
+  end;
+
+  // [crispy] second, apply to mobj states
+  // JVAL: Check if obj is a mobj_t
+  mo := obj;
+  if @mo.thinker._function.acp1 = @P_MobjThinker then
+  begin
+    if N_Random < psp.state.misc2 then
+      P_SetMobjState(mo, statenum_t(mo.state.misc1));
+  end;
+end;
+
+procedure A_LineEffect(actor: Pmobj_t);
+var
+  player: Pplayer_t;
+  oldplayer: Pplayer_t;
+  junk: line_t;
+begin
+  if actor.flags2_ex and MF2_EX_LINEDONE <> 0 then            // Unless already used up
+    exit;
+
+  junk := lines[0];                                           // Fake linedef set to 1st
+  junk.special := actor.state.misc1;                          // Linedef type
+  if junk.special <> 0 then
+  begin
+    oldplayer := actor.player;                                // Remember player status
+    player.health := 100;                                     // Alive player
+    actor.player := @player;                                  // Fake player
+    junk.tag := actor.state.misc2;                            // Sector tag for linedef
+    if not P_UseSpecialLine(actor, @junk, 0) then             // Try using it
+      P_CrossSpecialLinePtr(@junk, 0, actor);                 // Try crossing it
+    if junk.special = 0 then                                  // If type cleared,
+      actor.flags2_ex := actor.flags2_ex or MF2_EX_LINEDONE;  // no more for this thing
+    actor.player := oldplayer;
+  end;
 end;
 
 end.

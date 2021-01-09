@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -59,7 +59,7 @@ procedure P_UpdateSpecials;
 // when needed
 procedure P_ShootSpecialLine(thing: Pmobj_t; line: Pline_t);
 
-procedure P_CrossSpecialLine(linenum: integer; side: integer; thing: Pmobj_t);
+procedure P_CrossSpecialLinePtr(line: Pline_t; side: integer; thing: Pmobj_t);
 
 procedure P_PlayerInSpecialSector(player: Pplayer_t);
 
@@ -1087,12 +1087,8 @@ end;
 // Called every time a thing origin is about
 //  to cross a line with a non 0 special.
 //
-procedure P_CrossSpecialLine(linenum: integer; side: integer; thing: Pmobj_t);
-var
-  line: Pline_t;
+procedure P_CrossSpecialLinePtr(line: Pline_t; side: integer; thing: Pmobj_t);
 begin
-  line := @lines[linenum];
-
   //  Triggers that other things can activate
   if thing.player = nil then
   begin

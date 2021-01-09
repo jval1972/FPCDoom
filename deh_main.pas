@@ -58,7 +58,7 @@ procedure DEH_Init;
 procedure DEH_ShutDown;
 
 const
-  DEHNUMACTIONS = 133;
+  DEHNUMACTIONS = 138;
 
 type
   deh_action_t = record
@@ -1912,6 +1912,7 @@ begin
   mobj_flags2_ex := TDTextList.Create;
   mobj_flags2_ex.Add('MF2_EX_MEDIUMGRAVITY');
   mobj_flags2_ex.Add('MF2_EX_NOHITFLOOR');
+  mobj_flags2_ex.Add('MF2_EX_LINEDONE');
 
 
   state_tokens := TDTextList.Create;
@@ -2191,6 +2192,16 @@ begin
   deh_actions[131].name := strupper('BetaSkullAttack');
   deh_actions[132].action.acp1 := @A_FireOldBFG;
   deh_actions[132].name := strupper('FireOldBFG');
+  deh_actions[133].action.acp1 := @A_Spawn;
+  deh_actions[133].name := strupper('Spawn');
+  deh_actions[134].action.acp1 := @A_Face;
+  deh_actions[134].name := strupper('Face');
+  deh_actions[135].action.acp1 := @A_Scratch;
+  deh_actions[135].name := strupper('Scratch');
+  deh_actions[136].action.acp1 := @A_RandomJump;
+  deh_actions[136].name := strupper('RandomJump');
+  deh_actions[137].action.acp1 := @A_LineEffect;
+  deh_actions[137].name := strupper('LineEffect');
 
   deh_strings.numstrings := 0;
   deh_strings.realnumstrings := 0;
