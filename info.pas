@@ -10715,7 +10715,7 @@ const
     misc1: 0;                 // misc1
     misc2: 0;                 // misc2
     flags_ex: 0;
-   ),                          // S_TECH2LAMP4
+   ),                         // S_TECH2LAMP4
 
    // New states
    (
