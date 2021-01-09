@@ -100,7 +100,7 @@ Conditionals=
 DebugSourceDirs=
 UsePackages=0
 [Parameters]
-RunParams=-nofullscreen -geom 1366x768 -NODEHEXTRA -noactordef -internalgamedef
+RunParams=-nofullscreen -geom 1366x768 SMOOTHED.wad -iwad doomu.wad
 HostApplication=
 Launcher=
 UseLauncher=0

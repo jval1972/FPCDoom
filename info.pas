@@ -16755,85 +16755,111 @@ const // Doom Original mobjinfo
     scale: FRACUNIT;                  // scale
    ),
 
-   (    // MT_PUSH
-    doomednum: 5001;
-    spawnstate: Ord(S_TNT1);
-    spawnhealth: 1000;
-    seestate: Ord(S_NULL);
-    seesound: Ord(sfx_None);
-    reactiontime: 8;
-    attacksound: Ord(sfx_None);
-    painstate: Ord(S_NULL);
-    painchance: 0;
-    painsound: Ord(sfx_None);
-    meleestate: Ord(S_NULL);
-    missilestate: Ord(S_NULL);
-    deathstate: Ord(S_NULL);
-    xdeathstate: Ord(S_NULL);
-    deathsound: Ord(sfx_None);
-    speed: 0;
-    radius: 8;
-    height: 8;
-    mass: 10;
-    damage: 0;
-    activesound: Ord(sfx_None);
-    flags: MF_NOBLOCKMAP;
-    raisestate: Ord(S_NULL);
-   ),
+  (   // MT_PUSH                      // phares
+    name: 'Pusher';                                               // name
+    inheritsfrom: -1;                                             // inheritsfrom
+    doomednum: 5001;                                              // doomednum
+    spawnstate: Ord(S_TNT1);                                      // spawnstate
+    spawnhealth: 1000;                                            // spawnhealth
+    seestate: Ord(S_NULL);                                        // seestate
+    seesound: Ord(sfx_None);                                      // seesound
+    reactiontime: 8;                                              // reactiontime
+    attacksound: Ord(sfx_None);                                   // attacksound
+    painstate: Ord(S_NULL);                                       // painstate
+    painchance: 0;                                                // painchance
+    painsound: Ord(sfx_None);                                     // painsound
+    meleestate: Ord(S_NULL);                                      // meleestate
+    missilestate: Ord(S_NULL);                                    // missilestate
+    deathstate: Ord(S_NULL);                                      // deathstate
+    xdeathstate: Ord(S_NULL);                                     // xdeathstate
+    deathsound: Ord(sfx_None);                                    // deathsound
+    speed: 0;                                                     // speed
+    radius: 8 * FRACUNIT;                                         // radius
+    height: 8 * FRACUNIT;                                         // height
+    mass: 10;                                                     // mass
+    damage: 0;                                                    // damage
+    activesound: Ord(sfx_None);                                   // activesound
+    flags: MF_NOBLOCKMAP;                                         // flags
+    flags_ex: 0;                                                  // flags_ex
+    raisestate: Ord(S_NULL);                                      // raisestate
+    customsound1: 0;                                              // customsound1
+    customsound2: 0;                                              // customsound2
+    customsound3: 0;                                              // customsound3
+    explosiondamage: 0;                                           // explosiondamage
+    explosionradius: 0;                                           // explosionradius
+    meleedamage: 0;                                               // meleedamage
+    scale: FRACUNIT;                                              // scale
+  ),
 
-   (    // MT_PULL
-    doomednum: 5002;
-    spawnstate: Ord(S_TNT1);
-    spawnhealth: 1000;
-    seestate: Ord(S_NULL);
-    seesound: Ord(sfx_None);
-    reactiontime: 8;
-    attacksound: Ord(sfx_None);
-    painstate: Ord(S_NULL);
-    painchance: 0;
-    painsound: Ord(sfx_None);
-    meleestate: Ord(S_NULL);
-    missilestate: Ord(S_NULL);
-    deathstate: Ord(S_NULL);
-    xdeathstate: Ord(S_NULL);
-    deathsound: Ord(sfx_None);
-    speed: 0;
-    radius: 8;
-    height: 8;
-    mass: 10;
-    damage: 0;
-    activesound: Ord(sfx_None);
-    flags: MF_NOBLOCKMAP;
-    raisestate: Ord(S_NULL);
-   ),
+  (   // MT_PULL                      // phares
+    name: 'Puller';                                               // name
+    inheritsfrom: -1;                                             // inheritsfrom
+    doomednum: 5002;                                              // doomednum
+    spawnstate: Ord(S_TNT1);                                      // spawnstate
+    spawnhealth: 1000;                                            // spawnhealth
+    seestate: Ord(S_NULL);                                        // seestate
+    seesound: Ord(sfx_None);                                      // seesound
+    reactiontime: 8;                                              // reactiontime
+    attacksound: Ord(sfx_None);                                   // attacksound
+    painstate: Ord(S_NULL);                                       // painstate
+    painchance: 0;                                                // painchance
+    painsound: Ord(sfx_None);                                     // painsound
+    meleestate: Ord(S_NULL);                                      // meleestate
+    missilestate: Ord(S_NULL);                                    // missilestate
+    deathstate: Ord(S_NULL);                                      // deathstate
+    xdeathstate: Ord(S_NULL);                                     // xdeathstate
+    deathsound: Ord(sfx_None);                                    // deathsound
+    speed: 0;                                                     // speed
+    radius: 8 * FRACUNIT;                                         // radius
+    height: 8 * FRACUNIT;                                         // height
+    mass: 10;                                                     // mass
+    damage: 0;                                                    // damage
+    activesound: Ord(sfx_None);                                   // activesound
+    flags: MF_NOBLOCKMAP;                                         // flags
+    flags_ex: 0;                                                  // flags_ex
+    raisestate: Ord(S_NULL);                                      // raisestate
+    customsound1: 0;                                              // customsound1
+    customsound2: 0;                                              // customsound2
+    customsound3: 0;                                              // customsound3
+    explosiondamage: 0;                                           // explosiondamage
+    explosionradius: 0;                                           // explosionradius
+    meleedamage: 0;                                               // meleedamage
+    scale: FRACUNIT;                                              // scale
+  ),
 
-   (    // MT_DOGS
-    doomednum: 888;
-    spawnstate: Ord(S_DOGS_STND);
-    spawnhealth: 500;
-    seestate: Ord(S_DOGS_RUN1);
-    seesound: Ord(sfx_dgsit);
-    reactiontime: 8;
-    attacksound: Ord(sfx_dgatk);
-    painstate: Ord(S_DOGS_PAIN);
-    painchance: 180;
-    painsound: Ord(sfx_dgpain);
-    meleestate: Ord(S_DOGS_ATK1);
-    missilestate: Ord(0);
-    deathstate: Ord(S_DOGS_DIE1);
-    xdeathstate: Ord(S_NULL);
-    deathsound: Ord(sfx_dgdth);
-    speed: 10;
-    radius: 12 * FRACUNIT;
-    height: 28 * FRACUNIT;
-    mass: 100;
-    damage: 0;
-    activesound: Ord(sfx_dgact);
-    flags: MF_SOLID or MF_SHOOTABLE or MF_COUNTKILL;
-    raisestate: Ord(S_DOGS_RAISE1);
-   ),
+  (   // MT_DOGS
+    name: 'Dog';                                                  // name
+    inheritsfrom: -1;                                             // inheritsfrom
+    doomednum: 888;                                               // doomednum
+    spawnstate: Ord(S_DOGS_STND);                                 // spawnstate
+    spawnhealth: 500;                                             // spawnhealth
+    seestate: Ord(S_DOGS_RUN1);                                   // seestate
+    seesound: Ord(sfx_dgsit);                                     // seesound
+    reactiontime: 8;                                              // reactiontime
+    attacksound: Ord(sfx_dgatk);                                  // attacksound
+    painstate: Ord(S_DOGS_PAIN);                                  // painstate
+    painchance: 180;                                              // painchance
+    painsound: Ord(sfx_dgpain);                                   // painsound
+    meleestate: Ord(S_DOGS_ATK1);                                 // meleestate
+    missilestate: Ord(S_NULL);                                    // missilestate
+    deathstate: Ord(S_DOGS_DIE1);                                 // deathstate
+    xdeathstate: Ord(S_NULL);                                     // xdeathstate
+    deathsound: Ord(sfx_dgdth);                                   // deathsound
+    speed: 10;                                                    // speed
+    radius: 12 * FRACUNIT;                                        // radius
+    height: 28 * FRACUNIT;                                        // height
+    mass: 100;                                                    // mass
+    damage: 0;                                                    // damage
+    activesound: Ord(sfx_dgact);                                  // activesound
+    flags: MF_SOLID or MF_SHOOTABLE or MF_COUNTKILL;              // flags
+    flags2_ex: 0;                                                 // flags2_ex
+    raisestate: Ord(S_DOGS_RAISE1);                               // raisestate
+    scale: FRACUNIT;                                              // scale
+  ),
 
-   (    // MT_PLASMA1
+  (    // MT_PLASMA1
+    name: 'MT_PLASMA1';                                           // name
+    inheritsfrom: -1;                                             // inheritsfrom
     doomednum: -1;
     spawnstate: Ord(S_PLS1BALL);
     spawnhealth: 1000;
@@ -16857,9 +16883,12 @@ const // Doom Original mobjinfo
     activesound: Ord(sfx_None);
     flags: MF_NOBLOCKMAP or MF_MISSILE or MF_DROPOFF or MF_NOGRAVITY;
     raisestate: Ord(S_NULL);
+    scale: FRACUNIT;                                              // scale
    ),
 
    (    // MT_PLASMA2
+    name: 'MT_PLASMA2';                                           // name
+    inheritsfrom: -1;                                             // inheritsfrom
     doomednum: -1;
     spawnstate: Ord(S_PLS2BALL);
     spawnhealth: 1000;
@@ -16883,9 +16912,12 @@ const // Doom Original mobjinfo
     activesound: Ord(sfx_None);
     flags: MF_NOBLOCKMAP or MF_MISSILE or MF_DROPOFF or MF_NOGRAVITY;
     raisestate: Ord(S_NULL);
+    scale: FRACUNIT;                                              // scale
    ),
 
    (    // MT_SCEPTRE
+    name: 'MT_SCEPTRE';                                           // name
+    inheritsfrom: -1;                                             // inheritsfrom
     doomednum: 2016;
     spawnstate: Ord(S_BON3);
     spawnhealth: 1000;
@@ -16909,6 +16941,7 @@ const // Doom Original mobjinfo
     activesound: Ord(sfx_None);
     flags: MF_SPECIAL or MF_COUNTITEM;
     raisestate: Ord(S_NULL);
+    scale: FRACUNIT;                                              // scale
    ),
 
    (    // MT_BIBLE
@@ -16935,9 +16968,12 @@ const // Doom Original mobjinfo
     activesound: Ord(sfx_None);
     flags: MF_SPECIAL or MF_COUNTITEM;
     raisestate: Ord(S_NULL);
+    scale: FRACUNIT;                                              // scale
    ),
 
    (    // MT_MUSICSOURCE
+    name: 'MT_MUSICSOURCE';                                       // name
+    inheritsfrom: -1;                                             // inheritsfrom
     doomednum: 14164;
     spawnstate: Ord(S_TNT1);
     spawnhealth: 1000;
@@ -16954,13 +16990,14 @@ const // Doom Original mobjinfo
     xdeathstate: Ord(S_NULL);
     deathsound: Ord(sfx_None);
     speed: 0;
-    radius: 16;
-    height: 16;
+    radius: 16 * FRACUNIT;
+    height: 16 * FRACUNIT;
     mass: 100;
     damage: 0;
     activesound: Ord(sfx_None);
     flags: MF_NOBLOCKMAP;
     raisestate: Ord(S_NULL);
+    scale: FRACUNIT;                                              // scale
    )
 
   );
