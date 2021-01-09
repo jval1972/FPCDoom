@@ -17721,8 +17721,12 @@ var
   i: integer;
 begin
   for i := 0 to numstates - 1 do
+  begin
     if states[i].params <> nil then
       FreeAndNil(states[i].params);
+    if states[i].dlights <> nil then
+      FreeAndNil(states[i].dlights);
+  end;
 
   memfree(states, numstates * SizeOf(state_t));
   memfree(mobjinfo, nummobjtypes * SizeOf(mobjinfo_t));
