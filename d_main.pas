@@ -1694,8 +1694,11 @@ begin
 
   printf('SC_Init: Initializing script engine.'#13#10);
   SC_Init;
-  printf('SC_ParseActordefLumps(): Parsing ACTORDEF lumps.'#13#10);
-  SC_ParseActordefLumps;
+  if M_CheckParm('-noactordef') = 0 then
+  begin
+    printf('SC_ParseActordefLumps(): Parsing ACTORDEF lumps.'#13#10);
+    SC_ParseActordefLumps;
+  end;
 
   for i := 0 to NUM_STARTUPMESSAGES - 1 do
     if startmsg[i] <> '' then

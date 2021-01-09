@@ -48,6 +48,7 @@ A_Detonate(), A_Mushroom(), A_BetaSkullAttack() & A_FireOldBFG() codepointers.
 Extra sprites for use in Dehacked.
 100 extra mobjinfo for use in Dehacked.
 Extra states (up to 4000) for use in Dehacked.
+Added -noactordef command line parameter, prevent parsing of ACTORDEF lumps.
 
 version 1.13.16.128 (20201228)
 ------------------------------
