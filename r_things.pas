@@ -261,25 +261,25 @@ begin
     begin
       if spritepresent[l - firstspritelump] then
 
-      if lumpinfo[l].v1 = intname then // JVAL
-      begin
-        frame := Ord(lumpinfo[l].name[4]) - Ord('A');
-        rotation := Ord(lumpinfo[l].name[5]) - Ord('0');
-
-        if modifiedgame then
-          patched := W_GetNumForName(lumpinfo[l].name)
-        else
-          patched := l;
-
-        R_InstallSpriteLump(patched, frame, rotation, false);
-
-        if lumpinfo[l].name[6] <> #0 then
+        if lumpinfo[l].v1 = intname then // JVAL
         begin
-          frame := Ord(lumpinfo[l].name[6]) - Ord('A');
-          rotation := Ord(lumpinfo[l].name[7]) - Ord('0');
-          R_InstallSpriteLump(l, frame, rotation, true);
+          frame := Ord(lumpinfo[l].name[4]) - Ord('A');
+          rotation := Ord(lumpinfo[l].name[5]) - Ord('0');
+
+          if modifiedgame then
+            patched := W_GetNumForName(lumpinfo[l].name)
+          else
+            patched := l;
+
+          R_InstallSpriteLump(patched, frame, rotation, false);
+
+          if lumpinfo[l].name[6] <> #0 then
+          begin
+            frame := Ord(lumpinfo[l].name[6]) - Ord('A');
+            rotation := Ord(lumpinfo[l].name[7]) - Ord('0');
+            R_InstallSpriteLump(l, frame, rotation, true);
+          end;
         end;
-      end;
     end;
 
     // check the frames that were found for completeness
