@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -114,6 +114,7 @@ uses
   i_system,
   i_sound,
   i_music,
+  m_argv,
   m_fixed,
   m_rnd,
   m_misc,
@@ -263,6 +264,15 @@ begin
     S_sfx[i].lumpnum := -1;
     S_sfx[i].usefulness := -1;
   end;
+
+  if M_CheckParm('-NODEHEXTRA') = 0 then
+    for i := 500 to 699 do
+    begin
+      S_sfx[i].name := 'fre' + IntToStrZfill(3, i - 500);
+      S_sfx[i].priority := 127;
+      S_sfx[i].lumpnum := -1;
+      S_sfx[i].usefulness := -1;
+    end;
 
   C_AddCmd('useexternalwav', @S_CmdUseExternalWav);
   C_AddCmd('miditempo', @S_CmdMidiTempo);
