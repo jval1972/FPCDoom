@@ -49,6 +49,7 @@ Extra sprites for use in Dehacked.
 100 extra mobjinfo for use in Dehacked.
 Extra states (up to 4000) for use in Dehacked.
 Added -noactordef command line parameter, prevent parsing of ACTORDEF lumps.
+Added -nodehextra command line parameter, prevent creating additional states & things for DEHEXTRA.
 
 version 1.13.16.128 (20201228)
 ------------------------------

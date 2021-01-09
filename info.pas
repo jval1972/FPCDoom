@@ -71,6 +71,7 @@ implementation
 
 uses
   i_system,
+  m_argv,
   m_fixed,
   p_enemy,
   p_extra,
@@ -16966,18 +16967,20 @@ const // Doom Original mobjinfo
 
 procedure Info_Init(const usethinkers: boolean);
 var
-  i, mi: integer;
+  i: integer;
 begin
   if states = nil then
   begin
     states := malloc(Ord(DO_NUMSTATES) * SizeOf(state_t));
     memcpy(states, @DO_states, Ord(DO_NUMSTATES) * SizeOf(state_t));
-
-    {$IFNDEF FPC}states := {$ENDIF}realloc(states, Ord(DO_NUMSTATES) * SizeOf(state_t), EXTRANUMSTATES * SizeOf(state_t));
-    ZeroMemory(@states[Ord(DO_NUMSTATES)], SizeOf(state_t) * (EXTRANUMSTATES - Ord(DO_NUMSTATES)));
-    for i := Ord(DO_NUMSTATES) to EXTRANUMSTATES - 1 do
-      states[i].tics := -1;
-    numstates := EXTRANUMSTATES;
+    if M_CheckParm('-NODEHEXTRA') = 0 then
+    begin
+      {$IFNDEF FPC}states := {$ENDIF}realloc(states, Ord(DO_NUMSTATES) * SizeOf(state_t), EXTRANUMSTATES * SizeOf(state_t));
+      ZeroMemory(@states[Ord(DO_NUMSTATES)], SizeOf(state_t) * (EXTRANUMSTATES - Ord(DO_NUMSTATES)));
+      for i := Ord(DO_NUMSTATES) to EXTRANUMSTATES - 1 do
+        states[i].tics := -1;
+      numstates := EXTRANUMSTATES;
+    end;
   end;
 
   if sprnames = nil then
@@ -16995,18 +16998,15 @@ begin
   begin
     mobjinfo := malloc(Ord(DO_NUMMOBJTYPES) * SizeOf(mobjinfo_t));
     memcpy(mobjinfo, @DO_mobjinfo, Ord(DO_NUMMOBJTYPES) * SizeOf(mobjinfo_t));
-    for i := 0 to BASEEXTRAMOBJINFO - Ord(DO_NUMMOBJTYPES) - 1 do
+
+    if M_CheckParm('-NODEHEXTRA') = 0 then
     begin
-      mi := Info_GetNewMobjInfo;
-      mobjinfo[mi].name := 'MT_BASEEXTRA' + IntToStrzFill(2, i);
-    end;
-    for i := 0 to EXTRAMOBJINFO - 1 do
-    begin
-      if i + Ord(DO_NUMMOBJTYPES) >= BASEEXTRAMOBJINFO then
-      begin
-        mi := Info_GetNewMobjInfo;
-        mobjinfo[mi].name := 'MT_EXTRA' + IntToStrzFill(2, i);
-      end;
+      for i := 0 to BASEEXTRAMOBJINFO - Ord(DO_NUMMOBJTYPES) - 1 do
+        Info_SetMobjName(Info_GetNewMobjInfo, 'MT_BASEEXTRA' + IntToStrzFill(2, i));
+
+      for i := 0 to EXTRAMOBJINFO - 1 do
+        if i + Ord(DO_NUMMOBJTYPES) >= BASEEXTRAMOBJINFO then
+          Info_SetMobjName(Info_GetNewMobjInfo, 'MT_EXTRA' + IntToStrzFill(2, i));
     end;
   end;
 
