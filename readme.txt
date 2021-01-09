@@ -52,6 +52,7 @@ Added -noactordef command line parameter, prevent parsing of ACTORDEF lumps.
 Added -nodehextra command line parameter, prevent creating additional states & things for DEHEXTRA.
 Extra sounds for Dehacked FRE000-FREE199 (indexed at 500-699).
 Support for multiple DEHACKED files inside WAD.
+No delay to return to desktop when finished.
 
 version 1.13.16.128 (20201228)
 ------------------------------

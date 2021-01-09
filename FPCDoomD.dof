@@ -100,7 +100,7 @@ Conditionals=
 DebugSourceDirs=
 UsePackages=0
 [Parameters]
-RunParams=-nofullscreen -geom 1366x768 SMOOTHED.wad -iwad doomu.wad
+RunParams=-nofullscreen -geom 1366x768 SMOOTHED.wad BlackOps.wad
 HostApplication=
 Launcher=
 UseLauncher=0
