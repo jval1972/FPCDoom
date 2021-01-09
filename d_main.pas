@@ -1955,6 +1955,8 @@ begin
   Info_ShutDownRandom;
   printf('T_ShutDown: Shut down texture manager.'#13#10);
   T_ShutDown;
+  printf('M_ShutDown: Shut down menus.'#13#10);
+  M_ShutDown;
   printf('SC_ShutDown: Shut down script engine.'#13#10);
   SC_ShutDown;
   printf('DEH_ShutDown: Shut down dehacked subsystem.'#13#10);
@@ -1963,14 +1965,12 @@ begin
   Info_ShutDown;
   printf('PAK_ShutDown: Shut down PAK/ZIP/PK3/PK4 file system.'#13#10);
   PAK_ShutDown;
-  printf('W_ShutDown: Shut down WAD file system.'#13#10);
-  W_ShutDown;
-  printf('M_ShutDown: Shut down menus.'#13#10);
-  M_ShutDown;
   printf('E_ShutDown: Shut down ENDOOM screen.'#13#10);
   E_ShutDown;
   printf('Z_ShutDown: Shut down zone memory allocation daemon.'#13#10);
   Z_ShutDown;
+  printf('W_ShutDown: Shut down WAD file system.'#13#10);
+  W_ShutDown;
   printf('V_ShutDown: Shut down screens.'#13#10);
   V_ShutDown;
 
