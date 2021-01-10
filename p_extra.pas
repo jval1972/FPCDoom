@@ -1667,8 +1667,7 @@ end;
 //
 // [crispy] this is pretty much the only action pointer that makes sense for both mobj and pspr states
 // JVAL: modified to hold both a player_t and a mobj_t in first parameter
-// JVAL: Additional note: since player's mo is the first field of player_t structure,
-//       we still can call this from mobj's states without the need of 3 parameters
+// JVAL: Additional note:  We still can call this from mobj's states without the need of 3 parameters
 procedure A_RandomJump(obj: pointer; psp: Ppspdef_t);
 var
   player: Pplayer_t;
