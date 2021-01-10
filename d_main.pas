@@ -1700,6 +1700,9 @@ begin
     SC_ParseActordefLumps;
   end;
 
+  printf('Info_SaveActions: Saving state actions'#13#10);
+  Info_SaveActions;
+
   for i := 0 to NUM_STARTUPMESSAGES - 1 do
     if startmsg[i] <> '' then
       printf('%s'#13#10, [startmsg[i]]);

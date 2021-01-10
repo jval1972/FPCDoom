@@ -67,6 +67,10 @@ procedure Info_ShutDown;
 
 function Info_GetInheritance(const imo: Pmobjinfo_t): integer;
 
+procedure Info_SaveActions;
+
+function Info_RestoreActions: boolean;
+
 implementation
 
 uses
@@ -17002,6 +17006,31 @@ const // Doom Original mobjinfo
 
   );
 
+var
+  save_actions: array[0..Ord(DO_NUMSTATES) - 1] of actionf_t;
+  actions_saved: boolean = false;
+
+procedure Info_SaveActions;
+var
+  i: integer;
+begin
+  for i := 0 to Ord(DO_NUMSTATES) - 1 do
+    save_actions[i] := states[i].action;
+  actions_saved := true;
+end;
+
+function Info_RestoreActions: boolean;
+var
+  i: integer;
+begin
+  result := actions_saved;
+  if not result then
+    exit;
+
+  for i := 0 to Ord(DO_NUMSTATES) - 1 do
+    states[i].action := save_actions[i];
+end;
+
 procedure Info_Init(const usethinkers: boolean);
 var
   i: integer;
@@ -17049,10 +17078,14 @@ begin
 
   if not usethinkers then
   begin
+    Info_SaveActions;
     for i := 0 to Ord(DO_NUMSTATES) - 1 do
       states[i].action.acp1 := nil;
     exit;
   end;
+
+  if Info_RestoreActions then
+    exit;
 
   states[Ord(S_LIGHTDONE)].action.acp1 := @A_Light0; // S_LIGHTDONE
   states[Ord(S_PUNCH)].action.acp1 := @A_WeaponReady; // S_PUNCH
