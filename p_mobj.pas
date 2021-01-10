@@ -145,7 +145,7 @@ begin
     // Modified handling.
     // Call action functions when the state is set
     if Assigned(st.action.acp1) then
-      st.action.acp1(mobj);
+      st.action.acp2(mobj, nil);
 
     state := st.nextstate;
   until mobj.tics <> 0;
