@@ -1698,9 +1698,12 @@ begin
   end;
 end;
 
+//
+// A_LineEffect
+//
 procedure A_LineEffect(actor: Pmobj_t);
 var
-  player: Pplayer_t;
+  player: player_t;
   oldplayer: Pplayer_t;
   junk: line_t;
 begin

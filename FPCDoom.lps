@@ -8,7 +8,7 @@
       <Unit0>
         <Filename Value="FPCDoom.lpr"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="17"/>
+        <EditorIndex Value="19"/>
         <TopLine Value="93"/>
         <CursorPos X="25" Y="106"/>
         <UsageCount Value="204"/>
@@ -67,7 +67,7 @@
       <Unit7>
         <Filename Value="d_fpc.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="27"/>
+        <EditorIndex Value="29"/>
         <TopLine Value="137"/>
         <CursorPos X="23" Y="153"/>
         <UsageCount Value="204"/>
@@ -85,17 +85,16 @@
       <Unit9>
         <Filename Value="d_main.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="15"/>
         <TopLine Value="1700"/>
-        <CursorPos Y="1705"/>
+        <CursorPos Y="1715"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit9>
       <Unit10>
         <Filename Value="d_net.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="28"/>
+        <EditorIndex Value="30"/>
         <TopLine Value="930"/>
         <CursorPos X="32" Y="946"/>
         <UsageCount Value="204"/>
@@ -177,7 +176,7 @@
       <Unit20>
         <Filename Value="g_game.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="29"/>
+        <EditorIndex Value="31"/>
         <TopLine Value="2472"/>
         <CursorPos X="32" Y="2472"/>
         <UsageCount Value="204"/>
@@ -216,7 +215,7 @@
       <Unit25>
         <Filename Value="i_main.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="16"/>
+        <EditorIndex Value="18"/>
         <TopLine Value="85"/>
         <CursorPos X="28" Y="94"/>
         <UsageCount Value="204"/>
@@ -344,7 +343,7 @@
       <Unit40>
         <Filename Value="m_menu.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="18"/>
+        <EditorIndex Value="20"/>
         <TopLine Value="909"/>
         <CursorPos X="17" Y="914"/>
         <UsageCount Value="204"/>
@@ -401,7 +400,7 @@
       <Unit47>
         <Filename Value="p_enemy.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="19"/>
+        <EditorIndex Value="21"/>
         <TopLine Value="470"/>
         <CursorPos X="7" Y="484"/>
         <UsageCount Value="204"/>
@@ -410,7 +409,7 @@
       <Unit48>
         <Filename Value="p_extra.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="22"/>
+        <EditorIndex Value="24"/>
         <TopLine Value="149"/>
         <CursorPos X="17" Y="169"/>
         <UsageCount Value="204"/>
@@ -452,7 +451,7 @@
       <Unit53>
         <Filename Value="p_map.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="24"/>
+        <EditorIndex Value="26"/>
         <TopLine Value="619"/>
         <CursorPos X="37" Y="634"/>
         <UsageCount Value="204"/>
@@ -478,7 +477,7 @@
       <Unit56>
         <Filename Value="p_mobj_h.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="25"/>
+        <EditorIndex Value="27"/>
         <TopLine Value="252"/>
         <CursorPos X="18" Y="266"/>
         <UsageCount Value="204"/>
@@ -495,7 +494,7 @@
       <Unit58>
         <Filename Value="p_pspr.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="26"/>
+        <EditorIndex Value="28"/>
         <TopLine Value="95"/>
         <CursorPos Y="111"/>
         <UsageCount Value="204"/>
@@ -537,7 +536,7 @@
       <Unit63>
         <Filename Value="p_spec.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="23"/>
+        <EditorIndex Value="25"/>
         <TopLine Value="47"/>
         <CursorPos Y="62"/>
         <UsageCount Value="204"/>
@@ -610,10 +609,11 @@
       <Unit72>
         <Filename Value="r_draw.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="403"/>
-        <CursorPos X="16" Y="369"/>
+        <EditorIndex Value="16"/>
+        <TopLine Value="73"/>
+        <CursorPos X="36" Y="424"/>
         <UsageCount Value="204"/>
+        <Loaded Value="True"/>
       </Unit72>
       <Unit73>
         <Filename Value="r_hires.pas"/>
@@ -794,7 +794,7 @@
       <Unit94>
         <Filename Value="v_video.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="20"/>
+        <EditorIndex Value="22"/>
         <TopLine Value="1354"/>
         <CursorPos X="15" Y="1354"/>
         <UsageCount Value="204"/>
@@ -835,7 +835,7 @@
       <Unit99>
         <Filename Value="z_memory.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="21"/>
+        <EditorIndex Value="23"/>
         <TopLine Value="127"/>
         <CursorPos X="14" Y="134"/>
         <UsageCount Value="200"/>
@@ -860,10 +860,12 @@
       <Unit102>
         <Filename Value="r_draw_column.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="676"/>
-        <CursorPos X="43" Y="682"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="17"/>
+        <TopLine Value="655"/>
+        <CursorPos X="41" Y="674"/>
         <UsageCount Value="201"/>
+        <Loaded Value="True"/>
       </Unit102>
       <Unit103>
         <Filename Value="r_aspect.pas"/>
@@ -1021,55 +1023,55 @@
         <EditorIndex Value="13"/>
         <TopLine Value="60"/>
         <CursorPos X="36" Y="68"/>
-        <UsageCount Value="61"/>
+        <UsageCount Value="76"/>
         <Loaded Value="True"/>
       </Unit122>
       <Unit123>
         <Filename Value="r_ccache.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="40"/>
-        <UsageCount Value="87"/>
+        <UsageCount Value="86"/>
       </Unit123>
       <Unit124>
         <Filename Value="r_scache.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="5"/>
         <CursorPos Y="48"/>
-        <UsageCount Value="87"/>
+        <UsageCount Value="86"/>
       </Unit124>
       <Unit125>
         <Filename Value="F:\Δημήτρης\Documents\GitHub\DelphiDoom\Strife\R_DrawSkyColumnMedium.inc"/>
         <EditorIndex Value="-1"/>
         <WindowIndex Value="1"/>
-        <UsageCount Value="8"/>
+        <UsageCount Value="7"/>
       </Unit125>
       <Unit126>
         <Filename Value="w_sprite.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="99"/>
         <CursorPos X="19" Y="112"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="6"/>
       </Unit126>
       <Unit127>
         <Filename Value="FPCDoom.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="3"/>
         <CursorPos X="17" Y="28"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="6"/>
       </Unit127>
       <Unit128>
         <Filename Value="C:\lazarus\fpc\3.0.4\source\rtl\objpas\sysutils\datih.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="141"/>
         <CursorPos X="11" Y="157"/>
-        <UsageCount Value="5"/>
+        <UsageCount Value="4"/>
       </Unit128>
       <Unit129>
         <Filename Value="C:\lazarus\fpc\3.0.4\source\rtl\win\wininc\defines.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="5047"/>
         <CursorPos X="6" Y="4841"/>
-        <UsageCount Value="13"/>
+        <UsageCount Value="12"/>
       </Unit129>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
