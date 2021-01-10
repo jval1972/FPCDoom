@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -41,6 +41,8 @@ Features:
 History - Change log
 --------------------
 
+version 1.13.17.133 (20210110)
+------------------------------
 Key bindings can now accept SHIFT & CTRL keys.
 Displays a warning if no player start found.
 A_Detonate(), A_Mushroom(), A_BetaSkullAttack() & A_FireOldBFG() codepointers.
