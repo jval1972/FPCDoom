@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -132,8 +132,8 @@ const
 
 type
   fpoint_t = record
-    x : integer;
-    y : integer;
+    x: integer;
+    y: integer;
   end;
   Pfpoint_t = ^fpoint_t;
 
@@ -150,16 +150,16 @@ type
   Pmpoint_t = ^mpoint_t;
 
   mline_t = record
-    a : mpoint_t;
-    b : mpoint_t;
+    a: mpoint_t;
+    b: mpoint_t;
   end;
   Pmline_t = ^mline_t;
   mline_tArray = packed array[0..$FFFF] of mline_t;
   Pmline_tArray = ^mline_tArray;
 
   islope_t = record
-    slp : fixed_t;
-    islp : fixed_t;
+    slp: fixed_t;
+    islp: fixed_t;
   end;
   Pislope_t = ^islope_t;
 
@@ -451,9 +451,10 @@ end;
 // sets global variables controlling zoom range.
 //
 procedure AM_findMinMaxBoundaries;
-var i: integer;
-    a, b: fixed_t;
-    pvi: Pvertex_t;
+var
+  i: integer;
+  a, b: fixed_t;
+  pvi: Pvertex_t;
 begin
   min_x := MAXINT;
   min_y := MAXINT;
@@ -969,7 +970,7 @@ end;
 function AM_clipMline(ml:  Pmline_t; fl: Pfline_t): boolean;
 const
   LEFT = 1;
-  RIGHT  = 2;
+  RIGHT = 2;
   BOTTOM = 4;
   TOP = 8;
 var

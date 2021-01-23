@@ -73,7 +73,7 @@ var
   spryscale: fixed_t;
   sprtopscreen: fixed_t;
 
-// constant arrays             
+// constant arrays
 //  used for psprite clipping and initializing clipping
   negonearray: packed array[0..MAXWIDTH - 1] of smallint;
   screenheightarray: packed array[0..MAXWIDTH - 1] of smallint;
@@ -1003,7 +1003,7 @@ var
   best: Pvissprite_t;
   unsorted: vissprite_t;
   bestscale: fixed_t;
-begin            
+begin
   count := vissprite_p;
 
   if count = 0 then
@@ -1129,10 +1129,10 @@ begin
     silhouette := ds.silhouette;
 
     if spr.gz >= ds.bsilheight then
-      silhouette := silhouette and (not SIL_BOTTOM);
+      silhouette := silhouette and not SIL_BOTTOM;
 
     if spr.gzt <= ds.tsilheight then
-      silhouette := silhouette and (not SIL_TOP);
+      silhouette := silhouette and not SIL_TOP;
 
     if silhouette = 1 then
     begin

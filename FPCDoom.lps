@@ -16,10 +16,12 @@
       <Unit1>
         <Filename Value="am_map.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="1719"/>
-        <CursorPos X="18" Y="1745"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="1739"/>
+        <CursorPos Y="1764"/>
         <UsageCount Value="204"/>
+        <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="c_cmds.pas"/>
@@ -40,8 +42,8 @@
       <Unit4>
         <Filename Value="deh_main.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="-1"/>
+        <WindowIndex Value="-1"/>
         <TopLine Value="1717"/>
         <CursorPos X="22" Y="1719"/>
         <UsageCount Value="204"/>
@@ -82,10 +84,11 @@
       <Unit9>
         <Filename Value="d_main.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="1700"/>
-        <CursorPos Y="1715"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="1705"/>
+        <CursorPos Y="1719"/>
         <UsageCount Value="204"/>
+        <Loaded Value="True"/>
       </Unit9>
       <Unit10>
         <Filename Value="d_net.pas"/>
@@ -208,10 +211,10 @@
       <Unit25>
         <Filename Value="i_main.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="85"/>
-        <CursorPos X="28" Y="94"/>
+        <TopLine Value="110"/>
+        <CursorPos Y="152"/>
         <UsageCount Value="204"/>
+        <Loaded Value="True"/>
       </Unit25>
       <Unit26>
         <Filename Value="i_midi.pas"/>
@@ -247,9 +250,11 @@
       <Unit30>
         <Filename Value="i_system.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos X="26" Y="6"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="739"/>
+        <CursorPos X="25" Y="765"/>
         <UsageCount Value="204"/>
+        <Loaded Value="True"/>
       </Unit30>
       <Unit31>
         <Filename Value="i_video.pas"/>
@@ -993,7 +998,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="60"/>
         <CursorPos X="36" Y="68"/>
-        <UsageCount Value="136"/>
+        <UsageCount Value="144"/>
       </Unit122>
       <Unit123>
         <Filename Value="r_ccache.pas"/>
@@ -1012,7 +1017,7 @@
         <Filename Value="F:\Δημήτρης\Documents\GitHub\DelphiDoom\Strife\R_DrawSkyColumnMedium.inc"/>
         <EditorIndex Value="-1"/>
         <WindowIndex Value="1"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="10"/>
       </Unit125>
       <Unit126>
         <Filename Value="C:\lazarus\fpc\3.0.4\source\rtl\win\wininc\defines.inc"/>
@@ -1022,10 +1027,32 @@
         <UsageCount Value="5"/>
       </Unit126>
     </Units>
-    <General>
-      <ActiveWindowIndexAtStart Value="-1"/>
-    </General>
-    <JumpHistory HistoryIndex="-1"/>
+    <JumpHistory Count="6" HistoryIndex="5">
+      <Position1>
+        <Filename Value="i_main.pas"/>
+        <Caret Line="118" Column="15" TopLine="104"/>
+      </Position1>
+      <Position2>
+        <Filename Value="i_system.pas"/>
+        <Caret Line="138" Column="27" TopLine="117"/>
+      </Position2>
+      <Position3>
+        <Filename Value="i_main.pas"/>
+        <Caret Line="143" Column="16" TopLine="110"/>
+      </Position3>
+      <Position4>
+        <Filename Value="i_main.pas"/>
+        <Caret Line="47" Column="15" TopLine="26"/>
+      </Position4>
+      <Position5>
+        <Filename Value="i_main.pas"/>
+        <Caret Line="152" TopLine="110"/>
+      </Position5>
+      <Position6>
+        <Filename Value="d_main.pas"/>
+        <Caret Line="1717" Column="10" TopLine="1705"/>
+      </Position6>
+    </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
       <Modes Count="0" ActiveMode="default"/>
