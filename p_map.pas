@@ -91,7 +91,7 @@ var
 
 // keep track of the line that lowers the ceiling,
 // so missiles don't explode against sky hack walls
-  ceilingline: Pline_t;                                    
+  ceilingline: Pline_t;
 
   attackrange: fixed_t;
 
@@ -206,7 +206,7 @@ begin
 
   tmceilingz := newsubsec.sector.ceilingheight + P_SectorJumpOverhead(newsubsec.sector);
 
-  inc(validcount); 
+  inc(validcount);
   numspechit := 0;
 
   // stomp on any things contacted
@@ -365,7 +365,7 @@ begin
     damage := ((P_Random mod 8) + 1) * tmthing.info.damage;
     P_DamageMobj(thing, tmthing, tmthing, damage);
 
-    tmthing.flags := tmthing.flags and (not MF_SKULLFLY);
+    tmthing.flags := tmthing.flags and not MF_SKULLFLY;
     tmthing.momx := 0;
     tmthing.momy := 0;
     tmthing.momz := 0;
@@ -915,7 +915,6 @@ begin
     mo.momy := tmymove;
 
   until P_TryMove(mo, mo.x + tmxmove, mo.y + tmymove);
-
 end;
 
 //
