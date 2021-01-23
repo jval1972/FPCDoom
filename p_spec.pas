@@ -163,8 +163,8 @@ const
  // 4 players, 4 buttons each at once, max.
    MAXBUTTONS = 16;
 
- // 1 second, in ticks. 
-   BUTTONTIME = 1000 div TICRATE;
+ // 1 second, in ticks.
+   BUTTONTIME = 35;
 
 
 type
