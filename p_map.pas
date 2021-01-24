@@ -267,7 +267,7 @@ begin
     result := true;
     exit;
   end;
-    
+
   // A line has been hit
 
   // The moving thing's destination position will cross
@@ -322,7 +322,6 @@ begin
     spechit[numspechit] := ld;
 
     inc(numspechit);
-//    fprintf(stderr, 'numspechit = %d' + #13#10, [numspechit]);
   end;
 
   result := true;
@@ -624,7 +623,7 @@ begin
     while numspechit > 0 do
     begin
       // see if the line was crossed
-      dec(numspechit); // JVAL what happens to while loops ???
+      dec(numspechit);
       ld := spechit[numspechit];
       side := P_PointOnLineSide(thing.x, thing.y, ld);
       oldside := P_PointOnLineSide(oldx, oldy, ld);
@@ -728,7 +727,6 @@ begin
 
   if deltaangle > ANG180 then
     deltaangle := deltaangle + ANG180;
-    //  I_Error ("SlideLine: ang>ANG180");
 
   lineangle := _SHRW(lineangle, ANGLETOFINESHIFT);
   deltaangle := _SHRW(deltaangle, ANGLETOFINESHIFT);
@@ -1203,7 +1201,6 @@ end;
 //
 // P_AimLineAttack
 //
-
 function P_AimLineAttack(t1: Pmobj_t; angle: angle_t; distance: fixed_t): fixed_t;
 var
   x2: fixed_t;
@@ -1217,8 +1214,8 @@ begin
   shootz := t1.z + _SHR1(t1.height) + 8 * FRACUNIT;
 
   // can't shoot outside view angles
-  topslope := (100 * FRACUNIT) div 160; // JVAL maybe screenwidth / 2
-  bottomslope := -topslope; // JVAL
+  topslope := (100 * FRACUNIT) div 160;
+  bottomslope := -topslope;
 
   attackrange := distance;
   linetarget := nil;
