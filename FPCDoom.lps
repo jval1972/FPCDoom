@@ -556,7 +556,7 @@
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="11"/>
         <TopLine Value="118"/>
-        <CursorPos X="19" Y="137"/>
+        <CursorPos X="16" Y="129"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit66>
@@ -1012,33 +1012,33 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="60"/>
         <CursorPos X="36" Y="68"/>
-        <UsageCount Value="163"/>
+        <UsageCount Value="191"/>
       </Unit122>
       <Unit123>
         <Filename Value="r_ccache.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="40"/>
-        <UsageCount Value="77"/>
+        <UsageCount Value="74"/>
       </Unit123>
       <Unit124>
         <Filename Value="r_scache.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="5"/>
         <CursorPos Y="48"/>
-        <UsageCount Value="77"/>
+        <UsageCount Value="74"/>
       </Unit124>
       <Unit125>
         <Filename Value="F:\Δημήτρης\Documents\GitHub\DelphiDoom\Strife\R_DrawSkyColumnMedium.inc"/>
         <EditorIndex Value="-1"/>
         <WindowIndex Value="1"/>
-        <UsageCount Value="8"/>
+        <UsageCount Value="5"/>
       </Unit125>
       <Unit126>
         <Filename Value="C:\lazarus\fpc\3.0.4\source\rtl\win\wininc\defines.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="5047"/>
         <CursorPos X="6" Y="4841"/>
-        <UsageCount Value="3"/>
+        <UsageCount Value="0"/>
       </Unit126>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">

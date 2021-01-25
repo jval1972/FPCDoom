@@ -138,14 +138,14 @@ type
   Pfpoint_t = ^fpoint_t;
 
   fline_t = record
-    a: fpoint_t;
-    b: fpoint_t;
+    a : fpoint_t;
+    b : fpoint_t;
   end;
   Pfline_t = ^fline_t;
 
   mpoint_t = record
-    x: fixed_t;
-    y: fixed_t;
+    x : fixed_t;
+    y : fixed_t;
   end;
   Pmpoint_t = ^mpoint_t;
 
