@@ -276,9 +276,9 @@ begin
     else if (player.weaponowned[Ord(wp_shotgun)] <> 0) and
             (player.ammo[Ord(am_shell)] <> 0) then
       player.pendingweapon := wp_shotgun
-    else if (player.ammo[Ord(am_clip)] <> 0) then
+    else if player.ammo[Ord(am_clip)] <> 0 then
       player.pendingweapon := wp_pistol
-    else if (player.weaponowned[Ord(wp_chainsaw)] <> 0) then
+    else if player.weaponowned[Ord(wp_chainsaw)] <> 0 then
       player.pendingweapon := wp_chainsaw
     else if (player.weaponowned[Ord(wp_missile)] <> 0) and
             (player.ammo[Ord(am_misl)] <> 0) then
@@ -646,7 +646,7 @@ begin
   if linetarget = nil then
   begin
     an := an + $4000000;
-    bulletslope := P_AimLineAttack (mo, an, 16 * 64 * FRACUNIT);
+    bulletslope := P_AimLineAttack(mo, an, 16 * 64 * FRACUNIT);
     if linetarget = nil then
     begin
       an := an - $8000000;
@@ -774,9 +774,6 @@ begin
   P_GunShot(player.mo, player.refire = 0);
 end;
 
-//
-// ?
-//
 procedure A_Light0(player: Pplayer_t; psp: Ppspdef_t);
 begin
   player.extralight := 0;

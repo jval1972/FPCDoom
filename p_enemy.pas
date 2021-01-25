@@ -640,7 +640,7 @@ const
 
 function P_LookForMonsters(actor: Pmobj_t): boolean;
 var
-  Count: integer;
+  count: integer;
   mo: Pmobj_t;
   think: Pthinker_t;
   inher: integer;
@@ -651,13 +651,13 @@ begin
     exit;
   end;
 
-  Count := 0;
-  think := thinkercap.Next;
+  count := 0;
+  think := thinkercap.next;
   while think <> @thinkercap do
   begin
     if @think._function.acp1 <> @P_MobjThinker then
     begin
-      think := think.Next;
+      think := think.next;
       continue;
     end;
 
@@ -679,24 +679,24 @@ begin
          (inher <> Ord(MT_SHOTGUY)) and
          (inher <> Ord(MT_CHAINGUY)) then
       begin
-        think := think.Next;
+        think := think.next;
         continue;
       end;
     end;
 
     if P_AproxDistance(actor.x - mo.x, actor.y - mo.y) > MONS_LOOK_RANGE then
     begin // Out of range
-      think := think.Next;
+      think := think.next;
       continue;
     end;
 
     if P_Random < 16 then
     begin // Skip
-      think := think.Next;
+      think := think.next;
       continue;
     end;
 
-    Inc(Count);
+    Inc(count);
     if Count > MONS_LOOK_LIMIT then
     begin // Stop searching
       Result := False;
@@ -705,7 +705,7 @@ begin
 
     if not P_CheckSight(actor, mo) then
     begin // Out of sight
-      think := think.Next;
+      think := think.next;
       continue;
     end;
 
@@ -807,7 +807,7 @@ begin
   // scan the remaining thinkers
   // to see if all Keens are dead
 
-  th := thinkercap.Next;
+  th := thinkercap.next;
   while th <> @thinkercap do
   begin
     if @th._function.acp1 = @P_MobjThinker then
@@ -816,11 +816,11 @@ begin
       if (mo2 <> mo) and (mo2._type = mo._type) and (mo2.health > 0) then
         exit; // other Keen not dead
     end;
-    th := th.Next;
+    th := th.next;
   end;
 
   junk.tag := 666;
-  EV_DoDoor(@junk, Open);
+  EV_DoDoor(@junk, open);
 end;
 
 //
@@ -1398,9 +1398,9 @@ begin
   corpsehit := thing;
   corpsehit.momx := 0;
   corpsehit.momy := 0;
-  corpsehit.Height := _SHL(corpsehit.Height, 2);
+  corpsehit.height := _SHL(corpsehit.height, 2);
   check := P_CheckPosition(corpsehit, corpsehit.x, corpsehit.y);
-  corpsehit.Height := _SHR2(corpsehit.Height);
+  corpsehit.height := _SHR2(corpsehit.height);
 
   if not check then
     Result := True    // doesn't fit here
@@ -1460,7 +1460,7 @@ begin
           info := corpsehit.info;
 
           P_SetMobjState(corpsehit, statenum_t(info.raisestate));
-          corpsehit.Height := _SHL(corpsehit.Height, 2);
+          corpsehit.height := _SHL(corpsehit.height, 2);
           corpsehit.flags := info.flags;
           corpsehit.health := info.spawnhealth;
           corpsehit.target := nil;
@@ -1489,7 +1489,7 @@ end;
 procedure A_Fire(actor: Pmobj_t);
 var
   dest: Pmobj_t;
-  an: longword;
+  an: LongWord;
 begin
   dest := actor.tracer;
   if dest = nil then
@@ -1684,7 +1684,7 @@ begin
 
   if dist < 1 then
     dist := 1;
-  actor.momz := (dest.z + _SHR1(dest.Height) - actor.z) div dist;
+  actor.momz := (dest.z + _SHR1(dest.height) - actor.z) div dist;
 end;
 
 //
@@ -1700,18 +1700,18 @@ var
   newmobj: Pmobj_t;
   an: angle_t;
   prestep: integer;
-  Count: integer;
+  count: integer;
   currentthinker: Pthinker_t;
 begin
   // count total number of skull currently on the level
-  Count := 0;
+  count := 0;
 
   currentthinker := thinkercap.Next;
   while currentthinker <> @thinkercap do
   begin
     if (@currentthinker._function.acp1 = @P_MobjThinker) and
       (Pmobj_t(currentthinker)._type = Ord(MT_SKULL)) then
-      Inc(Count);
+      Inc(count);
     currentthinker := currentthinker.Next;
   end;
 
@@ -1901,7 +1901,7 @@ begin
 
   // scan the remaining thinkers to see
   // if all bosses are dead
-  th := thinkercap.Next;
+  th := thinkercap.next;
   while th <> @thinkercap do
   begin
     if @th._function.acp1 = @P_MobjThinker then
@@ -1913,7 +1913,7 @@ begin
         exit;
       end;
     end;
-    th := th.Next;
+    th := th.next;
   end;
 
   // victory!
@@ -2015,7 +2015,7 @@ begin
   numbraintargets := 0;
   braintargeton := 0;
 
-  thinker := thinkercap.Next;
+  thinker := thinkercap.next;
   while thinker <> @thinkercap do
   begin
     if @thinker._function.acp1 = @P_MobjThinker then // is a mobj
@@ -2030,7 +2030,7 @@ begin
         Inc(numbraintargets);
       end;
     end;
-    thinker := thinker.Next;
+    thinker := thinker.next;
   end;
 
   S_StartSound(nil, Ord(sfx_bossit));
@@ -2139,7 +2139,7 @@ begin
 
   targ := mo.target;
 
-  if targ = nil then  // JVAL
+  if targ = nil then
   begin
     P_RemoveMobj(mo);
     exit;
