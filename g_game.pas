@@ -936,7 +936,7 @@ begin
           bmask := 1;
           for i := 0 to NUMJOYBUTTONS - 1 do
           begin
-            joybuttons[i] := (ev.data1 and bmask) <> 0;
+            joybuttons[i] := ev.data1 and bmask <> 0;
             bmask := bmask * 2;
           end;
           joyxmove := ev.data2;
@@ -1024,7 +1024,6 @@ begin
       if cmd.flags and CF_MIRROR <> 0 then
         G_MirrorTiccmd(cmd);
 
-
       // check for turbo cheats
       if (cmd.forwardmove > TURBOTHRESHOLD) and
          ((gametic and 31) = 0) and
@@ -1034,7 +1033,7 @@ begin
         players[consoleplayer]._message := msg;
       end;
 
-      if netgame and (not netdemo) and ((gametic mod ticdup) = 0) then
+      if netgame and not netdemo and (gametic mod ticdup = 0) then
       begin
         if (gametic > BACKUPTICS) and
            (consistancy[i][buf] <> cmd.consistancy) then
@@ -1140,7 +1139,7 @@ begin
   ZeroMemory(@p.powers, SizeOf(p.powers));
   ZeroMemory(@p.cards, SizeOf(p.cards));
   if p.mo <> nil then
-    p.mo.flags := p.mo.flags and (not MF_SHADOW); // cancel invisibility
+    p.mo.flags := p.mo.flags and not MF_SHADOW; // cancel invisibility
   p.lookupdown := 0;    // JVAL cancel lookdir Up/Down
   p.centering := false;
   p.lookleftright := 0; // JVAL cancel lookdir Left/Right

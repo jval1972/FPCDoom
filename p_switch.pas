@@ -150,6 +150,7 @@ begin
     episode := 3
   else
     episode := 1;
+
   index := 0;
   for i := 0 to MAXSWITCHES - 1 do
   begin
