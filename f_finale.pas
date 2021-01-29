@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -453,32 +453,32 @@ begin
 
     // sound hacks....
     case statenum_t(st) of
-      S_PLAY_ATK1:  sfx := Ord(sfx_dshtgn);
-      S_POSS_ATK2:  sfx := Ord(sfx_pistol);
-      S_SPOS_ATK2:  sfx := Ord(sfx_shotgn);
-      S_VILE_ATK2:  sfx := Ord(sfx_vilatk);
+      S_PLAY_ATK1: sfx := Ord(sfx_dshtgn);
+      S_POSS_ATK2: sfx := Ord(sfx_pistol);
+      S_SPOS_ATK2: sfx := Ord(sfx_shotgn);
+      S_VILE_ATK2: sfx := Ord(sfx_vilatk);
       S_SKEL_FIST2: sfx := Ord(sfx_skeswg);
       S_SKEL_FIST4: sfx := Ord(sfx_skepch);
       S_SKEL_MISS2: sfx := Ord(sfx_skeatk);
       S_FATT_ATK8,
       S_FATT_ATK5,
-      S_FATT_ATK2:  sfx := Ord(sfx_firsht);
+      S_FATT_ATK2: sfx := Ord(sfx_firsht);
       S_CPOS_ATK2,
       S_CPOS_ATK3,
-      S_CPOS_ATK4:  sfx := Ord(sfx_shotgn);
-      S_TROO_ATK3:  sfx := Ord(sfx_claw);
-      S_SARG_ATK2:  sfx := Ord(sfx_sgtatk);
+      S_CPOS_ATK4: sfx := Ord(sfx_shotgn);
+      S_TROO_ATK3: sfx := Ord(sfx_claw);
+      S_SARG_ATK2: sfx := Ord(sfx_sgtatk);
       S_BOSS_ATK2,
       S_BOS2_ATK2,
-      S_HEAD_ATK2:  sfx := Ord(sfx_firsht);
+      S_HEAD_ATK2: sfx := Ord(sfx_firsht);
       S_SKULL_ATK2: sfx := Ord(sfx_sklatk);
       S_SPID_ATK2,
-      S_SPID_ATK3:  sfx := Ord(sfx_shotgn);
-      S_BSPI_ATK2:  sfx := Ord(sfx_plasma);
+      S_SPID_ATK3: sfx := Ord(sfx_shotgn);
+      S_BSPI_ATK2: sfx := Ord(sfx_plasma);
       S_CYBER_ATK2,
       S_CYBER_ATK4,
       S_CYBER_ATK6: sfx := Ord(sfx_rlaunc);
-      S_PAIN_ATK3:  sfx := Ord(sfx_sklatk);
+      S_PAIN_ATK3: sfx := Ord(sfx_sklatk);
     else
       sfx := 0;
     end;

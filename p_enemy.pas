@@ -1270,7 +1270,7 @@ var
   dest: Pmobj_t;
   th: Pmobj_t;
 begin
-  if ((gametic - demostarttic) and 3) <> 0 then
+  if (gametic - demostarttic) and 3 <> 0 then
     // [crispy] fix revenant internal demo bug
     exit;
 
