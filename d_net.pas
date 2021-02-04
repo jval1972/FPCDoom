@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -841,7 +841,7 @@ begin
   // ideally nettics[0] should be 1 - 3 tics above lowtic
   // if we are consistantly slower, speed up time
     i := 0;
-    while (i < MAXPLAYERS) and (not playeringame[i]) do
+    while (i < MAXPLAYERS) and not playeringame[i] do
       inc(i);
     if consoleplayer = i then
     begin
@@ -947,7 +947,7 @@ begin
   end;
 
   // Update display, next frame, with current state.
-  if (not didinterpolations) or (Ord(gamestate) <> wipegamestate) then
+  if not didinterpolations or (Ord(gamestate) <> wipegamestate) then
   begin
     firstinterpolation := true;
     D_Display;

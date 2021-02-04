@@ -93,9 +93,10 @@
       <Unit10>
         <Filename Value="d_net.pas"/>
         <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="20"/>
-        <TopLine Value="946"/>
-        <CursorPos X="17" Y="957"/>
+        <TopLine Value="933"/>
+        <CursorPos X="51" Y="951"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit10>
@@ -669,10 +670,9 @@
       <Unit80>
         <Filename Value="r_things.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="17"/>
-        <TopLine Value="273"/>
-        <CursorPos X="11" Y="56"/>
+        <TopLine Value="181"/>
+        <CursorPos X="22" Y="185"/>
         <ExtraEditorCount Value="1"/>
         <ExtraEditor1>
           <EditorIndex Value="-1"/>
