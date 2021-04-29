@@ -138,14 +138,14 @@ type
   Pfpoint_t = ^fpoint_t;
 
   fline_t = record
-    a : fpoint_t;
-    b : fpoint_t;
+    a: fpoint_t;
+    b: fpoint_t;
   end;
   Pfline_t = ^fline_t;
 
   mpoint_t = record
-    x : fixed_t;
-    y : fixed_t;
+    x: fixed_t;
+    y: fixed_t;
   end;
   Pmpoint_t = ^mpoint_t;
 
@@ -368,7 +368,7 @@ begin
     if dx < 0 then
       _is.islp := -MAXINT
     else
-      _is.islp := MAXINT
+      _is.islp := MAXINT;
   end
   else
     _is.islp := FixedDiv(dx, dy);
@@ -378,7 +378,7 @@ begin
     if dy < 0 then
       _is.slp := -MAXINT
     else
-      _is.slp := MAXINT
+      _is.slp := MAXINT;
   end
   else
     _is.slp := FixedDiv(dy, dx);
@@ -967,14 +967,14 @@ end;
 // faster reject and precalculated slopes.  If the speed is needed,
 // use a hash algorithm to handle  the common cases.
 //
-function AM_clipMline(ml:  Pmline_t; fl: Pfline_t): boolean;
+function AM_clipMline(ml: Pmline_t; fl: Pfline_t): boolean;
 const
   LEFT = 1;
   RIGHT = 2;
   BOTTOM = 4;
   TOP = 8;
 var
-  outcode1, outcode2, outside : integer;
+  outcode1, outcode2, outside: integer;
   tmp: fpoint_t;
   dx, dy: integer;
 
