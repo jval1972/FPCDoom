@@ -410,13 +410,6 @@ begin
   V_DrawPatch(0, 0, SCN_TMP, wibackground, false);
 end;
 
-// The ticker is used to detect keys
-//  because of timing issues in netgames.
-function WI_Responder(ev: Pevent_t): boolean;
-begin
-  result := false;
-end;
-
 // Draws "<Levelname> Finished!"
 procedure WI_drawLF;
 var
