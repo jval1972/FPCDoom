@@ -226,7 +226,7 @@ const
 procedure A_Fall(actor: Pmobj_t);
 begin
   // actor is on ground, it can be walked over
-  actor.flags := actor.flags and (not MF_SOLID);
+  actor.flags := actor.flags and not MF_SOLID;
 
   // So change this if corpse objects
   // are meant to be obstacles.

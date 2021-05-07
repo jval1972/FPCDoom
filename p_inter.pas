@@ -39,7 +39,7 @@ uses
   m_rnd,
   i_system,
   am_map,
-  p_local, 
+  p_local,
   p_mobj_h,
   s_sound,
   d_player;

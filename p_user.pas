@@ -101,9 +101,9 @@ begin
   // Note: a LUT allows for effects
   //  like a ramp with low health.
 
-  player.bob :=  FixedMul(player.mo.momx, player.mo.momx) +
+  player.bob := FixedMul(player.mo.momx, player.mo.momx) +
                 FixedMul(player.mo.momy, player.mo.momy);
-  player.bob :=  player.bob div 4;
+  player.bob := player.bob div 4;
 
   if player.bob > MAXBOB then
     player.bob := MAXBOB;
@@ -115,7 +115,6 @@ begin
     if player.viewz > player.mo.ceilingz - 4 * FRACUNIT then
       player.viewz := player.mo.ceilingz - 4 * FRACUNIT;
 
-//    player.viewz := player.mo.z + player.viewheight;  JVAL removed!
     exit;
   end;
 

@@ -189,12 +189,12 @@ var
   xmove: fixed_t;
   ymove: fixed_t;
 begin
-  if (mo.momx = 0) and (mo.momy = 0) then
+  if mo.momx or mo.momy = 0 then
   begin
     if mo.flags and MF_SKULLFLY <> 0 then
     begin
       // the skull slammed into something
-      mo.flags := mo.flags and (not MF_SKULLFLY);
+      mo.flags := mo.flags and not MF_SKULLFLY;
       mo.momx := 0;
       mo.momy := 0;
       mo.momz := 0;
@@ -1175,7 +1175,7 @@ begin
 
   if linetarget = nil then
   begin
-    an := an + $4000000; 
+    an := an + $4000000;
     slope := P_AimLineAttack(source, an, 16 * 64 * FRACUNIT);
 
     if linetarget = nil then
