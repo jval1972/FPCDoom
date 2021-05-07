@@ -617,9 +617,8 @@ begin
       if top > viewheight then
         top := viewheight
       else if top < -1 then
-        top := -1
-      else
-        pfloorclip^ := top;
+        top := -1;
+      pfloorclip^ := top;
     end;
 
     // texturecolumn and lighting are independent of wall tiers
