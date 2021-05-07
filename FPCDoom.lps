@@ -16,6 +16,7 @@
       <Unit1>
         <Filename Value="am_map.pas"/>
         <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="5"/>
         <TopLine Value="1739"/>
         <CursorPos X="58" Y="1744"/>
@@ -94,8 +95,8 @@
         <Filename Value="d_net.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="37"/>
-        <TopLine Value="594"/>
-        <CursorPos X="5" Y="608"/>
+        <TopLine Value="111"/>
+        <CursorPos X="14" Y="69"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit10>
@@ -663,7 +664,6 @@
       <Unit78>
         <Filename Value="r_segs.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="30"/>
         <TopLine Value="1048"/>
         <CursorPos X="32" Y="1080"/>
@@ -1039,21 +1039,21 @@
         <Filename Value="r_ccache.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="40"/>
-        <UsageCount Value="65"/>
+        <UsageCount Value="64"/>
       </Unit123>
       <Unit124>
         <Filename Value="r_scache.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="5"/>
         <CursorPos Y="48"/>
-        <UsageCount Value="65"/>
+        <UsageCount Value="64"/>
       </Unit124>
       <Unit125>
         <Filename Value="C:\lazarus\fpc\3.0.4\source\rtl\win\wininc\defines.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="5047"/>
         <CursorPos X="6" Y="4841"/>
-        <UsageCount Value="1"/>
+        <UsageCount Value="0"/>
       </Unit125>
       <Unit126>
         <Filename Value="C:\lazarus\fpc\3.2.0\source\packages\fcl-registry\src\registry.pp"/>
@@ -1061,11 +1061,11 @@
         <EditorIndex Value="3"/>
         <TopLine Value="456"/>
         <CursorPos X="35" Y="459"/>
-        <UsageCount Value="22"/>
+        <UsageCount Value="25"/>
         <Loaded Value="True"/>
       </Unit126>
     </Units>
-    <JumpHistory Count="29" HistoryIndex="28">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="r_defs.pas"/>
         <Caret Line="143" TopLine="127"/>
@@ -1181,6 +1181,10 @@
         <Filename Value="r_segs.pas"/>
         <Caret Line="623" Column="33" TopLine="599"/>
       </Position29>
+      <Position30>
+        <Filename Value="r_segs.pas"/>
+        <Caret Line="1080" Column="32" TopLine="1048"/>
+      </Position30>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>

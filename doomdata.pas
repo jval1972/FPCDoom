@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -68,26 +68,26 @@ type
 // A SideDef, defining the visual appearance of a wall,
 // by setting textures and offsets.
   mapsidedef_t = record
-    textureoffset : smallint;
-    rowoffset : smallint;
-    toptexture : char8_t;
-    bottomtexture : char8_t;
-    midtexture : char8_t;
+    textureoffset: smallint;
+    rowoffset: smallint;
+    toptexture: char8_t;
+    bottomtexture: char8_t;
+    midtexture: char8_t;
   // Front sector, towards viewer.
-    sector : smallint;
+    sector: smallint;
   end;
   Pmapsidedef_t = ^mapsidedef_t;
 
 // A LineDef, as used for editing, and as input
 // to the BSP builder.
   maplinedef_t = record
-    v1 : smallint;
-    v2 : smallint;
-    flags : smallint;
-    special : smallint;
-    tag : smallint;
+    v1: smallint;
+    v2: smallint;
+    flags: smallint;
+    special: smallint;
+    tag: smallint;
   // sidenum[1] will be -1 if one sided
-    sidenum : array[0..1] of smallint;
+    sidenum: array[0..1] of smallint;
   end;
   Pmaplinedef_t = ^maplinedef_t;
 
