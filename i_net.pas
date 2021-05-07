@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -103,7 +103,7 @@ procedure PacketSend;
 var
   c: integer;
 begin
-  c := sendto(sendsocket , netbuffer^, doomcom.datalength, 0,
+  c := sendto(sendsocket, netbuffer^, doomcom.datalength, 0,
         sendaddress[doomcom.remotenode], SizeOf(sendaddress[doomcom.remotenode]));
 
   if c = SOCKET_ERROR then
