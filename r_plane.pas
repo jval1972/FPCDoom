@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -402,14 +402,14 @@ begin
   while (t1 < t2) and (t1 <= b1) do
   begin
   // JVAL 9/7/05
-    if t1 < viewwidth then
+    if t1 < viewheight then
       R_MapPlane(t1, spanstart[t1], x);
     inc(t1);
   end;
   while (b1 > b2) and (b1 >= t1) do
   begin
   // JVAL 9/7/05
-    if (b1 >= 0) and (b1 < viewwidth) then
+    if (b1 >= 0) and (b1 < viewheight) then
       R_MapPlane(b1, spanstart[b1], x1);
     dec(b1);
   end;
@@ -417,14 +417,14 @@ begin
   while (t2 < t1) and (t2 <= b2) do
   begin
   // JVAL 9/7/05
-    if t2 < viewwidth then
+    if t2 < viewheight then
       spanstart[t2] := x;
     inc(t2);
   end;
   while (b2 > b1) and (b2 >= t2) do
   begin
   // JVAL 9/7/05
-    if (b2 >= 0) and (b2 < viewwidth) then
+    if (b2 >= 0) and (b2 < viewheight) then
       spanstart[b2] := x;
     dec(b2);
   end;
