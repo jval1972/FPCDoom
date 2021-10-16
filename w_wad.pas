@@ -602,7 +602,6 @@ begin
 
   if l.handle = nil then
     handle.Free;
-
 end;
 
 //
@@ -664,13 +663,11 @@ begin
       result[i + 1] := ' ';
 
   Z_Free(p);
-
 end;
 
 function W_TextLumpName(const name: string): string;
 begin
   result := W_TextLumpNum(W_GetNumForName(name));
 end;
-
 
 end.

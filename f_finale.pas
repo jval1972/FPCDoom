@@ -627,7 +627,7 @@ begin
   else
     V_DrawPatch(160, 170, SCN_TMP, patch, false);
   Z_ChangeTag(patch, PU_CACHE);
-  
+
   V_CopyRect(0, 0, SCN_TMP, 320, 200, 0, 0, SCN_FG, true);
 
   V_IntermissionStretch;

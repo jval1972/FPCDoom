@@ -91,7 +91,7 @@
       <Unit10>
         <Filename Value="d_net.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="19"/>
+        <EditorIndex Value="20"/>
         <TopLine Value="948"/>
         <CursorPos X="13" Y="947"/>
         <UsageCount Value="204"/>
@@ -194,7 +194,7 @@
       <Unit23>
         <Filename Value="i_input.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="18"/>
+        <EditorIndex Value="19"/>
         <TopLine Value="160"/>
         <CursorPos X="37" Y="135"/>
         <UsageCount Value="204"/>
@@ -219,7 +219,7 @@
       <Unit26>
         <Filename Value="i_midi.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="15"/>
+        <EditorIndex Value="16"/>
         <TopLine Value="38"/>
         <CursorPos Y="62"/>
         <UsageCount Value="204"/>
@@ -228,7 +228,7 @@
       <Unit27>
         <Filename Value="i_music.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="16"/>
+        <EditorIndex Value="17"/>
         <TopLine Value="590"/>
         <CursorPos Y="614"/>
         <UsageCount Value="204"/>
@@ -261,7 +261,7 @@
       <Unit31>
         <Filename Value="i_video.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="14"/>
+        <EditorIndex Value="15"/>
         <TopLine Value="408"/>
         <CursorPos X="40" Y="384"/>
         <UsageCount Value="204"/>
@@ -510,10 +510,12 @@
       <Unit61>
         <Filename Value="p_setup.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="300"/>
-        <CursorPos X="17" Y="316"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="14"/>
+        <TopLine Value="849"/>
+        <CursorPos X="32" Y="862"/>
         <UsageCount Value="204"/>
+        <Loaded Value="True"/>
       </Unit61>
       <Unit62>
         <Filename Value="p_sight.pas"/>
@@ -642,10 +644,9 @@
       <Unit77>
         <Filename Value="r_plane.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="13"/>
-        <TopLine Value="411"/>
-        <CursorPos X="38" Y="427"/>
+        <TopLine Value="94"/>
+        <CursorPos X="42" Y="111"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit77>
@@ -699,7 +700,7 @@
       <Unit83>
         <Filename Value="s_sound.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="17"/>
+        <EditorIndex Value="18"/>
         <TopLine Value="679"/>
         <CursorPos X="11" Y="678"/>
         <UsageCount Value="204"/>
@@ -1022,21 +1023,21 @@
         <Filename Value="r_ccache.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="40"/>
-        <UsageCount Value="63"/>
+        <UsageCount Value="62"/>
       </Unit123>
       <Unit124>
         <Filename Value="r_scache.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="5"/>
         <CursorPos Y="48"/>
-        <UsageCount Value="63"/>
+        <UsageCount Value="62"/>
       </Unit124>
       <Unit125>
         <Filename Value="C:\lazarus\fpc\3.0.4\source\rtl\win\wininc\defines.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="5047"/>
         <CursorPos X="6" Y="4841"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="8"/>
       </Unit125>
       <Unit126>
         <Filename Value="C:\lazarus\fpc\3.2.0\source\packages\fcl-registry\src\registry.pp"/>
@@ -1044,10 +1045,10 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="456"/>
         <CursorPos X="35" Y="459"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="29"/>
       </Unit126>
     </Units>
-    <JumpHistory Count="10" HistoryIndex="9">
+    <JumpHistory Count="12" HistoryIndex="11">
       <Position1>
         <Filename Value="r_segs.pas"/>
         <Caret Line="232" Column="49" TopLine="218"/>
@@ -1088,6 +1089,14 @@
         <Filename Value="d_net.pas"/>
         <Caret Line="947" Column="13" TopLine="948"/>
       </Position10>
+      <Position11>
+        <Filename Value="r_plane.pas"/>
+        <Caret Line="421" Column="11" TopLine="411"/>
+      </Position11>
+      <Position12>
+        <Filename Value="r_plane.pas"/>
+        <Caret Line="111" Column="42" TopLine="94"/>
+      </Position12>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
