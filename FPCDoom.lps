@@ -4,7 +4,7 @@
     <PathDelim Value="\"/>
     <Version Value="11"/>
     <BuildModes Active="Release"/>
-    <Units Count="127">
+    <Units Count="128">
       <Unit0>
         <Filename Value="FPCDoom.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -91,7 +91,7 @@
       <Unit10>
         <Filename Value="d_net.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="20"/>
+        <EditorIndex Value="21"/>
         <TopLine Value="948"/>
         <CursorPos X="13" Y="947"/>
         <UsageCount Value="204"/>
@@ -194,7 +194,7 @@
       <Unit23>
         <Filename Value="i_input.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="19"/>
+        <EditorIndex Value="20"/>
         <TopLine Value="160"/>
         <CursorPos X="37" Y="135"/>
         <UsageCount Value="204"/>
@@ -219,7 +219,7 @@
       <Unit26>
         <Filename Value="i_midi.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="16"/>
+        <EditorIndex Value="17"/>
         <TopLine Value="38"/>
         <CursorPos Y="62"/>
         <UsageCount Value="204"/>
@@ -228,7 +228,7 @@
       <Unit27>
         <Filename Value="i_music.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="17"/>
+        <EditorIndex Value="18"/>
         <TopLine Value="590"/>
         <CursorPos Y="614"/>
         <UsageCount Value="204"/>
@@ -261,7 +261,7 @@
       <Unit31>
         <Filename Value="i_video.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="15"/>
+        <EditorIndex Value="16"/>
         <TopLine Value="408"/>
         <CursorPos X="40" Y="384"/>
         <UsageCount Value="204"/>
@@ -510,7 +510,6 @@
       <Unit61>
         <Filename Value="p_setup.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="14"/>
         <TopLine Value="849"/>
         <CursorPos X="32" Y="862"/>
@@ -700,7 +699,7 @@
       <Unit83>
         <Filename Value="s_sound.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="18"/>
+        <EditorIndex Value="19"/>
         <TopLine Value="679"/>
         <CursorPos X="11" Y="678"/>
         <UsageCount Value="204"/>
@@ -1047,8 +1046,15 @@
         <CursorPos X="35" Y="459"/>
         <UsageCount Value="29"/>
       </Unit126>
+      <Unit127>
+        <Filename Value="..\..\Mars3D\src\Mars3D.inc"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="15"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit127>
     </Units>
-    <JumpHistory Count="12" HistoryIndex="11">
+    <JumpHistory Count="11" HistoryIndex="10">
       <Position1>
         <Filename Value="r_segs.pas"/>
         <Caret Line="232" Column="49" TopLine="218"/>
@@ -1086,17 +1092,13 @@
         <Caret Line="272" Column="11" TopLine="259"/>
       </Position9>
       <Position10>
-        <Filename Value="d_net.pas"/>
-        <Caret Line="947" Column="13" TopLine="948"/>
+        <Filename Value="r_plane.pas"/>
+        <Caret Line="421" Column="11" TopLine="411"/>
       </Position10>
       <Position11>
         <Filename Value="r_plane.pas"/>
-        <Caret Line="421" Column="11" TopLine="411"/>
-      </Position11>
-      <Position12>
-        <Filename Value="r_plane.pas"/>
         <Caret Line="111" Column="42" TopLine="94"/>
-      </Position12>
+      </Position11>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>

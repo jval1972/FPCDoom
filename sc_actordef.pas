@@ -412,7 +412,8 @@ var
     end
     else if sc.MatchString('stop') then
     begin
-      m_states[numstates - 1].nextstate := -1; // S_NULL
+      if numstates > 0 then
+        m_states[numstates - 1].nextstate := -1; // S_NULL
       exit;
     end
     else if sc.MatchString('goto') then
