@@ -1435,8 +1435,8 @@ begin
     begin
     // JVAL: 20201203 - Preserve initial actions
       {$IFNDEF FPC}code_ptrs := {$ENDIF}realloc(code_ptrs, deh_initialstates * SizeOf(actionf_t), numstates * SizeOf(actionf_t));
-      for i := 0 to numstates - 1 do
-        code_ptrs[i] := states[i].action;
+      for j := 0 to numstates - 1 do
+        code_ptrs[j] := states[j].action;
 
     ////////////////////////////////////////////////////////////////////////////
     // Resetting internal states counter ///////////////////////////////////////
