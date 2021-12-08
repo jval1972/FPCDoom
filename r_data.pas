@@ -293,7 +293,7 @@ begin
     begin
       I_DevWarning('R_GenerateLookup(): column without a patch (%s)'#13#10, [char8tostring(texture.name)]);
       exit;
-    end; 
+    end;
 
 
     if patchcount[x] > 1 then

@@ -44,7 +44,7 @@ procedure R_StoreWallRange(const start: integer; const stop: integer);
 var
 // angle to line origin
   rw_angle1: angle_t;
-  
+
   rw_normalangle: angle_t;
 
 //
@@ -59,15 +59,15 @@ procedure R_CalcSeg(const seg: Pseg_t);
 implementation
 
 uses
-  doomtype, 
+  doomtype,
   doomdef,
   doomdata,
   r_main,
-  r_data, 
+  r_data,
   r_bsp,
   r_render,
-  r_sky, 
-  r_things, 
+  r_sky,
+  r_things,
   r_draw,
   r_plane,
   r_hires,

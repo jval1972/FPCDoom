@@ -616,7 +616,7 @@ begin
   F_CastPrint(castorder[castnum].name);
 
   // draw the current frame in the middle of the screen
-  sprdef := @sprites[caststate.sprite];    
+  sprdef := @sprites[caststate.sprite];
   sprframe := @sprdef.spriteframes[caststate.frame and FF_FRAMEMASK];
   lump := sprframe.lump[0];
   flip := sprframe.flip[0];

@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -100,7 +100,7 @@ var
 
 var
   destination_keys: array[0..MAXPLAYERS - 1] of string;
-    
+
 var
   shiftxform: array[0..127] of char;
 

@@ -49,7 +49,7 @@ uses
 {$IFDEF DEBUG}
   i_io,
 {$ENDIF}
-  g_game, 
+  g_game,
   p_mobj_h,
   p_mobj,
   p_tick,

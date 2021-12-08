@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -133,7 +133,7 @@ begin
     py^ := py^ * vy;
     inc(py);
   end;
-  
+
   for i := 1 to SCREENWIDTH - 1 do
     if SHEIGHTS[i - 1] = SHEIGHTS[i] then
       yy[i] := yy[i - 1];

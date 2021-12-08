@@ -612,7 +612,7 @@ begin
   end
   else if (AWidth = FWidth) and (AHeight = FHEIGHT) then
     exit;
-    
+
   xi := (FWidth shl 16) div aWidth;
   yi := (FHeight shl 16) div aHeight;
   newSize := 4 + AWidth * AHeight * FBytesPerPixel;

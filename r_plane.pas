@@ -34,8 +34,8 @@ interface
 uses
   d_fpc,
   m_fixed,
-  doomdef, 
-  r_data, 
+  doomdef,
+  r_data,
   r_defs;
 
 procedure R_ClearPlanes;

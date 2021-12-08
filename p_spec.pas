@@ -33,7 +33,7 @@ interface
 
 uses
   m_fixed,
-  d_player, 
+  d_player,
   d_think,
   p_mobj_h,
   doomdef,
@@ -1219,7 +1219,7 @@ begin
         EV_DoCeiling(line, crushAndRaise);
         line.special := 0;
       end;
-  
+
     30:
       begin
         // Raise floor to shortest texture height
@@ -1404,7 +1404,7 @@ begin
         EV_DoCeiling(line, silentCrushAndRaise);
         line.special := 0;
       end;
-  
+
   // RETRIGGERS.  All from here till end.
     72:
       begin
@@ -1501,7 +1501,7 @@ begin
         // Platform Stop
         EV_StopPlat(line);
       end;
-  
+
     90:
       begin
         // Raise Door
@@ -1525,7 +1525,7 @@ begin
         // Raise Floor 24 And Change
         EV_DoFloor(line, raiseFloor24AndChange);
       end;
-  
+
     94:
       begin
         // Raise Floor Crush
@@ -1563,7 +1563,7 @@ begin
         // Blazing Door Raise (faster than TURBO!)
         EV_DoDoor(line, blazeRaise);
       end;
-  
+
    106:
       begin
         // Blazing Door Open (faster than TURBO!)

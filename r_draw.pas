@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2021 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -91,7 +91,7 @@ var
   ylookup32: array[0..MAXHEIGHT - 1] of PLongWordArray;
   columnofs: array[0..MAXWIDTH - 1] of integer;
 
-  
+
 implementation
 
 uses
@@ -290,7 +290,7 @@ begin
   V_CopyRect(0, 0, SCN_TMP, V_GetScreenWidth(SCN_TMP), V_GetScreenHeight(SCN_TMP), 0, 0, SCN_BG, true);
 
   R_ScreenBlanc(SCN_BG);
-  x := V_PreserveY(ST_Y) * V_GetScreenWidth(SCN_BG); 
+  x := V_PreserveY(ST_Y) * V_GetScreenWidth(SCN_BG);
   R_VideoBlanc(SCN_BG, x, (V_GetScreenHeight(SCN_BG) - V_PreserveY(ST_Y)) * V_GetScreenWidth(SCN_BG));
 end;
 

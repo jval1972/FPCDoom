@@ -126,7 +126,7 @@ var
 
 //
 // TELEPORT MOVE
-// 
+//
 
 //
 // PIT_StompThing

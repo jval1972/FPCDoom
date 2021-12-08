@@ -530,7 +530,7 @@ begin
     end;
 
     inc(loops);
-{$ENDIF}    
+{$ENDIF}
     mobj := mobj.bnext;
   end;
 
