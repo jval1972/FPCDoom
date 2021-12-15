@@ -46,8 +46,7 @@ const
 implementation
 
 uses
-  d_fpc,
-  w_wad;
+  d_fpc;
 
 type
   terraintypedef_t = record

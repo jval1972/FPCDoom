@@ -81,7 +81,6 @@ uses
   p_extra,
   p_pspr,
   p_mobj_h,
-  r_renderstyle,
   sounds;
 
 const

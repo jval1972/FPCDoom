@@ -76,7 +76,6 @@ uses
   i_sound,
   i_midi,
   s_sound,
-  w_wad,
   z_memory;
 
 type

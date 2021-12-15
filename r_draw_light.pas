@@ -87,7 +87,6 @@ implementation
 
 uses
   doomdef,
-  p_setup,
   r_defs,
   r_draw,
   r_zbuffer,
