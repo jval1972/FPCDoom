@@ -38,6 +38,8 @@ interface
 //
 procedure S_Init(sfxVolume: integer; musicVolume: integer);
 
+procedure S_InitDEHExtraSounds;
+
 procedure S_ShutDownSound;
 
 //
@@ -258,6 +260,21 @@ begin
   // no sounds are playing, and they are not mus_paused
   mus_paused := false;
 
+  // Note that sounds have not been cached (yet).
+  for i := 1 to numsfx - 1 do
+  begin
+    S_sfx[i].lumpnum := -1;
+    S_sfx[i].usefulness := -1;
+  end;
+
+  C_AddCmd('useexternalwav', @S_CmdUseExternalWav);
+  C_AddCmd('miditempo', @S_CmdMidiTempo);
+end;
+
+procedure S_InitDEHExtraSounds;
+var
+  i: integer;
+begin
   if M_CheckParm('-NODEHEXTRA') = 0 then
   begin
     for i := 500 to 699 do
@@ -268,16 +285,6 @@ begin
     end;
     numsfx := 700;
   end;
-
-  // Note that sounds have not been cached (yet).
-  for i := 1 to numsfx - 1 do
-  begin
-    S_sfx[i].lumpnum := -1;
-    S_sfx[i].usefulness := -1;
-  end;
-
-  C_AddCmd('useexternalwav', @S_CmdUseExternalWav);
-  C_AddCmd('miditempo', @S_CmdMidiTempo);
 end;
 
 procedure S_ShutDownSound;

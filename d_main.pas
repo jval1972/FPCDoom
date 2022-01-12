@@ -1677,6 +1677,9 @@ begin
       I_Error('W_InitMultipleFiles(): no files found');
   end;
 
+  printf('S_InitDEHExtraSounds: Initializing dehacked sounds.'#13#10);
+  S_InitDEHExtraSounds;
+
   printf('DEH_Init: Initializing dehacked subsystem.'#13#10);
   DEH_Init;
 
