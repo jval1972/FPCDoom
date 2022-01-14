@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -17043,7 +17043,11 @@ begin
       {$IFNDEF FPC}states := {$ENDIF}realloc(states, Ord(DO_NUMSTATES) * SizeOf(state_t), EXTRANUMSTATES * SizeOf(state_t));
       ZeroMemory(@states[Ord(DO_NUMSTATES)], SizeOf(state_t) * (EXTRANUMSTATES - Ord(DO_NUMSTATES)));
       for i := Ord(DO_NUMSTATES) to EXTRANUMSTATES - 1 do
+      begin
+        states[i].sprite := Ord(SPR_NULL);
         states[i].tics := -1;
+        states[i].nextstate := statenum_t(numstates);
+      end;
       numstates := EXTRANUMSTATES;
     end;
   end;
@@ -17615,6 +17619,9 @@ function Info_GetNewState: integer;
 begin
   {$IFNDEF FPC}states := {$ENDIF}realloc(states, numstates * SizeOf(state_t), (numstates + 1) * SizeOf(state_t));
   ZeroMemory(@states[numstates], SizeOf(state_t));
+  states[numstates].sprite := Ord(SPR_NULL);
+  states[numstates].tics := -1;
+  states[numstates].nextstate := statenum_t(numstates);
   result := numstates;
   inc(numstates);
 end;
