@@ -416,6 +416,12 @@ var
         m_states[numstates - 1].nextstate := -1; // S_NULL
       exit;
     end
+    else if sc.MatchString('wait') then
+    begin
+      if numstates > 0 then
+        m_states[numstates - 1].nextstate := numstates - 1; // Same state
+      exit;
+    end
     else if sc.MatchString('goto') then
     begin
       gotostr := strupper(sc.GetStringEOL);
