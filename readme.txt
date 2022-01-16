@@ -47,6 +47,7 @@ Fixed bug in png image handling.
 Fixed bug that could rarely cause infinite loop in DEHACKED lumps.
 Recognizes multiple SUBMITNEWFRAMES commands in DEHACKED.
 Fixed potential memory corruption problem in R_MakeSpans() in 4k resolution.
+"ACTIVE SOUND" alias for "ACTION SOUND" DEHACKED field.
 
 version 1.13.17.133 (20210110)
 ------------------------------
