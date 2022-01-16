@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -40,6 +40,13 @@ Features:
 
 History - Change log
 --------------------
+Support for the wait keyword in ACTORDEF.
+Corrected states initialization for DEHEXTRA.
+Faster and safer thread de-allocation.
+Fixed bug in png image handling.
+Fixed bug that could rarely cause infinite loop in DEHACKED lumps.
+Recognizes multiple SUBMITNEWFRAMES commands in DEHACKED.
+Fixed potential memory corruption problem in R_MakeSpans() in 4k resolution.
 
 version 1.13.17.133 (20210110)
 ------------------------------

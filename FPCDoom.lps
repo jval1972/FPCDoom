@@ -41,9 +41,10 @@
       <Unit4>
         <Filename Value="deh_main.pas"/>
         <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="5"/>
-        <TopLine Value="414"/>
-        <CursorPos X="17" Y="431"/>
+        <TopLine Value="499"/>
+        <CursorPos X="13" Y="524"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit4>
@@ -827,7 +828,6 @@
       <Unit98>
         <Filename Value="sc_actordef.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="27"/>
         <TopLine Value="401"/>
         <CursorPos Y="425"/>
@@ -1063,122 +1063,122 @@
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="deh_main.pas"/>
-        <Caret Line="2201" Column="43" TopLine="2192"/>
-      </Position1>
-      <Position2>
-        <Filename Value="p_extra.pas"/>
-        <Caret Line="164" Column="23" TopLine="150"/>
-      </Position2>
-      <Position3>
-        <Filename Value="s_sound.pas"/>
-        <Caret Line="233" Column="15" TopLine="230"/>
-      </Position3>
-      <Position4>
-        <Filename Value="s_sound.pas"/>
-        <Caret Line="237" Column="11" TopLine="230"/>
-      </Position4>
-      <Position5>
-        <Filename Value="s_sound.pas"/>
-        <Caret Line="39" Column="11" TopLine="25"/>
-      </Position5>
-      <Position6>
-        <Filename Value="d_main.pas"/>
-        <Caret Line="1877" Column="3" TopLine="1864"/>
-      </Position6>
-      <Position7>
-        <Filename Value="s_sound.pas"/>
-        <Caret Line="273" TopLine="260"/>
-      </Position7>
-      <Position8>
-        <Filename Value="s_sound.pas"/>
-      </Position8>
-      <Position9>
         <Filename Value="d_main.pas"/>
         <Caret Line="1873" Column="59" TopLine="1864"/>
-      </Position9>
-      <Position10>
+      </Position1>
+      <Position2>
         <Filename Value="sounds.pas"/>
         <Caret Line="1628" Column="32" TopLine="1529"/>
+      </Position2>
+      <Position3>
+        <Filename Value="info.pas"/>
+        <Caret Line="17089" TopLine="17074"/>
+      </Position3>
+      <Position4>
+        <Filename Value="info.pas"/>
+        <Caret Line="17762" Column="32" TopLine="17748"/>
+      </Position4>
+      <Position5>
+        <Filename Value="info.pas"/>
+        <Caret Line="17617" Column="25" TopLine="17600"/>
+      </Position5>
+      <Position6>
+        <Filename Value="info.pas"/>
+        <Caret Line="17620" Column="28" TopLine="17600"/>
+      </Position6>
+      <Position7>
+        <Filename Value="info.pas"/>
+        <Caret Line="17619" Column="41" TopLine="17606"/>
+      </Position7>
+      <Position8>
+        <Filename Value="info.pas"/>
+        <Caret Line="17765" Column="66" TopLine="17751"/>
+      </Position8>
+      <Position9>
+        <Filename Value="info.pas"/>
+        <Caret Line="17614" Column="19" TopLine="17607"/>
+      </Position9>
+      <Position10>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="735" Column="18" TopLine="723"/>
       </Position10>
       <Position11>
         <Filename Value="info.pas"/>
-        <Caret Line="17089" TopLine="17074"/>
+        <Caret Line="51" Column="7" TopLine="46"/>
       </Position11>
       <Position12>
-        <Filename Value="info.pas"/>
-        <Caret Line="17762" Column="32" TopLine="17748"/>
+        <Filename Value="am_map.pas"/>
+        <Caret Line="788" Column="67" TopLine="775"/>
       </Position12>
       <Position13>
-        <Filename Value="info.pas"/>
-        <Caret Line="17617" Column="25" TopLine="17600"/>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="427" Column="24" TopLine="414"/>
       </Position13>
       <Position14>
-        <Filename Value="info.pas"/>
-        <Caret Line="17620" Column="28" TopLine="17600"/>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="431" Column="17" TopLine="414"/>
       </Position14>
       <Position15>
         <Filename Value="info.pas"/>
-        <Caret Line="17619" Column="41" TopLine="17606"/>
+        <Caret Line="17051" Column="28" TopLine="17038"/>
       </Position15>
       <Position16>
         <Filename Value="info.pas"/>
-        <Caret Line="17765" Column="66" TopLine="17751"/>
+        <Caret Line="17048" Column="19" TopLine="17035"/>
       </Position16>
       <Position17>
         <Filename Value="info.pas"/>
-        <Caret Line="17614" Column="19" TopLine="17607"/>
+        <Caret Line="50" Column="3" TopLine="36"/>
       </Position17>
       <Position18>
-        <Filename Value="deh_main.pas"/>
-        <Caret Line="735" Column="18" TopLine="723"/>
+        <Filename Value="info.pas"/>
+        <Caret Line="41" Column="3" TopLine="36"/>
       </Position18>
       <Position19>
         <Filename Value="info.pas"/>
-        <Caret Line="51" Column="7" TopLine="46"/>
+        <Caret Line="40" Column="3" TopLine="36"/>
       </Position19>
       <Position20>
-        <Filename Value="am_map.pas"/>
-        <Caret Line="788" Column="67" TopLine="775"/>
-      </Position20>
-      <Position21>
-        <Filename Value="deh_main.pas"/>
-        <Caret Line="427" Column="24" TopLine="414"/>
-      </Position21>
-      <Position22>
-        <Filename Value="deh_main.pas"/>
-        <Caret Line="431" Column="17" TopLine="414"/>
-      </Position22>
-      <Position23>
-        <Filename Value="info.pas"/>
-        <Caret Line="17051" Column="28" TopLine="17038"/>
-      </Position23>
-      <Position24>
-        <Filename Value="info.pas"/>
-        <Caret Line="17048" Column="19" TopLine="17035"/>
-      </Position24>
-      <Position25>
-        <Filename Value="info.pas"/>
-        <Caret Line="50" Column="3" TopLine="36"/>
-      </Position25>
-      <Position26>
-        <Filename Value="info.pas"/>
-        <Caret Line="41" Column="3" TopLine="36"/>
-      </Position26>
-      <Position27>
-        <Filename Value="info.pas"/>
-        <Caret Line="40" Column="3" TopLine="36"/>
-      </Position27>
-      <Position28>
         <Filename Value="sc_actordef.pas"/>
         <Caret Line="549" Column="10" TopLine="549"/>
-      </Position28>
-      <Position29>
+      </Position20>
+      <Position21>
         <Filename Value="sc_actordef.pas"/>
-      </Position29>
-      <Position30>
+      </Position21>
+      <Position22>
         <Filename Value="sc_actordef.pas"/>
         <Caret Line="487" Column="46" TopLine="478"/>
+      </Position22>
+      <Position23>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="420" Column="53" TopLine="414"/>
+      </Position23>
+      <Position24>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="553" Column="42" TopLine="529"/>
+      </Position24>
+      <Position25>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="1514" Column="85" TopLine="1490"/>
+      </Position25>
+      <Position26>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="1841" Column="76" TopLine="1826"/>
+      </Position26>
+      <Position27>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="553" Column="42" TopLine="539"/>
+      </Position27>
+      <Position28>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="1514" Column="85" TopLine="1490"/>
+      </Position28>
+      <Position29>
+        <Filename Value="deh_main.pas"/>
+        <Caret Line="1850" Column="55" TopLine="1826"/>
+      </Position29>
+      <Position30>
+        <Filename Value="deh_main.pas"/>
       </Position30>
     </JumpHistory>
     <RunParams>
