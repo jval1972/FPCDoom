@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -41,17 +41,31 @@ const
   BOXLEFT = 2;
   BOXRIGHT = 3;
 
+//==============================================================================
+// M_ClearBox
+//
 // Bounding box functions.
+//
+//==============================================================================
 procedure M_ClearBox(box: Pfixed_tArray);
 
+//==============================================================================
+//
+// M_AddToBox
+//
+//==============================================================================
 procedure M_AddToBox(box: Pfixed_tArray; x: fixed_t; y: fixed_t);
-
 
 implementation
 
 uses
   doomtype;
 
+//==============================================================================
+//
+// M_ClearBox
+//
+//==============================================================================
 procedure M_ClearBox(box: Pfixed_tArray);
 begin
   box[BOXTOP] := MININT;
@@ -60,6 +74,11 @@ begin
   box[BOXLEFT] := MAXINT;
 end;
 
+//==============================================================================
+//
+// M_AddToBox
+//
+//==============================================================================
 procedure M_AddToBox(box: Pfixed_tArray; x: fixed_t; y: fixed_t);
 begin
   if x < box[BOXLEFT] then

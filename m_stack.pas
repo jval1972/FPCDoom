@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -43,11 +43,21 @@ type
 
 implementation
 
+//==============================================================================
+//
+// TIntegerStack.Push
+//
+//==============================================================================
 procedure TIntegerStack.Push(const x: integer);
 begin
   Add(x);
 end;
 
+//==============================================================================
+//
+// TIntegerStack.Pop
+//
+//==============================================================================
 function TIntegerStack.Pop(var x: integer): boolean;
 begin
   result := Count > 0;

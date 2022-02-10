@@ -47,36 +47,86 @@ uses
 const
   AppTitle = 'FPCDoom';
 
+//==============================================================================
+//
+// D_ProcessEvents
+//
+//==============================================================================
 procedure D_ProcessEvents;
+
+//==============================================================================
+//
+// D_DoAdvanceDemo
+//
+//==============================================================================
 procedure D_DoAdvanceDemo;
 
-
+//==============================================================================
+//
+// D_AddFile
+//
+//==============================================================================
 procedure D_AddFile(const fname: string);
 
+//==============================================================================
 //
 // D_DoomMain()
 // Not a globally visible function, just included for source reference,
 // calls all startup code, parses command line options.
 // If not overrided by user input, calls N_AdvanceDemo.
 //
+//==============================================================================
 procedure D_DoomMain;
 
+//==============================================================================
+// D_PostEvent
+//
 // Called by IO functions when input is detected.
+//
+//==============================================================================
 procedure D_PostEvent(ev: Pevent_t);
 
+//==============================================================================
+// D_PageTicker
 //
 // BASE LEVEL
 //
+//==============================================================================
 procedure D_PageTicker;
 
+//==============================================================================
+//
+// D_PageDrawer
+//
+//==============================================================================
 procedure D_PageDrawer;
 
+//==============================================================================
+//
+// D_AdvanceDemo
+//
+//==============================================================================
 procedure D_AdvanceDemo;
 
+//==============================================================================
+//
+// D_StartTitle
+//
+//==============================================================================
 procedure D_StartTitle;
 
+//==============================================================================
+//
+// D_IsPaused
+//
+//==============================================================================
 function D_IsPaused: boolean;
 
+//==============================================================================
+//
+// D_Display
+//
+//==============================================================================
 procedure D_Display;
 
 // wipegamestate can be set to -1 to force a wipe on the next draw
@@ -98,9 +148,25 @@ var
 
   basedefault: string;          // default file
 
+//==============================================================================
+//
+// D_Version
+//
+//==============================================================================
 function D_Version: string;
+
+//==============================================================================
+//
+// D_VersionBuilt
+//
+//==============================================================================
 function D_VersionBuilt: string;
 
+//==============================================================================
+//
+// D_ShutDown
+//
+//==============================================================================
 procedure D_ShutDown;
 
 var
@@ -156,6 +222,7 @@ uses
   w_pak,
   z_memory;
 
+//==============================================================================
 //
 // D_DoomLoop()
 // Not a globally visible function,
@@ -165,11 +232,10 @@ uses
 //  calls all ?_Responder, ?_Ticker, and ?_Drawer,
 //  calls I_GetTime, I_StartFrame, and I_StartTic
 //
-
-//
 // D_PostEvent
 // Called by the I/O functions when input is detected
 //
+//==============================================================================
 procedure D_PostEvent(ev: Pevent_t);
 begin
   events[eventhead] := ev^;
@@ -177,10 +243,12 @@ begin
   eventhead := eventhead and (MAXEVENTS - 1);
 end;
 
+//==============================================================================
 //
 // D_ProcessEvents
 // Send all the events of the given timestamp down the responder chain
 //
+//==============================================================================
 procedure D_ProcessEvents;
 var
   ev: Pevent_t;
@@ -226,13 +294,22 @@ var
   noblit: boolean = false;    // for comparative timing purposes
   norender: boolean = false;  // for comparative timing purposes
 
-
+//==============================================================================
+//
+// D_FinishUpdate
+//
+//==============================================================================
 procedure D_FinishUpdate;
 begin
   if not noblit then
     I_FinishUpdate; // page flip or blit buffer
 end;
 
+//==============================================================================
+//
+// D_RenderPlayerView
+//
+//==============================================================================
 procedure D_RenderPlayerView(player: Pplayer_t);
 begin
   if norender then
@@ -248,6 +325,11 @@ end;
 var
   diskbusy: integer = -1;
 
+//==============================================================================
+//
+// D_Display
+//
+//==============================================================================
 procedure D_Display;
 var
   nowtime: integer;
@@ -466,10 +548,11 @@ begin
   wipedisplay := false;
 end;
 
+//==============================================================================
 //
 //  D_DoomLoop
 //
-
+//==============================================================================
 procedure D_DoomLoop;
 begin
   if demorecording then
@@ -507,10 +590,12 @@ var
   pagetic: integer;
   pagename: string;
 
+//==============================================================================
 //
 // D_PageTicker
 // Handles timing for warped projection
 //
+//==============================================================================
 procedure D_PageTicker;
 begin
   dec(pagetic);
@@ -518,28 +603,35 @@ begin
     D_AdvanceDemo;
 end;
 
+//==============================================================================
 //
 // D_PageDrawer
 //
+//==============================================================================
 procedure D_PageDrawer;
 begin
    V_PageDrawer(pagename);
 end;
 
+//==============================================================================
 //
 // D_AdvanceDemo
 // Called after each demo or intro demosequence finishes
 //
+//==============================================================================
 procedure D_AdvanceDemo;
 begin
   if gamestate <> GS_ENDOOM then
     advancedemo := true;
 end;
 
+//==============================================================================
+// D_DoAdvanceDemo
 //
 // This cycles through the demo sequences.
 // FIXME - version dependend demo numbers?
 //
+//==============================================================================
 procedure D_DoAdvanceDemo;
 begin
   players[consoleplayer].playerstate := PST_LIVE;  // not reborn
@@ -611,9 +703,11 @@ begin
   end;
 end;
 
+//==============================================================================
 //
 // D_StartTitle
 //
+//==============================================================================
 procedure D_StartTitle;
 begin
   gameaction := ga_nothing;
@@ -624,9 +718,11 @@ end;
 var
   wadfiles: TDStringList;
 
+//==============================================================================
 //
 // D_AddFile
 //
+//==============================================================================
 procedure D_AddFile(const fname: string);
 begin
   if fname <> '' then
@@ -655,6 +751,11 @@ const
   KEY_READ = 983065;
 {$ENDIF}
 
+//==============================================================================
+//
+// QuerySteamDirectory
+//
+//==============================================================================
 function QuerySteamDirectory(const flags, dirid: integer): string;
 var
   reg: TRegistry;
@@ -670,6 +771,11 @@ begin
   reg.free;
 end;
 
+//==============================================================================
+//
+// FileInDoomPath
+//
+//==============================================================================
 function FileInDoomPath(const fn: string): string;
 var
   doomwaddir: string;
@@ -745,6 +851,11 @@ end;
 const
   SYSWAD = 'FPCDoom.wad';
 
+//==============================================================================
+//
+// D_AddSystemWAD
+//
+//==============================================================================
 procedure D_AddSystemWAD;
 var
   fsyswad: string;
@@ -759,6 +870,11 @@ end;
 var
   doomcwad: string = ''; // Custom main WAD
 
+//==============================================================================
+//
+// IdentifyVersion
+//
+//==============================================================================
 procedure IdentifyVersion;
 var
   doom1wad: string;
@@ -793,7 +909,6 @@ begin
 
   // tnt pack
   sprintf(tntwad, '%s\tnt.wad', [doomwaddir]);
-
 
   // French stuff.
   sprintf(doom2fwad, '%s\doom2f.wad', [doomwaddir]);
@@ -931,10 +1046,14 @@ begin
   gamemode := indetermined;
 end;
 
+//==============================================================================
+// FindResponseFile
 //
 // Find a Response File
 //
 // JVAL: Changed to handle more than 1 response files
+//
+//==============================================================================
 procedure FindResponseFile;
 var
   i: integer;
@@ -997,21 +1116,41 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// D_Version
+//
+//==============================================================================
 function D_Version: string;
 begin
   sprintf(result, Apptitle + ' version %d.%d', [VERSION div 100, VERSION mod 100]);
 end;
 
+//==============================================================================
+//
+// D_VersionBuilt
+//
+//==============================================================================
 function D_VersionBuilt: string;
 begin
   sprintf(result, ' built %s', [I_VersionBuilt]);
 end;
 
+//==============================================================================
+//
+// D_CmdVersion
+//
+//==============================================================================
 procedure D_CmdVersion;
 begin
   printf('%s,%s'#13#10, [D_Version, D_VersionBuilt]);
 end;
 
+//==============================================================================
+//
+// D_CmdAddPakFile
+//
+//==============================================================================
 procedure D_CmdAddPakFile(const parm: string);
 var
   files: TDStringList;
@@ -1051,12 +1190,22 @@ begin
 
 end;
 
+//==============================================================================
+//
+// D_StartThinkers
+//
+//==============================================================================
 procedure D_StartThinkers;
 begin
   Info_Init(true);
   printf('Thinkers initialized'#13#10);
 end;
 
+//==============================================================================
+//
+// D_StopThinkers
+//
+//==============================================================================
 procedure D_StopThinkers;
 begin
   if demoplayback then
@@ -1075,6 +1224,11 @@ begin
   printf('Thinkers disabled'#13#10);
 end;
 
+//==============================================================================
+//
+// D_AddWADFiles
+//
+//==============================================================================
 procedure D_AddWADFiles(const parm: string);
 var
   p: integer;
@@ -1094,6 +1248,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// D_AddPAKFiles
+//
+//==============================================================================
 procedure D_AddPAKFiles(const parm: string);
 var
   p: integer;
@@ -1114,6 +1273,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// D_AddDEHFiles
+//
+//==============================================================================
 procedure D_AddDEHFiles(const parm: string);
 var
   p: integer;
@@ -1134,6 +1298,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// D_IdentifyGameDirectories
+//
+//==============================================================================
 procedure D_IdentifyGameDirectories;
 var
   gamedirectorystring: string;
@@ -1187,9 +1356,11 @@ begin
   end;
 end;
 
+//==============================================================================
 //
 // D_DoomMain
 //
+//==============================================================================
 procedure D_DoomMain;
 var
   p: integer;
@@ -1613,7 +1784,6 @@ begin
 
   singletics := M_CheckParm('-singletics') > 0;
 
-
   nodrawers := M_CheckParm('-nodraw') <> 0;
   noblit := M_CheckParm('-noblit') <> 0;
   norender := M_CheckParm('-norender') <> 0;
@@ -1869,7 +2039,6 @@ begin
   printf(#13#10 + 'P_Init: Init Playloop state.'#13#10);
   P_Init;
 
-
   printf('I_Init: Setting up machine state.'#13#10);
   I_Init;
 
@@ -1944,11 +2113,21 @@ begin
   D_DoomLoop;  // never returns
 end;
 
+//==============================================================================
+//
+// D_IsPaused
+//
+//==============================================================================
 function D_IsPaused: boolean;
 begin
   result := paused;
 end;
 
+//==============================================================================
+//
+// D_ShutDown
+//
+//==============================================================================
 procedure D_ShutDown;
 var
   i: integer;

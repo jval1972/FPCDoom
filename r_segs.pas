@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -37,8 +37,18 @@ uses
   tables,
   r_defs;
 
+//==============================================================================
+//
+// R_RenderMaskedSegRange
+//
+//==============================================================================
 procedure R_RenderMaskedSegRange(const ds: Pdrawseg_t; const x1, x2: integer);
 
+//==============================================================================
+//
+// R_StoreWallRange
+//
+//==============================================================================
 procedure R_StoreWallRange(const start: integer; const stop: integer);
 
 var
@@ -54,6 +64,11 @@ var
 
   walllights: PBytePArray;
 
+//==============================================================================
+//
+// R_CalcSeg
+//
+//==============================================================================
 procedure R_CalcSeg(const seg: Pseg_t);
 
 implementation
@@ -75,6 +90,11 @@ uses
   r_mirror,
   z_memory;
 
+//==============================================================================
+//
+// R_CalcSeg
+//
+//==============================================================================
 procedure R_CalcSeg(const seg: Pseg_t);
 var
   dx, dy: double;
@@ -90,6 +110,11 @@ begin
   seg.r_normalangle := R_PointToAngle(seg.v1.r_x, seg.v1.r_y, seg.v2.r_x, seg.v2.r_y) + ANG90;
 end;
 
+//==============================================================================
+//
+// R_CalcSegOffset
+//
+//==============================================================================
 function R_CalcSegOffset(const seg: Pseg_t): fixed_t;
 var
   dx, dy, dx1, dy1: double;
@@ -103,10 +128,13 @@ begin
     result := -result;
 end;
 
+//==============================================================================
 //
 // R_DistToSeg by entryway
 //
 // https://www.doomworld.com/forum/topic/70288-dynamic-wiggletall-sector-fix-for-fixed-point-software-renderer/?do=findComment&comment=1340433
+//
+//==============================================================================
 function R_DistToSeg(const seg: Pseg_t): fixed_t;
 var
   dx, dy, dx1, dy1: double;
@@ -258,6 +286,11 @@ var
     (clamp:   64 * FRACUNIT; heightbits:  9)
   );
 
+//==============================================================================
+//
+// R_WiggleFix
+//
+//==============================================================================
 procedure R_WiggleFix(sec: Psector_t);
 var
   height: integer;
@@ -299,6 +332,7 @@ begin
   end;
 end;
 
+//==============================================================================
 //
 // R_ScaleFromGlobalAngle
 // Returns the texture mapping scale
@@ -306,6 +340,7 @@ end;
 //  at the given angle.
 // rw_distance must be calculated first.
 //
+//==============================================================================
 function R_ScaleFromGlobalAngle(const visangle: angle_t): fixed_t;
 var
   anglea: angle_t;
@@ -332,6 +367,11 @@ begin
     result := MAX_RWSCALE;
 end;
 
+//==============================================================================
+//
+// R_ScaleFromGlobalAngle_DBL
+//
+//==============================================================================
 function R_ScaleFromGlobalAngle_DBL(const visangle: angle_t): double;
 var
   anglea: angle_t;
@@ -360,12 +400,11 @@ begin
 
 end;
 
-
 // OPTIMIZE: closed two sided lines as single sided
-
 //
 // R_RenderMaskedSegRange
 //
+//==============================================================================
 procedure R_RenderMaskedSegRange(const ds: Pdrawseg_t; const x1, x2: integer);
 var
   index: integer;
@@ -515,6 +554,8 @@ begin
   end;
 end;
 
+//==============================================================================
+// R_MirrorTextureColumn
 //
 // R_RenderSegLoop
 // Draws zero, one, or two textures (and possibly a masked
@@ -524,6 +565,8 @@ end;
 // CALLED: CORE LOOPING ROUTINE.
 //
 // Find the column if we are in mirror mode
+//
+//==============================================================================
 function R_MirrorTextureColumn(const seg: Pseg_t; const tc: fixed_t): fixed_t;
 var
   offs: fixed_t;
@@ -544,6 +587,11 @@ const
   MIN_RW_SCALE = 64;
   MAX_RW_SCALE = 256 * FRACUNIT;
 
+//==============================================================================
+//
+// R_RenderSegLoop
+//
+//==============================================================================
 procedure R_RenderSegLoop;
 var
   angle: angle_t;
@@ -755,11 +803,13 @@ begin
 
 end;
 
+//==============================================================================
 //
 // R_StoreWallRange
 // A wall segment will be drawn
 //  between start and stop pixels (inclusive).
 //
+//==============================================================================
 procedure R_StoreWallRange(const start: integer; const stop: integer);
 var
   vtop: fixed_t;
@@ -1012,7 +1062,6 @@ begin
   //  of the view plane, it is definitely invisible
   //  and doesn't need to be marked.
 
-
   if frontsector.floorheight >= viewz then
   begin
     // above view plane
@@ -1025,7 +1074,6 @@ begin
     // below view plane
     markceiling := false;
   end;
-
 
   // calculate incremental stepping values for texture edges
   worldtop_dbl := worldtop / WORLDUNIT;
@@ -1114,6 +1162,5 @@ begin
   end;
   inc(ds_p);
 end;
-
 
 end.

@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -63,7 +63,6 @@ const
     512 * 512
   );
 
-
 type
   spanparams_t = record
     ds_source: pointer; // start of a 64*64 tile image
@@ -81,10 +80,20 @@ type
   end;
   Pspanparams_t = ^spanparams_t;
 
+//==============================================================================
+// R_DrawSpanMedium
+//
 // Span blitting for rows, floor/ceiling.
 // No Sepctre effect needed.
+//
+//==============================================================================
 procedure R_DrawSpanMedium(const parms: Pspanparams_t);
 
+//==============================================================================
+//
+// R_DrawSpanNormal
+//
+//==============================================================================
 procedure R_DrawSpanNormal(const parms: Pspanparams_t);
 
 var
@@ -98,6 +107,8 @@ uses
   r_draw,
   r_hires;
 
+//==============================================================================
+// R_DrawSpanMedium
 //
 // R_DrawSpan
 // With DOOM style restrictions on view orientation,
@@ -110,10 +121,9 @@ uses
 // In consequence, flats are not stored by column (like walls),
 //  and the inner loop has to step in texture space u and v.
 //
-
-//
 // Draws the actual span (Medium resolution).
 //
+//==============================================================================
 procedure R_DrawSpanMedium(const parms: Pspanparams_t);
 var
   xfrac: fixed_t;
@@ -175,9 +185,12 @@ begin
   end;
 end;
 
+//==============================================================================
+// R_DrawSpanNormal
 //
 // Draws the actual span (Normal resolution).
 //
+//==============================================================================
 procedure R_DrawSpanNormal(const parms: Pspanparams_t);
 var
   xfrac: fixed_t;

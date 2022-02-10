@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -38,14 +38,39 @@ uses
   r_data,
   r_defs;
 
+//==============================================================================
+//
+// R_ClearPlanes
+//
+//==============================================================================
 procedure R_ClearPlanes;
 
+//==============================================================================
+//
+// R_ClearVisPlanes
+//
+//==============================================================================
 procedure R_ClearVisPlanes;
 
+//==============================================================================
+//
+// R_DrawPlanes
+//
+//==============================================================================
 procedure R_DrawPlanes;
 
+//==============================================================================
+//
+// R_FindPlane
+//
+//==============================================================================
 function R_FindPlane(height: fixed_t; picnum: integer; lightlevel: integer): Pvisplane_t;
 
+//==============================================================================
+//
+// R_CheckPlane
+//
+//==============================================================================
 function R_CheckPlane(pl: Pvisplane_t; start: integer; stop: integer): Pvisplane_t;
 
 var
@@ -117,7 +142,7 @@ var
   cachedxstep: array[0..MAXHEIGHT - 1] of fixed_t;
   cachedystep: array[0..MAXHEIGHT - 1] of fixed_t;
 
-
+//==============================================================================
 //
 // R_MapPlane
 //
@@ -129,6 +154,7 @@ var
 //
 // BASIC PRIMITIVE
 //
+//==============================================================================
 procedure R_MapPlane(const y: integer; x1, x2: integer);
 var
   distance: fixed_t;
@@ -209,10 +235,12 @@ begin
   R_AddRenderTask(spanfunc, renderflags_span, @rspan);
 end;
 
+//==============================================================================
 //
 // R_ClearPlanes
 // At begining of frame.
 //
+//==============================================================================
 procedure R_ClearPlanes;
 var
   i: integer;
@@ -233,11 +261,14 @@ begin
   ZeroMemory(@cachedheight, SCREENWIDTH * SizeOf(fixed_t));
 end;
 
+//==============================================================================
 //
 // R_ClearVisPlanes
 //
 // JVAL
 //   Free zone memory of visplanes
+//
+//==============================================================================
 procedure R_ClearVisPlanes;
 var
   i: integer;
@@ -250,6 +281,7 @@ begin
   maxvisplane := -1;
 end;
 
+//==============================================================================
 //
 // R_NewVisPlane
 //
@@ -257,6 +289,7 @@ end;
 //   Create a new visplane
 //   Uses zone memory to allocate top and bottom arrays
 //
+//==============================================================================
 procedure R_NewVisPlane;
 begin
   if lastvisplane > maxvisplane then
@@ -271,9 +304,11 @@ begin
   inc(lastvisplane);
 end;
 
+//==============================================================================
 //
 // R_FindPlane
 //
+//==============================================================================
 function R_FindPlane(height: fixed_t; picnum: integer; lightlevel: integer): Pvisplane_t;
 var
   check: integer;
@@ -315,9 +350,11 @@ begin
   memset(@result.top[-1], iVISEND, (2 + SCREENWIDTH) * SizeOf(visindex_t));
 end;
 
+//==============================================================================
 //
 // R_CheckPlane
 //
+//==============================================================================
 function R_CheckPlane(pl: Pvisplane_t; start: integer; stop: integer): Pvisplane_t;
 var
   intrl: integer;
@@ -389,9 +426,11 @@ begin
   memset(@result.top[-1], iVISEND, (2 + SCREENWIDTH) * SizeOf(visindex_t));
 end;
 
+//==============================================================================
 //
 // R_MakeSpans
 //
+//==============================================================================
 procedure R_MakeSpans(x: integer; t1: integer; b1: integer; t2: integer; b2: integer);
 var
   x1: integer;
@@ -430,10 +469,12 @@ begin
   end;
 end;
 
+//==============================================================================
 //
 // R_DrawPlanes
 // At the end of each frame.
 //
+//==============================================================================
 procedure R_DrawPlanes;
 var
   pl: Pvisplane_t;

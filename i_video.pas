@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -36,24 +36,64 @@ uses
   Windows,
   d_fpc;
 
+//==============================================================================
+//
+// I_DetectNativeScreenResolution
+//
+//==============================================================================
 procedure I_DetectNativeScreenResolution;
 
+//==============================================================================
+// I_InitGraphics
+//
 // Called by D_DoomMain,
 // determines the hardware configuration
 // and sets up the video mode
+//
+//==============================================================================
 procedure I_InitGraphics;
 
+//==============================================================================
+//
+// I_ChangeFullScreen
+//
+//==============================================================================
 procedure I_ChangeFullScreen(const dofull, doexclusive: boolean);
 
+//==============================================================================
+//
+// I_ShutDownGraphics
+//
+//==============================================================================
 procedure I_ShutDownGraphics;
 
+//==============================================================================
+// I_SetPalette
+//
 // Takes full 8 bit values.
+//
+//==============================================================================
 procedure I_SetPalette(const palette: PByteArray);
 
+//==============================================================================
+//
+// I_FinishUpdate
+//
+//==============================================================================
 procedure I_FinishUpdate;
 
+//==============================================================================
+//
+// I_ReadScreen32
+//
+//==============================================================================
 procedure I_ReadScreen32(dest: pointer);
 
+//==============================================================================
+//
+// I_RestoreWindowPos
+//
+//==============================================================================
 procedure I_RestoreWindowPos;
 
 var
@@ -71,8 +111,18 @@ var
   displaymodes: Pdisplaymode_tArray = nil;
   numdisplaymodes: integer = 0;
 
+//==============================================================================
+//
+// I_DisplayModeIndex
+//
+//==============================================================================
 function I_DisplayModeIndex(const w, h: integer): integer;
 
+//==============================================================================
+//
+// I_NearestDisplayModeIndex
+//
+//==============================================================================
 function I_NearestDisplayModeIndex(const w, h: integer): integer;
 
 var
@@ -110,11 +160,21 @@ var
   screen: PLongWordArray;
   oscreen: pointer;
 
+//==============================================================================
+//
+// I_RestoreWindowPos
+//
+//==============================================================================
 procedure I_RestoreWindowPos;
 begin
   SetWindowPos(hMainWnd, HWND_TOP, 0, 0, WINDOWWIDTH, WINDOWHEIGHT, SWP_SHOWWINDOW);
 end;
 
+//==============================================================================
+//
+// I_DisableAltTab
+//
+//==============================================================================
 procedure I_DisableAltTab;
 var
   old: Boolean;
@@ -135,6 +195,11 @@ begin
   s_alttab_disabled := true;
 end;
 
+//==============================================================================
+//
+// I_EnableAltTab
+//
+//==============================================================================
 procedure I_EnableAltTab;
 var
   old: Boolean;
@@ -158,6 +223,11 @@ end;
 var
   allocscreensize: integer;
 
+//==============================================================================
+//
+// I_ShutDownGraphics
+//
+//==============================================================================
 procedure I_ShutDownGraphics;
 begin
   I_ClearInterface(IInterface(g_pDDScreen));
@@ -180,9 +250,12 @@ type
   end;
   Pfinishupdateparms_t = ^finishupdateparms_t;
 
+//==============================================================================
+// I_FinishUpdate8
 //
 // I_FinishUpdate
 //
+//==============================================================================
 procedure I_FinishUpdate8(parms: Pfinishupdateparms_t);
 var
   destl: PLongWord;
@@ -220,6 +293,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// I_FinishUpdate16
+//
+//==============================================================================
 procedure I_FinishUpdate16;
 var
   i: integer;
@@ -251,6 +329,11 @@ var
   old_fullscreen: boolean = false;
   old_fullscreenexclusive: boolean = false;
 
+//==============================================================================
+//
+// I_FinishUpdate
+//
+//==============================================================================
 procedure I_FinishUpdate;
 var
   srcrect: TRect;
@@ -393,13 +476,13 @@ begin
   end;
 end;
 
+//==============================================================================
 //
 // Palette stuff.
 //
-
-//
 // I_SetPalette
 //
+//==============================================================================
 procedure I_SetPalette(const palette: PByteArray);
 var
   dest: PLongWord;
@@ -419,6 +502,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// I_AdjustWindowMode
+//
+//==============================================================================
 function I_AdjustWindowMode: boolean;
 begin
   result := false;
@@ -434,6 +522,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// I_MemoryStallHack
+//
+//==============================================================================
 function I_MemoryStallHack: boolean;
 // JVAL: Memory stall can dramatically reduce performance in inc operation of
 // esi register of value 4096 etc
@@ -455,6 +548,11 @@ begin
   result := stallhack;
 end;
 
+//==============================================================================
+//
+// SortDisplayModes
+//
+//==============================================================================
 procedure SortDisplayModes;
 
   function sortvalue(const idx: integer): double;
@@ -497,7 +595,11 @@ begin
     qsort(0, numdisplaymodes - 1);
 end;
 
-
+//==============================================================================
+//
+// I_DisplayModeIndex
+//
+//==============================================================================
 function I_DisplayModeIndex(const w, h: integer): integer;
 var
   i: integer;
@@ -515,6 +617,11 @@ begin
     end;
 end;
 
+//==============================================================================
+//
+// I_NearestDisplayModeIndex
+//
+//==============================================================================
 function I_NearestDisplayModeIndex(const w, h: integer): integer;
 var
   i: integer;
@@ -541,11 +648,21 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// IsAvailableScreenResolution
+//
+//==============================================================================
 function IsAvailableScreenResolution(const w, h: integer): boolean;
 begin
   result := I_DisplayModeIndex(w, h) >= 0;
 end;
 
+//==============================================================================
+//
+// I_EnumDisplayModes
+//
+//==============================================================================
 procedure I_EnumDisplayModes;
 var
   dm: TDevMode;
@@ -598,6 +715,11 @@ begin
   SortDisplayModes;
 end;
 
+//==============================================================================
+//
+// I_DoFindWindowSize
+//
+//==============================================================================
 procedure I_DoFindWindowSize(const dofull, doexclusive: boolean);
 var
   i: integer;
@@ -655,12 +777,22 @@ begin
   WINDOWHEIGHT := NATIVEHEIGHT;
 end;
 
+//==============================================================================
+//
+// I_FindWindowSize
+//
+//==============================================================================
 procedure I_FindWindowSize(const dofull, doexclusive: boolean);
 begin
   I_DoFindWindowSize(dofull, doexclusive);
   printf('I_FindWindowSize: Set window size at (%d, %d)'#13#10, [WINDOWWIDTH, WINDOWHEIGHT]);
 end;
 
+//==============================================================================
+//
+// I_DetectNativeScreenResolution
+//
+//==============================================================================
 procedure I_DetectNativeScreenResolution;
 begin
   NATIVEWIDTH := GetSystemMetrics(SM_CXSCREEN);
@@ -670,6 +802,11 @@ end;
 var
   isexclusive: boolean = false;
 
+//==============================================================================
+//
+// I_SetCooperativeLevel
+//
+//==============================================================================
 function I_SetCooperativeLevel(const exclusive: boolean): HResult;
 begin
   if exclusive then
@@ -682,9 +819,14 @@ end;
 const
   ERROR_OFFSET = 20;
 
+//==============================================================================
+// I_InitGraphics
+//
 // Called by D_DoomMain,
 // determines the hardware configuration
 // and sets up the video mode
+//
+//==============================================================================
 procedure I_InitGraphics;
 var
   hres: HRESULT;
@@ -780,7 +922,6 @@ begin
       I_ErrorInitGraphics('CreateSurface');
   end;
 
-
   ZeroMemory(@ddsd, SizeOf(ddsd));
   ZeroMemory(@ddsd.ddpfPixelFormat, SizeOf(ddsd.ddpfPixelFormat));
 
@@ -825,6 +966,11 @@ begin
     I_ErrorInitGraphics('CreateSurface');
 end;
 
+//==============================================================================
+//
+// I_RecreateSurfaces
+//
+//==============================================================================
 procedure I_RecreateSurfaces;
 var
   hres: HRESULT;
@@ -897,6 +1043,11 @@ const
 const
   s_cfs_descs: array[boolean] of string = ('window', 'fullscreen');
 
+//==============================================================================
+//
+// I_DoChangeFullScreen
+//
+//==============================================================================
 procedure I_DoChangeFullScreen(const dofull, doexclusive: boolean);
 var
   hres: HRESULT;
@@ -973,6 +1124,11 @@ begin
   I_RecreateSurfaces;
 end;
 
+//==============================================================================
+//
+// I_ChangeFullScreen
+//
+//==============================================================================
 procedure I_ChangeFullScreen(const dofull, doexclusive: boolean);
 begin
   I_IgnoreInput(MAXINT);
@@ -980,6 +1136,11 @@ begin
   I_IgnoreInput(15);
 end;
 
+//==============================================================================
+//
+// I_ReadScreen32
+//
+//==============================================================================
 procedure I_ReadScreen32(dest: pointer);
 var
   i: integer;

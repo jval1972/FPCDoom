@@ -39,22 +39,67 @@ uses
   d_fpc,
   d_think;
 
+//==============================================================================
+//
+// DEH_ParseLumpName
+//
+//==============================================================================
 function DEH_ParseLumpName(const lumpname: string): boolean;
 
+//==============================================================================
+//
+// DEH_ParseLumpNames
+//
+//==============================================================================
 function DEH_ParseLumpNames(const lumpname: string): boolean;
 
+//==============================================================================
+//
+// DEH_ParseLumpNum
+//
+//==============================================================================
 procedure DEH_ParseLumpNum(const lump: integer);
 
+//==============================================================================
+//
+// DEH_ParseFile
+//
+//==============================================================================
 procedure DEH_ParseFile(const filename: string);
 
+//==============================================================================
+//
+// DEH_Parse
+//
+//==============================================================================
 procedure DEH_Parse(const deh_tx: string); overload;
 
+//==============================================================================
+//
+// DEH_Parse
+//
+//==============================================================================
 procedure DEH_Parse(const s: TDStringList); overload;
 
+//==============================================================================
+//
+// DEH_CurrentSettings
+//
+//==============================================================================
 function DEH_CurrentSettings: TDStringList;
 
+//==============================================================================
+//
+// DEH_Init
+//
+//==============================================================================
 procedure DEH_Init;
 
+//==============================================================================
+//
+// DEH_ShutDown
+//
+//==============================================================================
 procedure DEH_ShutDown;
 
 const
@@ -124,6 +169,11 @@ uses
   w_wad,
   w_pak;
 
+//==============================================================================
+//
+// DEH_NextLine
+//
+//==============================================================================
 function DEH_NextLine(const s: TDStringList; var str: string; var counter: integer; const skipblanc: boolean = true): boolean;
 var
   trimmed: string;
@@ -155,6 +205,11 @@ begin
   str := strupper(str);
 end;
 
+//==============================================================================
+//
+// DEH_Parse
+//
+//==============================================================================
 procedure DEH_Parse(const deh_tx: string);
 var
   s: TDStringList;
@@ -168,6 +223,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// DEH_ParseLumpName
+//
+//==============================================================================
 function DEH_ParseLumpName(const lumpname: string): boolean;
 var
   lump: integer;
@@ -182,6 +242,11 @@ begin
     result := false;
 end;
 
+//==============================================================================
+//
+// DEH_ParseLumpNames
+//
+//==============================================================================
 function DEH_ParseLumpNames(const lumpname: string): boolean;
 var
   i: integer;
@@ -200,6 +265,11 @@ begin
   result := cnt > 0;
 end;
 
+//==============================================================================
+//
+// DEH_ParseLumpNum
+//
+//==============================================================================
 procedure DEH_ParseLumpNum(const lump: integer);
 begin
   if lump < 0 then
@@ -208,6 +278,11 @@ begin
   DEH_Parse(W_TextLumpNum(lump));
 end;
 
+//==============================================================================
+//
+// DEH_ParseFile
+//
+//==============================================================================
 procedure DEH_ParseFile(const filename: string);
 var
   fname: string;
@@ -269,6 +344,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// DEH_AddString
+//
+//==============================================================================
 procedure DEH_AddString(deh_strings: Pdeh_strings_t; pstr: PString; const name: string);
 begin
   if deh_strings.numstrings = deh_strings.realnumstrings then
@@ -285,6 +365,11 @@ begin
   inc(deh_strings.numstrings);
 end;
 
+//==============================================================================
+//
+// DEH_StringToCString
+//
+//==============================================================================
 function DEH_StringToCString(const s: string): string;
 var
   i, len: integer;
@@ -308,6 +393,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// DEH_CStringToString
+//
+//==============================================================================
 function DEH_CStringToString(const s: string): string;
 var
   i, len: integer;
@@ -352,6 +442,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// DEH_StringValue
+//
+//==============================================================================
 function DEH_StringValue(const s: string): string;
 var
   i: integer;
@@ -367,6 +462,11 @@ end;
 var
   deh_initialized: boolean = false;
 
+//==============================================================================
+//
+// DEH_Parse
+//
+//==============================================================================
 procedure DEH_Parse(const s: TDStringList);
 var
   i, j: integer;
@@ -687,8 +787,6 @@ begin
 
     end
 
-
-
     ////////////////////////////////////////////////////////////////////////////
     else if (token1 = 'FRAME') or (token1 = 'STATE') then
     begin
@@ -841,9 +939,6 @@ begin
       end;
     end
 
-
-
-
     ////////////////////////////////////////////////////////////////////////////
     else if token1 = 'TEXT' then
     begin
@@ -896,9 +991,6 @@ begin
 
     end
 
-
-
-
     ////////////////////////////////////////////////////////////////////////////
     else if token1 = 'POINTER' then
     begin
@@ -948,9 +1040,6 @@ begin
       else
         I_Warning('DEH_Parse(): Invalid state number "%s" while parsing CODEP FRAME'#13#10, [token2]);
     end
-
-
-
 
     ////////////////////////////////////////////////////////////////////////////
     else if token1 = 'SOUND' then
@@ -1009,9 +1098,6 @@ begin
       end;
     end
 
-
-
-
     ////////////////////////////////////////////////////////////////////////////
     else if token1 = 'AMMO' then
     begin
@@ -1059,9 +1145,6 @@ begin
 
       end;
     end
-
-
-
 
     ////////////////////////////////////////////////////////////////////////////
     else if token1 = 'WEAPON' then
@@ -1117,9 +1200,6 @@ begin
 
     end
 
-
-
-
     ////////////////////////////////////////////////////////////////////////////
     else if token1 = 'SPRITE' then
     begin
@@ -1128,9 +1208,6 @@ begin
     ////////////////////////////////////////////////////////////////////////////
     end
 
-
-
-
     ////////////////////////////////////////////////////////////////////////////
     else if token1 = 'CHEAT' then
     begin
@@ -1138,9 +1215,6 @@ begin
     // Parse cheat /////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
     end
-
-
-
 
     ////////////////////////////////////////////////////////////////////////////
     else if token1 = 'MISC' then
@@ -1194,9 +1268,6 @@ begin
 
     end
 
-
-
-
     ////////////////////////////////////////////////////////////////////////////
     else if (token1 = '[PARS]') or (token1 = 'PARS') then // BEX
     begin
@@ -1245,9 +1316,6 @@ begin
       end;
     end
 
-
-
-
     ////////////////////////////////////////////////////////////////////////////
     else if (token1 = '[STRINGS]') or (token1 = 'STRINGS') then // BEX
     begin
@@ -1282,9 +1350,6 @@ begin
           end;
       end;
     end
-
-
-
 
     ////////////////////////////////////////////////////////////////////////////
     else if (token1 = '[CODEPTR]') or (token1 = 'CODEPTR') then // BEX
@@ -1334,9 +1399,6 @@ begin
       end;
     end
 
-
-
-
     ////////////////////////////////////////////////////////////////////////////
     else if (token1 = '[MUSIC]') or (token1 = 'MUSIC') then // BEX
     begin
@@ -1384,9 +1446,6 @@ begin
       end;
     end
 
-
-
-
     ////////////////////////////////////////////////////////////////////////////
     else if (token1 = '[SOUND]') or (token1 = '[SOUNDS]') then // BEX
     begin
@@ -1429,9 +1488,6 @@ begin
       end;
     end
 
-
-
-
     ////////////////////////////////////////////////////////////////////////////
     else if (token1 = 'SUBMITNEWSTATES') or (token1 = 'SUBMITNEWFRAMES') then
     begin
@@ -1453,6 +1509,11 @@ begin
   memfree(pointer(code_ptrs), numstates * SizeOf(actionf_t));
 end;
 
+//==============================================================================
+//
+// DEH_CurrentSettings
+//
+//==============================================================================
 function DEH_CurrentSettings: TDStringList;
 var
   i, j: integer;
@@ -1578,7 +1639,6 @@ begin
     result.Add('');
   end;
 
-
   result.Add('');
   result.Add('# States');
   result.Add('');
@@ -1629,7 +1689,6 @@ begin
     result.Add('');
   end;
 
-
   //////////////////////////////////////////////////////////////////////////////
   // Add Weapons
   //////////////////////////////////////////////////////////////////////////////
@@ -1649,7 +1708,6 @@ begin
 
     result.Add('');
   end;
-
 
   //////////////////////////////////////////////////////////////////////////////
   // Add Misc
@@ -1671,7 +1729,6 @@ begin
   result.Add('%s = %d', [capitalizedstring(misc_tokens[8]), p_bluearmorclass]);
 
   result.Add('');
-
 
   //////////////////////////////////////////////////////////////////////////////
   // Add pars
@@ -1728,12 +1785,16 @@ begin
     result.Add('%d = %s', [i, S_sfx[i].name]);
   result.Add('');
 
-
   result.Add(StringOfChar('#', 80));
   result.Add('# End of file');
   result.Add(StringOfChar('#', 80));
 end;
 
+//==============================================================================
+//
+// DEH_PrintCurrentSettings
+//
+//==============================================================================
 procedure DEH_PrintCurrentSettings;
 var
   s: TDSTringList;
@@ -1748,6 +1809,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// DEH_SaveCurrentSettings
+//
+//==============================================================================
 procedure DEH_SaveCurrentSettings(const fname: string);
 var
   s: TDSTringList;
@@ -1775,6 +1841,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// DEH_PrintActions
+//
+//==============================================================================
 procedure DEH_PrintActions;
 var
   i: integer;
@@ -1783,12 +1854,14 @@ begin
     printf('A_%s'#13#10, [deh_actions[i].name]);
 end;
 
+//==============================================================================
 //
 // DEH_Init
 //
 // JVAL
 // Initializing DEH tokens
 //
+//==============================================================================
 procedure DEH_Init;
 var
   i, j, k: integer;
@@ -1843,7 +1916,6 @@ begin
   mobj_tokens.Add('ACTIVE SOUND');       // .activesound              // 41 - Alias for 20
   mobj_tokens.Add('RADIUS');             // .radius                   // 42 - Alias for 16
 
-
   mobj_flags := TDTextList.Create;
   mobj_flags.Add('MF_SPECIAL');
   mobj_flags.Add('MF_SOLID');
@@ -1878,7 +1950,6 @@ begin
   mobj_flags.Add('MF_UNUSED4');
   mobj_flags.Add('MF_TRANSLUCENT');
 
-
   mobj_flags_ex := TDTextList.Create;
   mobj_flags_ex.Add('MF_EX_TRANSPARENT');
   mobj_flags_ex.Add('MF_EX_WHITELIGHT');
@@ -1912,12 +1983,10 @@ begin
   mobj_flags_ex.Add('MF_EX_THRUGHOST');
   mobj_flags_ex.Add('MF_EX_LOOKALLAROUND');
 
-
   mobj_flags2_ex := TDTextList.Create;
   mobj_flags2_ex.Add('MF2_EX_MEDIUMGRAVITY');
   mobj_flags2_ex.Add('MF2_EX_NOHITFLOOR');
   mobj_flags2_ex.Add('MF2_EX_LINEDONE');
-
 
   state_tokens := TDTextList.Create;
   state_tokens.Add('SPRITE NUMBER');    // .sprite
@@ -1928,7 +1997,6 @@ begin
   state_tokens.Add('UNKNOWN 1');        // .misc1
   state_tokens.Add('UNKNOWN 2');        // .misc2
   state_tokens.Add('FLAGS_EX');         // .flags_ex
-
 
   deh_actions[0].action.acp1 := nil;
   deh_actions[0].name := 'NULL';
@@ -2351,7 +2419,6 @@ begin
 
   DEH_AddString(@deh_strings, @STSTR_MASSACRE, 'STSTR_MASSACRE');
 
-
   DEH_AddString(@deh_strings, @E1TEXT, 'E1TEXT');
   DEH_AddString(@deh_strings, @E2TEXT, 'E2TEXT');
   DEH_AddString(@deh_strings, @E3TEXT, 'E3TEXT');
@@ -2465,12 +2532,10 @@ begin
   DEH_AddString(@deh_strings, @GGSAVED, 'GGSAVED');
   DEH_AddString(@deh_strings, @SAVEGAMENAME, 'SAVEGAMENAME');
 
-
   ammo_tokens := TDTextList.Create;
 
   ammo_tokens.Add('MAX AMMO');
   ammo_tokens.Add('PER AMMO');
-
 
   weapon_tokens := TDTextList.Create;
 
@@ -2481,13 +2546,11 @@ begin
   weapon_tokens.Add('SHOOTING FRAME');// .atkstate
   weapon_tokens.Add('FIRING FRAME');  // .flashstate
 
-
   sound_tokens := TDTextList.Create;
 
   sound_tokens.Add('ZERO/ONE');
   sound_tokens.Add('VALUE');
   sound_tokens.Add('NAME');
-
 
   renderstyle_tokens := TDTextList.Create;
 
@@ -2495,7 +2558,6 @@ begin
   renderstyle_tokens.Add('TRANSLUCENT');
   renderstyle_tokens.Add('ADD');
   renderstyle_tokens.Add('SUBTRACT');
-
 
   misc_tokens := TDTextList.Create;
 
@@ -2509,7 +2571,6 @@ begin
   misc_tokens.Add('GREEN ARMOR CLASS');   // p_greenarmorclass
   misc_tokens.Add('BLUE ARMOR CLASS');    // p_bluearmorclass
 
-
   C_AddCmd('DEH_ParseFile, BEX_ParseFile', @DEH_ParseFile);
   C_AddCmd('DEH_ParseLump, BEX_ParseLump', @DEH_ParseLumpName);
   C_AddCmd('DEH_PrintCurrentSettings, DEH_PrintSettings, BEX_PrintCurrentSettings, BEX_PrintSettings', @DEH_PrintCurrentSettings);
@@ -2517,6 +2578,11 @@ begin
   C_AddCmd('DEH_PrintActions, DEH_ShowActions, BEX_PrintActions, BEX_ShowActions', @DEH_PrintActions);
 end;
 
+//==============================================================================
+//
+// DEH_ShutDown
+//
+//==============================================================================
 procedure DEH_ShutDown;
 begin
   if not deh_initialized then
@@ -2535,7 +2601,6 @@ begin
 
   {$IFNDEF FPC}deh_strings._array := {$ENDIF}realloc(deh_strings._array, deh_strings.realnumstrings * SizeOf(deh_string_t), 0);
 end;
-
 
 end.
 

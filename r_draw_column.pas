@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -62,37 +62,126 @@ type
   end;
   Pcolumnparams_t = ^columnparams_t;
 
+//==============================================================================
+// R_DrawColumnMedium
+//
 // Column drawers
+//
+//==============================================================================
 procedure R_DrawColumnMedium(const parms: Pcolumnparams_t);
+
+//==============================================================================
+//
+// R_DrawColumnHi
+//
+//==============================================================================
 procedure R_DrawColumnHi(const parms: Pcolumnparams_t);
 
+//==============================================================================
+// R_DrawMaskedColumnNormal
+//
 // Masked column drawing functions
+//
+//==============================================================================
 procedure R_DrawMaskedColumnNormal(const parms: Pcolumnparams_t);
+
+//==============================================================================
+//
+// R_DrawMaskedColumnHi32
+//
+//==============================================================================
 procedure R_DrawMaskedColumnHi32(const parms: Pcolumnparams_t);
 
+//==============================================================================
+// R_DrawColumnAlphaMedium
+//
 // Alpha column drawers (transparency effects)
+//
+//==============================================================================
 procedure R_DrawColumnAlphaMedium(const parms: Pcolumnparams_t);
+
+//==============================================================================
+//
+// R_DrawColumnAlphaHi
+//
+//==============================================================================
 procedure R_DrawColumnAlphaHi(const parms: Pcolumnparams_t);
 
+//==============================================================================
+// R_DrawColumnAverageMedium
+//
 // Average column drawers (transparency effects)
+//
+//==============================================================================
 procedure R_DrawColumnAverageMedium(const parms: Pcolumnparams_t);
+
+//==============================================================================
+//
+// R_DrawColumnAverageHi
+//
+//==============================================================================
 procedure R_DrawColumnAverageHi(const parms: Pcolumnparams_t);
 
+//==============================================================================
+// R_InitFuzzTable
+//
 // The Spectre/Invisibility effect.
+//
+//==============================================================================
 procedure R_InitFuzzTable;
+
+//==============================================================================
+//
+// R_DrawFuzzColumn
+//
+//==============================================================================
 procedure R_DrawFuzzColumn(const parms: Pcolumnparams_t);
+
+//==============================================================================
+//
+// R_DrawFuzzColumn32
+//
+//==============================================================================
 procedure R_DrawFuzzColumn32(const parms: Pcolumnparams_t);
+
+//==============================================================================
+//
+// R_DrawFuzzColumnHi
+//
+//==============================================================================
 procedure R_DrawFuzzColumnHi(const parms: Pcolumnparams_t);
 
+//==============================================================================
+// R_DrawSkyColumn
+//
 // Sky column drawing functions
 // Sky column drawers
+//
+//==============================================================================
 procedure R_DrawSkyColumn(const parms: Pcolumnparams_t);
+
+//==============================================================================
+//
+// R_DrawSkyColumnHi
+//
+//==============================================================================
 procedure R_DrawSkyColumnHi(const parms: Pcolumnparams_t);
 
+//==============================================================================
+// R_DrawTranslatedColumn
+//
 // Draw with color translation tables,
 //  for player sprite rendering,
 //  Green/Red/Blue/Indigo shirts.
+//
+//==============================================================================
 procedure R_DrawTranslatedColumn(const parms: Pcolumnparams_t);
+
+//==============================================================================
+//
+// R_DrawTranslatedColumnHi
+//
+//==============================================================================
 procedure R_DrawTranslatedColumnHi(const parms: Pcolumnparams_t);
 
 var
@@ -110,6 +199,8 @@ uses
   r_sky,
   v_video;
 
+//==============================================================================
+// R_DrawColumnMedium
 //
 // A column is a vertical slice/span from a wall texture that,
 //  given the DOOM style restrictions on the view orientation,
@@ -117,6 +208,7 @@ uses
 // Thus a special case loop for very fast rendering can
 //  be used. It has also been used with Wolfenstein 3D.
 //
+//==============================================================================
 procedure R_DrawColumnMedium(const parms: Pcolumnparams_t);
 var
   count: integer;
@@ -181,6 +273,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_DrawColumnHi
+//
+//==============================================================================
 procedure R_DrawColumnHi(const parms: Pcolumnparams_t);
 var
   count: integer;
@@ -240,6 +337,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_DrawMaskedColumnNormal
+//
+//==============================================================================
 procedure R_DrawMaskedColumnNormal(const parms: Pcolumnparams_t);
 var
   count: integer;
@@ -289,6 +391,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_DrawMaskedColumnHi32
+//
+//==============================================================================
 procedure R_DrawMaskedColumnHi32(const parms: Pcolumnparams_t);
 var
   count: integer;
@@ -357,6 +464,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_DrawColumnAlphaMedium
+//
+//==============================================================================
 procedure R_DrawColumnAlphaMedium(const parms: Pcolumnparams_t);
 var
   count: integer;
@@ -387,6 +499,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_DrawColumnAlphaHi
+//
+//==============================================================================
 procedure R_DrawColumnAlphaHi(const parms: Pcolumnparams_t);
 var
   count: integer;
@@ -417,6 +534,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_DrawColumnAverageMedium
+//
+//==============================================================================
 procedure R_DrawColumnAverageMedium(const parms: Pcolumnparams_t);
 var
   count: integer;
@@ -447,6 +569,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_DrawColumnAverageHi
+//
+//==============================================================================
 procedure R_DrawColumnAverageHi(const parms: Pcolumnparams_t);
 var
   count: integer;
@@ -484,7 +611,6 @@ const
   FUZZTABLE = 50;
   FUZZOFF = 1;
 
-
   fuzzoffset: array[0..FUZZTABLE - 1] of integer = (
     FUZZOFF,-FUZZOFF, FUZZOFF,-FUZZOFF, FUZZOFF, FUZZOFF,-FUZZOFF,
     FUZZOFF, FUZZOFF,-FUZZOFF, FUZZOFF, FUZZOFF, FUZZOFF,-FUZZOFF,
@@ -498,6 +624,11 @@ const
 var
   sfuzzoffset: array[0..FUZZTABLE - 1] of integer;
 
+//==============================================================================
+//
+// R_InitFuzzTable
+//
+//==============================================================================
 procedure R_InitFuzzTable;
 var
   i: integer;
@@ -506,6 +637,8 @@ begin
     sfuzzoffset[i] := fuzzoffset[i] * SCREENWIDTH;
 end;
 
+//==============================================================================
+// R_DrawFuzzColumn
 //
 // Framebuffer postprocessing.
 // Creates a fuzzy image by copying pixels
@@ -514,6 +647,7 @@ end;
 //  could create the SHADOW effect,
 //  i.e. spectres and invisible players.
 //
+//==============================================================================
 procedure R_DrawFuzzColumn(const parms: Pcolumnparams_t);
 var
   count: integer;
@@ -561,6 +695,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_DrawFuzzColumn32
+//
+//==============================================================================
 procedure R_DrawFuzzColumn32(const parms: Pcolumnparams_t);
 var
   count: integer;
@@ -596,6 +735,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_DrawFuzzColumnHi
+//
+//==============================================================================
 procedure R_DrawFuzzColumnHi(const parms: Pcolumnparams_t);
 var
   count: integer;
@@ -619,9 +763,12 @@ begin
   end;
 end;
 
+//==============================================================================
+// R_DrawSkyColumn
 //
 // Sky Column
 //
+//==============================================================================
 procedure R_DrawSkyColumn(const parms: Pcolumnparams_t);
 var
   count: integer;
@@ -685,6 +832,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_DrawSkyColumnHi
+//
+//==============================================================================
 procedure R_DrawSkyColumnHi(const parms: Pcolumnparams_t);
 var
   count: integer;
@@ -753,6 +905,7 @@ begin
   end;
 end;
 
+//==============================================================================
 //
 // R_DrawTranslatedColumn
 // Used to draw player sprites
@@ -762,7 +915,7 @@ end;
 //  of the BaronOfHell, the HellKnight, uses
 //  identical sprites, kinda brightened up.
 //
-
+//==============================================================================
 procedure R_DrawTranslatedColumn(const parms: Pcolumnparams_t);
 var
   count: integer;
@@ -827,6 +980,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_DrawTranslatedColumnHi
+//
+//==============================================================================
 procedure R_DrawTranslatedColumnHi(const parms: Pcolumnparams_t);
 var
   count: integer;

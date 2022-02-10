@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -33,30 +33,116 @@ interface
 uses
   r_draw_span;
 
+//==============================================================================
+//
+// R_Reset32Cache
+//
+//==============================================================================
 procedure R_Reset32Cache;
 
+//==============================================================================
+//
+// R_Clear32Cache
+//
+//==============================================================================
 procedure R_Clear32Cache;
 
+//==============================================================================
+//
+// R_Init32Cache
+//
+//==============================================================================
 procedure R_Init32Cache;
 
+//==============================================================================
+//
+// R_ShutDown32Cache
+//
+//==============================================================================
 procedure R_ShutDown32Cache;
 
+//==============================================================================
+//
+// R_ReadDC32Cache
+//
+//==============================================================================
 procedure R_ReadDC32Cache(const rtex, rcol: integer);
 
+//==============================================================================
+//
+// R_Precache32bittexture
+//
+//==============================================================================
 procedure R_Precache32bittexture(const rtex: integer);
 
+//==============================================================================
+//
+// R_ClearDC32Cache
+//
+//==============================================================================
 procedure R_ClearDC32Cache;
+
+//==============================================================================
+//
+// R_ResetDC32Cache
+//
+//==============================================================================
 procedure R_ResetDC32Cache;
+
+//==============================================================================
+//
+// R_InitDC32Cache
+//
+//==============================================================================
 procedure R_InitDC32Cache;
+
+//==============================================================================
+//
+// R_ShutDownDC32Cache
+//
+//==============================================================================
 procedure R_ShutDownDC32Cache;
 
+//==============================================================================
+//
+// R_ReadDS32Cache
+//
+//==============================================================================
 procedure R_ReadDS32Cache(const flat: integer);
 
+//==============================================================================
+//
+// R_FlatScaleFromSize
+//
+//==============================================================================
 function R_FlatScaleFromSize(const size: integer): dsscale_t;
 
+//==============================================================================
+//
+// R_ClearDS32Cache
+//
+//==============================================================================
 procedure R_ClearDS32Cache;
+
+//==============================================================================
+//
+// R_ResetDS32Cache
+//
+//==============================================================================
 procedure R_ResetDS32Cache;
+
+//==============================================================================
+//
+// R_InitDS32Cache
+//
+//==============================================================================
 procedure R_InitDS32Cache;
+
+//==============================================================================
+//
+// R_ShutDownDS32Cache
+//
+//==============================================================================
 procedure R_ShutDownDS32Cache;
 
 implementation
@@ -99,30 +185,55 @@ type
   dc32cacheitem_tArray = array[0..COL32CACHESIZE - 1] of dc32cacheitem_t;
   dc32cacheitem_tPArray = array[0..COL32CACHESIZE - 1] of Pdc32cacheitem_t;
 
+//==============================================================================
+//
+// R_Reset32Cache
+//
+//==============================================================================
 procedure R_Reset32Cache;
 begin
   R_ResetDC32Cache;
   R_ResetDS32Cache;
 end;
 
+//==============================================================================
+//
+// R_Clear32Cache
+//
+//==============================================================================
 procedure R_Clear32Cache;
 begin
   R_ClearDC32Cache;
   R_ClearDS32Cache;
 end;
 
+//==============================================================================
+//
+// R_ShutDown32Cache
+//
+//==============================================================================
 procedure R_ShutDown32Cache;
 begin
   R_ShutDownDC32Cache;
   R_ShutDownDS32Cache;
 end;
 
+//==============================================================================
+//
+// R_Init32Cache
+//
+//==============================================================================
 procedure R_Init32Cache;
 begin
   R_InitDC32Cache;
   R_InitDS32Cache;
 end;
 
+//==============================================================================
+//
+// R_GetHash
+//
+//==============================================================================
 function R_GetHash(const tex, col, dmod: integer): integer;
 // JVAL
 // Get a hash value depending on tex, col and dc_mod.
@@ -136,6 +247,11 @@ end;
 var
   dc32cache: dc32cacheitem_tPArray;
 
+//==============================================================================
+//
+// R_Get_dc32
+//
+//==============================================================================
 function R_Get_dc32(p: Pdc32cacheitem_t; columnsize: integer): Pdc32_t;
 begin
   if p.dc32 = nil then
@@ -151,6 +267,11 @@ begin
   result := p.dc32;
 end;
 
+//==============================================================================
+//
+// R_FindDC32Rover
+//
+//==============================================================================
 function R_FindDC32Rover(const hash, rtex, rcol, rtexturemod: integer): Pdc32cacheitem_t;
 begin
   result := dc32cache[hash];
@@ -162,6 +283,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_NewDC32Rover
+//
+//==============================================================================
 function R_NewDC32Rover(const hash: integer): Pdc32cacheitem_t;
 begin
   result := mallocz(SizeOf(dc32cacheitem_t));
@@ -169,12 +295,14 @@ begin
   dc32cache[hash] := result;
 end;
 
+//==============================================================================
 //
 // R_ReadDC32ExternalCache
 //
 // JVAL
 //  Create dc_source (32 bit) from an external texture
 //
+//==============================================================================
 function R_ReadDC32ExternalCache(const rtex, rcol: integer): boolean;
 var
   plw: PLongWord;
@@ -432,6 +560,11 @@ end;
 type
   resize_t = function (const x1, x2, x3: LongWord; const offs: integer): LongWord;
 
+//==============================================================================
+//
+// hqresize
+//
+//==============================================================================
 function hqresize(const x1, x2, x3: LongWord; const offs: integer): LongWord;
   function _color_sqdiff(const c1, c2: LongWord): LongWord;
   var
@@ -464,11 +597,21 @@ begin
   result := R_ColorArrayAverage([t1, x2, x2, t3]);
 end;
 
+//==============================================================================
+//
+// noresize
+//
+//==============================================================================
 function noresize(const x1, x2, x3: LongWord; const offs: integer): LongWord;
 begin
   result := x2;
 end;
 
+//==============================================================================
+//
+// R_Grow_dc32
+//
+//==============================================================================
 function R_Grow_dc32(p: Pdc32cacheitem_t; oldcolumnsize: integer; factor: integer; lastid: integer; proc: resize_t): Pdc32_t;
 var
   l: PLongWordArray;
@@ -497,12 +640,14 @@ begin
   result := p.dc32;
 end;
 
+//==============================================================================
 //
 // R_ReadDC32InternalCache
 //
 // JVAL
 //  Create dc_source (32 bit) from internal (IWAD) texture
 //
+//==============================================================================
 procedure R_ReadDC32InternalCache(const rtex, rcol: integer);
 var
   plw: PLongWord;
@@ -575,17 +720,32 @@ begin
   rcolumn.dc_source := rover.dc32;
 end;
 
+//==============================================================================
+//
+// R_ReadDC32Cache
+//
+//==============================================================================
 procedure R_ReadDC32Cache(const rtex, rcol: integer);
 begin
   if not R_ReadDC32ExternalCache(rtex, rcol) then
     R_ReadDC32InternalCache(rtex, rcol);
 end;
 
+//==============================================================================
+//
+// R_Precache32bittexture
+//
+//==============================================================================
 procedure R_Precache32bittexture(const rtex: integer);
 begin
   R_ReadDC32Cache(rtex, 0);
 end;
 
+//==============================================================================
+//
+// R_ResetDC32Cache
+//
+//==============================================================================
 procedure R_ResetDC32Cache;
 var
   i: integer;
@@ -602,6 +762,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_ClearDC32Cache
+//
+//==============================================================================
 procedure R_ClearDC32Cache;
 var
   i: integer;
@@ -629,6 +794,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_InitDC32Cache
+//
+//==============================================================================
 procedure R_InitDC32Cache;
 var
   i: integer;
@@ -637,6 +807,11 @@ begin
     dc32cache[i] := nil;
 end;
 
+//==============================================================================
+//
+// R_ShutDownDC32Cache
+//
+//==============================================================================
 procedure R_ShutDownDC32Cache;
 begin
   R_ClearDC32Cache;
@@ -646,7 +821,6 @@ const
 // Flat cache
   FLAT32CACHESIZE = 256;
   CACHEFLATMASK = FLAT32CACHESIZE - 1;
-
 
 type
   ds32_t = array[0..512 * 512 - 1] of LongWord;
@@ -662,6 +836,11 @@ type
   ds32cacheitem_tArray = array[0..FLAT32CACHESIZE - 1] of ds32cacheitem_t;
   ds32cacheitem_tPArray = array[0..FLAT32CACHESIZE - 1] of Pds32cacheitem_t;
 
+//==============================================================================
+//
+// R_Get_ds32
+//
+//==============================================================================
 function R_Get_ds32(p: Pds32cacheitem_t): Pds32_t;
 begin
   result := p.ds32[Ord(p.scale)];
@@ -679,6 +858,11 @@ type
   span128x128_t = packed array[0..127, 0..127] of LongWord;
   Pspan128x128_t = ^span128x128_t;
 
+//==============================================================================
+//
+// R_GrowSpan64to128
+//
+//==============================================================================
 procedure R_GrowSpan64to128(const p: Pds32cacheitem_t);
 var
   i, j: integer;
@@ -716,6 +900,11 @@ end;
 var
   ds32cache: ds32cacheitem_tPArray;
 
+//==============================================================================
+//
+// R_FindDS32Rover
+//
+//==============================================================================
 function R_FindDS32Rover(const hash, lump: integer): Pds32cacheitem_t;
 begin
   result := ds32cache[hash];
@@ -727,6 +916,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_NewDS32Rover
+//
+//==============================================================================
 function R_NewDS32Rover(const hash: integer): Pds32cacheitem_t;
 begin
   result := mallocz(SizeOf(ds32cacheitem_t));
@@ -735,7 +929,11 @@ begin
   ds32cache[hash] := result;
 end;
 
-
+//==============================================================================
+//
+// R_ReadDS32Cache
+//
+//==============================================================================
 procedure R_ReadDS32Cache(const flat: integer);
 var
   cachemiss: boolean;
@@ -949,6 +1147,11 @@ begin
   rspan.ds_scale := rover.scale;
 end;
 
+//==============================================================================
+//
+// R_ResetDS32Cache
+//
+//==============================================================================
 procedure R_ResetDS32Cache;
 var
   i: integer;
@@ -965,6 +1168,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_ClearDS32Cache
+//
+//==============================================================================
 procedure R_ClearDS32Cache;
 var
   i, j: integer;
@@ -993,6 +1201,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_FlatScaleFromSize
+//
+//==============================================================================
 function R_FlatScaleFromSize(const size: integer): dsscale_t;
 var
   i: integer;
@@ -1009,6 +1222,11 @@ begin
     end;
 end;
 
+//==============================================================================
+//
+// R_InitDS32Cache
+//
+//==============================================================================
 procedure R_InitDS32Cache;
 var
   i: integer;
@@ -1017,6 +1235,11 @@ begin
     ds32cache[i] := nil;
 end;
 
+//==============================================================================
+//
+// R_ShutDownDS32Cache
+//
+//==============================================================================
 procedure R_ShutDownDS32Cache;
 begin
   R_ClearDS32Cache;

@@ -40,17 +40,34 @@ uses
   doomstat,
   sounds;
 
+//==============================================================================
+// T_MovePlane
 //
 // FLOORS
 //
-
+//==============================================================================
 function T_MovePlane(sector: Psector_t; speed: fixed_t; dest: fixed_t;
   crush: boolean; floorOrCeiling: integer; direction: integer): result_e;
 
+//==============================================================================
+//
+// T_MoveFloor
+//
+//==============================================================================
 procedure T_MoveFloor(floor: Pfloormove_t);
 
+//==============================================================================
+//
+// EV_DoFloor
+//
+//==============================================================================
 function EV_DoFloor(line: Pline_t; floortype: floor_e): integer;
 
+//==============================================================================
+//
+// EV_BuildStairs
+//
+//==============================================================================
 function EV_BuildStairs(line: Pline_t; _type: stair_e): integer;
 
 implementation
@@ -64,9 +81,12 @@ uses
   p_setup,
   r_data;
 
+//==============================================================================
+// T_MovePlane
 //
 // Move a plane (floor or ceiling) and check for crushing
 //
+//==============================================================================
 function T_MovePlane(sector: Psector_t; speed: fixed_t; dest: fixed_t;
   crush: boolean; floorOrCeiling: integer; direction: integer): result_e;
 var
@@ -202,9 +222,12 @@ begin
   result := ok;
 end;
 
+//==============================================================================
+// T_MoveFloor
 //
 // MOVE A FLOOR TO IT'S DESTINATION (UP OR DOWN)
 //
+//==============================================================================
 procedure T_MoveFloor(floor: Pfloormove_t);
 var
   res: result_e;
@@ -242,9 +265,12 @@ begin
   end;
 end;
 
+//==============================================================================
+// EV_DoFloor
 //
 // HANDLE FLOOR TYPES
 //
+//==============================================================================
 function EV_DoFloor(line: Pline_t; floortype: floor_e): integer;
 var
   secnum: integer;
@@ -414,9 +440,12 @@ begin
   until secnum < 0;
 end;
 
+//==============================================================================
+// EV_BuildStairs
 //
 // BUILD A STAIRCASE!
 //
+//==============================================================================
 function EV_BuildStairs(line: Pline_t; _type: stair_e): integer;
 var
   secnum: integer;

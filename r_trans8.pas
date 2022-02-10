@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -38,8 +38,18 @@ uses
   d_fpc,
   m_fixed;
 
+//==============================================================================
+//
+// R_InitTransparency8Tables
+//
+//==============================================================================
 procedure R_InitTransparency8Tables;
 
+//==============================================================================
+//
+// R_FreeTransparency8Tables
+//
+//==============================================================================
 procedure R_FreeTransparency8Tables;
 
 type
@@ -59,14 +69,39 @@ var
   grayscale8tables: array[1..4] of array[0..$FF] of byte;
   subsampling8tables: array[1..4] of array[0..$FF] of byte;
 
+//==============================================================================
+//
+// R_GetTransparency8table
+//
+//==============================================================================
 function R_GetTransparency8table(const factor: fixed_t = FRACUNIT div 2): Ptrans8table_t;
 
+//==============================================================================
+//
+// R_GetAdditive8table
+//
+//==============================================================================
 function R_GetAdditive8table(const factor: fixed_t = FRACUNIT div 2): Ptrans8table_t;
 
+//==============================================================================
+//
+// R_GetSubtractive8table
+//
+//==============================================================================
 function R_GetSubtractive8table(const factor: fixed_t = FRACUNIT div 2): Ptrans8table_t;
 
+//==============================================================================
+//
+// R_FastApproxColorIndex
+//
+//==============================================================================
 function R_FastApproxColorIndex(const c: LongWord): byte; overload;
 
+//==============================================================================
+//
+// R_FastApproxColorIndex
+//
+//==============================================================================
 function R_FastApproxColorIndex(const r, g, b: byte): byte; overload;
 
 implementation
@@ -85,6 +120,11 @@ const
 var
   approxcolorindexarray: array[0..FASTTABLESIZE - 1] of byte;
 
+//==============================================================================
+//
+// R_InitTransparency8Tables
+//
+//==============================================================================
 procedure R_InitTransparency8Tables;
 var
   dest: PLongWord;
@@ -268,10 +308,14 @@ begin
     subsampling8tables[4, j] := V_FindAproxColorIndex(@palL, r1 shl 16 + g1 shl 8 + b1);
   end;
 
-
   trans8tablescalced := true;
 end;
 
+//==============================================================================
+//
+// R_FastApproxColorIndex
+//
+//==============================================================================
 function R_FastApproxColorIndex(const c: LongWord): byte;
 var
   r, g, b: LongWord;
@@ -282,6 +326,11 @@ begin
   result := approxcolorindexarray[r shl (16 - FASTTABLESHIFT - FASTTABLESHIFT) + g shl (8 - FASTTABLESHIFT) + b];
 end;
 
+//==============================================================================
+//
+// R_FastApproxColorIndex
+//
+//==============================================================================
 function R_FastApproxColorIndex(const r, g, b: byte): byte; overload;
 var
   r1, g1, b1: LongWord;
@@ -292,6 +341,11 @@ begin
   result := approxcolorindexarray[r1 shl (16 - FASTTABLESHIFT - FASTTABLESHIFT) + g1 shl (8 - FASTTABLESHIFT) + b1];
 end;
 
+//==============================================================================
+//
+// R_FreeTransparency8Tables
+//
+//==============================================================================
 procedure R_FreeTransparency8Tables;
 var
   i: integer;
@@ -315,6 +369,11 @@ begin
   trans8tablescalced := false;
 end;
 
+//==============================================================================
+//
+// R_GetTransparency8table
+//
+//==============================================================================
 function R_GetTransparency8table(const factor: fixed_t = FRACUNIT div 2): Ptrans8table_t;
 var
   idx: integer;
@@ -327,6 +386,11 @@ begin
   result := trans8tables[idx];
 end;
 
+//==============================================================================
+//
+// R_GetAdditive8table
+//
+//==============================================================================
 function R_GetAdditive8table(const factor: fixed_t = FRACUNIT div 2): Ptrans8table_t;
 var
   idx: integer;
@@ -340,6 +404,11 @@ begin
     result := additive8tables[idx];
 end;
 
+//==============================================================================
+//
+// R_GetSubtractive8table
+//
+//==============================================================================
 function R_GetSubtractive8table(const factor: fixed_t = FRACUNIT div 2): Ptrans8table_t;
 var
   idx: integer;

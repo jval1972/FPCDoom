@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -46,18 +46,74 @@ const
 var
   maxvissprite: integer;
 
+//==============================================================================
+//
+// R_DrawMaskedColumn
+//
+//==============================================================================
 procedure R_DrawMaskedColumn(const col: Pcolumn_t; flags: LongWord);
+
+//==============================================================================
+//
+// R_DrawMaskedColumn32
+//
+//==============================================================================
 procedure R_DrawMaskedColumn32(const mc2h: integer; flags: LongWord); // Use dc_source (32 bit)
 
-
+//==============================================================================
+//
+// R_SortVisSprites
+//
+//==============================================================================
 procedure R_SortVisSprites;
 
+//==============================================================================
+//
+// R_AddSprites
+//
+//==============================================================================
 procedure R_AddSprites(sec: Psector_t);
+
+//==============================================================================
+//
+// R_InitNegoArray
+//
+//==============================================================================
 procedure R_InitNegoArray;
+
+//==============================================================================
+//
+// R_InitSprites
+//
+//==============================================================================
 procedure R_InitSprites(namelist: PIntegerArray);
+
+//==============================================================================
+//
+// R_ClearSprites
+//
+//==============================================================================
 procedure R_ClearSprites;
+
+//==============================================================================
+//
+// R_DrawMasked
+//
+//==============================================================================
 procedure R_DrawMasked;
+
+//==============================================================================
+//
+// R_MarkLights
+//
+//==============================================================================
 procedure R_MarkLights;
+
+//==============================================================================
+//
+// R_DrawPlayer
+//
+//==============================================================================
 procedure R_DrawPlayer;
 
 var
@@ -133,10 +189,12 @@ var
   maxframe: integer;
   spritename: string;
 
+//==============================================================================
 //
 // R_InstallSpriteLump
 // Local function for R_InitSprites.
 //
+//==============================================================================
 procedure R_InstallSpriteLump(lump: integer;
   frame: LongWord; rotation: LongWord; flipped: boolean);
 var
@@ -185,6 +243,7 @@ begin
   sprtemp[frame].flip[rotation] := flipped;
 end;
 
+//==============================================================================
 //
 // R_InitSpriteDefs
 // Pass a null terminated list of sprite names
@@ -200,6 +259,7 @@ end;
 //  letter/number appended.
 // The rotation character can be 0 to signify no rotations.
 //
+//==============================================================================
 procedure R_InitSpriteDefs(namelist: PIntegerArray);
 
   procedure sprtempreset;
@@ -331,6 +391,11 @@ var
   vissprites: array[0..MAXVISSPRITES - 1] of Pvissprite_t;
   vissprite_p: integer;
 
+//==============================================================================
+//
+// R_InitNegoArray
+//
+//==============================================================================
 procedure R_InitNegoArray;
 var
   i: integer;
@@ -339,20 +404,24 @@ begin
     negonearray[i] := -1;
 end;
 
+//==============================================================================
 //
 // R_InitSprites
 // Called at program start.
 //
+//==============================================================================
 procedure R_InitSprites(namelist: PIntegerArray);
 begin
   R_InitNegoArray;
   R_InitSpriteDefs(namelist);
 end;
 
+//==============================================================================
 //
 // R_ClearSprites
 // Called at frame start.
 //
+//==============================================================================
 procedure R_ClearSprites;
 begin
   vissprite_p := 0;
@@ -366,6 +435,11 @@ end;
 var
   overflowsprite: vissprite_t;
 
+//==============================================================================
+//
+// R_NewVisSprite
+//
+//==============================================================================
 function R_NewVisSprite: Pvissprite_t;
 begin
   if vissprite_p = MAXVISSPRITES then
@@ -382,11 +456,13 @@ begin
   end;
 end;
 
+//==============================================================================
 //
 // R_MaskedAdjustY
 // Adjust yl if we have a negative frac.
 // Adapted from DelphiDoom 2.0.5
 //
+//==============================================================================
 procedure R_MaskedAdjustY;
 var
   testfrac: fixed_t;
@@ -405,12 +481,14 @@ begin
   end;
 end;
 
+//==============================================================================
 //
 // R_DrawMaskedColumn
 // Used for sprites and masked mid textures.
 // Masked means: partly transparent, i.e. stored
 //  in posts/runs of opaque pixels.
 //
+//==============================================================================
 procedure R_DrawMaskedColumn(const col: Pcolumn_t; flags: LongWord);
 var
   topscreen: int64;
@@ -457,6 +535,11 @@ begin
   rcolumn.dc_texturemid := basetexturemid;
 end;
 
+//==============================================================================
+//
+// R_DrawPlayerColumn
+//
+//==============================================================================
 procedure R_DrawPlayerColumn(const col: Pcolumn_t; flags: LongWord);
 var
   topscreen: int64;
@@ -503,6 +586,11 @@ begin
   rcolumn.dc_texturemid := basetexturemid;
 end;
 
+//==============================================================================
+//
+// R_DrawMaskedColumn32
+//
+//==============================================================================
 procedure R_DrawMaskedColumn32(const mc2h: integer; flags: LongWord); // Use dc_source (32 bit)
 var
   topscreen: int64;
@@ -544,6 +632,7 @@ type
 // R_DrawVisSprite
 //  mfloorclip and mceilingclip should also be set.
 //
+//==============================================================================
 procedure R_DrawVisSprite(vis: Pvissprite_t; proc: thingdrawer_t);
 var
   column: Pcolumn_t;
@@ -627,12 +716,13 @@ begin
   Z_ChangeTag(patch, PU_CACHE);
 end;
 
-//
+//==============================================================================
 //
 // R_ProjectSprite
 // Generates a vissprite for a thing
 //  if it might be visible.
 //
+//==============================================================================
 procedure R_ProjectSprite(thing: Pmobj_t);
 var
   tr_x: fixed_t;
@@ -800,10 +890,12 @@ begin
   end;
 end;
 
+//==============================================================================
 //
 // R_AddSprites
 // During BSP traversal, this adds sprites by sector.
 //
+//==============================================================================
 procedure R_AddSprites(sec: Psector_t);
 var
   thing: Pmobj_t;
@@ -837,9 +929,11 @@ begin
   end;
 end;
 
+//==============================================================================
 //
 // R_DrawPSprite
 //
+//==============================================================================
 procedure R_DrawPSprite(psp: Ppspdef_t);
 var
   tx: fixed_t;
@@ -951,9 +1045,11 @@ begin
   R_DrawVisSprite(vis, @R_DrawPlayerColumn);
 end;
 
+//==============================================================================
 //
 // R_DrawPlayerSprites
 //
+//==============================================================================
 procedure R_DrawPlayerSprites;
 var
   i: integer;
@@ -995,6 +1091,11 @@ end;
 var
   vsprsortedhead: vissprite_t;
 
+//==============================================================================
+//
+// R_SortVisSprites
+//
+//==============================================================================
 procedure R_SortVisSprites;
 var
   i: integer;
@@ -1063,6 +1164,11 @@ var
   clipbot: packed array[0..MAXWIDTH - 1] of smallint;
   cliptop: packed array[0..MAXWIDTH - 1] of smallint;
 
+//==============================================================================
+//
+// R_DrawSprite
+//
+//==============================================================================
 procedure R_DrawSprite(spr: Pvissprite_t);
 var
   ds: Pdrawseg_t;
@@ -1182,9 +1288,11 @@ begin
   R_DrawVisSprite(spr, @R_DrawMaskedColumn);
 end;
 
+//==============================================================================
 //
 // R_DrawMasked
 //
+//==============================================================================
 procedure R_DrawMasked;
 var
   spr: Pvissprite_t;
@@ -1212,6 +1320,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_MarkLights
+//
+//==============================================================================
 procedure R_MarkLights;
 var
   spr: Pvissprite_t;
@@ -1229,6 +1342,11 @@ begin
   R_AddAdditionalLights;
 end;
 
+//==============================================================================
+//
+// R_DrawPlayer
+//
+//==============================================================================
 procedure R_DrawPlayer;
 var
   old_centery: fixed_t;

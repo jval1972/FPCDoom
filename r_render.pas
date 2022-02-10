@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -68,33 +68,98 @@ const
   RIF_WAIT = 0;
   RIF_NOWAIT = 1;
 
+//==============================================================================
+//
+// R_InitRender
+//
+//==============================================================================
 procedure R_InitRender;
 
+//==============================================================================
+//
+// R_ShutDownRender
+//
+//==============================================================================
 procedure R_ShutDownRender;
 
+//==============================================================================
+//
+// R_AddRenderTask
+//
+//==============================================================================
 procedure R_AddRenderTask(const proc: PPointerParmProcedure; const flags: LongWord; const parms: pointer);
 
+//==============================================================================
+// R_RenderWaitMT
+//
 // Wait all threads to stop
+//
+//==============================================================================
 procedure R_RenderWaitMT;
 
+//==============================================================================
+// R_RenderItemsST
+//
 // Render Tasks in Single Thread
+//
+//==============================================================================
 procedure R_RenderItemsST(const rid: integer);
 
+//==============================================================================
+// R_RenderItemsMT
+//
 // Render Tasks in Multiple Threads
+//
+//==============================================================================
 procedure R_RenderItemsMT(const rid: integer; const wait: integer);
 
+//==============================================================================
+//
+// R_ClearRender
+//
+//==============================================================================
 procedure R_ClearRender(const id: integer = -1);
 
+//==============================================================================
+//
+// R_ScheduleTask
+//
+//==============================================================================
 function R_ScheduleTask(const proc: PProcedure): integer;
 
+//==============================================================================
+//
+// R_ExecutePendingTask
+//
+//==============================================================================
 procedure R_ExecutePendingTask(const id: integer);
 
+//==============================================================================
+//
+// R_ExecutePendingTasks
+//
+//==============================================================================
 procedure R_ExecutePendingTasks;
 
+//==============================================================================
+//
+// R_WaitTask
+//
+//==============================================================================
 procedure R_WaitTask(const id: integer);
 
+//==============================================================================
+//
+// R_WaitTasks
+//
+//==============================================================================
 procedure R_WaitTasks;
 
+//==============================================================================
+//
+// R_SetupRenderingThreads
+//
+//==============================================================================
 procedure R_SetupRenderingThreads;
 
 // JVAL: Max Rendering threads
@@ -151,6 +216,11 @@ var
   r_threads: array[0..MAXRTHREADS - 1] of TDThread;
   r_gpthreads: array[0..MAXGPTHREADS - 1] of TDThread;
 
+//==============================================================================
+//
+// R_InitRender
+//
+//==============================================================================
 procedure R_InitRender;
 var
   i: integer;
@@ -207,6 +277,11 @@ begin
   setrenderingthreadslist.Add(setrenderingthreads);
 end;
 
+//==============================================================================
+//
+// R_ShutDownRender
+//
+//==============================================================================
 procedure R_ShutDownRender;
 var
   i: integer;
@@ -220,6 +295,11 @@ begin
   setrenderingthreadslist.Free;
 end;
 
+//==============================================================================
+//
+// R_AddRenderTaskId
+//
+//==============================================================================
 procedure R_AddRenderTaskId(const proc: PPointerParmProcedure; const flags: LongWord; id: integer; const parms: pointer); {$IFDEF FPC}inline;{$ENDIF}
 const
   GROWSTEP = 256;
@@ -249,6 +329,11 @@ begin
     item.iparam := PInteger(parms)^
 end;
 
+//==============================================================================
+//
+// R_AddRenderTask
+//
+//==============================================================================
 procedure R_AddRenderTask(const proc: PPointerParmProcedure; const flags: LongWord; const parms: pointer); {$IFDEF FPC}inline;{$ENDIF}
 begin
   if flags and RF_WALL <> 0 then
@@ -306,6 +391,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_RenderTask
+//
+//==============================================================================
 procedure R_RenderTask(const r: Prenderitem_t); {$IFDEF FPC}inline;{$ENDIF}
 begin
   r.proc(@r.params);
@@ -321,7 +411,12 @@ type
 var
   ranges: array[0..MAXRTHREADS - 1] of range_t;
 
+//==============================================================================
+// _render_task_range
+//
 // For solid walls, floors & ceilings
+//
+//==============================================================================
 function _render_task_range(p: pointer): integer; stdcall;
 var
   i: integer;
@@ -336,7 +431,12 @@ begin
   result := 0;
 end;
 
+//==============================================================================
+// _render_task_index
+//
 // For things, light and lighmap
+//
+//==============================================================================
 function _render_task_index(p: pointer): integer; stdcall;
 var
   i: integer;
@@ -362,7 +462,12 @@ begin
   result := 0;
 end;
 
+//==============================================================================
+// R_RenderWaitMT
+//
 // Wait all threads to stop
+//
+//==============================================================================
 procedure R_RenderWaitMT;
 var
   i: integer;
@@ -371,7 +476,12 @@ begin
     r_threads[i].Wait;
 end;
 
+//==============================================================================
+// R_RenderItemsST
+//
 // Render Tasks in Single Thread
+//
+//==============================================================================
 procedure R_RenderItemsST(const rid: integer);
 var
   i: integer;
@@ -380,7 +490,12 @@ begin
     R_RenderTask(@ritems[rid].data[i]);
 end;
 
+//==============================================================================
+// R_RenderItemsMT
+//
 // Render Tasks in Multiple Threads
+//
+//==============================================================================
 procedure R_RenderItemsMT(const rid: integer; const wait: integer);
 var
   i: integer;
@@ -442,6 +557,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_ClearRender
+//
+//==============================================================================
 procedure R_ClearRender(const id: integer = -1);
 var
   i: integer;
@@ -465,6 +585,11 @@ type
 var
   tasks: array[0..MAXGPTHREADS - 1] of taskinfo_t;
 
+//==============================================================================
+//
+// _render_task
+//
+//==============================================================================
 function _render_task(p: pointer): integer; stdcall;
 var
   pt: Ptaskinfo_t;
@@ -476,6 +601,11 @@ begin
   pt.proc := nil;
 end;
 
+//==============================================================================
+//
+// R_ScheduleTask
+//
+//==============================================================================
 function R_ScheduleTask(const proc: PProcedure): integer;
 var
   i: integer;
@@ -492,12 +622,22 @@ begin
   result := -1;
 end;
 
+//==============================================================================
+//
+// R_ExecutePendingTask
+//
+//==============================================================================
 procedure R_ExecutePendingTask(const id: integer);
 begin
   if Assigned(tasks[id].proc) then
     r_gpthreads[id].Activate(_render_task, @tasks[id]);
 end;
 
+//==============================================================================
+//
+// R_ExecutePendingTasks
+//
+//==============================================================================
 procedure R_ExecutePendingTasks;
 var
   i: integer;
@@ -507,7 +647,11 @@ begin
       r_gpthreads[i].Activate(_render_task, @tasks[i]);
 end;
 
-
+//==============================================================================
+//
+// R_WaitTask
+//
+//==============================================================================
 procedure R_WaitTask(const id: integer);
 begin
   if (id < 0) or (id >= MAXGPTHREADS) then
@@ -516,6 +660,11 @@ begin
     r_gpthreads[id].Wait;
 end;
 
+//==============================================================================
+//
+// R_WaitTasks
+//
+//==============================================================================
 procedure R_WaitTasks;
 var
   i: integer;
@@ -525,6 +674,11 @@ begin
       r_gpthreads[i].Wait;
 end;
 
+//==============================================================================
+//
+// R_SetupRenderingThreads
+//
+//==============================================================================
 procedure R_SetupRenderingThreads;
 var
   newmunthreads, i: integer;

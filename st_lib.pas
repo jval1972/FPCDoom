@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -123,44 +123,85 @@ type
     //  stating whether to update icon
     _on: PBoolean;
 
-
     p: Ppatch_t;   // icon
     data: integer; // user data
   end;
   Pst_binicon_t = ^st_binicon_t;
 
+//==============================================================================
+// STlib_init
 //
 // Widget creation, access, and update routines
 //
-
 // Initializes widget library.
 // More precisely, initialize STMINUS,
 //  everything else is done somewhere else.
 //
+//==============================================================================
 procedure STlib_init;
 
+//==============================================================================
+// STlib_initNum
+//
 // Number widget routines
+//
+//==============================================================================
 procedure STlib_initNum(n: Pst_number_t; x, y: integer; pl: Ppatch_tPArray;
   num: PInteger; _on: PBoolean; width: integer);
 
+//==============================================================================
+//
+// STlib_updateNum
+//
+//==============================================================================
 procedure STlib_updateNum(n: Pst_number_t; transparent: boolean);
 
+//==============================================================================
+// STlib_initPercent
+//
 // Percent widget routines
+//
+//==============================================================================
 procedure STlib_initPercent(p: Pst_percent_t; x, y: integer; pl: Ppatch_tPArray;
   num: PInteger; _on: PBoolean; percent: Ppatch_t);
 
+//==============================================================================
+//
+// STlib_updatePercent
+//
+//==============================================================================
 procedure STlib_updatePercent(per: Pst_percent_t; refresh: boolean; transparent: boolean);
 
+//==============================================================================
+// STlib_initMultIcon
+//
 // Multiple Icon widget routines
+//
+//==============================================================================
 procedure STlib_initMultIcon(i: Pst_multicon_t; x, y: integer; il: Ppatch_tPArray;
   inum: PInteger; _on: PBoolean);
 
+//==============================================================================
+//
+// STlib_updateMultIcon
+//
+//==============================================================================
 procedure STlib_updateMultIcon(mi: Pst_multicon_t; refresh: boolean);
 
+//==============================================================================
+// STlib_initBinIcon
+//
 // Binary Icon widget routines
+//
+//==============================================================================
 procedure STlib_initBinIcon(b: Pst_binicon_t; x, y: integer; i: Ppatch_t;
   val: PBoolean; _on: PBoolean);
 
+//==============================================================================
+//
+// STlib_updateBinIcon
+//
+//==============================================================================
 procedure STlib_updateBinIcon(bi: Pst_binicon_t; refresh: boolean);
 
 var
@@ -183,6 +224,11 @@ uses
 var
   sttminus: Ppatch_t;
 
+//==============================================================================
+//
+// STlib_init
+//
+//==============================================================================
 procedure STlib_init;
 var
   lump: integer;
@@ -197,7 +243,12 @@ begin
     sttminus := Ppatch_t(W_CacheLumpNum(lump, PU_STATIC));
 end;
 
+//==============================================================================
+// STlib_initNum
+//
 // ?
+//
+//==============================================================================
 procedure STlib_initNum(n: Pst_number_t; x, y: integer; pl: Ppatch_tPArray;
   num: PInteger; _on: PBoolean; width: integer);
 begin
@@ -210,11 +261,14 @@ begin
   n.p := pl;
 end;
 
+//==============================================================================
+// STlib_drawNum
 //
 // A fairly efficient way to draw a number
 //  based on differences from the old number.
 // Note: worth the trouble?
 //
+//==============================================================================
 procedure STlib_drawNum(n: Pst_number_t; transparent: boolean);
 var
   numdigits: integer;
@@ -279,14 +333,20 @@ begin
     V_DrawPatch(x - 8, n.y - ST_Y, SCN_ST, sttminus, false);
 end;
 
+//==============================================================================
+// STlib_updateNum
 //
+//==============================================================================
 procedure STlib_updateNum(n: Pst_number_t; transparent: boolean);
 begin
   if n._on^ then
     STlib_drawNum(n, transparent);
 end;
 
+//==============================================================================
+// STlib_initPercent
 //
+//==============================================================================
 procedure STlib_initPercent(p: Pst_percent_t; x, y: integer; pl: Ppatch_tPArray;
   num: PInteger; _on: PBoolean; percent: Ppatch_t);
 begin
@@ -294,6 +354,11 @@ begin
   p.p := percent;
 end;
 
+//==============================================================================
+//
+// STlib_updatePercent
+//
+//==============================================================================
 procedure STlib_updatePercent(per: Pst_percent_t; refresh: boolean;transparent: boolean);
 begin
   if refresh and per.n._on^ then
@@ -302,6 +367,11 @@ begin
   STlib_updateNum(@per.n, transparent);
 end;
 
+//==============================================================================
+//
+// STlib_initMultIcon
+//
+//==============================================================================
 procedure STlib_initMultIcon(i: Pst_multicon_t; x, y: integer; il: Ppatch_tPArray;
   inum: PInteger; _on: PBoolean);
 begin
@@ -313,6 +383,11 @@ begin
   i.p := il;
 end;
 
+//==============================================================================
+//
+// STlib_updateMultIcon
+//
+//==============================================================================
 procedure STlib_updateMultIcon(mi: Pst_multicon_t; refresh: boolean);
 var
   y: integer;
@@ -332,6 +407,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// STlib_initBinIcon
+//
+//==============================================================================
 procedure STlib_initBinIcon(b: Pst_binicon_t; x, y: integer; i: Ppatch_t;
   val: PBoolean; _on: PBoolean);
 begin
@@ -343,6 +423,11 @@ begin
   b.p := i;
 end;
 
+//==============================================================================
+//
+// STlib_updateBinIcon
+//
+//==============================================================================
 procedure STlib_updateBinIcon(bi: Pst_binicon_t; refresh: boolean);
 var
   y: integer;
@@ -360,6 +445,5 @@ begin
     bi.oldval := bi.val^;
   end;
 end;
-
 
 end.

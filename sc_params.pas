@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -107,6 +107,11 @@ begin
     {$IFNDEF FPC}fList := {$ENDIF}realloc(fList, fNumItems * SizeOf(customparam_t), 0);
 end;
 
+//==============================================================================
+//
+// TCustomParamList.Add
+//
+//==============================================================================
 procedure TCustomParamList.Add(const value: string);
 var
   ival: integer;
@@ -159,11 +164,21 @@ begin
   inc(fNumItems);
 end;
 
+//==============================================================================
+//
+// TCustomParamList.GetIsComputed
+//
+//==============================================================================
 function TCustomParamList.GetIsComputed(index: integer): boolean;
 begin
   result := fList[index].computed;
 end;
 
+//==============================================================================
+//
+// TCustomParamList.GetInteger
+//
+//==============================================================================
 function TCustomParamList.GetInteger(index: integer): integer;
 begin
   if (index >= 0) and (index < fNumItems) then
@@ -177,6 +192,11 @@ begin
     result := 0;
 end;
 
+//==============================================================================
+//
+// TCustomParamList.PutInteger
+//
+//==============================================================================
 procedure TCustomParamList.PutInteger(index: Integer; const value: integer);
 begin
   if (index >= 0) and (index < fNumItems) then
@@ -187,6 +207,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// TCustomParamList.GetFloat
+//
+//==============================================================================
 function TCustomParamList.GetFloat(index: integer): single;
 begin
   if (index >= 0) and (index < fNumItems) then
@@ -200,6 +225,11 @@ begin
     result := 0;
 end;
 
+//==============================================================================
+//
+// TCustomParamList.PutFloat
+//
+//==============================================================================
 procedure TCustomParamList.PutFloat(index: Integer; const value: float);
 begin
   if (index >= 0) and (index < fNumItems) then
@@ -210,6 +240,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// TCustomParamList.GetString
+//
+//==============================================================================
 function TCustomParamList.GetString(index: integer): string;
 begin
   if (index >= 0) and (index < fNumItems) then

@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -59,8 +59,18 @@ var
   skytranstable: array[0..MAXTEXTUREFACTORBITS] of skytransarray_t;
   billboardsky: boolean = false;
 
+//==============================================================================
+//
+// R_InitSkyMap
+//
+//==============================================================================
 procedure R_InitSkyMap;
 
+//==============================================================================
+//
+// R_CalcSkyStretch
+//
+//==============================================================================
 procedure R_CalcSkyStretch;
 
 implementation
@@ -70,10 +80,12 @@ uses
   doomdef,
   m_fixed; // Needed for FRACUNIT.
 
+//==============================================================================
 //
 // R_InitSkyMap
 // Called whenever the view size changes.
 //
+//==============================================================================
 procedure R_InitSkyMap;
 begin
   skytexturemid := 100 * FRACUNIT;
@@ -84,6 +96,11 @@ var
   oldzaxisshift: boolean = false;
   target: PIntegerArray;
 
+//==============================================================================
+//
+// R_CalcSkyStretch
+//
+//==============================================================================
 procedure R_CalcSkyStretch;
 var
   i, j, x, f, d: integer;

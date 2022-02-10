@@ -73,33 +73,116 @@ type
   lumpinfo_tArray = array[0..$FFFF] of lumpinfo_t;
   Plumpinfo_tArray = ^lumpinfo_tArray;
 
-
+//==============================================================================
+//
+// char8tostring
+//
+//==============================================================================
 function char8tostring(src: char8_t): string;
 
+//==============================================================================
+//
+// stringtochar8
+//
+//==============================================================================
 function stringtochar8(src: string): char8_t;
 
+//==============================================================================
+//
+// W_InitMultipleFiles
+//
+//==============================================================================
 function W_InitMultipleFiles(const filenames: TDStringList): integer;
 
+//==============================================================================
+//
+// W_ShutDown
+//
+//==============================================================================
 procedure W_ShutDown;
 
+//==============================================================================
+//
+// W_Reload
+//
+//==============================================================================
 procedure W_Reload;
 
+//==============================================================================
+//
+// W_NumLumps
+//
+//==============================================================================
 function W_NumLumps: integer;
 
+//==============================================================================
+//
+// W_CheckNumForName
+//
+//==============================================================================
 function W_CheckNumForName(const name: string; first: integer = -1; last: integer = -1): integer;
 
+//==============================================================================
+//
+// W_GetNumForName
+//
+//==============================================================================
 function W_GetNumForName(const name: string): integer;
 
+//==============================================================================
+//
+// W_GetNameForNum
+//
+//==============================================================================
 function W_GetNameForNum(const lump: integer): char8_t;
 
+//==============================================================================
+//
+// W_LumpLength
+//
+//==============================================================================
 function W_LumpLength(const lump: integer): integer;
+
+//==============================================================================
+//
+// W_ReadLump
+//
+//==============================================================================
 procedure W_ReadLump(const lump: integer; dest: pointer);
 
+//==============================================================================
+//
+// W_CacheLumpNum
+//
+//==============================================================================
 function W_CacheLumpNum(const lump: integer; const tag: integer): pointer;
+
+//==============================================================================
+//
+// W_CacheLumpName
+//
+//==============================================================================
 function W_CacheLumpName(const name: string; const tag: integer): pointer;
+
+//==============================================================================
+//
+// W_TextLumpNum
+//
+//==============================================================================
 function W_TextLumpNum(const lump: integer): string;
+
+//==============================================================================
+//
+// W_TextLumpName
+//
+//==============================================================================
 function W_TextLumpName(const name: string): string;
 
+//==============================================================================
+//
+// ExtractFileBase8
+//
+//==============================================================================
 procedure ExtractFileBase8(const path: string; var dest: char8_t);
 
 var
@@ -133,6 +216,11 @@ const
 var
   lumpcache: PPointerArray;
 
+//==============================================================================
+//
+// char8tostring
+//
+//==============================================================================
 function char8tostring(src: char8_t): string;
 var
   i: integer;
@@ -146,6 +234,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// stringtochar8
+//
+//==============================================================================
 function stringtochar8(src: string): char8_t;
 var
   i: integer;
@@ -166,6 +259,11 @@ begin
     result[i] := #0;
 end;
 
+//==============================================================================
+//
+// filelength
+//
+//==============================================================================
 function filelength(handle: TCachedFile): integer;
 begin
   try
@@ -176,6 +274,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// ExtractFileBase
+//
+//==============================================================================
 procedure ExtractFileBase(const path: string; var dest: string);
 var
   i: integer;
@@ -202,6 +305,11 @@ begin
     I_Error('ExtractFileBase(): Filename base of %s >8 chars', [path]);
 end;
 
+//==============================================================================
+//
+// ExtractFileBase8
+//
+//==============================================================================
 procedure ExtractFileBase8(const path: string; var dest: char8_t);
 var
   dst: string;
@@ -231,6 +339,11 @@ var
   reloadlump: integer;
   reloadname: string;
 
+//==============================================================================
+//
+// W_AddFile
+//
+//==============================================================================
 function W_AddFile(var filename: string): TStream;
 var
   header: wadinfo_t;
@@ -306,7 +419,6 @@ begin
     numlumps := numlumps + header.numlumps;
   end;
 
-
   // Fill in lumpinfo
   {$IFNDEF FPC}lumpinfo := {$ENDIF}realloc(lumpinfo, startlump * SizeOf(lumpinfo_t), numlumps * SizeOf(lumpinfo_t));
 
@@ -342,11 +454,13 @@ begin
 
 end;
 
+//==============================================================================
 //
 // W_Reload
 // Flushes any of the reloadable lumps in memory
 //  and reloads the directory.
 //
+//==============================================================================
 procedure W_Reload;
 var
   header: wadinfo_t;
@@ -394,6 +508,7 @@ begin
   handle.Free;
 end;
 
+//==============================================================================
 //
 // W_InitMultipleFiles
 // Pass a null terminated list of files to use.
@@ -407,6 +522,7 @@ end;
 // The name searcher looks backwards, so a later file
 //  does override all earlier ones.
 //
+//==============================================================================
 function W_InitMultipleFiles(const filenames: TDStringList): integer;
 var
   size: integer;
@@ -437,16 +553,23 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// W_ShutDown
+//
+//==============================================================================
 procedure W_ShutDown;
 begin
   memfree(lumpcache, numlumps * SizeOf(pointer));
   memfree(lumpinfo, numlumps * SizeOf(lumpinfo_t));
 end;
 
+//==============================================================================
 //
 // W_InitFile
 // Just initialize from a single file.
 //
+//==============================================================================
 procedure W_InitFile(const filename: string);
 var
   names: TDStringList;
@@ -462,9 +585,11 @@ begin
   end;
 end;
 
+//==============================================================================
 //
 // W_NumLumps
 //
+//==============================================================================
 function W_NumLumps: integer;
 begin
   result := numlumps;
@@ -481,6 +606,11 @@ type
       1: (x: array[0..1] of integer);
     end;
 
+//==============================================================================
+//
+// W_CheckNumForName
+//
+//==============================================================================
 function W_CheckNumForName(const name: string; first: integer = -1; last: integer = -1): integer;
 var
   name8: name8_t;
@@ -532,10 +662,12 @@ begin
   result := -1;
 end;
 
+//==============================================================================
 //
 // W_GetNumForName
 // Calls W_CheckNumForName, but bombs out if not found.
 //
+//==============================================================================
 function W_GetNumForName(const name: string): integer;
 begin
   result := W_CheckNumForName(name);
@@ -543,15 +675,22 @@ begin
     I_Error('W_GetNumForName(): %s not found!', [name]);
 end;
 
+//==============================================================================
+//
+// W_GetNameForNum
+//
+//==============================================================================
 function W_GetNameForNum(const lump: integer): char8_t;
 begin
   result := lumpinfo[lump].name;
 end;
 
+//==============================================================================
 //
 // W_LumpLength
 // Returns the buffer size needed to load the given lump.
 //
+//==============================================================================
 function W_LumpLength(const lump: integer): integer;
 begin
   if lump >= numlumps then
@@ -560,11 +699,13 @@ begin
   result := lumpinfo[lump].size;
 end;
 
+//==============================================================================
 //
 // W_ReadLump
 // Loads the lump into the given buffer,
 //  which must be >= W_LumpLength().
 //
+//==============================================================================
 procedure W_ReadLump(const lump: integer; dest: pointer);
 var
   c: integer;
@@ -604,9 +745,11 @@ begin
     handle.Free;
 end;
 
+//==============================================================================
 //
 // W_CacheLumpNum
 //
+//==============================================================================
 function W_CacheLumpNum(const lump: integer; const tag: integer): pointer;
 begin
   if lump >= numlumps then
@@ -631,14 +774,21 @@ begin
   result := lumpcache[lump];
 end;
 
+//==============================================================================
 //
 // W_CacheLumpName
 //
+//==============================================================================
 function W_CacheLumpName(const name: string; const tag: integer): pointer;
 begin
   result := W_CacheLumpNum(W_GetNumForName(name), tag);
 end;
 
+//==============================================================================
+//
+// W_TextLumpNum
+//
+//==============================================================================
 function W_TextLumpNum(const lump: integer): string;
 var
   p: PByteArray;
@@ -665,6 +815,11 @@ begin
   Z_Free(p);
 end;
 
+//==============================================================================
+//
+// W_TextLumpName
+//
+//==============================================================================
 function W_TextLumpName(const name: string): string;
 begin
   result := W_TextLumpNum(W_GetNumForName(name));

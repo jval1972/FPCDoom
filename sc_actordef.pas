@@ -34,12 +34,32 @@ interface
 uses
   d_fpc;
 
+//==============================================================================
+//
+// SC_ParseActordefLumps
+//
+//==============================================================================
 procedure SC_ParseActordefLumps;
 
+//==============================================================================
+//
+// SC_Init
+//
+//==============================================================================
 procedure SC_Init;
 
+//==============================================================================
+//
+// SC_ShutDown
+//
+//==============================================================================
 procedure SC_ShutDown;
 
+//==============================================================================
+//
+// SC_SoundAlias
+//
+//==============================================================================
 function SC_SoundAlias(const snd: string): string;
 
 implementation
@@ -61,6 +81,11 @@ var
 const
   MAXSTATES = 512;
 
+//==============================================================================
+//
+// fixsndaliasstr
+//
+//==============================================================================
 function fixsndaliasstr(const src: string): string;
 var
   i: integer;
@@ -77,6 +102,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// SC_SoundAlias
+//
+//==============================================================================
 function SC_SoundAlias(const snd: string): string;
 var
   check: string;
@@ -134,6 +164,11 @@ type
     function MatchFlag2Ex(const flag2_ex: string): boolean;
   end;
 
+//==============================================================================
+//
+// TActordefScriptEngine.MatchFlag
+//
+//==============================================================================
 function TActordefScriptEngine.MatchFlag(const flag: string): boolean;
 begin
   result :=
@@ -141,6 +176,11 @@ begin
     MatchString('MF_' + flag) or MatchString('+MF_' + flag);
 end;
 
+//==============================================================================
+//
+// TActordefScriptEngine.MatchFlagEx
+//
+//==============================================================================
 function TActordefScriptEngine.MatchFlagEx(const flag_ex: string): boolean;
 begin
   result :=
@@ -149,6 +189,11 @@ begin
     MatchString('MF_EX_' + flag_ex) or MatchString('+MF_EX_' + flag_ex);
 end;
 
+//==============================================================================
+//
+// TActordefScriptEngine.MatchFlag2Ex
+//
+//==============================================================================
 function TActordefScriptEngine.MatchFlag2Ex(const flag2_ex: string): boolean;
 begin
   result :=
@@ -157,12 +202,16 @@ begin
     MatchString('MF2_EX_' + flag2_ex) or MatchString('+MF2_EX_' + flag2_ex);
 end;
 
-
 const
   ORIGINALSTATEMARKER = $FFFFF;
   ACTORDEFLUMPNAME = 'ACTORDEF';
   SNDINFOLUMPNAME = 'SNDINFO';
 
+//==============================================================================
+//
+// SC_ParseActordefLump
+//
+//==============================================================================
 procedure SC_ParseActordefLump(const in_text: string);
 var
   mobj: rtl_mobjinfo_t;
@@ -710,7 +759,6 @@ var
     DEH_Parse(res);
   end;
 
-
 var
   slist: TDStringList;
   isreplace: boolean;
@@ -948,7 +996,6 @@ begin
         else if MatchFlags2Ex_Delete then
           sc.GetString
 
-
         else if sc.MatchString('DEFAULTMISSILE') or sc.MatchString('+DEFAULTMISSILE') then
         begin
           mobj.flags := mobj.flags + 'NOGRAVITY MISSILE NOBLOCKMAP DROPOFF ';
@@ -961,7 +1008,6 @@ begin
           mobj.alpha := Round(0.67 * FRACUNIT);
           sc.GetString;
         end
-
 
         else if sc.MatchString('radius') or sc.MatchString('width') then
         begin
@@ -1171,6 +1217,11 @@ begin
 
 end;
 
+//==============================================================================
+//
+// SC_ParseActordefLumps
+//
+//==============================================================================
 procedure SC_ParseActordefLumps;
 var
   i: integer;
@@ -1222,11 +1273,21 @@ begin
       SC_ParseActordefLump(W_TextLumpNum(i));
 end;
 
+//==============================================================================
+//
+// SC_Init
+//
+//==============================================================================
 procedure SC_Init;
 begin
   soundaliases := TDStringList.Create;
 end;
 
+//==============================================================================
+//
+// SC_ShutDown
+//
+//==============================================================================
 procedure SC_ShutDown;
 begin
   soundaliases.Free;

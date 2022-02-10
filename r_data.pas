@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -36,31 +36,83 @@ uses
   m_fixed,
   r_defs;
 
+//==============================================================================
+// R_GetColumn
+//
 // Retrieve column data for span blitting.
+//
+//==============================================================================
 function R_GetColumn(const tex: integer; col: integer): PByteArray;
 
+//==============================================================================
+// R_GetDSs
+//
 // Retrieve ds_sources
+//
+//==============================================================================
 procedure R_GetDSs(const flat: integer);
 
+//==============================================================================
+//
+// R_GetLumpForFlat
+//
+//==============================================================================
 function R_GetLumpForFlat(const flat: integer): integer;
 
+//==============================================================================
+// R_GetDCs
+//
 // Retrieve dc_sources
+//
+//==============================================================================
 procedure R_GetDCs(const tex: integer; const col: integer);
 
+//==============================================================================
+// R_InitData
+//
 // I/O, setting up the stuff.
+//
+//==============================================================================
 procedure R_InitData;
+
+//==============================================================================
+//
+// R_PrecacheLevel
+//
+//==============================================================================
 procedure R_PrecacheLevel;
 
+//==============================================================================
+// R_FlatNumForName
+//
 // Retrieval.
 // Floor/ceiling opaque texture tiles,
 // lookup by name. For animation?
+//
+//==============================================================================
 function R_FlatNumForName(const name: string): integer;
 
+//==============================================================================
+//
+// R_CacheFlat
+//
+//==============================================================================
 function R_CacheFlat(const lump: integer; const tag: integer): pointer;
 
+//==============================================================================
+// R_TextureNumForName
+//
 // Called by P_Ticker for switches and animations,
 // returns the texture number for the texture name.
+//
+//==============================================================================
 function R_TextureNumForName(const name: string): integer;
+
+//==============================================================================
+//
+// R_CheckTextureNumForName
+//
+//==============================================================================
 function R_CheckTextureNumForName(const name: string): integer;
 
 var
@@ -89,6 +141,11 @@ var
   numflats: integer;
   maxvisplane: integer = -1;
 
+//==============================================================================
+//
+// R_SetupLevel
+//
+//==============================================================================
 procedure R_SetupLevel;
 
 var
@@ -119,6 +176,7 @@ uses
   w_wad,
   z_memory;
 
+//==============================================================================
 //
 // Graphics.
 // DOOM graphics for walls and sprites
@@ -126,14 +184,11 @@ uses
 // A column is composed of zero or more posts,
 // a patch or sprite is composed of zero or more columns.
 //
-
-
-
-//
 // R_DrawColumnInCache
 // Clip and draw a column
 //  from a patch into a cached post.
 //
+//==============================================================================
 procedure R_DrawColumnInCache(patch: Pcolumn_t; cache: PByteArray;
   originy: integer; cacheheight: integer);
 var
@@ -164,12 +219,14 @@ begin
   end;
 end;
 
+//==============================================================================
 //
 // R_GenerateComposite
 // Using the texture definition,
 //  the composite texture is created from the patches,
 //  and each column is cached.
 //
+//==============================================================================
 procedure R_GenerateComposite(const texnum: integer);
 var
   block: PByteArray;
@@ -231,9 +288,11 @@ begin
   Z_ChangeTag(block, PU_CACHE);
 end;
 
+//==============================================================================
 //
 // R_GenerateLookup
 //
+//==============================================================================
 procedure R_GenerateLookup(const texnum: integer);
 var
   texture: Ptexture_t;
@@ -295,7 +354,6 @@ begin
       exit;
     end;
 
-
     if patchcount[x] > 1 then
     begin
       // Use the cached block.
@@ -311,9 +369,11 @@ begin
   memfree(patchcount, texture.width);
 end;
 
+//==============================================================================
 //
 // R_GetColumn
 //
+//==============================================================================
 function R_GetColumn(const tex: integer; col: integer): PByteArray;
 var
   lump: integer;
@@ -335,6 +395,11 @@ begin
   result := pOp(texturecomposite[tex], ofs);
 end;
 
+//==============================================================================
+//
+// R_GetDSs
+//
+//==============================================================================
 procedure R_GetDSs(const flat: integer);
 var
   lump: integer;
@@ -349,11 +414,21 @@ begin
     R_ReadDS32Cache(flat);
 end;
 
+//==============================================================================
+//
+// R_GetLumpForFlat
+//
+//==============================================================================
 function R_GetLumpForFlat(const flat: integer): integer;
 begin
   result := flats[flats[flat].translation].lump;
 end;
 
+//==============================================================================
+//
+// R_GetDCs
+//
+//==============================================================================
 procedure R_GetDCs(const tex: integer; const col: integer);
 begin
   if videomode = vm8bit then
@@ -365,11 +440,13 @@ begin
     R_ReadDC32Cache(tex, col);
 end;
 
+//==============================================================================
 //
 // R_InitTextures
 // Initializes the texture list
 //  with the textures from the world map.
 //
+//==============================================================================
 procedure R_InitTextures;
 var
   mtexture: Pmaptexture_t;
@@ -525,9 +602,11 @@ begin
     texturetranslation[i] := i;
 end;
 
+//==============================================================================
 //
 // R_InitFlats
 //
+//==============================================================================
 procedure R_InitFlats;
 var
   i: integer;
@@ -551,12 +630,14 @@ begin
   end;
 end;
 
+//==============================================================================
 //
 // R_InitSpriteLumps
 // Finds the width and hoffset of all sprites in the wad,
 //  so the sprite does not need to be cached completely
 //  just for having the header info ready during rendering.
 //
+//==============================================================================
 procedure R_InitSpriteLumps;
 var
   i: integer;
@@ -621,9 +702,11 @@ begin
   end;
 end;
 
+//==============================================================================
 //
 // R_InitColormaps
 //
+//==============================================================================
 procedure R_InitColormaps;
 var
   lump: integer;
@@ -662,12 +745,14 @@ begin
   v_translation := colormaps;
 end;
 
+//==============================================================================
 //
 // R_InitData
 // Locates all the lumps
 //  that will be used by all views
 // Must be called after W_Init.
 //
+//==============================================================================
 procedure R_InitData;
 begin
   R_InitTextures;
@@ -677,10 +762,12 @@ begin
   R_InitFuzzTable;
 end;
 
+//==============================================================================
 //
 // R_FlatNumForName
 // Retrieval, get a flat number for a flat name.
 //
+//==============================================================================
 function R_FlatNumForName(const name: string): integer;
 var
   i: integer;
@@ -709,11 +796,13 @@ begin
   end
 end;
 
+//==============================================================================
 //
 // R_CheckTextureNumForName
 // Check whether texture is available.
 // Filter out NoTexture indicator.
 //
+//==============================================================================
 function R_CheckTextureNumForName(const name: string): integer;
 var
   i: integer;
@@ -737,11 +826,13 @@ begin
   result := -1;
 end;
 
+//==============================================================================
 //
 // R_TextureNumForName
 // Calls R_CheckTextureNumForName,
 //  aborts with error message.
 //
+//==============================================================================
 function R_TextureNumForName(const name: string): integer;
 begin
   result := R_CheckTextureNumForName(name);
@@ -750,15 +841,22 @@ begin
     I_Error('R_TextureNumForName(): %s not found', [name]);
 end;
 
+//==============================================================================
+//
+// R_CacheFlat
+//
+//==============================================================================
 function R_CacheFlat(const lump: integer; const tag: integer): pointer;
 begin
   result := W_CacheLumpNum(lump, tag);
 end;
 
+//==============================================================================
 //
 // R_PrecacheLevel
 // Preloads all relevant graphics for the level.
 //
+//==============================================================================
 procedure R_PrecacheLevel;
 var
   flatpresent: PByteArray;
@@ -889,12 +987,16 @@ begin
   memfree(sprpresent, numspritespresent);
 end;
 
+//==============================================================================
+//
+// R_SetupLevel
+//
+//==============================================================================
 procedure R_SetupLevel;
 begin
   maxvisplane := -1;
   max_ds_p := -1;
   maxvissprite := -1;
 end;
-
 
 end.

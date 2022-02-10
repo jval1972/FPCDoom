@@ -279,7 +279,6 @@ type
   DDOSCAPS = TDDOSCaps;
   LPDDOSCAPS = PDDOSCaps;
 
-
 { TDDSCapsEx structure }
 
   PDDSCapsEx = ^TDDSCapsEx;
@@ -2126,8 +2125,25 @@ const
 
 { API's }
 
+//==============================================================================
+//
+// GET_WHQL_YEAR
+//
+//==============================================================================
 function GET_WHQL_YEAR(dwWHQLLevel: DWORD): DWORD;
+
+//==============================================================================
+//
+// GET_WHQL_MONTH
+//
+//==============================================================================
 function GET_WHQL_MONTH(dwWHQLLevel: DWORD): DWORD;
+
+//==============================================================================
+//
+// GET_WHQL_DAY
+//
+//==============================================================================
 function GET_WHQL_DAY(dwWHQLLevel: DWORD): DWORD;
 
 type
@@ -2163,18 +2179,69 @@ const
   DDCREATE_HARDWAREONLY       = $00000001;
   DDCREATE_EMULATIONONLY      = $00000002;
 
+//==============================================================================
+//
+// DirectDrawEnumerateA
+//
+//==============================================================================
 function DirectDrawEnumerateA(lpCallback: TDDEnumCallbackA; lpContext: Pointer): HResult; stdcall;
+
+//==============================================================================
+//
+// DirectDrawEnumerateW
+//
+//==============================================================================
 function DirectDrawEnumerateW(lpCallback: TDDEnumCallbackW; lpContext: Pointer): HResult; stdcall;
+
+//==============================================================================
+//
+// DirectDrawEnumerate
+//
+//==============================================================================
 function DirectDrawEnumerate(lpCallback: TDDEnumCallbackA; lpContext: Pointer): HResult; stdcall;
 
+//==============================================================================
+//
+// DirectDrawEnumerateExA
+//
+//==============================================================================
 function DirectDrawEnumerateExA(lpCallback: TDDEnumCallbackExA; lpContext: Pointer; dwFlags: DWORD): HResult; stdcall;
+
+//==============================================================================
+//
+// DirectDrawEnumerateExW
+//
+//==============================================================================
 function DirectDrawEnumerateExW(lpCallback: TDDEnumCallbackExW; lpContext: Pointer; dwFlags: DWORD): HResult; stdcall;
+
+//==============================================================================
+//
+// DirectDrawEnumerateEx
+//
+//==============================================================================
 function DirectDrawEnumerateEx(lpCallback: TDDEnumCallbackExA; lpContext: Pointer; dwFlags: DWORD): HResult; stdcall;
 
+//==============================================================================
+//
+// DirectDrawCreate
+//
+//==============================================================================
 function DirectDrawCreate(lpGUID: PGUID; out lplpDD: IDirectDraw;
   pUnkOuter: IUnknown): HResult; stdcall;
+
+//==============================================================================
+//
+// DirectDrawCreateEx
+//
+//==============================================================================
 function DirectDrawCreateEx(lpGUID: PGUID; out lplpDD; const iid: TGUID;
   pUnkOuter: IUnknown): HResult; stdcall;
+
+//==============================================================================
+//
+// DirectDrawCreateClipper
+//
+//==============================================================================
 function DirectDrawCreateClipper(dwFlags: DWORD; out lplpDDClipper: IDirectDrawClipper;
   pUnkOuter: IUnknown): HResult; stdcall;
 
@@ -2371,7 +2438,6 @@ type
     function WaitForSync(dwFlags: DWORD; dwLine: DWORD; dwTimeout: DWORD): HResult; stdcall;
   end;
 
-
 const
 { Video Port Flags }
 
@@ -2521,9 +2587,32 @@ type
   TD3DColor = DWORD;
   D3DCOLOR = TD3DColor;
 
+//==============================================================================
+//
+// D3DVALP
+//
+//==============================================================================
 function D3DVALP(val: TD3DValue; prec: Integer): TD3DValue;
+
+//==============================================================================
+//
+// D3DVAL
+//
+//==============================================================================
 function D3DVAL(val: TD3DValue): TD3DValue;
+
+//==============================================================================
+//
+// D3DDivide
+//
+//==============================================================================
 function D3DDivide(a, b: TD3DValue): TD3DValue;
+
+//==============================================================================
+//
+// D3DMultiply
+//
+//==============================================================================
 function D3DMultiply(a, b: TD3DValue): TD3DValue;
 
 (*
@@ -2533,11 +2622,46 @@ function D3DMultiply(a, b: TD3DValue): TD3DValue;
  *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  *)
 
+//==============================================================================
+//
+// CI_GETALPHA
+//
+//==============================================================================
 function CI_GETALPHA(ci: Integer): Byte;
+
+//==============================================================================
+//
+// CI_GETINDEX
+//
+//==============================================================================
 function CI_GETINDEX(ci: Integer): Word;
+
+//==============================================================================
+//
+// CI_GETFRACTION
+//
+//==============================================================================
 function CI_GETFRACTION(ci: Integer): Byte;
+
+//==============================================================================
+//
+// CI_ROUNDINDEX
+//
+//==============================================================================
 function CI_ROUNDINDEX(ci: Integer): Integer;
+
+//==============================================================================
+//
+// CI_MASKALPHA
+//
+//==============================================================================
 function CI_MASKALPHA(ci: Integer): Integer;
+
+//==============================================================================
+//
+// CI_MAKE
+//
+//==============================================================================
 function CI_MAKE(a: Byte; i: Word; f: Byte): Integer;
 
 (*
@@ -2547,17 +2671,57 @@ function CI_MAKE(a: Byte; i: Word; f: Byte): Integer;
  *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  *)
 
+//==============================================================================
+//
+// RGBA_GETALPHA
+//
+//==============================================================================
 function RGBA_GETALPHA(rgb: TD3DColor): Byte;
+
+//==============================================================================
+//
+// RGBA_GETRED
+//
+//==============================================================================
 function RGBA_GETRED(rgb: TD3DColor): Byte;
+
+//==============================================================================
+//
+// RGBA_GETGREEN
+//
+//==============================================================================
 function RGBA_GETGREEN(rgb: TD3DColor): Byte;
+
+//==============================================================================
+//
+// RGBA_GETBLUE
+//
+//==============================================================================
 function RGBA_GETBLUE(rgb: TD3DColor): Byte;
+
+//==============================================================================
+//
+// RGBA_MAKE
+//
+//==============================================================================
 function RGBA_MAKE(r, g, b, a: Byte): TD3DColor;
 
 (* D3DRGB and D3DRGBA may be used as initialisers for D3DCOLORs
  * The float values must be in the range 0..1
  *)
 
+//==============================================================================
+//
+// D3DRGB
+//
+//==============================================================================
 function D3DRGB(r, g, b: TD3DValue): TD3DColor;
+
+//==============================================================================
+//
+// D3DRGBA
+//
+//==============================================================================
 function D3DRGBA(r, g, b, a: TD3DValue): TD3DColor;
 
 (*
@@ -2567,12 +2731,53 @@ function D3DRGBA(r, g, b, a: TD3DValue): TD3DColor;
  *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  *)
 
+//==============================================================================
+//
+// RGB_GETRED
+//
+//==============================================================================
 function RGB_GETRED(rgb: TD3DColor): Byte;
+
+//==============================================================================
+//
+// RGB_GETGREEN
+//
+//==============================================================================
 function RGB_GETGREEN(rgb: TD3DColor): Byte;
+
+//==============================================================================
+//
+// RGB_GETBLUE
+//
+//==============================================================================
 function RGB_GETBLUE(rgb: TD3DColor): Byte;
+
+//==============================================================================
+//
+// RGBA_SETALPHA
+//
+//==============================================================================
 function RGBA_SETALPHA(rgba: TD3DColor; x: Byte): TD3DColor;
+
+//==============================================================================
+//
+// RGB_MAKE
+//
+//==============================================================================
 function RGB_MAKE(r, g, b: Byte): TD3DColor;
+
+//==============================================================================
+//
+// RGBA_TORGB
+//
+//==============================================================================
 function RGBA_TORGB(rgba: TD3DColor): TD3DColor;
+
+//==============================================================================
+//
+// RGB_TORGBA
+//
+//==============================================================================
 function RGB_TORGBA(rgb: TD3DColor): TD3DColor;
 
 const
@@ -2664,33 +2869,140 @@ type
   D3DVECTOR = TD3DVector;
   LPD3DVECTOR = PD3DVector;
 
+//==============================================================================
+// VectorAdd
+//
 // Addition and subtraction
+//
+//==============================================================================
 function VectorAdd(v1, v2: TD3DVector) : TD3DVector;
+
+//==============================================================================
+//
+// VectorSub
+//
+//==============================================================================
 function VectorSub(v1, v2: TD3DVector) : TD3DVector;
+
+//==============================================================================
+// VectorMulS
+//
 // Scalar multiplication and division
+//
+//==============================================================================
 function VectorMulS(v: TD3DVector; s: TD3DValue) : TD3DVector;
+
+//==============================================================================
+//
+// VectorDivS
+//
+//==============================================================================
 function VectorDivS(v: TD3DVector; s: TD3DValue) : TD3DVector;
+
+//==============================================================================
+// VectorMul
+//
 // Memberwise multiplication and division
+//
+//==============================================================================
 function VectorMul(v1, v2: TD3DVector) : TD3DVector;
+
+//==============================================================================
+//
+// VectorDiv
+//
+//==============================================================================
 function VectorDiv(v1, v2: TD3DVector) : TD3DVector;
+
+//==============================================================================
+// VectorSmaller
+//
 // Vector dominance
+//
+//==============================================================================
 function VectorSmaller(v1, v2: TD3DVector) : boolean;
+
+//==============================================================================
+//
+// VectorSmallerEquel
+//
+//==============================================================================
 function VectorSmallerEquel(v1, v2: TD3DVector) : boolean;
+
+//==============================================================================
+// VectorEquel
+//
 // Bitwise equality
+//
+//==============================================================================
 function VectorEquel(v1, v2: TD3DVector) : boolean;
+
+//==============================================================================
+// VectorSquareMagnitude
+//
 // Length-related functions
+//
+//==============================================================================
 function VectorSquareMagnitude(v: TD3DVector) : TD3DValue;
+
+//==============================================================================
+//
+// VectorMagnitude
+//
+//==============================================================================
 function VectorMagnitude(v: TD3DVector) : TD3DValue;
+
+//==============================================================================
+// VectorNormalize
+//
 // Returns vector with same direction and unit length
+//
+//==============================================================================
 function VectorNormalize(v: TD3DVector) : TD3DVector;
+
+//==============================================================================
+// VectorMin
+//
 // Return min/max component of the input vector
+//
+//==============================================================================
 function VectorMin(v: TD3DVector) : TD3DValue;
+
+//==============================================================================
+//
+// VectorMax
+//
+//==============================================================================
 function VectorMax(v: TD3DVector) : TD3DValue;
+
+//==============================================================================
+// VectorMinimize
+//
 // Return memberwise min/max of input vectors
+//
+//==============================================================================
 function VectorMinimize(v1, v2: TD3DVector) : TD3DVector;
+
+//==============================================================================
+//
+// VectorMaximize
+//
+//==============================================================================
 function VectorMaximize(v1, v2: TD3DVector) : TD3DVector;
+
+//==============================================================================
+// VectorDotProduct
+//
 // Dot and cross product
+//
+//==============================================================================
 function VectorDotProduct(v1, v2: TD3DVector) : TD3DValue;
+
+//==============================================================================
+//
+// VectorCrossProduct
+//
+//==============================================================================
 function VectorCrossProduct(v1, v2: TD3DVector) : TD3DVector;
 
 type
@@ -3418,6 +3730,11 @@ type
 const
   D3DSTATE_OVERRIDE_BIAS = 256;
 
+//==============================================================================
+//
+// D3DSTATE_OVERRIDE
+//
+//==============================================================================
 function D3DSTATE_OVERRIDE(typ: DWORD): DWORD;
 
 { A state which sets the override flag for the specified state type. }
@@ -3663,6 +3980,11 @@ const
   D3DWRAPCOORD_2 = $00000004;
   D3DWRAPCOORD_3 = $00000008;
 
+//==============================================================================
+//
+// D3DRENDERSTATE_STIPPLEPATTERN
+//
+//==============================================================================
 function D3DRENDERSTATE_STIPPLEPATTERN(y: DWORD): TD3DRenderStateType;
 
 type
@@ -3870,6 +4192,11 @@ const
   D3DTRIFLAG_ODD                          = $0000001e;
   D3DTRIFLAG_EVEN                         = $0000001f;
 
+//==============================================================================
+//
+// D3DTRIFLAG_STARTFLAT
+//
+//==============================================================================
 function D3DTRIFLAG_STARTFLAT(len: DWORD): DWORD;
 
 { Triangle edge flags }
@@ -4471,9 +4798,32 @@ const
   D3DFVF_TEXTUREFORMAT3 = 1;         // Three floating point values
   D3DFVF_TEXTUREFORMAT4 = 2;         // Four floating point values
 
+//==============================================================================
+//
+// D3DFVF_TEXCOORDSIZE3
+//
+//==============================================================================
 function D3DFVF_TEXCOORDSIZE3(CoordIndex: DWORD): DWORD;
+
+//==============================================================================
+//
+// D3DFVF_TEXCOORDSIZE2
+//
+//==============================================================================
 function D3DFVF_TEXCOORDSIZE2(CoordIndex: DWORD): DWORD;
+
+//==============================================================================
+//
+// D3DFVF_TEXCOORDSIZE4
+//
+//==============================================================================
 function D3DFVF_TEXCOORDSIZE4(CoordIndex: DWORD): DWORD;
+
+//==============================================================================
+//
+// D3DFVF_TEXCOORDSIZE1
+//
+//==============================================================================
 function D3DFVF_TEXCOORDSIZE1(CoordIndex: DWORD): DWORD;
 
 (*==========================================================================;
@@ -4890,7 +5240,6 @@ type
     dwReserved3: DWORD;
     dwReserved4: DWORD;
   end;
-
 
 type
   TD3DEnumDevicesCallback = function(const lpGuid: TGUID;
@@ -6118,7 +6467,6 @@ const
 
   D3DRMADDFACES_VERTICESONLY = 1;
 
-
 { Values for flags in MeshBuilder2::GenerateNormals. }
 
   D3DRMGENERATENORMALS_PRECOMPACT     = 1;
@@ -6304,11 +6652,46 @@ type
   D3DRMANIMATIONKEY = TD3DRMAnimationKey;
   LPD3DRMANIMATIONKEY = PD3DRMAnimationKey;
 
+//==============================================================================
+//
+// D3DRMAnimationGetRotateKey
+//
+//==============================================================================
 procedure D3DRMAnimationGetRotateKey(const rmKey: TD3DRMAnimationKey; var rmQuat: TD3DRMQuaternion);
+
+//==============================================================================
+//
+// D3DRMAnimationGetScaleKey
+//
+//==============================================================================
 procedure D3DRMAnimationGetScaleKey(const rmKey: TD3DRMAnimationKey; var dvVec: TD3DVector);
+
+//==============================================================================
+//
+// D3DRMAnimationGetPositionKey
+//
+//==============================================================================
 procedure D3DRMAnimationGetPositionKey(const rmKey: TD3DRMAnimationKey; var dvVec: TD3DVector);
+
+//==============================================================================
+//
+// D3DRMAnimationSetRotateKey
+//
+//==============================================================================
 procedure D3DRMAnimationSetRotateKey(var rmKey: TD3DRMAnimationKey; const rmQuat: TD3DRMQuaternion);
+
+//==============================================================================
+//
+// D3DRMAnimationSetScaleKey
+//
+//==============================================================================
 procedure D3DRMAnimationSetScaleKey(var rmKey: TD3DRMAnimationKey; const dvVec: TD3DVector);
+
+//==============================================================================
+//
+// D3DRMAnimationSetPositionKey
+//
+//==============================================================================
 procedure D3DRMAnimationSetPositionKey(var rmKey: TD3DRMAnimationKey; const dvVec: TD3DVector);
 
 const
@@ -6355,70 +6738,196 @@ const
   D3DRMGROUP_ALLGROUPS = -1;
 
 { Create a color from three components in the range 0-1 inclusive. }
+
+//==============================================================================
+//
+// D3DRMCreateColorRGB
+//
+//==============================================================================
 function D3DRMCreateColorRGB(red, green, blue: TD3DValue): TD3DColor; stdcall;
 
 { Create a color from four components in the range 0-1 inclusive. }
+
+//==============================================================================
+//
+// D3DRMCreateColorRGBA
+//
+//==============================================================================
 function D3DRMCreateColorRGBA(red, green, blue, alpha: TD3DValue): TD3DColor; stdcall;
 
 { Get the red component of a color. }
+
+//==============================================================================
+//
+// D3DRMColorGetRed
+//
+//==============================================================================
 function D3DRMColorGetRed(d3drmc: TD3DColor): TD3DValue; stdcall;
 
 { Get the green component of a color. }
+
+//==============================================================================
+//
+// D3DRMColorGetGreen
+//
+//==============================================================================
 function D3DRMColorGetGreen(d3drmc: TD3DColor): TD3DValue; stdcall;
 
 { Get the blue component of a color. }
+
+//==============================================================================
+//
+// D3DRMColorGetBlue
+//
+//==============================================================================
 function D3DRMColorGetBlue(d3drmc: TD3DColor): TD3DValue; stdcall;
 
 { Get the alpha component of a color. }
+
+//==============================================================================
+//
+// D3DRMColorGetAlpha
+//
+//==============================================================================
 function D3DRMColorGetAlpha(d3drmc: TD3DColor): TD3DValue; stdcall;
 
 { Add two vectors.  Returns its first argument. }
+
+//==============================================================================
+//
+// D3DRMVectorAdd
+//
+//==============================================================================
 function D3DRMVectorAdd(var d, s1, s2: TD3DVector): PD3DVector; stdcall;
 
 { Subtract two vectors.  Returns its first argument. }
+
+//==============================================================================
+//
+// D3DRMVectorSubtract
+//
+//==============================================================================
 function D3DRMVectorSubtract(var d, s1, s2: TD3DVector): PD3DVector; stdcall;
 
 { Reflect a ray about a given normal.  Returns its first argument. }
+
+//==============================================================================
+//
+// D3DRMVectorReflect
+//
+//==============================================================================
 function D3DRMVectorReflect(var d, ray, norm: TD3DVector): PD3DVector; stdcall;
 
 { Calculate the vector cross product.  Returns its first argument. }
+
+//==============================================================================
+//
+// D3DRMVectorCrossProduct
+//
+//==============================================================================
 function D3DRMVectorCrossProduct(var d, s1, s2: TD3DVector): PD3DVector; stdcall;
 
 { Return the vector dot product. }
+
+//==============================================================================
+//
+// D3DRMVectorDotProduct
+//
+//==============================================================================
 function D3DRMVectorDotProduct(var s1, s2: TD3DVector): TD3DValue; stdcall;
 
 { Scale a vector so that its modulus is 1.  Returns its argument or
   NULL if there was an error (e.g. a zero vector was passed). }
+
+//==============================================================================
+//
+// D3DRMVectorNormalize
+//
+//==============================================================================
 function D3DRMVectorNormalize(var lpv: TD3DVector): PD3DVector; stdcall;
 
 { Return the length of a vector (e.g. sqrt(x*x + y*y + z*z)). }
+
+//==============================================================================
+//
+// D3DRMVectorModulus
+//
+//==============================================================================
 function D3DRMVectorModulus(var v: TD3DVector): TD3DValue; stdcall;
 
 { Set the rotation part of a matrix to be a rotation of theta radians
   around the given axis. }
+
+//==============================================================================
+//
+// D3DRMVectorRotate
+//
+//==============================================================================
 function D3DRMVectorRotate(var r, v, axis: TD3DVector; theta: TD3DValue): PD3DVector; stdcall;
 
 { Scale a vector uniformly in all three axes }
+
+//==============================================================================
+//
+// D3DRMVectorScale
+//
+//==============================================================================
 function D3DRMVectorScale( var d, s: TD3DVector; factor: TD3DValue): PD3DVector; stdcall;
 
 { Return a random unit vector }
+
+//==============================================================================
+//
+// D3DRMVectorRandom
+//
+//==============================================================================
 function D3DRMVectorRandom(var d: TD3DVector): PD3DVector; stdcall;
 
 { Returns a unit quaternion that represents a rotation of theta radians
   around the given axis. }
+
+//==============================================================================
+//
+// D3DRMQuaternionFromRotation
+//
+//==============================================================================
 function D3DRMQuaternionFromRotation(var quat: PD3DRMQuaternion;
     var v: TD3DVector; theta: TD3DValue): PD3DRMQuaternion; stdcall;
 
 { Calculate the product of two quaternions }
+
+//==============================================================================
+//
+// D3DRMQuaternionMultiply
+//
+//==============================================================================
 function D3DRMQuaternionMultiply(var q, a, b: TD3DRMQuaternion): PD3DRMQuaternion; stdcall;
 
 { Interpolate between two quaternions }
+
+//==============================================================================
+//
+// D3DRMQuaternionSlerp
+//
+//==============================================================================
 function D3DRMQuaternionSlerp(var q, a, b: TD3DRMQuaternion; alpha: TD3DValue): PD3DRMQuaternion; stdcall;
 
 { Calculate the matrix for the rotation that a unit quaternion represents }
+
+//==============================================================================
+//
+// D3DRMMatrixFromQuaternion
+//
+//==============================================================================
 procedure D3DRMMatrixFromQuaternion(dmMat: TD3DRMMatrix4D; var lpDqQuat: TD3DRMQuaternion); stdcall;
 
 { Calculate the quaternion that corresponds to a rotation matrix }
+
+//==============================================================================
+//
+// D3DRMQuaternionFromMatrix
+//
+//==============================================================================
 function D3DRMQuaternionFromMatrix(var lpQuat: TD3DRMQuaternion; Mat: TD3DRMMatrix4D): PD3DRMQuaternion;
 
 (*==========================================================================;
@@ -7757,6 +8266,12 @@ const
   D3DRMERR_NOTAGGREGATED          = HResult($88760000 + 812);
 
 { Create a Direct3DRM API }
+
+//==============================================================================
+//
+// Direct3DRMCreate
+//
+//==============================================================================
 function Direct3DRMCreate(out lplpDirect3DRM: IDirect3DRM): HResult; stdcall;
 
 (***************************************************************************
@@ -7929,6 +8444,11 @@ const
 
 { API for creating IDirectXFile interface. }
 
+//==============================================================================
+//
+// DirectXFileCreate
+//
+//==============================================================================
 function DirectXFileCreate(out lplpDirectXFile: IDirectXFile): HResult; stdcall;
 
 (***************************************************************************
@@ -8435,6 +8955,11 @@ const
   DIEFT_DEADBAND           = $00004000;
   DIEFT_STARTDELAY         = $00008000;
 
+//==============================================================================
+//
+// DIEFT_GETTYPE
+//
+//==============================================================================
 function DIEFT_GETTYPE(n: DWORD): DWORD;
 
 const
@@ -8667,7 +9192,18 @@ const
   DIDEVTYPEJOYSTICK_WHEEL       = 6;
   DIDEVTYPEJOYSTICK_HEADTRACKER = 7;
 
+//==============================================================================
+//
+// GET_DIDEVICE_TYPE
+//
+//==============================================================================
 function GET_DIDEVICE_TYPE(dwDevType: DWORD): DWORD;
+
+//==============================================================================
+//
+// GET_DIDEVICE_SUBTYPE
+//
+//==============================================================================
 function GET_DIDEVICE_SUBTYPE(dwDevType: DWORD): DWORD;
 
 type
@@ -8754,9 +9290,32 @@ const
   DIDFT_ALIAS            = $08000000;
   DIDFT_NOCOLLECTION     = $00FFFF00;
 
+//==============================================================================
+//
+// DIDFT_MAKEINSTANCE
+//
+//==============================================================================
 function DIDFT_MAKEINSTANCE(n: WORD): DWORD;
+
+//==============================================================================
+//
+// DIDFT_GETTYPE
+//
+//==============================================================================
 function DIDFT_GETTYPE(n: DWORD): DWORD;
+
+//==============================================================================
+//
+// DIDFT_GETINSTANCE
+//
+//==============================================================================
 function DIDFT_GETINSTANCE(n: DWORD): WORD;
+
+//==============================================================================
+//
+// DIDFT_ENUMCOLLECTION
+//
+//==============================================================================
 function DIDFT_ENUMCOLLECTION(n: WORD): DWORD;
 
 type
@@ -8927,6 +9486,11 @@ const
   DIPH_BYID     = 2;
   DIPH_BYUSAGE  = 3;
 
+//==============================================================================
+//
+// DIMAKEUSAGEDWORD
+//
+//==============================================================================
 function DIMAKEUSAGEDWORD(UsagePage, Usage: Word): DWORD;
 
 type
@@ -9716,7 +10280,6 @@ const
   DIERR_UNPLUGGED               = HResult($80040209);
   DIERR_REPORTFULL              = HResult($8004020A);
 
-
 { Definitions for non-IDirectInput (VJoyD) features defined more recently
   than the current sdk files }
 
@@ -9734,8 +10297,19 @@ const
 
   JOY_OEMPOLL_PASSDRIVERDATA = 7;
 
+//==============================================================================
+//
+// DirectInputCreate
+//
+//==============================================================================
 function DirectInputCreate(hinst: THandle; dwVersion: DWORD;
   out ppDI: IDirectInputA; punkOuter: IUnknown): HResult; stdcall;
+
+//==============================================================================
+//
+// DirectInputCreateEx
+//
+//==============================================================================
 function DirectInputCreateEx(hinst: THandle; dwVersion: DWORD;
   const riidltf: TGUID; out ppDI: IDirectInputA; punkOuter: IUnknown): HResult; stdcall;
 
@@ -10046,13 +10620,29 @@ type
 
 { API's }
 
+//==============================================================================
+//
+// DirectPlayEnumerateA
+//
+//==============================================================================
 function DirectPlayEnumerateA(lpEnumDPCallback: TDPEnumDPCallbackA;
     lpContext: Pointer): HResult; stdcall;
+
+//==============================================================================
+//
+// DirectPlayEnumerateW
+//
+//==============================================================================
 function DirectPlayEnumerateW(lpEnumDPCallback: TDPEnumDPCallback;
     lpContext: Pointer): HResult; stdcall;
+
+//==============================================================================
+//
+// DirectPlayEnumerate
+//
+//==============================================================================
 function DirectPlayEnumerate(lpEnumDPCallback: TDPEnumDPCallbackA;
     lpContext: Pointer): HResult; stdcall;
-
 
 { IDirectPlay2 (and IDirectPlay2A) Interface }
 
@@ -10291,7 +10881,6 @@ const
   DPSYS_CHAT                  = $0109;
   DPSYS_SETGROUPOWNER         = $010A;
   DPSYS_SENDCOMPLETE          = $010d;
-
 
 { Used in the dwPlayerType field to indicate if it applies to a group or a player}
 
@@ -10750,6 +11339,11 @@ type
 
 { API's (cont.) }
 
+//==============================================================================
+//
+// DirectPlayCreate
+//
+//==============================================================================
 function DirectPlayCreate(const lpGUID: TGUID; out lplpDP: IDirectPlay;
     pUnk: IUnknown): HResult; stdcall;
 
@@ -10947,10 +11541,27 @@ type
 
 { DirectPlayLobby API Prototypes }
 
+//==============================================================================
+//
+// DirectPlayLobbyCreateW
+//
+//==============================================================================
 function DirectPlayLobbyCreateW(const lpguidSP: TGUID; out lplpDPL: IDirectPlayLobby;
     lpUnk: IUnknown; lpData: Pointer; dwDataSize: DWORD): HResult; stdcall;
+
+//==============================================================================
+//
+// DirectPlayLobbyCreateA
+//
+//==============================================================================
 function DirectPlayLobbyCreateA(const lpguidSP: TGUID; out lplpDPL: IDirectPlayLobbyA;
     lpUnk: IUnknown; lpData: Pointer; dwDataSize: DWORD): HResult; stdcall;
+
+//==============================================================================
+//
+// DirectPlayLobbyCreate
+//
+//==============================================================================
 function DirectPlayLobbyCreate(const lpguidSP: TGUID; out lplpDPL: IDirectPlayLobbyA;
     lpUnk: IUnknown; lpData: Pointer; dwDataSize: DWORD): HResult; stdcall;
 
@@ -10961,7 +11572,6 @@ const
 
   DPLMSG_SYSTEM   = $00000001;
   DPLMSG_STANDARD = $00000002;
-
 
 { DirectPlayLobby messages and message data structures }
 
@@ -11240,7 +11850,6 @@ const
   DSETUP_CB_MSG_BEGIN_RESTORE_DRIVERS     = 16;
   DSETUP_CB_MSG_FILECOPYERROR             = 17;
 
-
   DSETUP_CB_UPGRADE_TYPE_MASK      = $000F;
   DSETUP_CB_UPGRADE_KEEP           = $0001;
   DSETUP_CB_UPGRADE_SAFE           = $0002;
@@ -11378,20 +11987,77 @@ type
 
 { API }
 
+//==============================================================================
+//
+// DirectXSetupA
+//
+//==============================================================================
 function DirectXSetupA(hWnd: HWND; lpszRootPath: PAnsiChar; dwFlags: DWORD): Longint; stdcall;
+
+//==============================================================================
+//
+// DirectXSetupW
+//
+//==============================================================================
 function DirectXSetupW(hWnd: HWND; lpszRootPath: PWideChar; dwFlags: DWORD): Longint; stdcall;
+
+//==============================================================================
+//
+// DirectXSetup
+//
+//==============================================================================
 function DirectXSetup(hWnd: HWND; lpszRootPath: PAnsiChar; dwFlags: DWORD): Longint; stdcall;
 
+//==============================================================================
+//
+// DirectXDeviceDriverSetupA
+//
+//==============================================================================
 function DirectXDeviceDriverSetupA(hWnd: HWND; lpszDriverClass: PAnsiChar;
     lpszDriverPath: PAnsiChar; dwFlags: DWORD): Longint; stdcall;
+
+//==============================================================================
+//
+// DirectXDeviceDriverSetupW
+//
+//==============================================================================
 function DirectXDeviceDriverSetupW(hWnd: HWND; lpszDriverClass: PWideChar;
     lpszDriverPath: PWideChar; dwFlags: DWORD): Longint; stdcall;
+
+//==============================================================================
+//
+// DirectXDeviceDriverSetup
+//
+//==============================================================================
 function DirectXDeviceDriverSetup(hWnd: HWND; lpszDriverClass: PAnsiChar;
     lpszDriverPath: PAnsiChar; dwFlags: DWORD): Longint; stdcall;
 
+//==============================================================================
+//
+// DirectXRegisterApplicationA
+//
+//==============================================================================
 function DirectXRegisterApplicationA(hWnd: HWND; const lpDXRegApp: TDirectXRegisterAppA): Longint; stdcall;
+
+//==============================================================================
+//
+// DirectXRegisterApplicationW
+//
+//==============================================================================
 function DirectXRegisterApplicationW(hWnd: HWND; const lpDXRegApp: TDirectXRegisterAppW): Longint; stdcall;
+
+//==============================================================================
+//
+// DirectXRegisterApplication
+//
+//==============================================================================
 function DirectXRegisterApplication(hWnd: HWND; const lpDXRegApp: TDirectXRegisterAppA): Longint; stdcall;
+
+//==============================================================================
+//
+// DirectXUnRegisterApplication
+//
+//==============================================================================
 function DirectXUnRegisterApplication(hWnd: HWND; const lpGUID: TGUID): Longint; stdcall;
 
 type
@@ -11399,7 +12065,18 @@ type
       szMessage: PAnsiChar; szName: PAnsiChar; pInfo: Pointer): DWORD; stdcall;
   DSETUP_CALLBACK = TDSetup_Callback;
 
+//==============================================================================
+//
+// DirectXSetupSetCallback
+//
+//==============================================================================
 function DirectXSetupSetCallback(Callback: TDSetup_Callback): Longint; stdcall;
+
+//==============================================================================
+//
+// DirectXSetupGetVersion
+//
+//==============================================================================
 function DirectXSetupGetVersion(var lpdwVersion, lpdwMinorVersion: DWORD): Longint; stdcall;
 
 (*==========================================================================;
@@ -11920,8 +12597,25 @@ const
   DS3DALG_HRTF_FULL: TGUID = '{C2413340-1C1B-11D2-94F5-00C04FC28ACA}';
   DS3DALG_HRTF_LIGHT: TGUID = '{C2413342-1C1B-11D2-94F5-00C04FC28ACA}';
 
+//==============================================================================
+//
+// DSSPEAKER_COMBINED
+//
+//==============================================================================
 function DSSPEAKER_COMBINED(c, g: Byte): DWORD;
+
+//==============================================================================
+//
+// DSSPEAKER_CONFIG
+//
+//==============================================================================
 function DSSPEAKER_CONFIG(a: DWORD): Byte;
+
+//==============================================================================
+//
+// DSSPEAKER_GEOMETRY
+//
+//==============================================================================
 function DSSPEAKER_GEOMETRY(a: DWORD): Byte;
 
 { DirectSound API }
@@ -11938,14 +12632,60 @@ type
   TDSEnumCallback = TDSEnumCallbackA;
   LPDSENUMCALLBACK = TDSEnumCallback;
 
+//==============================================================================
+//
+// DirectSoundCreate
+//
+//==============================================================================
 function DirectSoundCreate(lpGUID: PGUID; out lpDS: IDirectSound; pUnkOuter: IUnknown): HResult; stdcall;
+
+//==============================================================================
+//
+// DirectSoundEnumerateA
+//
+//==============================================================================
 function DirectSoundEnumerateA(lpDSEnumCallback: TDSEnumCallbackA; lpContext: Pointer): HResult; stdcall;
+
+//==============================================================================
+//
+// DirectSoundEnumerateW
+//
+//==============================================================================
 function DirectSoundEnumerateW(lpDSEnumCallback: TDSEnumCallbackW; lpContext: Pointer): HResult; stdcall;
+
+//==============================================================================
+//
+// DirectSoundEnumerate
+//
+//==============================================================================
 function DirectSoundEnumerate(lpDSEnumCallback: TDSEnumCallbackA; lpContext: Pointer): HResult; stdcall;
 
+//==============================================================================
+//
+// DirectSoundCaptureCreate
+//
+//==============================================================================
 function DirectSoundCaptureCreate(lpGUID: PGUID; out lplpDSC: IDirectSoundCapture; pUnkOuter: IUnknown): HResult; stdcall;
+
+//==============================================================================
+//
+// DirectSoundCaptureEnumerateA
+//
+//==============================================================================
 function DirectSoundCaptureEnumerateA(lpDSEnumCallback: TDSEnumCallbackA; lpContext: Pointer): HResult; stdcall;
+
+//==============================================================================
+//
+// DirectSoundCaptureEnumerateW
+//
+//==============================================================================
 function DirectSoundCaptureEnumerateW(lpDSEnumCallback: TDSEnumCallbackW; lpContext: Pointer): HResult; stdcall;
+
+//==============================================================================
+//
+// DirectSoundCaptureEnumerate
+//
+//==============================================================================
 function DirectSoundCaptureEnumerate(lpDSEnumCallback: TDSEnumCallbackA; lpContext: Pointer): HResult; stdcall;
 
 //==========================================================================;
@@ -12007,7 +12747,6 @@ function DirectSoundCaptureEnumerate(lpDSEnumCallback: TDSEnumCallbackA; lpConte
 //               'icop' 'Copyright (C) 1996 Sonic Foundry'
 //
 //////////////////////////////////////////////////////////////////////////
-
 
 ///////////////////////////////////////////////////////////////////////////
 // FOURCC's used in the DLS file
@@ -12225,7 +12964,6 @@ type
   WSMPL   = Trwsmp;
   LPWSMPL = ^WSMPL;
 
-
 // This loop type is a normal forward playing loop which is continually
 // played until the envelope reaches an off threshold in the release
 // portion of the volume envelope
@@ -12249,7 +12987,6 @@ dls2.h
 Description:
 
 Interface defines and structures for the DLS2 extensions of DLS.
-
 
   Written by Microsoft 1998.  Released for public use.
 
@@ -12277,11 +13014,9 @@ const
   CONN_SRC_VIBRATO	       = $0009; 	// Vibrato LFO
   CONN_SRC_MONOPRESSURE        = $000a;         // MIDI Mono pressure
 
-
 // Midi Controllers
   CONN_SRC_CC91		       = $00db;	        // Reverb Send
   CONN_SRC_CC93		       = $00dd;	        // Chorus Send
-
 
 // Generic Destinations
   CONN_DST_GAIN		       = $0001;	        // Same as CONN_DST_ ATTENUATION
@@ -12305,21 +13040,17 @@ const
   CONN_DST_EG1_DELAYTIME       = $020B; 	// EG1 Delay Time
   CONN_DST_EG1_HOLDTIME	       = $020C; 	// EG1 Hold Time
 
-
 //	EG2 Destinations
   CONN_DST_EG2_DELAYTIME       = $030F; 	// EG2 Delay Time
   CONN_DST_EG2_HOLDTIME	       = $0310; 	// EG2 Hold Time
-
 
 // Filter Destinations
   CONN_DST_FILTER_CUTOFF       = $0500; 	// Filter Cutoff Frequency
   CONN_DST_FILTER_Q	       = $0501; 	// Filter Resonance
 
-
 // Transforms
   CONN_TRN_CONVEX	       = $0002; 	// Convex Transform
   CONN_TRN_SWITCH	       = $0003; 	// Switch Transform
-
 
 //	Conditional chunk operators
   DLS_CDL_AND		       = $0001; 	// X = X & Y
@@ -12377,6 +13108,11 @@ type
   Reference_Time   = TReference_Time;
   LPREFERENCE_TIME = PReference_Time;
 
+//==============================================================================
+//
+// MAKEFOURCC
+//
+//==============================================================================
 function MAKEFOURCC(ch0, ch1, ch2, ch3: Char) : DWORD;
 
 type
@@ -12528,10 +13264,6 @@ type
     dwHighNote : DWORD;  // Sets the high note for the range of MIDI note events to which the instrument responds.
   end;
   DMUS_NOTERANGE = TDMUS_NOTERANGE;
-
-
-
-
 
 //***********************************************************************
 //                                                                      *
@@ -13142,7 +13874,6 @@ const
 ///
   DMUS_E_DESCEND_CHUNK_FAIL = (1 shl 31) + (FACILITY_DIRECTMUSIC shl 16) + DMUS_ERRBASE + $0210;//MAKE_DMHRESULTERROR(0x0210)
 
-
 //************************************************************************
 //                                                                       *
 //   dmksctrl.h -- Definition of IKsControl                              *
@@ -13491,7 +14222,6 @@ type
     function SetPatch(dwPatch: DWORD) : HResult; stdcall;
   end;
 
-
   IDirectMusicDownloadedInstrument = interface(IUnknown)
     ['{D2AC287E-B39B-11D1-8704-00600893B1BD}']
     // IDirectMusicDownloadedInstrument
@@ -13654,7 +14384,6 @@ const
   DAUD_CHAN15_VOICE_PRIORITY_OFFSET = $00000001;
   DAUD_CHAN16_VOICE_PRIORITY_OFFSET = $00000000;
 
-
   DAUD_CHAN1_DEF_VOICE_PRIORITY = (DAUD_STANDARD_VOICE_PRIORITY or DAUD_CHAN1_VOICE_PRIORITY_OFFSET);
   DAUD_CHAN2_DEF_VOICE_PRIORITY = (DAUD_STANDARD_VOICE_PRIORITY or DAUD_CHAN2_VOICE_PRIORITY_OFFSET);
   DAUD_CHAN3_DEF_VOICE_PRIORITY = (DAUD_STANDARD_VOICE_PRIORITY or DAUD_CHAN3_VOICE_PRIORITY_OFFSET);
@@ -13671,7 +14400,6 @@ const
   DAUD_CHAN14_DEF_VOICE_PRIORITY = (DAUD_STANDARD_VOICE_PRIORITY or DAUD_CHAN14_VOICE_PRIORITY_OFFSET);
   DAUD_CHAN15_DEF_VOICE_PRIORITY = (DAUD_STANDARD_VOICE_PRIORITY or DAUD_CHAN15_VOICE_PRIORITY_OFFSET);
   DAUD_CHAN16_DEF_VOICE_PRIORITY = (DAUD_STANDARD_VOICE_PRIORITY or DAUD_CHAN16_VOICE_PRIORITY_OFFSET);
-
 
 //GUID definition
   IID_IReferenceClock         : TGUID = '{56A86897-0AD4-11CE-B03A-0020AF0BA770}';
@@ -13767,10 +14495,6 @@ const
 ///
   GUID_DMUS_PROP_Volume          : TGUID = '{FEDFAE25-E46E-11D1-AACE-0000F875AC12}';
 
-
-
-
-
 //***********************************************************************
 //                                                                      *
 //   dmusici.h -- This module contains the API for the                  *
@@ -13790,8 +14514,6 @@ const
   DMUS_MAX_NAME          = 64;         // Maximum object name length.
   DMUS_MAX_CATEGORY      = 64;         // Maximum object category name length.
   DMUS_MAX_FILENAME      = MAX_PATH;
-
-
 
 const
   DMUS_COMMANDT_GROOVE            = 0;
@@ -14097,7 +14819,6 @@ type
 {
     DMUS_CURVE_RESET = 1,           /* Set if the curve needs to be reset.
  DMUS_CURVE_FLAGS; }
-
 
 const
   //DMUS_CURVE_RESET   = 1;
@@ -14895,7 +15616,6 @@ const
   IID_IDirectMusicPerformance2    : TGUID = '{6FC2CAE0-BC78-11D2-AFA6-00AA0024D8B6}';
   IID_IDirectMusicSegment2        : TGUID = '{D38894D1-C052-11D2-872F-00600893B1BD}';
 
-
 //***********************************************************************
 //                                                                      *
 //   dmusicf.h -- This module defines the DirectMusic file formats      *
@@ -14931,7 +15651,6 @@ type
   end;
   DMUS_IO_SEQ_ITEM = TDMUS_IO_SEQ_ITEM;
 
-
   TDMUS_IO_CURVE_ITEM = record
     mtStart         : MUSIC_TIME;
     mtDuration      : MUSIC_TIME;
@@ -14948,13 +15667,11 @@ type
   end;
   DMUS_IO_CURVE_ITEM = TDMUS_IO_CURVE_ITEM;
 
-
   TDMUS_IO_TEMPO_ITEM = record
     lTime    : MUSIC_TIME;
     dblTempo : Double;
   end;
   DMUS_IO_TEMPO_ITEM = TDMUS_IO_TEMPO_ITEM;
-
 
   TDMUS_IO_SYSEX_ITEM = record
     mtTime        : MUSIC_TIME;
@@ -14962,7 +15679,6 @@ type
     dwSysExLength : DWORD;
   end;
   DMUS_IO_SYSEX_ITEM = TDMUS_IO_SYSEX_ITEM;
-
 
   TDMUS_IO_TIMESIGNATURE_ITEM = record
     lTime            : MUSIC_TIME;
@@ -14994,7 +15710,6 @@ type
     dblTempo : Double;
   end;
   DMUS_TEMPO_PARAM = TDMUS_TEMPO_PARAM;
-
 
   TDMUS_MUTE_PARAM = record
     dwPChannel    : DWORD;
@@ -15151,7 +15866,6 @@ type
   end;
   DMUS_IO_MOTIFSETTINGS = TDMUS_IO_MOTIFSETTINGS;
 
-
 const
 // Chord and command file formats
 
@@ -15190,7 +15904,6 @@ type
   end;
   DMUS_IO_COMMAND = TDMUS_IO_COMMAND;
 
-
 //  File io for DirectMusic Tool and ToolGraph objects
 ///
 
@@ -15215,7 +15928,6 @@ type
   end;
   DMUS_IO_TOOL_HEADER = TDMUS_IO_TOOL_HEADER;
 
-
 //  File io for DirectMusic Band Track object
 
 const
@@ -15237,7 +15949,6 @@ type
     lBandTime : MUSIC_TIME;   // Position in track list.
   end;
   DMUS_IO_BAND_ITEM_HEADER = TDMUS_IO_BAND_ITEM_HEADER;
-
 
 //  File io for DirectMusic Band object
 ///
@@ -15280,7 +15991,6 @@ type
     dwChannelPriority : DWORD;                   // Channel priority
   end;
   DMUS_IO_INSTRUMENT = TDMUS_IO_INSTRUMENT;
-
 
 //  File io for DirectMusic Segment object
 
@@ -15333,7 +16043,6 @@ type
     dwValidData : DWORD;    // Flags.
   end;
   DMUS_IO_REFERENCE = TDMUS_IO_REFERENCE;
-
 
 // Chord Maps
 
@@ -15481,160 +16190,350 @@ const
   DSetupLib = 'DSetup.dll';
   DSoundLib = 'DSound.dll';
 
-
 { DirectDraw }
 
+//==============================================================================
+//
+// GET_WHQL_YEAR
+//
+//==============================================================================
 function GET_WHQL_YEAR(dwWHQLLevel: DWORD): DWORD;
 begin
   Result := dwWHQLLevel div $10000;
 end;
 
+//==============================================================================
+//
+// GET_WHQL_MONTH
+//
+//==============================================================================
 function GET_WHQL_MONTH(dwWHQLLevel: DWORD): DWORD;
 begin
   Result := (dwWHQLLevel div $100) and $FF;
 end;
 
+//==============================================================================
+//
+// GET_WHQL_DAY
+//
+//==============================================================================
 function GET_WHQL_DAY(dwWHQLLevel: DWORD): DWORD;
 begin
   Result := dwWHQLLevel and $FF;
 end;
 
+//==============================================================================
+//
+// DirectDrawEnumerateA
+//
+//==============================================================================
 function DirectDrawEnumerateA; external DDrawLib;
+
+//==============================================================================
+//
+// DirectDrawEnumerateW
+//
+//==============================================================================
 function DirectDrawEnumerateW; external DDrawLib;
+
+//==============================================================================
+//
+// DirectDrawEnumerate
+//
+//==============================================================================
 function DirectDrawEnumerate; external DDrawLib name 'DirectDrawEnumerateA';
 
+//==============================================================================
+//
+// DirectDrawEnumerateExA
+//
+//==============================================================================
 function DirectDrawEnumerateExA; external DDrawLib;
+
+//==============================================================================
+//
+// DirectDrawEnumerateExW
+//
+//==============================================================================
 function DirectDrawEnumerateExW; external DDrawLib;
+
+//==============================================================================
+//
+// DirectDrawEnumerateEx
+//
+//==============================================================================
 function DirectDrawEnumerateEx; external DDrawLib name 'DirectDrawEnumerateExA';
 
+//==============================================================================
+//
+// DirectDrawCreate
+//
+//==============================================================================
 function DirectDrawCreate; external DDrawLib;
+
+//==============================================================================
+//
+// DirectDrawCreateEx
+//
+//==============================================================================
 function DirectDrawCreateEx; external DDrawLib;
+
+//==============================================================================
+//
+// DirectDrawCreateClipper
+//
+//==============================================================================
 function DirectDrawCreateClipper; external DDrawLib;
 
 { Direct3D }
 
+//==============================================================================
+//
+// D3DVALP
+//
+//==============================================================================
 function D3DVALP(val: TD3DValue; prec: Integer): TD3DValue;
 begin
   Result := val;
 end;
 
+//==============================================================================
+//
+// D3DVAL
+//
+//==============================================================================
 function D3DVAL(val: TD3DValue): TD3DValue;
 begin
   Result := val;
 end;
 
+//==============================================================================
+//
+// D3DDivide
+//
+//==============================================================================
 function D3DDivide(a, b: TD3DValue): TD3DValue;
 begin
   Result := a / b;
 end;
 
+//==============================================================================
+//
+// D3DMultiply
+//
+//==============================================================================
 function D3DMultiply(a, b: TD3DValue): TD3DValue;
 begin
   Result := a * b;
 end;
 
+//==============================================================================
+//
+// CI_GETALPHA
+//
+//==============================================================================
 function CI_GETALPHA(ci: Integer): Byte;
 begin
   Result := ci shr 24;
 end;
 
+//==============================================================================
+//
+// CI_GETINDEX
+//
+//==============================================================================
 function CI_GETINDEX(ci: Integer): Word;
 begin
   Result := ci shr 8;
 end;
 
+//==============================================================================
+//
+// CI_GETFRACTION
+//
+//==============================================================================
 function CI_GETFRACTION(ci: Integer): Byte;
 begin
   Result := ci;
 end;
 
+//==============================================================================
+//
+// CI_ROUNDINDEX
+//
+//==============================================================================
 function CI_ROUNDINDEX(ci: Integer): Integer;
 begin
   Result := CI_GETINDEX(ci)+$80;
 end;
 
+//==============================================================================
+//
+// CI_MASKALPHA
+//
+//==============================================================================
 function CI_MASKALPHA(ci: Integer): Integer;
 begin
   Result := ci and $FFFFFF;
 end;
 
+//==============================================================================
+//
+// CI_MAKE
+//
+//==============================================================================
 function CI_MAKE(a: Byte; i: Word; f: Byte): Integer;
 begin
   Result := (a shl 24) or (i shl 8) or f;
 end;
 
+//==============================================================================
+//
+// RGBA_GETALPHA
+//
+//==============================================================================
 function RGBA_GETALPHA(rgb: TD3DColor): Byte;
 begin
   Result := rgb shr 24;
 end;
 
+//==============================================================================
+//
+// RGBA_GETRED
+//
+//==============================================================================
 function RGBA_GETRED(rgb: TD3DColor): Byte;
 begin
   Result := rgb shr 16;
 end;
 
+//==============================================================================
+//
+// RGBA_GETGREEN
+//
+//==============================================================================
 function RGBA_GETGREEN(rgb: TD3DColor): Byte;
 begin
   Result := rgb shr 8;
 end;
 
+//==============================================================================
+//
+// RGBA_GETBLUE
+//
+//==============================================================================
 function RGBA_GETBLUE(rgb: TD3DColor): Byte;
 begin
   Result := rgb;
 end;
 
+//==============================================================================
+//
+// RGBA_MAKE
+//
+//==============================================================================
 function RGBA_MAKE(r, g, b, a: Byte): TD3DColor;
 begin
   Result := (a shl 24) or (r shl 16) or (g shl 8) or b;
 end;
 
+//==============================================================================
+//
+// D3DRGB
+//
+//==============================================================================
 function D3DRGB(r, g, b: TD3DValue): TD3DColor;
 begin
   Result := $FF000000 or (Trunc(r*255) shl 16) or (Trunc(g*255) shl 8) or
        (Trunc(b*255));
 end;
 
+//==============================================================================
+//
+// D3DRGBA
+//
+//==============================================================================
 function D3DRGBA(r, g, b, a: TD3DValue): TD3DColor;
 begin
   Result := (Trunc(a*255) shl 24) or (Trunc(r*255) shl 16) or (Trunc(g*255) shl 8) or
     (Trunc(b*255));
 end;
 
+//==============================================================================
+//
+// RGB_GETRED
+//
+//==============================================================================
 function RGB_GETRED(rgb: TD3DColor): Byte;
 begin
   Result := rgb shr 16;
 end;
 
+//==============================================================================
+//
+// RGB_GETGREEN
+//
+//==============================================================================
 function RGB_GETGREEN(rgb: TD3DColor): Byte;
 begin
   Result := rgb shr 8;
 end;
 
+//==============================================================================
+//
+// RGB_GETBLUE
+//
+//==============================================================================
 function RGB_GETBLUE(rgb: TD3DColor): Byte;
 begin
   Result := rgb;
 end;
 
+//==============================================================================
+//
+// RGBA_SETALPHA
+//
+//==============================================================================
 function RGBA_SETALPHA(rgba: TD3DColor; x: Byte): TD3DColor;
 begin
   Result := (x shl 24) or (rgba and $00FFFFFF);
 end;
 
+//==============================================================================
+//
+// RGB_MAKE
+//
+//==============================================================================
 function RGB_MAKE(r, g, b: Byte): TD3DColor;
 begin
   Result := (r shl 16) or (g shl 8) or b;
 end;
 
+//==============================================================================
+//
+// RGBA_TORGB
+//
+//==============================================================================
 function RGBA_TORGB(rgba: TD3DColor): TD3DColor;
 begin
   Result := rgba and $00FFFFFF;
 end;
 
+//==============================================================================
+//
+// RGB_TORGBA
+//
+//==============================================================================
 function RGB_TORGBA(rgb: TD3DColor): TD3DColor;
 begin
   Result := rgb or $FF000000;
 end;
 
+//==============================================================================
+//
+// VectorAdd
+//
+//==============================================================================
 function VectorAdd(v1, v2: TD3DVector) : TD3DVector;
 begin
   result.x := v1.x+v2.x;
@@ -15655,6 +16554,11 @@ asm
          FSTP DWORD PTR [ECX+8]
 end;}
 
+//==============================================================================
+//
+// VectorSub
+//
+//==============================================================================
 function VectorSub(v1, v2: TD3DVector) : TD3DVector;
 begin
   result.x := v1.x-v2.x;
@@ -15662,6 +16566,11 @@ begin
   result.z := v1.z-v2.z;
 end;
 
+//==============================================================================
+//
+// VectorMulS
+//
+//==============================================================================
 function VectorMulS(v: TD3DVector; s: TD3DValue) : TD3DVector;
 begin
   result.x := v.x*s;
@@ -15669,6 +16578,11 @@ begin
   result.z := v.z*s;
 end;
 
+//==============================================================================
+//
+// VectorDivS
+//
+//==============================================================================
 function VectorDivS(v: TD3DVector; s: TD3DValue) : TD3DVector;
 begin
   result.x := v.x/s;
@@ -15676,6 +16590,11 @@ begin
   result.z := v.z/s;
 end;
 
+//==============================================================================
+//
+// VectorMul
+//
+//==============================================================================
 function VectorMul(v1, v2: TD3DVector) : TD3DVector;
 begin
   result.x := v1.x*v2.x;
@@ -15683,6 +16602,11 @@ begin
   result.z := v1.z*v2.z;
 end;
 
+//==============================================================================
+//
+// VectorDiv
+//
+//==============================================================================
 function VectorDiv(v1, v2: TD3DVector) : TD3DVector;
 begin
   result.x := v1.x/v2.x;
@@ -15690,36 +16614,71 @@ begin
   result.z := v1.z/v2.z;
 end;
 
+//==============================================================================
+//
+// VectorSmaller
+//
+//==============================================================================
 function VectorSmaller(v1, v2: TD3DVector) : boolean;
 begin
   result := (v1.x < v2.x) and (v1.y < v2.y) and (v1.z < v2.z);
 end;
 
+//==============================================================================
+//
+// VectorSmallerEquel
+//
+//==============================================================================
 function VectorSmallerEquel(v1, v2: TD3DVector) : boolean;
 begin
   result := (v1.x <= v2.x) and (v1.y <= v2.y) and (v1.z <= v2.z);
 end;
 
+//==============================================================================
+//
+// VectorEquel
+//
+//==============================================================================
 function VectorEquel(v1, v2: TD3DVector) : boolean;
 begin
   result := (v1.x = v2.x) and (v1.y = v2.y) and (v1.z = v2.z);
 end;
 
+//==============================================================================
+//
+// VectorSquareMagnitude
+//
+//==============================================================================
 function VectorSquareMagnitude(v: TD3DVector) : TD3DValue;
 begin
   result := (v.x*v.x) + (v.y*v.y) + (v.z*v.z);
 end;
 
+//==============================================================================
+//
+// VectorMagnitude
+//
+//==============================================================================
 function VectorMagnitude(v: TD3DVector) : TD3DValue;
 begin
   result := sqrt( (v.x*v.x) + (v.y*v.y) + (v.z*v.z) );
 end;
 
+//==============================================================================
+//
+// VectorNormalize
+//
+//==============================================================================
 function VectorNormalize(v: TD3DVector) : TD3DVector;
 begin
   result := VectorDivS(v,VectorMagnitude(v));
 end;
 
+//==============================================================================
+//
+// VectorMin
+//
+//==============================================================================
 function VectorMin(v: TD3DVector) : TD3DValue;
 var
   ret : TD3DValue;
@@ -15730,6 +16689,11 @@ begin
   result := ret;
 end;
 
+//==============================================================================
+//
+// VectorMax
+//
+//==============================================================================
 function VectorMax(v: TD3DVector) : TD3DValue;
 var
   ret : TD3DValue;
@@ -15740,6 +16704,11 @@ begin
   result := ret;
 end;
 
+//==============================================================================
+//
+// VectorMinimize
+//
+//==============================================================================
 function VectorMinimize(v1, v2: TD3DVector) : TD3DVector;
 begin
   if v1.x < v2.x then result.x := v1.x else result.x := v2.x;
@@ -15747,6 +16716,11 @@ begin
   if v1.z < v2.z then result.z := v1.z else result.z := v2.z;
 end;
 
+//==============================================================================
+//
+// VectorMaximize
+//
+//==============================================================================
 function VectorMaximize(v1, v2: TD3DVector) : TD3DVector;
 begin
   if v1.x > v2.x then result.x := v1.x else result.x := v2.x;
@@ -15754,11 +16728,21 @@ begin
   if v1.z > v2.z then result.z := v1.z else result.z := v2.z;
 end;
 
+//==============================================================================
+//
+// VectorDotProduct
+//
+//==============================================================================
 function VectorDotProduct(v1, v2: TD3DVector) : TD3DValue;
 begin
   result := (v1.x*v2.x) + (v1.y * v2.y) + (v1.z*v2.z);
 end;
 
+//==============================================================================
+//
+// VectorCrossProduct
+//
+//==============================================================================
 function VectorCrossProduct(v1, v2: TD3DVector) : TD3DVector;
 begin
   result.x := (v1.y*v2.z) - (v1.z*v2.y);
@@ -15766,37 +16750,72 @@ begin
   result.z := (v1.x*v2.y) - (v1.y*v2.x);
 end;
 
+//==============================================================================
+//
+// D3DSTATE_OVERRIDE
+//
+//==============================================================================
 function D3DSTATE_OVERRIDE(typ: DWORD): DWORD;
 begin
   Result := typ + D3DSTATE_OVERRIDE_BIAS;
 end;
 
+//==============================================================================
+//
+// D3DRENDERSTATE_STIPPLEPATTERN
+//
+//==============================================================================
 function D3DRENDERSTATE_STIPPLEPATTERN(y: DWORD): TD3DRenderStateType;
 begin
   Result := TD3DRenderStateType(Ord(D3DRENDERSTATE_STIPPLEPATTERN00)+y);
 end;
 
+//==============================================================================
+//
+// D3DTRIFLAG_STARTFLAT
+//
+//==============================================================================
 function D3DTRIFLAG_STARTFLAT(len: DWORD) : DWORD;
 begin
   if not (len in [1..29]) then len := 0;
   result := len;
 end;
 
+//==============================================================================
+//
+// D3DFVF_TEXCOORDSIZE3
+//
+//==============================================================================
 function D3DFVF_TEXCOORDSIZE3(CoordIndex: DWORD): DWORD;
 begin
   Result := D3DFVF_TEXTUREFORMAT3 shl (CoordIndex*2 + 16);
 end;
 
+//==============================================================================
+//
+// D3DFVF_TEXCOORDSIZE2
+//
+//==============================================================================
 function D3DFVF_TEXCOORDSIZE2(CoordIndex: DWORD): DWORD;
 begin
   Result := D3DFVF_TEXTUREFORMAT2;
 end;
 
+//==============================================================================
+//
+// D3DFVF_TEXCOORDSIZE4
+//
+//==============================================================================
 function D3DFVF_TEXCOORDSIZE4(CoordIndex: DWORD): DWORD;
 begin
   Result := D3DFVF_TEXTUREFORMAT4 shl (CoordIndex*2 + 16);
 end;
 
+//==============================================================================
+//
+// D3DFVF_TEXCOORDSIZE1
+//
+//==============================================================================
 function D3DFVF_TEXCOORDSIZE1(CoordIndex: DWORD): DWORD;
 begin
   Result := D3DFVF_TEXTUREFORMAT1 shl (CoordIndex*2 + 16);
@@ -15804,6 +16823,11 @@ end;
 
 { Direct3DRM }
 
+//==============================================================================
+//
+// D3DRMAnimationGetRotateKey
+//
+//==============================================================================
 procedure D3DRMAnimationGetRotateKey(const rmKey: TD3DRMAnimationKey; var rmQuat: TD3DRMQuaternion);
 begin
   rmQuat.s := rmKey.dvK[0];
@@ -15812,6 +16836,11 @@ begin
   rmQuat.v.z := rmKey.dvK[3];
 end;
 
+//==============================================================================
+//
+// D3DRMAnimationGetScaleKey
+//
+//==============================================================================
 procedure D3DRMAnimationGetScaleKey(const rmKey: TD3DRMAnimationKey; var dvVec: TD3DVector);
 begin
   dvVec.x := rmKey.dvK[0];
@@ -15819,6 +16848,11 @@ begin
   dvVec.z := rmKey.dvK[2];
 end;
 
+//==============================================================================
+//
+// D3DRMAnimationGetPositionKey
+//
+//==============================================================================
 procedure D3DRMAnimationGetPositionKey(const rmKey: TD3DRMAnimationKey; var dvVec: TD3DVector);
 begin
   dvVec.x := rmKey.dvK[0];
@@ -15826,6 +16860,11 @@ begin
   dvVec.z := rmKey.dvK[2];
 end;
 
+//==============================================================================
+//
+// D3DRMAnimationSetRotateKey
+//
+//==============================================================================
 procedure D3DRMAnimationSetRotateKey(var rmKey: TD3DRMAnimationKey; const rmQuat: TD3DRMQuaternion);
 begin
   rmKey.dvK[0] := rmQuat.s;
@@ -15834,6 +16873,11 @@ begin
   rmKey.dvK[3] := rmQuat.v.z;
 end;
 
+//==============================================================================
+//
+// D3DRMAnimationSetScaleKey
+//
+//==============================================================================
 procedure D3DRMAnimationSetScaleKey(var rmKey: TD3DRMAnimationKey; const dvVec: TD3DVector);
 begin
   rmKey.dvK[0] := dvVec.x;
@@ -15841,6 +16885,11 @@ begin
   rmKey.dvK[2] := dvVec.z;
 end;
 
+//==============================================================================
+//
+// D3DRMAnimationSetPositionKey
+//
+//==============================================================================
 procedure D3DRMAnimationSetPositionKey(var rmKey: TD3DRMAnimationKey; const dvVec: TD3DVector);
 begin
   rmKey.dvK[0] := dvVec.x;
@@ -15848,159 +16897,535 @@ begin
   rmKey.dvK[2] := dvVec.z;
 end;
 
+//==============================================================================
+//
+// Direct3DRMCreate
+//
+//==============================================================================
 function Direct3DRMCreate; external D3DRMLib;
 
+//==============================================================================
+//
+// D3DRMCreateColorRGB
+//
+//==============================================================================
 function D3DRMCreateColorRGB; external D3DRMLib;
+
+//==============================================================================
+//
+// D3DRMCreateColorRGBA
+//
+//==============================================================================
 function D3DRMCreateColorRGBA; external D3DRMLib;
+
+//==============================================================================
+//
+// D3DRMColorGetRed
+//
+//==============================================================================
 function D3DRMColorGetRed; external D3DRMLib;
+
+//==============================================================================
+//
+// D3DRMColorGetGreen
+//
+//==============================================================================
 function D3DRMColorGetGreen; external D3DRMLib;
+
+//==============================================================================
+//
+// D3DRMColorGetBlue
+//
+//==============================================================================
 function D3DRMColorGetBlue; external D3DRMLib;
+
+//==============================================================================
+//
+// D3DRMColorGetAlpha
+//
+//==============================================================================
 function D3DRMColorGetAlpha; external D3DRMLib;
+
+//==============================================================================
+//
+// D3DRMVectorAdd
+//
+//==============================================================================
 function D3DRMVectorAdd; external D3DRMLib;
+
+//==============================================================================
+//
+// D3DRMVectorSubtract
+//
+//==============================================================================
 function D3DRMVectorSubtract; external D3DRMLib;
+
+//==============================================================================
+//
+// D3DRMVectorReflect
+//
+//==============================================================================
 function D3DRMVectorReflect; external D3DRMLib;
+
+//==============================================================================
+//
+// D3DRMVectorCrossProduct
+//
+//==============================================================================
 function D3DRMVectorCrossProduct; external D3DRMLib;
+
+//==============================================================================
+//
+// D3DRMVectorDotProduct
+//
+//==============================================================================
 function D3DRMVectorDotProduct; external D3DRMLib;
+
+//==============================================================================
+//
+// D3DRMVectorNormalize
+//
+//==============================================================================
 function D3DRMVectorNormalize; external D3DRMLib;
+
+//==============================================================================
+//
+// D3DRMVectorModulus
+//
+//==============================================================================
 function D3DRMVectorModulus; external D3DRMLib;
+
+//==============================================================================
+//
+// D3DRMVectorRotate
+//
+//==============================================================================
 function D3DRMVectorRotate; external D3DRMLib;
+
+//==============================================================================
+//
+// D3DRMVectorScale
+//
+//==============================================================================
 function D3DRMVectorScale; external D3DRMLib;
+
+//==============================================================================
+//
+// D3DRMVectorRandom
+//
+//==============================================================================
 function D3DRMVectorRandom; external D3DRMLib;
+
+//==============================================================================
+//
+// D3DRMQuaternionFromRotation
+//
+//==============================================================================
 function D3DRMQuaternionFromRotation; external D3DRMLib;
+
+//==============================================================================
+//
+// D3DRMQuaternionMultiply
+//
+//==============================================================================
 function D3DRMQuaternionMultiply; external D3DRMLib;
+
+//==============================================================================
+//
+// D3DRMQuaternionSlerp
+//
+//==============================================================================
 function D3DRMQuaternionSlerp; external D3DRMLib;
+
+//==============================================================================
+//
+// D3DRMMatrixFromQuaternion
+//
+//==============================================================================
 procedure D3DRMMatrixFromQuaternion; external D3DRMLib;
+
+//==============================================================================
+//
+// D3DRMQuaternionFromMatrix
+//
+//==============================================================================
 function D3DRMQuaternionFromMatrix; external D3DRMLib;
 
+//==============================================================================
+//
+// DirectXFileCreate
+//
+//==============================================================================
 function DirectXFileCreate; external D3DXofLib;
 
 { DirectInput }
 
+//==============================================================================
+//
+// GET_DIDEVICE_TYPE
+//
+//==============================================================================
 function GET_DIDEVICE_TYPE(dwDevType: DWORD): DWORD;
 begin
   Result := LOBYTE(dwDevType);
 end;
 
+//==============================================================================
+//
+// GET_DIDEVICE_SUBTYPE
+//
+//==============================================================================
 function GET_DIDEVICE_SUBTYPE(dwDevType: DWORD): DWORD;
 begin
   Result := HIBYTE(dwDevType);
 end;
 
+//==============================================================================
+//
+// DIEFT_GETTYPE
+//
+//==============================================================================
 function DIEFT_GETTYPE(n: DWORD): DWORD;
 begin
   Result := LOBYTE(n);
 end;
 
+//==============================================================================
+//
+// DIDFT_MAKEINSTANCE
+//
+//==============================================================================
 function DIDFT_MAKEINSTANCE(n: WORD): DWORD;
 begin
   Result := n shl 8;
 end;
 
+//==============================================================================
+//
+// DIDFT_GETTYPE
+//
+//==============================================================================
 function DIDFT_GETTYPE(n: DWORD): DWORD;
 begin
   Result := LOBYTE(n);
 end;
 
+//==============================================================================
+//
+// DIDFT_GETINSTANCE
+//
+//==============================================================================
 function DIDFT_GETINSTANCE(n: DWORD): WORD;
 begin
   Result := n shr 8;
 end;
 
+//==============================================================================
+//
+// DIDFT_ENUMCOLLECTION
+//
+//==============================================================================
 function DIDFT_ENUMCOLLECTION(n: WORD): DWORD;
 begin
   Result := n shl 8;
 end;
 
+//==============================================================================
+//
+// DIMAKEUSAGEDWORD
+//
+//==============================================================================
 function DIMAKEUSAGEDWORD(UsagePage, Usage: Word): DWORD;
 begin
   Result := MAKELONG(Usage, UsagePage);
 end;
 
+//==============================================================================
+//
+// DirectInputCreate
+//
+//==============================================================================
 function DirectInputCreate; external DInputLib name 'DirectInputCreateA';
+
+//==============================================================================
+//
+// DirectInputCreateEx
+//
+//==============================================================================
 function DirectInputCreateEx; external DInputLib name 'DirectInputCreateEx';
 
 { DirectPlay }
 
+//==============================================================================
+//
+// DirectPlayEnumerateA
+//
+//==============================================================================
 function DirectPlayEnumerateA; external DPlayXLib;
+
+//==============================================================================
+//
+// DirectPlayEnumerateW
+//
+//==============================================================================
 function DirectPlayEnumerateW; external DPlayXLib;
+
+//==============================================================================
+//
+// DirectPlayEnumerate
+//
+//==============================================================================
 function DirectPlayEnumerate; external DPlayXLib name 'DirectPlayEnumerateA';
 
+//==============================================================================
+//
+// DirectPlayCreate
+//
+//==============================================================================
 function DirectPlayCreate; external DPlayXLib;
 
+//==============================================================================
+//
+// DirectPlayLobbyCreateW
+//
+//==============================================================================
 function DirectPlayLobbyCreateW; external DPlayXLib;
+
+//==============================================================================
+//
+// DirectPlayLobbyCreateA
+//
+//==============================================================================
 function DirectPlayLobbyCreateA; external DPlayXLib;
+
+//==============================================================================
+//
+// DirectPlayLobbyCreate
+//
+//==============================================================================
 function DirectPlayLobbyCreate; external DPlayXLib name 'DirectPlayLobbyCreateA';
 
 { DirectSetup }
 
+//==============================================================================
+//
+// DirectXSetupA
+//
+//==============================================================================
 function DirectXSetupA; external DSetupLib;
+
+//==============================================================================
+//
+// DirectXSetupW
+//
+//==============================================================================
 function DirectXSetupW; external DSetupLib;
+
+//==============================================================================
+//
+// DirectXSetup
+//
+//==============================================================================
 function DirectXSetup; external DSetupLib name 'DirectXSetupA';
 
+//==============================================================================
+//
+// DirectXDeviceDriverSetupA
+//
+//==============================================================================
 function DirectXDeviceDriverSetupA; external DSetupLib;
+
+//==============================================================================
+//
+// DirectXDeviceDriverSetupW
+//
+//==============================================================================
 function DirectXDeviceDriverSetupW; external DSetupLib;
+
+//==============================================================================
+//
+// DirectXDeviceDriverSetup
+//
+//==============================================================================
 function DirectXDeviceDriverSetup; external DSetupLib name 'DirectXDeviceDriverSetupA';
 
+//==============================================================================
+//
+// DirectXRegisterApplicationA
+//
+//==============================================================================
 function DirectXRegisterApplicationA; external DSetupLib;
+
+//==============================================================================
+//
+// DirectXRegisterApplicationW
+//
+//==============================================================================
 function DirectXRegisterApplicationW; external DSetupLib;
+
+//==============================================================================
+//
+// DirectXRegisterApplication
+//
+//==============================================================================
 function DirectXRegisterApplication; external DSetupLib name 'DirectXRegisterApplicationA';
 
+//==============================================================================
+//
+// DirectXUnRegisterApplication
+//
+//==============================================================================
 function DirectXUnRegisterApplication; external DSetupLib;
 
+//==============================================================================
+//
+// DirectXSetupSetCallback
+//
+//==============================================================================
 function DirectXSetupSetCallback; external DSetupLib;
 
+//==============================================================================
+//
+// DirectXSetupGetVersion
+//
+//==============================================================================
 function DirectXSetupGetVersion; external DSetupLib;
 
 { DirectSound }
 
+//==============================================================================
+//
+// DSSPEAKER_COMBINED
+//
+//==============================================================================
 function DSSPEAKER_COMBINED(c, g: Byte): DWORD;
 begin
   Result := c or (g shl 16);
 end;
 
+//==============================================================================
+//
+// DSSPEAKER_CONFIG
+//
+//==============================================================================
 function DSSPEAKER_CONFIG(a: DWORD): Byte;
 begin
   Result := a;
 end;
 
+//==============================================================================
+//
+// DSSPEAKER_GEOMETRY
+//
+//==============================================================================
 function DSSPEAKER_GEOMETRY(a: DWORD): Byte;
 begin
   Result := a shr 16;
 end;
 
+//==============================================================================
+//
+// DirectSoundCreate
+//
+//==============================================================================
 function DirectSoundCreate; external DSoundLib;
+
+//==============================================================================
+//
+// DirectSoundEnumerateA
+//
+//==============================================================================
 function DirectSoundEnumerateA; external DSoundLib;
+
+//==============================================================================
+//
+// DirectSoundEnumerateW
+//
+//==============================================================================
 function DirectSoundEnumerateW; external DSoundLib;
+
+//==============================================================================
+//
+// DirectSoundEnumerate
+//
+//==============================================================================
 function DirectSoundEnumerate; external DSoundLib name 'DirectSoundEnumerateA';
 
+//==============================================================================
+//
+// DirectSoundCaptureCreate
+//
+//==============================================================================
 function DirectSoundCaptureCreate; external DSoundLib;
+
+//==============================================================================
+//
+// DirectSoundCaptureEnumerateA
+//
+//==============================================================================
 function DirectSoundCaptureEnumerateA; external DSoundLib;
+
+//==============================================================================
+//
+// DirectSoundCaptureEnumerateW
+//
+//==============================================================================
 function DirectSoundCaptureEnumerateW; external DSoundLib;
+
+//==============================================================================
+//
+// DirectSoundCaptureEnumerate
+//
+//==============================================================================
 function DirectSoundCaptureEnumerate; external DSoundLib name 'DirectSoundCaptureEnumerateA';
 
+//==============================================================================
+//
+// MAKEFOURCC
+//
+//==============================================================================
 function MAKEFOURCC(ch0, ch1, ch2, ch3: Char) : DWORD;
 begin
   Result := Ord(ch0) + (Ord(ch1) shl 8) + (Ord(ch2) shl 16) + (Ord(ch3) shl 24);
 end;
 
+//==============================================================================
+//
+// MAKE_DMHRESULTSUCCESS
+//
+//==============================================================================
 function MAKE_DMHRESULTSUCCESS(code: Cardinal) : HResult;
 begin
   Result := MakeResult(0, FACILITY_DIRECTMUSIC, (DMUS_ERRBASE + (code)));
 end;
 
+//==============================================================================
+//
+// MAKE_DMHRESULTERROR
+//
+//==============================================================================
 function MAKE_DMHRESULTERROR(code: Cardinal) : HResult;
 begin
   Result := MakeResult(1, FACILITY_DIRECTMUSIC, (DMUS_ERRBASE + (code)));
 end;
 
+//==============================================================================
+// QWORD_ALIGN
+//
 // The number of bytes to allocate for an event with 'cb' data bytes.
 //
+//==============================================================================
 function QWORD_ALIGN(x: LONGLONG): LONGLONG;
 begin
   Result := x + 7;
   PDWORD(@Result)^ := PDWORD(@Result)^ and (not 7);
 end;
 
+//==============================================================================
+//
+// DMUS_EVENT_SIZE
+//
+//==============================================================================
 function DMUS_EVENT_SIZE(cb: LONGLONG): LONGLONG;
 begin
   Result := QWORD_ALIGN(SizeOf(DMUS_EVENTHEADER) + cb);

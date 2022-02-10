@@ -133,7 +133,6 @@ const
 // Set if already seen, thus drawn in automap.
   ML_MAPPED = 256;
 
-
 type
 // Sector definition, from editing.
   mapsector_t = record

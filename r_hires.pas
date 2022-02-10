@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -67,32 +67,144 @@ const
 type
   alphafunc_t = function (const c1, c2: LongWord; const alpha: fixed_t): LongWord;
 
+//==============================================================================
+//
+// R_CmdMediumRes
+//
+//==============================================================================
 procedure R_CmdMediumRes(const parm1: string = '');
+
+//==============================================================================
+//
+// R_CmdNormalRes
+//
+//==============================================================================
 procedure R_CmdNormalRes(const parm1: string = '');
+
+//==============================================================================
+//
+// R_CmdDetailLevel
+//
+//==============================================================================
 procedure R_CmdDetailLevel(const parm1: string = '');
+
+//==============================================================================
+//
+// R_CmdExtremeflatfiltering
+//
+//==============================================================================
 procedure R_CmdExtremeflatfiltering(const parm1: string = '');
+
+//==============================================================================
+//
+// R_CmdSmoothSkies
+//
+//==============================================================================
 procedure R_CmdSmoothSkies(const parm1: string = '');
+
+//==============================================================================
+//
+// R_CmdFullScreen
+//
+//==============================================================================
 procedure R_CmdFullScreen(const parm1: string = '');
+
+//==============================================================================
+//
+// R_Cmd32bittexturepaletteeffects
+//
+//==============================================================================
 procedure R_Cmd32bittexturepaletteeffects(const parm1: string = '');
+
+//==============================================================================
+//
+// R_CmdUseExternalTextures
+//
+//==============================================================================
 procedure R_CmdUseExternalTextures(const parm1: string = '');
 
+//==============================================================================
+//
+// R_ColorAdd
+//
+//==============================================================================
 function R_ColorAdd(const c1, c2: LongWord): LongWord; register;
+
+//==============================================================================
+//
+// R_ColorSubtract
+//
+//==============================================================================
 function R_ColorSubtract(const c1, c2: LongWord): LongWord; register;
 
+//==============================================================================
+//
+// R_ColorLightAdd
+//
+//==============================================================================
 function R_ColorLightAdd(const c1, r, g, b: LongWord): LongWord; register;
 
+//==============================================================================
+//
+// R_ColorAverageAlpha
+//
+//==============================================================================
 function R_ColorAverageAlpha(const c1, c2: LongWord; const alpha: fixed_t): LongWord;
+
+//==============================================================================
+//
+// R_ColorAddAlpha
+//
+//==============================================================================
 function R_ColorAddAlpha(const c1, c2: LongWord; const alpha: fixed_t): LongWord;
+
+//==============================================================================
+//
+// R_ColorSubtractAlpha
+//
+//==============================================================================
 function R_ColorSubtractAlpha(const c1, c2: LongWord; const alpha: fixed_t): LongWord;
 
+//==============================================================================
+//
+// R_ColorMidAverage
+//
+//==============================================================================
 function R_ColorMidAverage(const c1, c2: LongWord): LongWord;
 
+//==============================================================================
+//
+// R_ColorArrayAverage
+//
+//==============================================================================
 function R_ColorArrayAverage(const A: array of const): LongWord;
 
+//==============================================================================
+//
+// R_ColorLight
+//
+//==============================================================================
 function R_ColorLight(const c: LongWord; const lfactor: fixed_t): LongWord; {$IFDEF FPC}inline;{$ENDIF}
+
+//==============================================================================
+//
+// R_ColorLightEx
+//
+//==============================================================================
 function R_ColorLightEx(const c: LongWord; const lfactor: fixed_t): LongWord; {$IFDEF FPC}inline;{$ENDIF}
+
+//==============================================================================
+//
+// R_FuzzLight
+//
+//==============================================================================
 function R_FuzzLight(const c: LongWord): LongWord; {$IFDEF FPC}inline;{$ENDIF}
 
+//==============================================================================
+//
+// R_CalcHiResTables
+//
+//==============================================================================
 procedure R_CalcHiResTables;
 
 const
@@ -109,6 +221,11 @@ var
   hirestable: hirestable_t;
   recalctablesneeded: boolean = true;
 
+//==============================================================================
+//
+// R_SetPalette
+//
+//==============================================================================
 procedure R_SetPalette(palette: integer);
 
 var
@@ -134,10 +251,9 @@ uses
 //
 // Commands
 //
-
-//
 // R_CmdMediumRes
 //
+//==============================================================================
 procedure R_CmdMediumRes(const parm1: string = '');
 var
   newres: boolean;
@@ -160,9 +276,11 @@ begin
   R_CmdNormalRes;
 end;
 
+//==============================================================================
 //
 // R_CmdNormalRes
 //
+//==============================================================================
 procedure R_CmdNormalRes(const parm1: string = '');
 var
   newres: boolean;
@@ -185,9 +303,11 @@ begin
   R_CmdNormalRes;
 end;
 
+//==============================================================================
 //
 // R_CmdDetailLevel
 //
+//==============================================================================
 procedure R_CmdDetailLevel(const parm1: string = '');
 var
   i, newdetail: integer;
@@ -219,6 +339,11 @@ begin
   R_CmdDetailLevel;
 end;
 
+//==============================================================================
+//
+// R_CmdFullScreen
+//
+//==============================================================================
 procedure R_CmdFullScreen(const parm1: string = '');
 var
   newfullscreen: boolean;
@@ -243,6 +368,11 @@ begin
   R_CmdFullScreen;
 end;
 
+//==============================================================================
+//
+// R_CmdExtremeflatfiltering
+//
+//==============================================================================
 procedure R_CmdExtremeflatfiltering(const parm1: string = '');
 var
   newflatfiltering: boolean;
@@ -270,6 +400,11 @@ begin
   R_CmdExtremeflatfiltering;
 end;
 
+//==============================================================================
+//
+// R_CmdSmoothSkies
+//
+//==============================================================================
 procedure R_CmdSmoothSkies(const parm1: string = '');
 var
   newsmoothskies: boolean;
@@ -297,6 +432,11 @@ begin
   R_CmdSmoothSkies;
 end;
 
+//==============================================================================
+//
+// R_Cmd32bittexturepaletteeffects
+//
+//==============================================================================
 procedure R_Cmd32bittexturepaletteeffects(const parm1: string = '');
 var
   new_32bittexturepaletteeffects: boolean;
@@ -317,6 +457,11 @@ begin
   R_Cmd32bittexturepaletteeffects;
 end;
 
+//==============================================================================
+//
+// R_CmdUseExternalTextures
+//
+//==============================================================================
 procedure R_CmdUseExternalTextures(const parm1: string = '');
 var
   new_useexternaltextures: boolean;
@@ -337,8 +482,12 @@ begin
   R_CmdUseExternalTextures;
 end;
 
+//==============================================================================
+// R_ColorAdd
+//
 ////////////////////////////////////////////////////////////////////////////////
-
+//
+//==============================================================================
 function R_ColorAdd(const c1, c2: LongWord): LongWord; register;
 var
   r1, g1, b1: byte;
@@ -364,6 +513,11 @@ begin
   result := r + g shl 8 + b shl 16;
 end;
 
+//==============================================================================
+//
+// R_ColorSubtract
+//
+//==============================================================================
 function R_ColorSubtract(const c1, c2: LongWord): LongWord; register;
 var
   r1, g1, b1: byte;
@@ -392,6 +546,11 @@ begin
   result := r + g shl 8 + b shl 16;
 end;
 
+//==============================================================================
+//
+// R_ColorLightAdd
+//
+//==============================================================================
 function R_ColorLightAdd(const c1, r, g, b: LongWord): LongWord; register;
 var
   r1, g1, b1: LongWord;
@@ -411,6 +570,7 @@ begin
   result := b1 + g1 shl 8 + r1 shl 16;
 end;
 
+//==============================================================================
 //
 // R_ColorAverageAlpha
 //
@@ -418,6 +578,7 @@ end;
 // If alpha = 0 then returns c1
 // If alpha = FRACUNIT returns c2.
 //
+//==============================================================================
 function R_ColorAverageAlpha(const c1, c2: LongWord; const alpha: fixed_t): LongWord;
 var
   r1, g1, b1: byte;
@@ -439,12 +600,14 @@ begin
   result := r + g shl 8 + b shl 16;
 end;
 
+//==============================================================================
 //
 // R_ColorAddAlpha
 //
 // Adds alpha * c2 to c1
 // If factor = 0 then returns c1
 //
+//==============================================================================
 function R_ColorAddAlpha(const c1, c2: LongWord; const alpha: fixed_t): LongWord;
 var
   r1, g1, b1: byte;
@@ -467,6 +630,11 @@ begin
   result := r + g shl 8 + b shl 16;
 end;
 
+//==============================================================================
+//
+// R_ColorSubtractAlpha
+//
+//==============================================================================
 function R_ColorSubtractAlpha(const c1, c2: LongWord; const alpha: fixed_t): LongWord;
 var
   r1, g1, b1: byte;
@@ -489,6 +657,11 @@ begin
   result := r + g shl 8 + b shl 16;
 end;
 
+//==============================================================================
+//
+// R_ColorMidAverage
+//
+//==============================================================================
 function R_ColorMidAverage(const c1, c2: LongWord): LongWord;
 var
   r1, g1, b1: byte;
@@ -507,6 +680,11 @@ begin
   result := r + g shl 8 + b shl 16;
 end;
 
+//==============================================================================
+//
+// R_ColorArrayAverage
+//
+//==============================================================================
 function R_ColorArrayAverage(const A: array of const): LongWord;
 var
   i: integer;
@@ -531,6 +709,7 @@ begin
   result := r shl 16 + g shl 8 + b;
 end;
 
+//==============================================================================
 //
 // R_ColorLight
 //
@@ -538,6 +717,7 @@ end;
 // If lfactor is zero returns black.
 // If lfactor is equal to FRACUNIT - 1 returns the input color c.
 //
+//==============================================================================
 function R_ColorLight(const c: LongWord; const lfactor: fixed_t): LongWord; {$IFDEF FPC}inline;{$ENDIF}
 var
   r1, g1, b1: byte;
@@ -552,10 +732,12 @@ begin
   result := r + g shl 8 + b shl 16;
 end;
 
+//==============================================================================
 //
 //  R_ColorLightEx
 //  if lfactor = -1 then returns the inverse color
 //
+//==============================================================================
 function R_ColorLightEx(const c: LongWord; const lfactor: fixed_t): LongWord; {$IFDEF FPC}inline;{$ENDIF}
 var
   r1, g1, b1: byte;
@@ -579,6 +761,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_FuzzLight
+//
+//==============================================================================
 function R_FuzzLight(const c: LongWord): LongWord; {$IFDEF FPC}inline;{$ENDIF}
 var
   r1, g1, b1: byte;
@@ -593,6 +780,11 @@ begin
   result := r + g shl 8 + b shl 16;
 end;
 
+//==============================================================================
+//
+// R_CalcHiResTables
+//
+//==============================================================================
 procedure R_CalcHiResTables;
 var
   i, j, k: integer;
@@ -671,6 +863,11 @@ begin
   recalctablesneeded := false;
 end;
 
+//==============================================================================
+//
+// R_SetPalette
+//
+//==============================================================================
 procedure R_SetPalette(palette: integer);
 var
   r_extra_red: LongWord;

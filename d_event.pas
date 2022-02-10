@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -111,7 +111,6 @@ const
 const
   NUMJOYBUTTONS = 12;
 
-
 var
 //
 // EVENT HANDLING
@@ -124,7 +123,6 @@ var
   eventtail: integer;
 
 implementation
-
 
 end.
 

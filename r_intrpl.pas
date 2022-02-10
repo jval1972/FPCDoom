@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -38,18 +38,53 @@ interface
 uses
     m_fixed;
 
+//==============================================================================
+//
+// R_InitInterpolations
+//
+//==============================================================================
 procedure R_InitInterpolations;
 
+//==============================================================================
+//
+// R_ResetInterpolationBuffer
+//
+//==============================================================================
 procedure R_ResetInterpolationBuffer;
 
+//==============================================================================
+//
+// R_StoreInterpolationData
+//
+//==============================================================================
 procedure R_StoreInterpolationData;
 
+//==============================================================================
+//
+// R_RestoreInterpolationData
+//
+//==============================================================================
 procedure R_RestoreInterpolationData;
 
+//==============================================================================
+//
+// R_Interpolate
+//
+//==============================================================================
 function R_Interpolate: boolean;
 
+//==============================================================================
+//
+// R_InterpolateTicker
+//
+//==============================================================================
 procedure R_InterpolateTicker;
 
+//==============================================================================
+//
+// R_SetInterpolateSkipTicks
+//
+//==============================================================================
 procedure R_SetInterpolateSkipTicks(const ticks: integer);
 
 var
@@ -112,6 +147,11 @@ var
   imobjs: array[0..$FFFF] of Pmobj_t;
   numismobjs: integer;
 
+//==============================================================================
+//
+// CmdInterpolate
+//
+//==============================================================================
 procedure CmdInterpolate(const parm: string = '');
 var
   newval: boolean;
@@ -132,6 +172,11 @@ begin
   CmdInterpolate;
 end;
 
+//==============================================================================
+//
+// R_InitInterpolations
+//
+//==============================================================================
 procedure R_InitInterpolations;
 begin
   istruct.numitems := 0;
@@ -142,6 +187,11 @@ begin
   C_AddCmd('interpolate, interpolation, setinterpolation, r_interpolate', @CmdInterpolate);
 end;
 
+//==============================================================================
+//
+// R_ResetInterpolationBuffer
+//
+//==============================================================================
 procedure R_ResetInterpolationBuffer;
 begin
   memfree(istruct.items, istruct.realsize * SizeOf(iitem_t));
@@ -153,6 +203,11 @@ begin
   numismobjs := 0;
 end;
 
+//==============================================================================
+//
+// R_InterpolationCalcIF
+//
+//==============================================================================
 function R_InterpolationCalcIF(const prev, next: fixed_t; const frac: fixed_t): fixed_t; {$IFDEF FPC}inline;{$ENDIF}
 begin
   if next = prev then
@@ -161,6 +216,11 @@ begin
     result := prev + Round((next - prev) / FRACUNIT * frac);
 end;
 
+//==============================================================================
+//
+// R_InterpolationCalcSIF
+//
+//==============================================================================
 function R_InterpolationCalcSIF(const prev, next: smallint; const frac: fixed_t): smallint; {$IFDEF FPC}inline;{$ENDIF}
 begin
   if next = prev then
@@ -169,6 +229,11 @@ begin
     result := prev + Round((next - prev) / FRACUNIT * frac);
 end;
 
+//==============================================================================
+//
+// R_InterpolationCalcI
+//
+//==============================================================================
 procedure R_InterpolationCalcI(const pi: Piitem_t; const frac: fixed_t); {$IFDEF FPC}inline;{$ENDIF}
 begin
   if pi.inext = pi.iprev then
@@ -177,6 +242,11 @@ begin
   PInteger(pi.address)^ := pi.iprev + Round((pi.inext - pi.iprev) / FRACUNIT * frac);
 end;
 
+//==============================================================================
+//
+// R_InterpolationCalcSI
+//
+//==============================================================================
 procedure R_InterpolationCalcSI(const pi: Piitem_t; const frac: fixed_t); {$IFDEF FPC}inline;{$ENDIF}
 begin
   if pi.sinext = pi.siprev then
@@ -185,6 +255,11 @@ begin
   PSmallInt(pi.address)^ := pi.siprev + Round((pi.sinext - pi.siprev) / FRACUNIT * frac);
 end;
 
+//==============================================================================
+//
+// R_InterpolationCalcB
+//
+//==============================================================================
 function R_InterpolationCalcB(const prev, next: byte; const frac: fixed_t): byte; {$IFDEF FPC}inline;{$ENDIF}
 begin
   if next = prev then
@@ -197,6 +272,11 @@ begin
     result := prev + (next - prev) * frac div FRACUNIT;
 end;
 
+//==============================================================================
+//
+// R_InterpolationCalcA
+//
+//==============================================================================
 function R_InterpolationCalcA(const prev, next: angle_t; const frac: fixed_t): angle_t; {$IFDEF FPC}inline;{$ENDIF}
 var
   prev_e, next_e, mid_e: Extended;
@@ -231,6 +311,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_AddInterpolationItem
+//
+//==============================================================================
 procedure R_AddInterpolationItem(const addr: pointer; const typ: itype); {$IFDEF FPC}inline;{$ENDIF}
 var
   newrealsize: integer;
@@ -296,6 +381,11 @@ var
 var
   skipinterpolationticks: integer = -1;
 
+//==============================================================================
+//
+// R_StoreInterpolationData
+//
+//==============================================================================
 procedure R_StoreInterpolationData;
 var
   sec: Psector_t;
@@ -364,6 +454,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_RestoreInterpolationData
+//
+//==============================================================================
 procedure R_RestoreInterpolationData;
 var
   i: integer;
@@ -392,6 +487,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_Interpolate
+//
+//==============================================================================
 function R_Interpolate: boolean;
 var
   i: integer;
@@ -445,12 +545,22 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_InterpolateTicker
+//
+//==============================================================================
 procedure R_InterpolateTicker;
 begin
   if skipinterpolationticks >= 0 then
     dec(skipinterpolationticks);
 end;
 
+//==============================================================================
+//
+// R_SetInterpolateSkipTicks
+//
+//==============================================================================
 procedure R_SetInterpolateSkipTicks(const ticks: integer);
 begin
   skipinterpolationticks := ticks;

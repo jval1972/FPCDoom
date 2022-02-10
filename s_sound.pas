@@ -31,62 +31,132 @@ unit s_sound;
 
 interface
 
+//==============================================================================
+// S_Init
 //
 // Initializes sound stuff, including volume
 // Sets channels, SFX and music volume,
 //  allocates channel buffer, sets S_sfx lookup.
 //
+//==============================================================================
 procedure S_Init(sfxVolume: integer; musicVolume: integer);
 
+//==============================================================================
+//
+// S_InitDEHExtraSounds
+//
+//==============================================================================
 procedure S_InitDEHExtraSounds;
 
+//==============================================================================
+//
+// S_ShutDownSound
+//
+//==============================================================================
 procedure S_ShutDownSound;
 
+//==============================================================================
+// S_Start
 //
 // Per level startup code.
 // Kills playing sounds at start of level,
 //  determines music if any, changes music.
 //
+//==============================================================================
 procedure S_Start;
 
-
+//==============================================================================
+// S_StartSound
 //
 // Start sound for thing at <origin>
 //  using <sound_id> from sounds.h
 //
+//==============================================================================
 procedure S_StartSound(origin: pointer; sfx_id: integer); overload;
 
+//==============================================================================
+//
+// S_StartSound
+//
+//==============================================================================
 procedure S_StartSound(origin: pointer; const sndname: string); overload;
 
-
+//==============================================================================
+// S_StartSoundAtVolume
+//
 // Will start a sound at a given volume.
+//
+//==============================================================================
 procedure S_StartSoundAtVolume(origin_p: pointer; sfx_id: integer; volume: integer);
 
-
+//==============================================================================
+// S_StopSound
+//
 // Stop sound for thing at <origin>
+//
+//==============================================================================
 procedure S_StopSound(origin: pointer);
 
-
+//==============================================================================
+// S_StartMusic
+//
 // Start music using <music_id> from sounds.h
+//
+//==============================================================================
 procedure S_StartMusic(music_id: integer);
 
+//==============================================================================
+// S_ChangeMusic
+//
 // Start music using <music_id> from sounds.h,
 //  and set whether looping
+//
+//==============================================================================
 procedure S_ChangeMusic(musicnum: integer; looping: boolean);
 
+//==============================================================================
+// S_StopMusic
+//
 // Stops the music fer sure.
+//
+//==============================================================================
 procedure S_StopMusic;
 
+//==============================================================================
+// S_PauseSound
+//
 // Stop and resume music, during game PAUSE.
+//
+//==============================================================================
 procedure S_PauseSound;
+
+//==============================================================================
+//
+// S_ResumeSound
+//
+//==============================================================================
 procedure S_ResumeSound;
 
+//==============================================================================
+// S_UpdateSounds
 //
 // Updates music & sounds
 //
+//==============================================================================
 procedure S_UpdateSounds(listener_p: pointer);
 
+//==============================================================================
+//
+// S_SetMusicVolume
+//
+//==============================================================================
 procedure S_SetMusicVolume(volume: integer);
+
+//==============================================================================
+//
+// S_SetSfxVolume
+//
+//==============================================================================
 procedure S_SetSfxVolume(volume: integer);
 
 var
@@ -177,18 +247,41 @@ var
   mus_playing: Pmusicinfo_t = nil;
   looping_playing: boolean;
 
+//==============================================================================
+// S_GetChannel
 //
 // Internals.
 //
+//==============================================================================
 function S_GetChannel(origin: pointer; sfxinfo: Psfxinfo_t): integer; forward;
 
+//==============================================================================
+//
+// S_AdjustSoundParams
+//
+//==============================================================================
 function S_AdjustSoundParams(listener: Pmobj_t; source:Pmobj_t;
   vol: Pinteger; sep: Pinteger; pitch: Pinteger): boolean; forward;
 
+//==============================================================================
+//
+// S_StopChannel
+//
+//==============================================================================
 procedure S_StopChannel(cnum: integer); forward;
 
+//==============================================================================
+//
+// S_DoChangeMusic
+//
+//==============================================================================
 procedure S_DoChangeMusic(music: Pmusicinfo_t; looping: boolean); forward;
 
+//==============================================================================
+//
+// S_CmdUseExternalWav
+//
+//==============================================================================
 procedure S_CmdUseExternalWav(const parm: string = '');
 begin
   if parm = '' then
@@ -201,6 +294,11 @@ begin
   S_CmdUseExternalWav;
 end;
 
+//==============================================================================
+//
+// S_CmdMidiTempo
+//
+//==============================================================================
 procedure S_CmdMidiTempo(const parm1: string = '');
 var
   newt: integer;
@@ -227,11 +325,14 @@ begin
 
 end;
 
+//==============================================================================
+// S_Init
 //
 // Initializes sound stuff, including volume
 // Sets channels, SFX and music volume,
 //  allocates channel buffer, sets S_sfx lookup.
 //
+//==============================================================================
 procedure S_Init(sfxVolume: integer; musicVolume: integer);
 var
   i: integer;
@@ -271,6 +372,11 @@ begin
   C_AddCmd('miditempo', @S_CmdMidiTempo);
 end;
 
+//==============================================================================
+//
+// S_InitDEHExtraSounds
+//
+//==============================================================================
 procedure S_InitDEHExtraSounds;
 var
   i: integer;
@@ -287,16 +393,24 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// S_ShutDownSound
+//
+//==============================================================================
 procedure S_ShutDownSound;
 begin
   S_FreeRandomSoundLists;
 end;
 
+//==============================================================================
+// S_Start
 //
 // Per level startup code.
 // Kills playing sounds at start of level,
 //  determines music if any, changes music.
 //
+//==============================================================================
 procedure S_Start;
 var
   cnum: integer;
@@ -339,6 +453,11 @@ begin
   S_ChangeMusic(mnum, true);
 end;
 
+//==============================================================================
+//
+// S_StartSoundAtVolume
+//
+//==============================================================================
 procedure S_StartSoundAtVolume(origin_p: pointer; sfx_id: integer; volume: integer);
 var
   rc: boolean;
@@ -459,16 +578,31 @@ begin
   channels[cnum].handle := I_StartSound(sfx_id, volume, sep, pitch, priority);
 end;
 
+//==============================================================================
+//
+// S_StartSound
+//
+//==============================================================================
 procedure S_StartSound(origin: pointer; sfx_id: integer);
 begin
   S_StartSoundAtVolume(origin, sfx_id, snd_SfxVolume);
 end;
 
+//==============================================================================
+//
+// S_StartSound
+//
+//==============================================================================
 procedure S_StartSound(origin: pointer; const sndname: string);
 begin
   S_StartSoundAtVolume(origin, S_GetSoundNumForName(sndname), snd_SfxVolume);
 end;
 
+//==============================================================================
+//
+// S_StopSound
+//
+//==============================================================================
 procedure S_StopSound(origin: pointer);
 var
   cnum: integer;
@@ -483,9 +617,12 @@ begin
   end;
 end;
 
+//==============================================================================
+// S_PauseSound
 //
 // Stop and resume music, during game PAUSE.
 //
+//==============================================================================
 procedure S_PauseSound;
 begin
   if (mus_playing <> nil) and (not mus_paused) then
@@ -495,6 +632,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// S_ResumeSound
+//
+//==============================================================================
 procedure S_ResumeSound;
 begin
   if (mus_playing <> nil) and mus_paused then
@@ -504,9 +646,12 @@ begin
   end;
 end;
 
+//==============================================================================
+// S_UpdateSounds
 //
 // Updates music & sounds
 //
+//==============================================================================
 procedure S_UpdateSounds(listener_p: pointer);
 var
   cnum: integer;
@@ -564,6 +709,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// S_SetMusicVolume
+//
+//==============================================================================
 procedure S_SetMusicVolume(volume: integer);
 begin
   if (volume < 0) or (volume > 15) then
@@ -576,6 +726,11 @@ begin
   snd_MusicVolume := volume;
 end;
 
+//==============================================================================
+//
+// S_SetSfxVolume
+//
+//==============================================================================
 procedure S_SetSfxVolume(volume: integer);
 begin
   if (volume < 0) or (volume > 15) then
@@ -587,14 +742,22 @@ begin
     snd_SfxVolume := volume;
 end;
 
+//==============================================================================
+// S_StartMusic
 //
 // Starts some music with the music id found in sounds.h.
 //
+//==============================================================================
 procedure S_StartMusic(music_id: integer);
 begin
   S_ChangeMusic(music_id, false);
 end;
 
+//==============================================================================
+//
+// S_GetListFromAlias
+//
+//==============================================================================
 function S_GetListFromAlias(const s: string): TDStringList;
 var
   stmp: string;
@@ -616,6 +779,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// S_DoChangeMusic
+//
+//==============================================================================
 procedure S_DoChangeMusic(music: Pmusicinfo_t; looping: boolean);
 var
   namebuf: char8_t;
@@ -647,6 +815,11 @@ begin
   looping_playing := looping;
 end;
 
+//==============================================================================
+//
+// S_ChangeMusic
+//
+//==============================================================================
 procedure S_ChangeMusic(musicnum: integer; looping: boolean);
 var
   music: Pmusicinfo_t;
@@ -667,6 +840,11 @@ begin
   S_DoChangeMusic(music, looping);
 end;
 
+//==============================================================================
+//
+// S_StopMusic
+//
+//==============================================================================
 procedure S_StopMusic;
 begin
   if mus_playing <> nil then
@@ -682,6 +860,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// S_StopChannel
+//
+//==============================================================================
 procedure S_StopChannel(cnum: integer);
 var
   i: integer;
@@ -713,12 +896,15 @@ begin
   end;
 end;
 
+//==============================================================================
+// S_AdjustSoundParams
 //
 // Changes volume, stereo-separation, and pitch variables
 //  from the norm of a sound effect to be played.
 // If the sound is not audible, returns a 0.
 // Otherwise, modifies parameters and returns 1.
 //
+//==============================================================================
 function S_AdjustSoundParams(listener: Pmobj_t; source:Pmobj_t;
   vol: Pinteger; sep: Pinteger; pitch: Pinteger): boolean;
 var
@@ -782,10 +968,12 @@ begin
   result := vol^ > 0;
 end;
 
+//==============================================================================
 //
 // S_GetChannel :
 //   If none available, return -1.  Otherwise channel #.
 //
+//==============================================================================
 function S_GetChannel(origin: pointer; sfxinfo: Psfxinfo_t): integer;
 var
   // channel number to use

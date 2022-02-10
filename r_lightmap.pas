@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -36,16 +36,46 @@ uses
   m_fixed,
   p_mobj_h;
 
+//==============================================================================
+//
+// R_InitDynamicLights
+//
+//==============================================================================
 procedure R_InitDynamicLights;
 
+//==============================================================================
+//
+// R_ShutDownDynamicLights
+//
+//==============================================================================
 procedure R_ShutDownDynamicLights;
 
+//==============================================================================
+//
+// R_ClearDynamicLights
+//
+//==============================================================================
 procedure R_ClearDynamicLights;
 
+//==============================================================================
+//
+// R_MarkDLights
+//
+//==============================================================================
 procedure R_MarkDLights(const mo: Pmobj_t);
 
+//==============================================================================
+//
+// R_AddAdditionalLights
+//
+//==============================================================================
 procedure R_AddAdditionalLights;
 
+//==============================================================================
+//
+// R_CalcLights
+//
+//==============================================================================
 procedure R_CalcLights;
 
 var
@@ -67,8 +97,18 @@ const
   NUMLIGHTMAPACCURACYMODES = 4;
   MAXLIGHTMAPACCURACYMODE = NUMLIGHTMAPACCURACYMODES - 1;
 
+//==============================================================================
+//
+// R_CalcLigmapYAccuracy
+//
+//==============================================================================
 function R_CalcLigmapYAccuracy: integer;
 
+//==============================================================================
+//
+// R_CastLightmapOnMasked
+//
+//==============================================================================
 function R_CastLightmapOnMasked: boolean;
 
 implementation
@@ -193,6 +233,11 @@ var
   numdlitems: integer = 0;
   realdlitems: integer = 0;
 
+//==============================================================================
+//
+// R_NewVisLight
+//
+//==============================================================================
 function R_NewVisLight: Pvislight_t;
 begin
   if vislight_p = MAXVISLIGHTS then
@@ -204,6 +249,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// SpriteNumForName
+//
+//==============================================================================
 function SpriteNumForName(const name: string): integer;
 var
   spr_name: string;
@@ -214,7 +264,6 @@ begin
 
   if (result >= 0) and (result < numsprites) and (itoa(result) = name) then
     exit;
-
 
   if Length(name) <> 4 then
   begin
@@ -249,6 +298,11 @@ var
 //       don't bother reseting it.... (?)
   lightrnd: integer = 0;
 
+//==============================================================================
+//
+// R_GrowDynlightsArray
+//
+//==============================================================================
 procedure R_GrowDynlightsArray;
 begin
   if numdlights >= realnumdlights then
@@ -266,6 +320,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_AddDynamicLight
+//
+//==============================================================================
 function R_AddDynamicLight(const l: GLDLight): integer;
 var
   i: integer;
@@ -278,6 +337,11 @@ begin
   inc(numdlights);
 end;
 
+//==============================================================================
+//
+// R_FindDynamicLight
+//
+//==============================================================================
 function R_FindDynamicLight(const check: string): integer;
 var
   i: integer;
@@ -294,14 +358,15 @@ begin
   result := -1;
 end;
 
-
 const
   LIGHTSLUMPNAME = 'LIGHTDEF';
 
+//==============================================================================
 //
 // SC_ParceDynamicLights
 // JVAL: Parse LIGHTDEF
 //
+//==============================================================================
 procedure SC_ParceDynamicLight(const in_text: string);
 var
   sc: TScriptEngine;
@@ -577,10 +642,12 @@ begin
   sc.Free;
 end;
 
+//==============================================================================
 //
 // SC_ParceDynamicLights
 // JVAL: Parse all LIGHTDEF lumps
 //
+//==============================================================================
 procedure SC_ParceDynamicLights;
 var
   i: integer;
@@ -594,6 +661,11 @@ begin
     end;
 end;
 
+//==============================================================================
+//
+// R_InitDynamicLights
+//
+//==============================================================================
 procedure R_InitDynamicLights;
 begin
   numdlights := 0;
@@ -603,6 +675,11 @@ begin
   SC_ParceDynamicLights;
 end;
 
+//==============================================================================
+//
+// R_ShutDownDynamicLights
+//
+//==============================================================================
 procedure R_ShutDownDynamicLights;
 begin
   memfree(dlightslist, realnumdlights * SizeOf(GLDLight));
@@ -614,17 +691,24 @@ begin
   realdlitems := 0;
 end;
 
+//==============================================================================
+//
+// R_ClearDynamicLights
+//
+//==============================================================================
 procedure R_ClearDynamicLights;
 begin
   numdlitems := 0;
   vislight_p := 0;
 end;
 
+//==============================================================================
 //
 // R_GetDynamicLight
 // JVAL: Retrieving rendering information for lights
 //       Dynamic lights animations
 //
+//==============================================================================
 function R_GetDynamicLight(const index: integer): PGLDRenderLight;
 var
   l: PGLDLight;
@@ -806,6 +890,11 @@ begin
 
 end;
 
+//==============================================================================
+//
+// R_MarkDLights
+//
+//==============================================================================
 procedure R_MarkDLights(const mo: Pmobj_t);
 var
   l: PGLDRenderLight;
@@ -852,6 +941,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// RIT_AddAdditionalLights
+//
+//==============================================================================
 function RIT_AddAdditionalLights(mo: Pmobj_t): boolean;
 begin
   R_MarkDLights(mo);
@@ -862,6 +956,11 @@ end;
 const
   MAXLIGHTRADIUS = 256 * FRACUNIT;
 
+//==============================================================================
+//
+// R_AddAdditionalLights
+//
+//==============================================================================
 procedure R_AddAdditionalLights;
 var
   x: integer;
@@ -885,6 +984,11 @@ const
   DEPTHBUFFER_NEAR = $3FFF * FRACUNIT;
   DEPTHBUFFER_FAR = 256;
 
+//==============================================================================
+//
+// R_GetVisLightProjection
+//
+//==============================================================================
 function R_GetVisLightProjection(const x, y, z: fixed_t; const radius: fixed_t; const color: LongWord): Pvislight_t;
 var
   tr_x: fixed_t;
@@ -966,7 +1070,6 @@ begin
   else
     result.x2 := x2;
 
-
   // get depthbuffer range
   an := R_PointToAngle(x, y);
   an := an shr ANGLETOFINESHIFT;
@@ -1029,6 +1132,11 @@ begin
   result.color32 := color;
 end;
 
+//==============================================================================
+//
+// R_DrawVisLight
+//
+//==============================================================================
 procedure R_DrawVisLight(const psl: Pdlsortitem_t);
 var
   frac: fixed_t;
@@ -1099,6 +1207,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// f2b
+//
+//==============================================================================
 function f2b(const ff: float): byte;
 var
   ii: integer;
@@ -1112,6 +1225,11 @@ begin
     result := ii;
 end;
 
+//==============================================================================
+//
+// R_CalcLight
+//
+//==============================================================================
 procedure R_CalcLight(const psl: Pdlsortitem_t);
 var
   c: LongWord;
@@ -1126,11 +1244,13 @@ begin
   R_DrawVisLight(psl);
 end;
 
+//==============================================================================
 //
 //  R_SortDlights()
 //  JVAL: Sort the dynamic lights according to square distance of view
 //        (note: closer light is first!)
 //
+//==============================================================================
 procedure R_SortDlights;
 
   procedure qsort(l, r: Integer);
@@ -1168,6 +1288,11 @@ begin
     qsort(0, numdlitems - 1);
 end;
 
+//==============================================================================
+//
+// R_CalcLights
+//
+//==============================================================================
 procedure R_CalcLights;
 var
   i: integer;
@@ -1197,6 +1322,11 @@ var
     (maxwidth: 2147483647; laccuraccy: (8, 7, 6, 1)) //5))
   );
 
+//==============================================================================
+//
+// R_CalcLigmapYAccuracy
+//
+//==============================================================================
 function R_CalcLigmapYAccuracy: integer;
 var
   i, idx: integer;
@@ -1214,6 +1344,11 @@ begin
   result := dropoffarray[idx].laccuraccy[lightmapaccuracymode];
 end;
 
+//==============================================================================
+//
+// R_CastLightmapOnMasked
+//
+//==============================================================================
 function R_CastLightmapOnMasked: boolean;
 begin
   result := uselightmap and (lightmapaccuracymode = MAXLIGHTMAPACCURACYMODE);

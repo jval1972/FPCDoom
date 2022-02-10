@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -48,16 +48,53 @@ const
   PU_PURGELEVEL = 100;
   PU_CACHE = 101;
 
+//==============================================================================
+//
+// Z_Init
+//
+//==============================================================================
 procedure Z_Init;
+
+//==============================================================================
+//
+// Z_ShutDown
+//
+//==============================================================================
 procedure Z_ShutDown;
 
+//==============================================================================
+//
+// Z_Malloc
+//
+//==============================================================================
 function Z_Malloc(size: integer; tag: integer; user: pointer): pointer;
+
+//==============================================================================
+//
+// Z_Realloc
+//
+//==============================================================================
 function Z_Realloc(ptr: pointer; size: integer; tag: integer; user: pointer): pointer;
 
+//==============================================================================
+//
+// Z_Free
+//
+//==============================================================================
 procedure Z_Free(ptr: pointer);
 
+//==============================================================================
+//
+// Z_FreeTags
+//
+//==============================================================================
 procedure Z_FreeTags(lowtag: integer; hightag: integer);
 
+//==============================================================================
+//
+// Z_ChangeTag
+//
+//==============================================================================
 procedure Z_ChangeTag(ptr: pointer; tag: integer);
 
 implementation
@@ -116,16 +153,31 @@ begin
   inherited;
 end;
 
+//==============================================================================
+//
+// TMemManager.item2ptr
+//
+//==============================================================================
 function TMemManager.item2ptr(const id: integer): Pointer;
 begin
   result := pOp(fitems[id], SizeOf(memmanageritem_t));
 end;
 
+//==============================================================================
+//
+// TMemManager.ptr2item
+//
+//==============================================================================
 function TMemManager.ptr2item(const ptr: Pointer): integer;
 begin
   result := Pmemmanageritem_t(pOp(ptr, -SizeOf(memmanageritem_t))).index;
 end;
 
+//==============================================================================
+//
+// TMemManager.M_Free
+//
+//==============================================================================
 procedure TMemManager.M_Free(ptr: Pointer);
 var
   i: integer;
@@ -151,6 +203,11 @@ begin
   dec(fnumitems);
 end;
 
+//==============================================================================
+//
+// TMemManager.M_FreeTags
+//
+//==============================================================================
 procedure TMemManager.M_FreeTags(lowtag, hightag: integer);
 var
   i: integer;
@@ -160,11 +217,21 @@ begin
       M_Free(item2ptr(i));
 end;
 
+//==============================================================================
+//
+// TMemManager.M_ChangeTag
+//
+//==============================================================================
 procedure TMemManager.M_ChangeTag(ptr: Pointer; tag: integer);
 begin
   fitems[ptr2item(ptr)].tag := tag;
 end;
 
+//==============================================================================
+//
+// TMemManager.M_Malloc
+//
+//==============================================================================
 function TMemManager.M_Malloc(size: integer; tag: integer; user: Pointer): pointer;
 var
   i: integer;
@@ -188,6 +255,11 @@ begin
     PPointer(user)^ := result;
 end;
 
+//==============================================================================
+//
+// TMemManager.M_Realloc
+//
+//==============================================================================
 function TMemManager.M_Realloc(ptr: Pointer; size: integer; tag: integer; user: Pointer): pointer;
 var
   tmp: pointer;
@@ -227,6 +299,11 @@ begin
   memfree(tmp, copysize);
 end;
 
+//==============================================================================
+//
+// Z_CmdMem
+//
+//==============================================================================
 procedure Z_CmdMem;
 var
   imgsize: integer;
@@ -240,58 +317,77 @@ end;
 var
   memmanager: TMemManager;
 
+//==============================================================================
 //
 // Z_Init
 //
+//==============================================================================
 procedure Z_Init;
 begin
   memmanager := TMemManager.Create;
   C_AddCmd('mem', @Z_CmdMem);
 end;
 
+//==============================================================================
+//
+// Z_ShutDown
+//
+//==============================================================================
 procedure Z_ShutDown;
 begin
   memmanager.Free;
 end;
 
+//==============================================================================
 //
 // Z_Free
 //
+//==============================================================================
 procedure Z_Free(ptr: pointer);
 begin
   memmanager.M_Free(ptr);
 end;
 
+//==============================================================================
 //
 // Z_Malloc
 // You can pass a NULL user if the tag is < PU_PURGELEVEL.
 //
+//==============================================================================
 function Z_Malloc(size: integer; tag: integer; user: pointer): pointer;
 begin
   result := memmanager.M_Malloc(size, tag, user);
 end;
 
+//==============================================================================
+//
+// Z_Realloc
+//
+//==============================================================================
 function Z_Realloc(ptr: pointer; size: integer; tag: integer; user: pointer): pointer;
 begin
   result := memmanager.M_Realloc(ptr, size, tag, user);
 end;
 
+//==============================================================================
 //
 // Z_FreeTags
 //
+//==============================================================================
 procedure Z_FreeTags(lowtag: integer; hightag: integer);
 begin
   memmanager.M_FreeTags(lowtag, hightag);
 end;
 
+//==============================================================================
 //
 // Z_ChangeTag
 //
+//==============================================================================
 procedure Z_ChangeTag(ptr: pointer; tag: integer);
 begin
   memmanager.M_ChangeTag(ptr, tag);
 end;
 
 end.
-
 

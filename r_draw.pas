@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -38,30 +38,75 @@ uses
 // Needs access to LFB (guess what).
   v_video;
 
+//==============================================================================
+//
+// R_VideoErase
+//
+//==============================================================================
 procedure R_VideoErase(const ofs: integer; const count: integer);
 
+//==============================================================================
+//
+// R_VideoBlanc
+//
+//==============================================================================
 procedure R_VideoBlanc(const scn: integer; const ofs: integer; const count: integer; const black: byte = 0);
 
+//==============================================================================
+//
+// R_PlayerViewBlanc
+//
+//==============================================================================
 procedure R_PlayerViewBlanc(const black: byte);
 
+//==============================================================================
+//
+// R_InitBuffer
+//
+//==============================================================================
 procedure R_InitBuffer(width, height: integer);
 
+//==============================================================================
+// R_InitTranslationTables
+//
 // Initialize color translation tables,
 //  for player rendering etc.
+//
+//==============================================================================
 procedure R_InitTranslationTables;
 
+//==============================================================================
+// R_FillBackScreen
+//
 // Rendering function.
+//
+//==============================================================================
 procedure R_FillBackScreen;
 
+//==============================================================================
+//
+// R_FillBackStatusbar
+//
+//==============================================================================
 procedure R_FillBackStatusbar;
 
 var
   needsstatusbarback: boolean = true;
 
+//==============================================================================
+// R_DrawViewBorder
+//
 // If the view size is not full screen, draws a border around it.
+//
+//==============================================================================
 procedure R_DrawViewBorder;
 
+//==============================================================================
+// R_DrawDiskBusy
+//
 // Draw disk busy patch
+//
+//==============================================================================
 procedure R_DrawDiskBusy;
 
 var
@@ -91,7 +136,6 @@ var
   ylookup32: array[0..MAXHEIGHT - 1] of PLongWordArray;
   columnofs: array[0..MAXWIDTH - 1] of integer;
 
-
 implementation
 
 uses
@@ -105,6 +149,7 @@ uses
 // State.
   doomstat;
 
+//==============================================================================
 //
 // R_InitTranslationTables
 // Creates the translation tables to map
@@ -112,6 +157,7 @@ uses
 // Assumes a given structure of the PLAYPAL.
 // Could be read from a lump instead.
 //
+//==============================================================================
 procedure R_InitTranslationTables;
 var
   i: integer;
@@ -137,6 +183,7 @@ begin
     end;
 end;
 
+//==============================================================================
 //
 // R_InitBuffer
 // Creats lookup tables that avoid
@@ -144,6 +191,7 @@ end;
 //  for getting the framebuffer address
 //  of a pixel to draw.
 //
+//==============================================================================
 procedure R_InitBuffer(width, height: integer);
 var
   i: integer;
@@ -175,6 +223,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_ScreenBlanc
+//
+//==============================================================================
 procedure R_ScreenBlanc(const scn: integer; const black: byte = 0);
 var
   x, i: integer;
@@ -187,13 +240,14 @@ begin
   end;
 end;
 
-
+//==============================================================================
 //
 // R_FillBackScreen
 // Fills the back screen with a pattern
 //  for variable screen sizes
 // Also draws a beveled edge.
 //
+//==============================================================================
 procedure R_FillBackScreen;
 var
   src: PByteArray;
@@ -297,6 +351,11 @@ end;
 var
   oldstatusbarfillblocks: integer = -1;
 
+//==============================================================================
+//
+// R_FillBackStatusbar
+//
+//==============================================================================
 procedure R_FillBackStatusbar;
 var
   src: PByteArray;
@@ -350,9 +409,12 @@ begin
   end;
 end;
 
+//==============================================================================
+// R_VideoErase
 //
 // Copy a screen buffer.
 //
+//==============================================================================
 procedure R_VideoErase(const ofs: integer; const count: integer);
 var
   i: integer;
@@ -379,6 +441,11 @@ begin
     memcpy(@screens[SCN_FG][ofs], @screens[SCN_BG][ofs], count);
 end;
 
+//==============================================================================
+//
+// R_VideoBlanc
+//
+//==============================================================================
 procedure R_VideoBlanc(const scn: integer; const ofs: integer; const count: integer; const black: byte = 0);
 var
   start: PByte;
@@ -403,16 +470,23 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_PlayerViewBlanc
+//
+//==============================================================================
 procedure R_PlayerViewBlanc(const black: byte);
 begin
   R_ScreenBlanc(SCN_FG, black);
 end;
 
+//==============================================================================
 //
 // R_DrawViewBorder
 // Draws the border around the view
 //  for different size windows?
 //
+//==============================================================================
 procedure R_DrawViewBorder;
 begin
   if scaledviewwidth < SCREENWIDTH then
@@ -424,6 +498,11 @@ var
   disklump: integer = -2;
   diskpatch: Ppatch_t = nil;
 
+//==============================================================================
+//
+// R_DrawDiskBusy
+//
+//==============================================================================
 procedure R_DrawDiskBusy;
 begin
   if not displaydiskbusyicon then

@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -61,7 +61,6 @@ var
 const
   NUMCOLORMAPS = 32;
 
-
 type
 //
 // INTERNAL MAP TYPES
@@ -85,7 +84,6 @@ type
 
 {// Forward of LineDefs, for Sectors.
   line_t = record;}
-
 
 // Each sector has a degenmobj_t in its center
 //  for sound origin purposes.
@@ -223,7 +221,6 @@ type
   Pline_t = ^line_t;
   line_tArray = packed array[0..$FFFF] of line_t;
   line_tPArray = packed array[0..$FFFF] of Pline_t;
-
 
 //
 // A SubSector.
@@ -422,7 +419,6 @@ type
   Pspriteframe_t = ^spriteframe_t;
   spriteframe_tArray = packed array[0..$FFFF] of spriteframe_t;
   Pspriteframe_tArray = ^spriteframe_tArray;
-
 
 //
 // A sprite definition:

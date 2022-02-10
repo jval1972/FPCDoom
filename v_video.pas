@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -86,6 +86,11 @@ var
 const
   PLAYPAL = 'PLAYPAL';
 
+//==============================================================================
+//
+// V_ReadPalette
+//
+//==============================================================================
 function V_ReadPalette(tag: integer): PByteArray;
 
 var
@@ -96,18 +101,54 @@ var
   pg_VICTORY2: string = 'VICTORY2';
   pg_ENDPIC: string = 'ENDPIC';
 
+//==============================================================================
+//
+// V_GetScreenWidth
+//
+//==============================================================================
 function V_GetScreenWidth(scrn: integer): integer;
 
+//==============================================================================
+//
+// V_GetScreenHeight
+//
+//==============================================================================
 function V_GetScreenHeight(scrn: integer): integer;
 
+//==============================================================================
+//
+// V_SetPalette
+//
+//==============================================================================
 procedure V_SetPalette(const palette: PByteArray);
 
+//==============================================================================
+// V_Init
+//
 // Allocates buffer screens, call before R_Init.
+//
+//==============================================================================
 procedure V_Init;
+
+//==============================================================================
+//
+// V_ReInit
+//
+//==============================================================================
 procedure V_ReInit;
 
+//==============================================================================
+//
+// V_ShutDown
+//
+//==============================================================================
 procedure V_ShutDown;
 
+//==============================================================================
+//
+// V_ScreensSize
+//
+//==============================================================================
 function V_ScreensSize(const scrn: integer = -1): integer;
 
 procedure V_CopyCustomScreen(
@@ -158,34 +199,104 @@ procedure V_CopyScreenTransparent(
   srcscrn: integer;
   destscrn: integer; srcoffs: integer = 0; destoffs: integer = 0; size: integer = -1);
 
+//==============================================================================
+//
+// V_ShadeScreen
+//
+//==============================================================================
 procedure V_ShadeScreen(const scn: integer; const ofs: integer = 0;
   const count: integer = -1);
 
+//==============================================================================
+//
+// V_RemoveTransparency
+//
+//==============================================================================
 procedure V_RemoveTransparency(const scn: integer; const ofs: integer;
   const count: integer = -1);
 
+//==============================================================================
+//
+// V_DrawPatch
+//
+//==============================================================================
 procedure V_DrawPatch(x, y: integer; scrn: integer; patch: Ppatch_t; preserve: boolean); overload;
 
+//==============================================================================
+//
+// V_DrawPatch
+//
+//==============================================================================
 procedure V_DrawPatch(x, y: integer; scrn: integer; const patchname: string; preserve: boolean); overload;
 
+//==============================================================================
+//
+// V_DrawPatch
+//
+//==============================================================================
 procedure V_DrawPatch(x, y: integer; scrn: integer; const lump: integer; preserve: boolean); overload;
 
+//==============================================================================
+//
+// V_DrawPatchFlipped
+//
+//==============================================================================
 procedure V_DrawPatchFlipped(x, y: integer; scrn: integer; patch: Ppatch_t);
 
+//==============================================================================
+//
+// V_PageDrawer
+//
+//==============================================================================
 procedure V_PageDrawer(const pagename: string);
 
+//==============================================================================
+//
+// V_PreserveX
+//
+//==============================================================================
 function V_PreserveX(const x: integer; const destscrn: integer = -1; const srcscrn: integer = -1): integer;
 
+//==============================================================================
+//
+// V_PreserveY
+//
+//==============================================================================
 function V_PreserveY(const y: integer; const destscrn: integer = -1; const srcscrn: integer = -1): integer;
 
+//==============================================================================
+//
+// V_PreserveW
+//
+//==============================================================================
 function V_PreserveW(const x: integer; const w: integer; const destscrn: integer = -1; const srcscrn: integer = -1): integer;
 
+//==============================================================================
+//
+// V_PreserveH
+//
+//==============================================================================
 function V_PreserveH(const y: integer; const h: integer; const destscrn: integer = -1; const srcscrn: integer = -1): integer;
 
+//==============================================================================
+//
+// V_NeedsPreserve
+//
+//==============================================================================
 function V_NeedsPreserve(const destscrn, srcscrn: integer): boolean; overload;
 
+//==============================================================================
+//
+// V_NeedsPreserve
+//
+//==============================================================================
 function V_NeedsPreserve(const destscrn, srcscrn: integer; preserve: boolean): boolean; overload;
 
+//==============================================================================
+//
+// V_CalcPreserveTables
+//
+//==============================================================================
 procedure V_CalcPreserveTables;
 
 const
@@ -285,6 +396,11 @@ var
   curpal: array[0..255] of LongWord;
   videopal: array[0..255] of LongWord;
 
+//==============================================================================
+//
+// V_FindAproxColorIndex
+//
+//==============================================================================
 function V_FindAproxColorIndex(const pal: PLongWordArray; const c: LongWord;
   const start: integer = 0; const finish: integer = 255): integer;
 
@@ -302,6 +418,11 @@ uses
   w_wad,
   z_memory;
 
+//==============================================================================
+//
+// V_ReadPalette
+//
+//==============================================================================
 function V_ReadPalette(tag: integer): PByteArray;
 begin
   result := PByteArray(W_CacheLumpName(PLAYPAL, tag));
@@ -312,18 +433,33 @@ var
   preserveX: array[0..319] of integer;
   preserveY: array[0..199] of integer;
 
+//==============================================================================
+//
+// V_NeedsPreserve
+//
+//==============================================================================
 function V_NeedsPreserve(const destscrn, srcscrn: integer): boolean; overload;
 begin
   result := (V_GetScreenWidth(srcscrn) <> V_GetScreenWidth(destscrn)) or
             (V_GetScreenHeight(srcscrn) <> V_GetScreenHeight(destscrn));
 end;
 
+//==============================================================================
+//
+// V_NeedsPreserve
+//
+//==============================================================================
 function V_NeedsPreserve(const destscrn, srcscrn: integer; preserve: boolean): boolean; overload;
 begin
   result := preserve and V_NeedsPreserve(destscrn, srcscrn);
 end;
 
+//==============================================================================
+// V_PreserveX
+//
 // preserve x coordinates
+//
+//==============================================================================
 function V_PreserveX(const x: integer; const destscrn: integer = -1; const srcscrn: integer = -1): integer;
 var
   wd, ws: integer;
@@ -357,7 +493,12 @@ begin
   end;
 end;
 
+//==============================================================================
+// V_PreserveY
+//
 // preserve y coordinates
+//
+//==============================================================================
 function V_PreserveY(const y: integer; const destscrn: integer = -1; const srcscrn: integer = -1): integer;
 var
   hd, hs: integer;
@@ -391,13 +532,23 @@ begin
   end;
 end;
 
+//==============================================================================
+// V_PreserveW
+//
 // preserve width coordinates
+//
+//==============================================================================
 function V_PreserveW(const x: integer; const w: integer; const destscrn: integer = -1; const srcscrn: integer = -1): integer;
 begin
   result := V_PreserveX(x + w, destscrn, srcscrn) - V_PreserveX(x, destscrn, srcscrn);
 end;
 
+//==============================================================================
+// V_PreserveH
+//
 // preserve height coordinates
+//
+//==============================================================================
 function V_PreserveH(const y: integer; const h: integer; const destscrn: integer = -1; const srcscrn: integer = -1): integer;
 begin
   result := V_PreserveY(y + h, destscrn, srcscrn) - V_PreserveY(y, destscrn, srcscrn);
@@ -955,6 +1106,11 @@ begin
     V_CopyRectTransparent8(srcx, srcy, srcscrn, width, height, destx, desty, destscrn, preserve, fracxzoom, fracyzoom);
 end;
 
+//==============================================================================
+//
+// V_ShadeScreen
+//
+//==============================================================================
 procedure V_ShadeScreen(const scn: integer; const ofs: integer = 0;
   const count: integer = -1);
 var
@@ -977,7 +1133,6 @@ begin
     src := PByte(screens[scn]);
     inc(src, ofs);
   end;
-
 
   if (videomode = vm32bit) and (scn = SCN_FG) then
   begin
@@ -1064,6 +1219,11 @@ begin
     V_CopyScreenTransparent8(srcscrn, destscrn, srcoffs, destoffs, size);
 end;
 
+//==============================================================================
+//
+// V_RemoveTransparency
+//
+//==============================================================================
 procedure V_RemoveTransparency(const scn: integer; const ofs: integer;
   const count: integer = -1);
 var
@@ -1088,6 +1248,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// V_GetScreenWidth
+//
+//==============================================================================
 function V_GetScreenWidth(scrn: integer): integer;
 begin
   if scrn < SCN_FG then
@@ -1096,6 +1261,11 @@ begin
     result := screendimentions[scrn].width;
 end;
 
+//==============================================================================
+//
+// V_GetScreenHeight
+//
+//==============================================================================
 function V_GetScreenHeight(scrn: integer): integer;
 begin
   if scrn < SCN_FG then
@@ -1104,6 +1274,11 @@ begin
     result := screendimentions[scrn].scaleheight;
 end;
 
+//==============================================================================
+//
+// V_DrawPatch8
+//
+//==============================================================================
 procedure V_DrawPatch8(x, y: integer; scrn: integer; patch: Ppatch_t; preserve: boolean);
 var
   count: integer;
@@ -1228,6 +1403,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// V_DrawPatch32
+//
+//==============================================================================
 procedure V_DrawPatch32(x, y: integer; patch: Ppatch_t; preserve: boolean);
 var
   count: integer;
@@ -1350,9 +1530,11 @@ begin
   end;
 end;
 
+//==============================================================================
 //
 // V_DrawPatch
 //
+//==============================================================================
 procedure V_DrawPatch(x, y: integer; scrn: integer; patch: Ppatch_t; preserve: boolean);
 begin
   if (videomode = vm32bit) and (scrn = SCN_FG) then
@@ -1361,6 +1543,11 @@ begin
     V_DrawPatch8(x, y, scrn, patch, preserve);
 end;
 
+//==============================================================================
+//
+// V_DrawPatch
+//
+//==============================================================================
 procedure V_DrawPatch(x, y: integer; scrn: integer; const patchname: string; preserve: boolean);
 var
   patch: Ppatch_t;
@@ -1370,6 +1557,11 @@ begin
   Z_ChangeTag(patch, PU_CACHE);
 end;
 
+//==============================================================================
+//
+// V_DrawPatch
+//
+//==============================================================================
 procedure V_DrawPatch(x, y: integer; scrn: integer; const lump: integer; preserve: boolean);
 var
   patch: Ppatch_t;
@@ -1379,11 +1571,13 @@ begin
   Z_ChangeTag(patch, PU_CACHE);
 end;
 
+//==============================================================================
 //
 // V_DrawPatchFlipped
 // Masks a column based masked pic to the screen.
 // Flips horizontally, e.g. to mirror face.
 //
+//==============================================================================
 procedure V_DrawPatchFlipped(x, y: integer; scrn: integer; patch: Ppatch_t);
 var
   count: integer;
@@ -1428,6 +1622,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// V_DoPageDrawer
+//
+//==============================================================================
 procedure V_DoPageDrawer(const pagename: string);
 begin
   if useexternaltextures and (videomode = vm32bit) then
@@ -1438,13 +1637,22 @@ begin
   V_CopyRect(0, 0, SCN_TMP, 320, 200, 0, 0, SCN_FG, true);
 end;
 
+//==============================================================================
+//
+// V_PageDrawer
+//
+//==============================================================================
 procedure V_PageDrawer(const pagename: string);
 begin
   V_DoPageDrawer(pagename);
   V_IntermissionStretch;
 end;
 
-
+//==============================================================================
+//
+// V_CalcPreserveTables
+//
+//==============================================================================
 procedure V_CalcPreserveTables;
 var
   i: integer;
@@ -1457,13 +1665,13 @@ begin
     preserveY[i] := Trunc(i * SCREENHEIGHT / 200);
 end;
 
+//==============================================================================
 //
 // V_Init
 //
-
-//
 // V_SetPalette
 //
+//==============================================================================
 procedure V_SetPalette(const palette: PByteArray);
 var
   dest: PLongWord;
@@ -1488,6 +1696,11 @@ end;
 var
   vsize: integer = 0;
 
+//==============================================================================
+//
+// V_Init
+//
+//==============================================================================
 procedure V_Init;
 var
   i: integer;
@@ -1534,12 +1747,22 @@ begin
   V_CalcPreserveTables;
 end;
 
+//==============================================================================
+//
+// V_ReInit
+//
+//==============================================================================
 procedure V_ReInit;
 begin
   V_ShutDown;
   V_Init;
 end;
 
+//==============================================================================
+//
+// V_ShutDown
+//
+//==============================================================================
 procedure V_ShutDown;
 var
   base: pointer;
@@ -1548,6 +1771,11 @@ begin
   memfree(base, vsize);
 end;
 
+//==============================================================================
+//
+// V_ScreensSize
+//
+//==============================================================================
 function V_ScreensSize(const scrn: integer = -1): integer;
 var
   i: integer;
@@ -1582,6 +1810,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// V_FindAproxColorIndex
+//
+//==============================================================================
 function V_FindAproxColorIndex(const pal: PLongWordArray; const c: LongWord;
   const start: integer = 0; const finish: integer = 255): integer;
 var

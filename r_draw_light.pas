@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -28,7 +28,6 @@
 {$I FPCDoom.inc}
 
 unit r_draw_light;
-
 
 interface
 
@@ -56,31 +55,81 @@ type
   end;
   Plightparams_t = ^lightparams_t;
 
+//==============================================================================
+//
+// R_ValidLightColumn
+//
+//==============================================================================
 function R_ValidLightColumn(const x: integer): boolean;
 
+//==============================================================================
+// R_DrawColumnLightmap
+//
 // Draw column to the lightmap
+//
+//==============================================================================
 procedure R_DrawColumnLightmap(const parms: Plightparams_t);
 
 var
   lcolumn: lightparams_t;
 
+//==============================================================================
+//
+// R_InitLightmap
+//
+//==============================================================================
 procedure R_InitLightmap;
 
+//==============================================================================
+//
+// R_ShutDownLightmap
+//
+//==============================================================================
 procedure R_ShutDownLightmap;
 
+//==============================================================================
+//
+// R_StartLightmap
+//
+//==============================================================================
 procedure R_StartLightmap;
 
+//==============================================================================
+//
+// R_StopLightmap
+//
+//==============================================================================
 procedure R_StopLightmap;
 
+//==============================================================================
+//
+// R_CalcLightmap
+//
+//==============================================================================
 procedure R_CalcLightmap;
 
+//==============================================================================
+// R_FlashSpanLightmap8
+//
 // Flash one lightmap span (8 bit)
+//
+//==============================================================================
 procedure R_FlashSpanLightmap8(const pls_y: PInteger);
 
+//==============================================================================
+// R_FlashSpanLightmap32
+//
 // Flash one lightmap span (32 bit)
+//
+//==============================================================================
 procedure R_FlashSpanLightmap32(const pls_y: PInteger);
 
+//==============================================================================
+// R_FlashLightmap
+//
 // Flash the entire lightmap
+//
+//==============================================================================
 procedure R_FlashLightmap;
 
 implementation
@@ -123,6 +172,11 @@ var
   lm_spartspan: integer = MAXWIDTH + 1;
   lm_stopspan: integer = -1;
 
+//==============================================================================
+//
+// LM_Screen2LMx
+//
+//==============================================================================
 function LM_Screen2LMx(const screenx: integer): integer; {$IFDEF FPC}inline;{$ENDIF}
 begin
   result := screenx;
@@ -132,6 +186,11 @@ begin
     result := LMWIDTH - 1;
 end;
 
+//==============================================================================
+//
+// LM_Screen2LMy
+//
+//==============================================================================
 function LM_Screen2LMy(const screeny: integer): integer; {$IFDEF FPC}inline;{$ENDIF}
 begin
   result := (screeny + LM_YMOD) div LM_YACCURACY;
@@ -141,16 +200,31 @@ begin
     result := LMHEIGHT - 1;
 end;
 
+//==============================================================================
+//
+// R_LightmapBufferAt
+//
+//==============================================================================
 function R_LightmapBufferAt(const x, y: integer): Plightmapitem_t; {$IFDEF FPC}inline;{$ENDIF}
 begin
   result := Plightmapitem_t(@((ylookuplm[LM_Screen2LMy(y)]^)[columnofs[LM_Screen2LMx(x)]]));
 end;
 
+//==============================================================================
+//
+// R_ValidLightColumn
+//
+//==============================================================================
 function R_ValidLightColumn(const x: integer): boolean;
 begin
   result := xcolumnsteplm[x] > 0;
 end;
 
+//==============================================================================
+//
+// R_DrawColumnLightmap
+//
+//==============================================================================
 procedure R_DrawColumnLightmap(const parms: Plightparams_t);
 var
   count, x, y: integer;
@@ -255,6 +329,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_CheckLightmapParams
+//
+//==============================================================================
 procedure R_CheckLightmapParams;
 begin
   if (lightmapaccuracymode < 0) or (lightmapaccuracymode >= NUMLIGHTMAPACCURACYMODES) then
@@ -265,6 +344,11 @@ begin
     lightwidthfactor := DEFLIGHTWIDTHFACTOR;
 end;
 
+//==============================================================================
+//
+// R_InitLightmap
+//
+//==============================================================================
 procedure R_InitLightmap;
 begin
   R_CheckLightmapParams;
@@ -275,6 +359,11 @@ begin
   lightmapactive := false;
 end;
 
+//==============================================================================
+//
+// R_ShutDownLightmap
+//
+//==============================================================================
 procedure R_ShutDownLightmap;
 begin
   memfree(lightmapbuffer, (LMWIDTH + 1) * (LMHEIGHT + 1) * SizeOf(lightmapitem_t));
@@ -286,6 +375,12 @@ var
   llastaccuracymode: integer = -1;
 
   // Called in each render tic before we start lightmap
+
+//==============================================================================
+//
+// R_StartLightMap
+//
+//==============================================================================
 procedure R_StartLightMap;
 var
   i: integer;
@@ -318,12 +413,18 @@ begin
   lightmapactive := true;
 end;
 
+//==============================================================================
+//
+// R_StopLightmap
+//
+//==============================================================================
 procedure R_StopLightmap;
 begin
   lightmapactive := false;
   ZeroMemory(lightmapbuffer, (LMWIDTH + 1) * (LMHEIGHT + 1) * SizeOf(lightmapitem_t));
 end;
 
+//==============================================================================
 //
 // R_CalcLightmap
 //
@@ -331,6 +432,7 @@ end;
 //   Calculate the ranges in x/width space of lightmap accuracy
 //   depending on zbuffer content (R_ZGetCriticalX) and quality step
 //
+//==============================================================================
 procedure R_CalcLightmap;
 var
   x: integer;
@@ -374,7 +476,12 @@ begin
   end;
 end;
 
+//==============================================================================
+// R_FlashSpanLightmap8
+//
 // Flash lightmap span to screen - 8 bit
+//
+//==============================================================================
 procedure R_FlashSpanLightmap8(const pls_y: PInteger);
 var
   x, i: integer;
@@ -422,7 +529,12 @@ begin
   end;
 end;
 
+//==============================================================================
+// R_FlashSpanLightmap32
+//
 // Flash lightmap span to screen - 32 bit
+//
+//==============================================================================
 procedure R_FlashSpanLightmap32(const pls_y: PInteger);
 var
   x, i: integer;
@@ -468,6 +580,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_FlashLightmap
+//
+//==============================================================================
 procedure R_FlashLightmap;
 var
   h: integer;

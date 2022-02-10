@@ -34,10 +34,26 @@ interface
 uses
   r_defs;
 
+//==============================================================================
+// R_ClearClipSegs
+//
 // BSP?
+//
+//==============================================================================
 procedure R_ClearClipSegs;
+
+//==============================================================================
+//
+// R_ClearDrawSegs
+//
+//==============================================================================
 procedure R_ClearDrawSegs;
 
+//==============================================================================
+//
+// R_RenderBSP
+//
+//==============================================================================
 procedure R_RenderBSP;
 
 type
@@ -54,7 +70,6 @@ var
   sidedef: Pside_t;
   linedef: Pline_t;
   drawsegs: array[0..MAXDRAWSEGS - 1] of Pdrawseg_t;
-
 
 implementation
 
@@ -74,9 +89,11 @@ uses
 // State.
   doomstat;
 
+//==============================================================================
 //
 // R_ClearDrawSegs
 //
+//==============================================================================
 procedure R_ClearDrawSegs;
 begin
   ds_p := 0;
@@ -107,6 +124,7 @@ var
 //  e.g. single sided LineDefs (middle texture)
 //  that entirely block the view.
 //
+//==============================================================================
 procedure R_ClipSolidWallSegment(first, last: integer);
 var
   next: Pcliprange_t;
@@ -198,6 +216,7 @@ begin
   crunch;
 end;
 
+//==============================================================================
 //
 // R_ClipPassWallSegment
 // Clips the given range of columns,
@@ -205,6 +224,7 @@ end;
 // Does handle windows,
 //  e.g. LineDefs with upper and lower texture.
 //
+//==============================================================================
 procedure R_ClipPassWallSegment(first, last: integer);
 var
   start: Pcliprange_t;
@@ -249,9 +269,11 @@ begin
   R_StoreWallRange(start.last + 1, last);
 end;
 
+//==============================================================================
 //
 // R_ClearClipSegs
 //
+//==============================================================================
 procedure R_ClearClipSegs;
 begin
   newend := @solidsegs[0];
@@ -263,11 +285,13 @@ begin
   inc(newend);
 end;
 
+//==============================================================================
 //
 // R_AddLine
 // Clips the given segment
 // and adds any visible pieces to the line list.
 //
+//==============================================================================
 procedure R_AddLine(line: Pseg_t);
 var
   x1: integer;
@@ -393,6 +417,11 @@ const
     (0, 0, 0, 0)
   );
 
+//==============================================================================
+//
+// R_CheckBBox
+//
+//==============================================================================
 function R_CheckBBox(bspcoordA: Pfixed_tArray; const side: integer): boolean;
 var
   bspcoord: Pfixed_tArray;
@@ -489,7 +518,6 @@ begin
     angle2 := -clipangle;
   end;
 
-
   // Find the first clippost
   //  that touches the source post
   //  (adjacent pixels are touching).
@@ -520,12 +548,14 @@ begin
     result := true;
 end;
 
+//==============================================================================
 //
 // R_Subsector
 // Determine floor/ceiling planes.
 // Add sprites of things in sector.
 // Draw one or more line segments.
 //
+//==============================================================================
 procedure R_Subsector(const num: integer);
 var
   count: integer;
@@ -568,11 +598,15 @@ begin
   end;
 end;
 
+//==============================================================================
+// R_RenderBSPNode
 //
 // RenderBSPNode
 // Renders all subsectors below a given node,
 //  traversing subtree recursively.
 // Just call with BSP root.
+//
+//==============================================================================
 procedure R_RenderBSPNode(const bspnum: integer);
 var
   bsp: Pnode_t;
@@ -611,6 +645,11 @@ begin
   end
 end;
 
+//==============================================================================
+//
+// R_RenderBSP
+//
+//==============================================================================
 procedure R_RenderBSP;
 begin
   // The head node is the last node output.

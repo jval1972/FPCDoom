@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -40,12 +40,32 @@ var
   stdout: TFile;
   stdoutbuffer: TDStringList;
 
+//==============================================================================
+//
+// I_InitializeIO
+//
+//==============================================================================
 procedure I_InitializeIO;
 
+//==============================================================================
+//
+// I_ShutDownIO
+//
+//==============================================================================
 procedure I_ShutDownIO;
 
+//==============================================================================
+//
+// I_IOErrorMessageBox
+//
+//==============================================================================
 procedure I_IOErrorMessageBox(const s: string);
 
+//==============================================================================
+//
+// I_IOprintf
+//
+//==============================================================================
 procedure I_IOprintf(const s: string);
 
 implementation
@@ -57,6 +77,11 @@ uses
   i_main,
   m_argv;
 
+//==============================================================================
+//
+// I_IOErrorMessageBox
+//
+//==============================================================================
 procedure I_IOErrorMessageBox(const s: string);
 begin
   MessageBox(hMainWnd, PChar(s), AppTitle, MB_OK or MB_ICONERROR or MB_APPLMODAL);
@@ -65,6 +90,11 @@ end;
 var
   io_lastNL: boolean = true;
 
+//==============================================================================
+//
+// I_IOprintf
+//
+//==============================================================================
 procedure I_IOprintf(const s: string);
 var
   p: integer;
@@ -104,6 +134,11 @@ begin
     write(s);
 end;
 
+//==============================================================================
+//
+// I_InitializeIO
+//
+//==============================================================================
 procedure I_InitializeIO;
 var
   dfilename: string;
@@ -129,7 +164,11 @@ begin
   stdout := TFile.Create(sfilename, fCreate);
 end;
 
-
+//==============================================================================
+//
+// I_ShutDownIO
+//
+//==============================================================================
 procedure I_ShutDownIO;
 begin
   stderr.Free;

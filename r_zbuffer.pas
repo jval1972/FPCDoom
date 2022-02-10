@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -59,27 +59,77 @@ var
   Zspans: array[0..MAXHEIGHT] of zbuffer_t;
   Zcolumns: array[0..MAXWIDTH] of zbuffer_t;
 
+//==============================================================================
+//
+// R_DrawSpanToZBuffer
+//
+//==============================================================================
 procedure R_DrawSpanToZBuffer(const parms: Pspanparams_t);
 
+//==============================================================================
+//
+// R_DrawColumnToZBuffer
+//
+//==============================================================================
 procedure R_DrawColumnToZBuffer(const parms: Pcolumnparams_t);
 
+//==============================================================================
+// R_ZBufferAt
+//
 // Returns the z buffer value at (x, y) or screen
 // Lower value means far away
 // no z-buffer is sky (or render glitch) - we do not write o zbuffer in skycolfunc
+//
+//==============================================================================
 function R_ZBufferAt(const x, y: integer): Pzbufferitem_t; {$IFDEF FPC}inline;{$ENDIF}
 
+//==============================================================================
+//
+// R_InitZBuffer
+//
+//==============================================================================
 procedure R_InitZBuffer;
 
+//==============================================================================
+//
+// R_ShutDownZBuffer
+//
+//==============================================================================
 procedure R_ShutDownZBuffer;
 
+//==============================================================================
+//
+// R_StartZBuffer
+//
+//==============================================================================
 procedure R_StartZBuffer;
 
+//==============================================================================
+//
+// R_CalcZBuffer
+//
+//==============================================================================
 procedure R_CalcZBuffer;
 
+//==============================================================================
+//
+// R_ZGetCriticalX
+//
+//==============================================================================
 function R_ZGetCriticalX(const x: integer): boolean; {$IFDEF FPC}inline;{$ENDIF}
 
+//==============================================================================
+//
+// R_ZSetCriticalX
+//
+//==============================================================================
 procedure R_ZSetCriticalX(const x: integer; const value: boolean); {$IFDEF FPC}inline;{$ENDIF}
 
+//==============================================================================
+//
+// R_StopZBuffer
+//
+//==============================================================================
 procedure R_StopZBuffer;
 
 implementation
@@ -94,6 +144,11 @@ uses
 var
   zcriticalx: array[0..MAXWIDTH] of boolean;
 
+//==============================================================================
+//
+// R_NewZBufferItem
+//
+//==============================================================================
 function R_NewZBufferItem(const Z: Pzbuffer_t): Pzbufferitem_t; {$IFDEF FPC}inline;{$ENDIF}
 const
   GROWSTEP = 4;
@@ -107,6 +162,11 @@ begin
   inc(Z.numitems);
 end;
 
+//==============================================================================
+//
+// R_DrawSpanToZBuffer
+//
+//==============================================================================
 procedure R_DrawSpanToZBuffer(const parms: Pspanparams_t);
 var
   item: Pzbufferitem_t;
@@ -125,6 +185,11 @@ begin
   item.stop := parms.ds_x2;
 end;
 
+//==============================================================================
+//
+// R_DrawColumnToZBuffer
+//
+//==============================================================================
 procedure R_DrawColumnToZBuffer(const parms: Pcolumnparams_t);
 var
   item: Pzbufferitem_t;
@@ -148,6 +213,11 @@ var
     rendertype: RIT_NONE;
   );
 
+//==============================================================================
+//
+// R_ZBufferAt
+//
+//==============================================================================
 function R_ZBufferAt(const x, y: integer): Pzbufferitem_t; {$IFDEF FPC}inline;{$ENDIF}
 var
   Z: Pzbuffer_t;
@@ -195,6 +265,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_InitZBuffer
+//
+//==============================================================================
 procedure R_InitZBuffer;
 begin
   ZeroMemory(@Zspans, SizeOf(Zspans));
@@ -202,6 +277,11 @@ begin
   ZeroMemory(@zcriticalx, SizeOf(zcriticalx));
 end;
 
+//==============================================================================
+//
+// R_ShutDownZBuffer
+//
+//==============================================================================
 procedure R_ShutDownZBuffer;
 var
   i: integer;
@@ -223,24 +303,42 @@ begin
     end;
 end;
 
+//==============================================================================
+//
+// R_StartZBuffer
+//
+//==============================================================================
 procedure R_StartZBuffer;
 begin
 end;
 
+//==============================================================================
+//
+// R_ZGetCriticalX
+//
+//==============================================================================
 function R_ZGetCriticalX(const x: integer): boolean; {$IFDEF FPC}inline;{$ENDIF}
 begin
   result := zcriticalx[x];
 end;
 
+//==============================================================================
+//
+// R_ZSetCriticalX
+//
+//==============================================================================
 procedure R_ZSetCriticalX(const x: integer; const value: boolean); {$IFDEF FPC}inline;{$ENDIF}
 begin
   zcriticalx[x] := value;
 end;
 
+//==============================================================================
+// R_CalcZBufferColumn
 //
 // R_CalcZBuffer
 // Find critical columns
 //
+//==============================================================================
 procedure R_CalcZBufferColumn(const px: PInteger);
 var
   i, j: integer;
@@ -287,6 +385,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_CalcZBuffer
+//
+//==============================================================================
 procedure R_CalcZBuffer;
 var
   i: integer;
@@ -301,6 +404,11 @@ begin
   R_RenderItemsMT(RI_CALCDEPTHBUFFERCOLUMNS, RIF_WAIT);
 end;
 
+//==============================================================================
+//
+// R_StopZBuffer
+//
+//==============================================================================
 procedure R_StopZBuffer;
 var
   i: integer;

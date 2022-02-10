@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -17,7 +17,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
-//  Foundation, inc., 59 Temple Place - Suite 330, Boston, MA
+//  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 //  02111-1307, USA.
 //
 //------------------------------------------------------------------------------
@@ -43,12 +43,27 @@ const
 var
   mirrormode: integer = 0;
 
+//==============================================================================
+// R_MirrorBuffer8
+//
 // Mirror buffer - 8 bit
+//
+//==============================================================================
 procedure R_MirrorBuffer8(const y: PInteger);
 
+//==============================================================================
+// R_MirrorBuffer32
+//
 // Mirror buffer - 32 bit
+//
+//==============================================================================
 procedure R_MirrorBuffer32(const y: PInteger);
 
+//==============================================================================
+//
+// R_MirrorBuffer
+//
+//==============================================================================
 procedure R_MirrorBuffer;
 
 implementation
@@ -58,7 +73,12 @@ uses
   r_main,
   r_render;
 
+//==============================================================================
+// R_MirrorBuffer8
+//
 // Mirror buffer - 8 bit
+//
+//==============================================================================
 procedure R_MirrorBuffer8(const y: PInteger);
 var
   i: integer;
@@ -74,7 +94,12 @@ begin
   end;
 end;
 
+//==============================================================================
+// R_MirrorBuffer32
+//
 // Mirror buffer - 32 bit
+//
+//==============================================================================
 procedure R_MirrorBuffer32(const y: PInteger);
 var
   i: integer;
@@ -90,6 +115,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_MirrorBuffer
+//
+//==============================================================================
 procedure R_MirrorBuffer;
 var
   y: integer;
@@ -97,7 +127,6 @@ begin
   for y := 0 to viewheight - 1 do
     R_AddRenderTask(mirrorfunc, RF_MIRRORBUFFER, @y);
 end;
-
 
 end.
 

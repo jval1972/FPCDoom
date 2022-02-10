@@ -192,7 +192,6 @@ const
   // Hmm ???.
   MF_TRANSSHIFT = 26;
 
-
 const
   // Sprite is transparent
   MF_EX_TRANSPARENT = 1;

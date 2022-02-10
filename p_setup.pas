@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -39,12 +39,27 @@ uses
   p_mobj_h,
   r_defs;
 
+//==============================================================================
+//
+// P_GetMapName
+//
+//==============================================================================
 function P_GetMapName(const episode, map: integer): string;
 
+//==============================================================================
+// P_SetupLevel
+//
 // NOT called by W_Ticker. Fixme.
+//
+//==============================================================================
 procedure P_SetupLevel(episode, map: integer);
 
+//==============================================================================
+// P_Init
+//
 // Called by startup code.
+//
+//==============================================================================
 procedure P_Init;
 
 var
@@ -116,6 +131,11 @@ var
 
   playerstarts: array[0..MAXPLAYERS - 1] of mapthing_t;
 
+//==============================================================================
+//
+// P_GameValidThing
+//
+//==============================================================================
 function P_GameValidThing(const doomdnum: integer): boolean;
 
 implementation
@@ -144,10 +164,11 @@ uses
   s_sound,
   doomstat;
 
-
+//==============================================================================
 //
 // P_LoadVertexes
 //
+//==============================================================================
 procedure P_LoadVertexes(lump: integer);
 var
   data: pointer;
@@ -184,9 +205,11 @@ begin
   Z_Free(data);
 end;
 
+//==============================================================================
 //
 // P_LoadSegs
 //
+//==============================================================================
 procedure P_LoadSegs(lump: integer);
 var
   data: pointer;
@@ -239,6 +262,11 @@ begin
   Z_Free(data);
 end;
 
+//==============================================================================
+//
+// P_CalcSegs
+//
+//==============================================================================
 procedure P_CalcSegs;
 var
   i: integer;
@@ -252,11 +280,11 @@ begin
   end;
 end;
 
-
-
+//==============================================================================
 //
 // P_LoadSubsectors
 //
+//==============================================================================
 procedure P_LoadSubsectors(lump: integer);
 var
   data: pointer;
@@ -283,9 +311,11 @@ begin
   Z_Free(data);
 end;
 
+//==============================================================================
 //
 // P_LoadSectors
 //
+//==============================================================================
 procedure P_LoadSectors(lump: integer);
 var
   data: pointer;
@@ -320,9 +350,11 @@ begin
   Z_Free (data);
 end;
 
+//==============================================================================
 //
 // P_LoadNodes
 //
+//==============================================================================
 procedure P_LoadNodes(lump: integer);
 var
   data: pointer;
@@ -357,6 +389,11 @@ begin
   Z_Free (data);
 end;
 
+//==============================================================================
+//
+// P_GameValidThing
+//
+//==============================================================================
 function P_GameValidThing(const doomdnum: integer): boolean;
 begin
   result := true;
@@ -379,9 +416,11 @@ begin
   end;
 end;
 
+//==============================================================================
 //
 // P_LoadThings
 //
+//==============================================================================
 procedure P_LoadThings(lump: integer);
 var
   data: pointer;
@@ -404,10 +443,12 @@ begin
   Z_Free(data);
 end;
 
+//==============================================================================
 //
 // P_LoadLineDefs
 // Also counts secret lines for intermissions.
 //
+//==============================================================================
 procedure P_LoadLineDefs(lump: integer);
 var
   data: pointer;
@@ -495,9 +536,11 @@ begin
   Z_Free (data);
 end;
 
+//==============================================================================
 //
 // P_LoadSideDefs
 //
+//==============================================================================
 procedure P_LoadSideDefs(lump: integer);
 var
   data: pointer;
@@ -527,9 +570,11 @@ begin
   Z_Free(data);
 end;
 
+//==============================================================================
 //
 // P_LoadBlockMap
 //
+//==============================================================================
 procedure P_LoadBlockMap(lump: integer);
 var
   count: integer;
@@ -548,11 +593,13 @@ begin
   ZeroMemory(blocklinks, count);
 end;
 
+//==============================================================================
 //
 // P_GroupLines
 // Builds sector line lists and subsector sector numbers.
 // Finds block bounding boxes for sectors.
 //
+//==============================================================================
 procedure P_GroupLines;
 var
   linebuffer: Pline_tPArray; // pointer to an array of pointers Pline_t
@@ -642,6 +689,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// P_GetMapName
+//
+//==============================================================================
 function P_GetMapName(const episode, map: integer): string;
 begin
   // find map name
@@ -656,6 +708,8 @@ begin
     sprintf(result, 'E%dM%d', [episode, map]);
 end;
 
+//==============================================================================
+// P_RemoveSlimeTrails
 //
 // killough 10/98
 //
@@ -701,7 +755,7 @@ end;
 //
 // Firelines (TM) is a Rezistered Trademark of MBF Productions
 //
-
+//==============================================================================
 procedure P_RemoveSlimeTrails;  // killough 10/98
 var
   hit: PByteArray;
@@ -756,10 +810,11 @@ begin
   memfree(hit, numvertexes);
 end;
 
-
+//==============================================================================
 //
 // P_SetupLevel
 //
+//==============================================================================
 procedure P_SetupLevel(episode, map: integer);
 var
   i: integer;
@@ -862,9 +917,11 @@ begin
   R_SetInterpolateSkipTicks(2);
 end;
 
+//==============================================================================
 //
 // P_Init
 //
+//==============================================================================
 procedure P_Init;
 begin
   P_InitSwitchList;

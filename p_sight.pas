@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -35,8 +35,18 @@ uses
   m_fixed,
   p_mobj_h;
 
+//==============================================================================
+//
+// P_CheckSight
+//
+//==============================================================================
 function P_CheckSight(t1: Pmobj_t; t2: Pmobj_t): boolean;
 
+//==============================================================================
+//
+// P_CheckCameraSight
+//
+//==============================================================================
 function P_CheckCameraSight(camx, camy, camz: fixed_t; mo: Pmobj_t): boolean;
 
 var
@@ -64,10 +74,12 @@ var
   t2x: fixed_t;
   t2y: fixed_t;
 
+//==============================================================================
 //
 // P_DivlineSide
 // Returns side 0 (front), 1 (back), or 2 (on).
 //
+//==============================================================================
 function P_DivlineSide(const x, y: fixed_t; const node: Pdivline_t): integer;
 var
   dx: fixed_t;
@@ -137,12 +149,14 @@ begin
     result := 1; // back side
 end;
 
+//==============================================================================
 //
 // P_InterceptVector2
 // Returns the fractional intercept point
 // along the first divline.
 // This is only called by the addthings and addlines traversers.
 //
+//==============================================================================
 function P_InterceptVector2(v2, v1: Pdivline_t): fixed_t;
 var
   num: fixed_t;
@@ -163,11 +177,13 @@ begin
   result := FixedDiv(num , den);
 end;
 
+//==============================================================================
 //
 // P_CrossSubsector
 // Returns true
 //  if strace crosses the given subsector successfully.
 //
+//==============================================================================
 function P_CrossSubsector(const num: integer): boolean;
 var
   seg: Pseg_t;
@@ -285,11 +301,13 @@ begin
   result := true;
 end;
 
+//==============================================================================
 //
 // P_CrossBSPNode
 // Returns true
 //  if strace crosses the given node successfully.
 //
+//==============================================================================
 function P_CrossBSPNode(bspnum: integer): boolean;
 var
   bsp: Pnode_t;
@@ -330,12 +348,14 @@ begin
   result := P_CrossBSPNode(bsp.children[side xor 1]);
 end;
 
+//==============================================================================
 //
 // P_CheckSight
 // Returns true
 //  if a straight line between t1 and t2 is unobstructed.
 // Uses REJECT.
 //
+//==============================================================================
 function P_CheckSight(t1: Pmobj_t; t2: Pmobj_t): boolean;
 var
   s1: integer;
@@ -380,12 +400,13 @@ begin
   result := P_CrossBSPNode(numnodes - 1);
 end;
 
-
+//==============================================================================
 //
 // P_CheckCameraSight
 //
 // JVAL: To determine if camera chase view can see the player
 //
+//==============================================================================
 function P_CheckCameraSight(camx, camy, camz: fixed_t; mo: Pmobj_t): boolean;
 begin
   if mo = nil then
@@ -393,7 +414,6 @@ begin
     result := false;
     exit;
   end;
-
 
   // An unobstructed LOS is possible.
   // Now look from eyes of t1 to any part of t2.

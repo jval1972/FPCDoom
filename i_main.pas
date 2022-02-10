@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -17,7 +17,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
-//  Foundation, inc., 59 Temple Place - Suite 330, Boston, MA
+//  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 //  02111-1307, USA.
 //
 //
@@ -46,6 +46,11 @@ var
 const
   WINDOW_STYLE = (WS_OVERLAPPED);
 
+//==============================================================================
+//
+// DoomMain
+//
+//==============================================================================
 procedure DoomMain;
 
 implementation
@@ -59,6 +64,11 @@ uses
   m_argv,
   d_main;
 
+//==============================================================================
+//
+// WindowProc
+//
+//==============================================================================
 function WindowProc(hWnd: HWND; Msg: UINT; wParam: WPARAM;
   lParam: LPARAM): LRESULT; stdcall; export;
 begin
@@ -110,6 +120,11 @@ begin
   result := DefWindowProc(hWnd, Msg, WParam, LParam);
 end;
 
+//==============================================================================
+//
+// DoomMain
+//
+//==============================================================================
 procedure DoomMain;
 var
   WindowClass: TWndClass;

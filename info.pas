@@ -54,21 +54,81 @@ var
   mobjinfo: PmobjinfoArray_t = nil;
   nummobjtypes: integer = Ord(DO_NUMMOBJTYPES);
 
+//==============================================================================
+//
+// Info_Init
+//
+//==============================================================================
 procedure Info_Init(const usethinkers: boolean);
 
+//==============================================================================
+//
+// Info_GetNewState
+//
+//==============================================================================
 function Info_GetNewState: integer;
+
+//==============================================================================
+//
+// Info_GetNewMobjInfo
+//
+//==============================================================================
 function Info_GetNewMobjInfo: integer;
+
+//==============================================================================
+//
+// Info_GetSpriteNumForName
+//
+//==============================================================================
 function Info_GetSpriteNumForName(const name: string): integer;
+
+//==============================================================================
+//
+// Info_GetMobjNumForName
+//
+//==============================================================================
 function Info_GetMobjNumForName(const name: string): integer;
+
+//==============================================================================
+//
+// Info_SetMobjName
+//
+//==============================================================================
 procedure Info_SetMobjName(const mobj_no: integer; const name: string);
+
+//==============================================================================
+//
+// Info_GetMobjName
+//
+//==============================================================================
 function Info_GetMobjName(const mobj_no: integer): string;
 
+//==============================================================================
+//
+// Info_ShutDown
+//
+//==============================================================================
 procedure Info_ShutDown;
 
+//==============================================================================
+//
+// Info_GetInheritance
+//
+//==============================================================================
 function Info_GetInheritance(const imo: Pmobjinfo_t): integer;
 
+//==============================================================================
+//
+// Info_SaveActions
+//
+//==============================================================================
 procedure Info_SaveActions;
 
+//==============================================================================
+//
+// Info_RestoreActions
+//
+//==============================================================================
 function Info_RestoreActions: boolean;
 
 implementation
@@ -17009,6 +17069,11 @@ var
   save_actions: array[0..Ord(DO_NUMSTATES) - 1] of actionf_t;
   actions_saved: boolean = false;
 
+//==============================================================================
+//
+// Info_SaveActions
+//
+//==============================================================================
 procedure Info_SaveActions;
 var
   i: integer;
@@ -17018,6 +17083,11 @@ begin
   actions_saved := true;
 end;
 
+//==============================================================================
+//
+// Info_RestoreActions
+//
+//==============================================================================
 function Info_RestoreActions: boolean;
 var
   i: integer;
@@ -17030,6 +17100,11 @@ begin
     states[i].action := save_actions[i];
 end;
 
+//==============================================================================
+//
+// Info_Init
+//
+//==============================================================================
 procedure Info_Init(const usethinkers: boolean);
 var
   i: integer;
@@ -17615,6 +17690,11 @@ begin
   states[Ord(S_MUSHROOM)].action.acp1 := @A_Mushroom; // S_MUSHROOM
 end;
 
+//==============================================================================
+//
+// Info_GetNewState
+//
+//==============================================================================
 function Info_GetNewState: integer;
 begin
   {$IFNDEF FPC}states := {$ENDIF}realloc(states, numstates * SizeOf(state_t), (numstates + 1) * SizeOf(state_t));
@@ -17626,6 +17706,11 @@ begin
   inc(numstates);
 end;
 
+//==============================================================================
+//
+// Info_GetNewMobjInfo
+//
+//==============================================================================
 function Info_GetNewMobjInfo: integer;
 begin
   {$IFNDEF FPC}mobjinfo := {$ENDIF}realloc(mobjinfo, nummobjtypes * SizeOf(mobjinfo_t), (nummobjtypes + 1) * SizeOf(mobjinfo_t));
@@ -17637,6 +17722,11 @@ begin
   inc(nummobjtypes);
 end;
 
+//==============================================================================
+//
+// Info_GetSpriteNumForName
+//
+//==============================================================================
 function Info_GetSpriteNumForName(const name: string): integer;
 var
   spr_name: string;
@@ -17647,7 +17737,6 @@ begin
 
   if (result >= 0) and (result < numsprites) and (itoa(result) = name) then
     exit;
-
 
   if Length(name) <> 4 then
   begin
@@ -17676,6 +17765,11 @@ begin
   sprnames[numsprites] := 0;
 end;
 
+//==============================================================================
+//
+// Info_GetMobjNumForName
+//
+//==============================================================================
 function Info_GetMobjNumForName(const name: string): integer;
 var
   mobj_name: string;
@@ -17724,6 +17818,11 @@ begin
   result := -1;
 end;
 
+//==============================================================================
+//
+// Info_SetMobjName
+//
+//==============================================================================
 procedure Info_SetMobjName(const mobj_no: integer; const name: string);
 var
   i: integer;
@@ -17738,6 +17837,11 @@ begin
     mobjinfo[mobj_no].name[i] := #0;
 end;
 
+//==============================================================================
+//
+// Info_GetMobjName
+//
+//==============================================================================
 function Info_GetMobjName(const mobj_no: integer): string;
 var
   i: integer;
@@ -17755,6 +17859,11 @@ begin
     end;
 end;
 
+//==============================================================================
+//
+// Info_ShutDown
+//
+//==============================================================================
 procedure Info_ShutDown;
 var
   i: integer;
@@ -17772,6 +17881,11 @@ begin
   memfree(sprnames, (numsprites + 1) * 4);
 end;
 
+//==============================================================================
+//
+// Info_GetInheritance
+//
+//==============================================================================
 function Info_GetInheritance(const imo: Pmobjinfo_t): integer;
 var
   mo: Pmobjinfo_t;

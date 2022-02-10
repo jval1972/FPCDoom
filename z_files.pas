@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -94,6 +94,11 @@ uses
   i_system,
   {$IFDEF FPC}paszlib{$ELSE}ZLib{$ENDIF};
 
+//==============================================================================
+//
+// ZDecompress2
+//
+//==============================================================================
 procedure ZDecompress2(const inBuffer: Pointer; const inSize: Integer;
   const outSize: Integer; out outBuffer: Pointer);
 {$IFDEF FPC}
@@ -112,7 +117,6 @@ begin
   outBuffer := malloc(outSize);
 
   CheckErr(InflateInit2(zstream, -15));
-
 
   zstream.next_in := inBuffer;
   zstream.avail_in := inSize;
@@ -171,6 +175,11 @@ begin
   Inherited Destroy;
 end;
 
+//==============================================================================
+//
+// TZipFile.GetZipFileData
+//
+//==============================================================================
 function TZipFile.GetZipFileData(const Index: integer; var p: pointer;
   var size: integer): boolean;
 var
@@ -208,6 +217,11 @@ begin
     result := false;
 end;
 
+//==============================================================================
+//
+// TZipFile.GetZipFileData
+//
+//==============================================================================
 function TZipFile.GetZipFileData(const Name: string; var p: pointer;
   var size: integer): boolean;
 var
@@ -221,11 +235,21 @@ begin
   result := GetZipFileData(fFiles.IndexOf(Name2), p, size);
 end;
 
+//==============================================================================
+//
+// TZipFile.GetFile
+//
+//==============================================================================
 function TZipFile.GetFile(Index: Integer): string;
 begin
   result := fFiles[Index];
 end;
 
+//==============================================================================
+//
+// TZipFile.Load
+//
+//==============================================================================
 procedure TZipFile.Load;
 var
   h: TZipFileHeader;
@@ -264,6 +288,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// TZipFile.Clear
+//
+//==============================================================================
 procedure TZipFile.Clear;
 var
   i: integer;
@@ -274,6 +303,11 @@ begin
   f.Free;
 end;
 
+//==============================================================================
+//
+// TZipFile.SetFileName
+//
+//==============================================================================
 procedure TZipFile.SetFileName(const Value: string);
 begin
   if fFileName <> Value then
@@ -283,11 +317,15 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// TZipFile.GetFileCount
+//
+//==============================================================================
 function TZipFile.GetFileCount: integer;
 begin
   result := fFiles.Count;
 end;
 
 end.
-
 

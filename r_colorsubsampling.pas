@@ -17,7 +17,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
-//  Foundation, inc., 59 Temple Place - Suite 330, Boston, MA
+//  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 //  02111-1307, USA.
 //
 //------------------------------------------------------------------------------
@@ -37,12 +37,27 @@ uses
 var
   colorsubsamplingmode: integer = 0;
 
+//==============================================================================
+// R_SubsamplingBuffer8
+//
 // Subsampling buffer - 8 bit
+//
+//==============================================================================
 procedure R_SubsamplingBuffer8(const y: PInteger);
 
+//==============================================================================
+// R_SubsamplingBuffer32
+//
 // Subsampling buffer - 32 bit
+//
+//==============================================================================
 procedure R_SubsamplingBuffer32(const y: PInteger);
 
+//==============================================================================
+//
+// R_SubsamplingBuffer
+//
+//==============================================================================
 procedure R_SubsamplingBuffer;
 
 implementation
@@ -53,7 +68,12 @@ uses
   r_trans8,
   r_render;
 
+//==============================================================================
+// R_SubsamplingBuffer8
+//
 // Subsampling buffer - 8 bit
+//
+//==============================================================================
 procedure R_SubsamplingBuffer8(const y: PInteger);
 var
   i: integer;
@@ -66,6 +86,11 @@ begin
     pb[i] := pquant[pb[i]];
 end;
 
+//==============================================================================
+//
+// R_SubSample1
+//
+//==============================================================================
 function R_SubSample1(const c: LongWord): LongWord;
 var
   r, g, b: LongWord;
@@ -79,6 +104,11 @@ begin
   result := b + g shl 8 + r shl 16;
 end;
 
+//==============================================================================
+//
+// R_SubSample2
+//
+//==============================================================================
 function R_SubSample2(const c: LongWord): LongWord;
 var
   r, g, b: LongWord;
@@ -92,6 +122,11 @@ begin
   result := b + g shl 8 + r shl 16;
 end;
 
+//==============================================================================
+//
+// R_SubSample3
+//
+//==============================================================================
 function R_SubSample3(const c: LongWord): LongWord;
 var
   r, g, b: LongWord;
@@ -105,6 +140,11 @@ begin
   result := b + g shl 8 + r shl 16;
 end;
 
+//==============================================================================
+//
+// R_SubSample4
+//
+//==============================================================================
 function R_SubSample4(const c: LongWord): LongWord;
 var
   r, g, b: LongWord;
@@ -124,7 +164,12 @@ type
 var
   subsamplecoloritemfunc: subsamplecoloritemfunc_t;
 
+//==============================================================================
+// R_SubsamplingBuffer32
+//
 // Subsampling buffer - 32 bit
+//
+//==============================================================================
 procedure R_SubsamplingBuffer32(const y: PInteger);
 var
   i: integer;
@@ -135,6 +180,11 @@ begin
     pl[i] := subsamplecoloritemfunc(pl[i]);
 end;
 
+//==============================================================================
+//
+// R_SubsamplingBuffer
+//
+//==============================================================================
 procedure R_SubsamplingBuffer;
 var
   y: integer;
@@ -154,7 +204,6 @@ begin
   for y := 0 to viewheight - 1 do
     R_AddRenderTask(subsamplecolorfunc, RF_COLORSUBSAMPLING, @y);
 end;
-
 
 end.
 

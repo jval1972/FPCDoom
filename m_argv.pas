@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2018 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -44,16 +44,47 @@ var
 
 { Returns the position of the given parameter }
 { in the arg list (0 if not found). }
+
+//==============================================================================
+//
+// M_CheckParm
+//
+//==============================================================================
 function M_CheckParm(const check: string): integer;
 
+//==============================================================================
+//
+// M_CheckParmCDROM
+//
+//==============================================================================
 function M_CheckParmCDROM: boolean;
 
+//==============================================================================
+//
+// M_InitArgv
+//
+//==============================================================================
 procedure M_InitArgv;
 
+//==============================================================================
+//
+// M_CmdShowCommandLineParams
+//
+//==============================================================================
 procedure M_CmdShowCommandLineParams(const parm: string);
 
+//==============================================================================
+//
+// M_CmdShowCmdline
+//
+//==============================================================================
 procedure M_CmdShowCmdline(const parm: string);
 
+//==============================================================================
+//
+// M_SaveFileName
+//
+//==============================================================================
 function M_SaveFileName(const filename: string): string;
 
 const
@@ -73,6 +104,11 @@ var
 var
   cmdparams: TDStringList;
 
+//==============================================================================
+//
+// M_CheckParm
+//
+//==============================================================================
 function M_CheckParm(const check: string): integer;
 var
   i: integer;
@@ -88,6 +124,11 @@ begin
   result := 0;
 end;
 
+//==============================================================================
+//
+// M_CheckParmCDROM
+//
+//==============================================================================
 function M_CheckParmCDROM: boolean;
 begin
   if cdchecked = -1 then
@@ -102,6 +143,11 @@ begin
   result := cdchecked > 0;
 end;
 
+//==============================================================================
+//
+// M_InitArgv
+//
+//==============================================================================
 procedure M_InitArgv;
 var
   i: integer;
@@ -128,6 +174,11 @@ begin
 
 end;
 
+//==============================================================================
+//
+// M_CmdShowCommandLineParams
+//
+//==============================================================================
 procedure M_CmdShowCommandLineParams(const parm: string);
 var
   i: integer;
@@ -145,6 +196,11 @@ begin
   mlist.Free;
 end;
 
+//==============================================================================
+//
+// M_CmdShowCmdline
+//
+//==============================================================================
 procedure M_CmdShowCmdline(const parm: string);
 var
   i: integer;
@@ -154,6 +210,11 @@ begin
   printf(#13#10);
 end;
 
+//==============================================================================
+//
+// M_SaveFileName
+//
+//==============================================================================
 function M_SaveFileName(const filename: string): string;
 begin
   if M_CheckParmCDROM then

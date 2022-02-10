@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -31,26 +31,65 @@ unit i_midi;
 
 interface
 
+//==============================================================================
+//
+// I_PlayMidi
+//
+//==============================================================================
 procedure I_PlayMidi(const aMidiFile: string);
 
+//==============================================================================
+//
+// I_StopMidi
+//
+//==============================================================================
 procedure I_StopMidi;
 
+//==============================================================================
+//
+// I_PauseMidi
+//
+//==============================================================================
 procedure I_PauseMidi;
 
+//==============================================================================
+//
+// I_ResumeMidi
+//
+//==============================================================================
 procedure I_ResumeMidi;
 
+//==============================================================================
+//
+// I_InitMidi
+//
+//==============================================================================
 procedure I_InitMidi;
 
+//==============================================================================
+//
+// I_ShutDownMidi
+//
+//==============================================================================
 procedure I_ShutDownMidi;
 
+//==============================================================================
+//
+// I_SetMusicVolumeMidi
+//
+//==============================================================================
 procedure I_SetMusicVolumeMidi(volume: integer);
 
+//==============================================================================
+//
+// I_ProcessMidi
+//
+//==============================================================================
 procedure I_ProcessMidi;
 
 const
   MThd = $6468544D; // Start of file
   MTrk = $6B72544D; // Start of track
-
 
 const
   midivolumecontrol: array[0..15] of integer = (
@@ -119,10 +158,8 @@ type
   TTRACK = _TRACK;
   LPTRACK = ^_TRACK;
 
-
 const
   ITS_F_ENDOFTRK = $00000001;
-
 
 // This structure is used to pass information to the ConvertToBuffer()
 // system and then internally by that function to send information about the
@@ -284,7 +321,6 @@ type
 const
   BUFFER_TIME_LENGTH = 60; // Amount to fill in milliseconds
 
-
   // These structures are stored in MIDI files; they need to be byte aligned.
   //
 {$ALIGN 1}
@@ -301,14 +337,22 @@ type
 
 {$ALIGN OFF} // End of need for byte-aligned structures
 
-
+//==============================================================================
+// WORDSWAP
+//
 // Macros for swapping hi/lo-endian data
 //
+//==============================================================================
 function WORDSWAP(w: WORD): WORD;
 begin
   Result := (w shr 8) or ((w shl 8) and $FF00);
 end;
 
+//==============================================================================
+//
+// DWORDSWAP
+//
+//==============================================================================
 function DWORDSWAP(dw: DWORD): DWORD;
 begin
   Result := (dw shr 24) or ((dw shr 8) and $0000FF00) or ((dw shl 8) and $00FF0000) or ((dw shl 24) and $FF000000);
@@ -325,27 +369,51 @@ const
   gteMetaTrunc = 'Meta event truncated';
   gteNoMem = 'Out of memory during malloc call';
 
-
+//==============================================================================
+//
+// MIDIEVENT_CHANNEL
+//
+//==============================================================================
 function MIDIEVENT_CHANNEL(dw: DWORD): DWORD;
 begin
   Result := dw and $0000000F;
 end;
 
+//==============================================================================
+//
+// MIDIEVENT_TYPE
+//
+//==============================================================================
 function MIDIEVENT_TYPE(dw: DWORD): DWORD;
 begin
   Result := dw and $000000F0;
 end;
 
+//==============================================================================
+//
+// MIDIEVENT_DATA1
+//
+//==============================================================================
 function MIDIEVENT_DATA1(dw: DWORD): DWORD;
 begin
   Result := (dw and $0000FF00) shr 8;
 end;
 
+//==============================================================================
+//
+// MIDIEVENT_VOLUME
+//
+//==============================================================================
 function MIDIEVENT_VOLUME(dw: DWORD): DWORD;
 begin
   Result := (dw and $007F0000) shr 16;
 end;
 
+//==============================================================================
+//
+// AssertMidiError
+//
+//==============================================================================
 procedure AssertMidiError(const b: boolean; const Fmt: string; const A: array of const);
 begin
   if b then
@@ -356,6 +424,11 @@ end;
 type
   PMidiEvent = ^TMidiEvent;
 
+//==============================================================================
+//
+// MidiProc
+//
+//==============================================================================
 procedure MidiProc(hMidi: HMIDIOUT; uMsg: UINT; dwInstanceData, dwParam1, dwParam2: DWORD); stdcall;
 var
   pMidi: TMidi;
@@ -381,7 +454,11 @@ begin
   end;
 end;
 
-
+//==============================================================================
+//
+// TMidi.LoadData
+//
+//==============================================================================
 function TMidi.LoadData(pSoundData: Pointer; dwSize: DWORD): BOOL;
 var
   p: PBYTE;
@@ -465,7 +542,6 @@ begin
     end;
   end;
 
-
   m_pSoundData := pSoundData;
   m_dwSoundSize := dwSize;
 
@@ -484,6 +560,9 @@ begin
   Result := True;
 end;
 
+//==============================================================================
+// TMidi.AddEventToStreamBuffer
+//
 // AddEventToStreamBuffer
 //
 // Put the given event into the given stream buffer at the given location
@@ -492,7 +571,8 @@ end;
 //
 // Handles its own error notification by displaying to the appropriate
 // output device (either our debugging window, or the screen).
-
+//
+//==============================================================================
 function TMidi.AddEventToStreamBuffer(pteTemp: LPTEMPEVENT;
   lpciInfo: LPCONVERTINFO): integer;
 var
@@ -659,6 +739,11 @@ begin
   Result := CONVERTERR_NOERROR;
 end;
 
+//==============================================================================
+//
+// TMidi.Resume
+//
+//==============================================================================
 function TMidi.Resume: BOOL;
 begin
   if m_bPaused and m_bPlaying and (m_pSoundData <> nil) and (m_hStream <> 0) then
@@ -669,6 +754,9 @@ begin
   Result := False;
 end;
 
+//==============================================================================
+// TMidi.ConvertToBuffer
+//
 // This function converts MIDI data from the track buffers setup by a
 // previous call to ConverterInit().  It will convert data until an error is
 // encountered or the output buffer has been filled with as much event data
@@ -676,6 +764,8 @@ end;
 // bit flags, passed through dwFlags. Information about the success/failure
 // of this operation and the number of output bytes actually converted will
 // be returned in the CONVERTINFO structure pointed at by lpciInfo.
+//
+//==============================================================================
 function TMidi.ConvertToBuffer(dwFlags: DWORD;
   lpciInfo: LPCONVERTINFO): integer;
 var
@@ -892,9 +982,14 @@ begin
   inherited;
 end;
 
+//==============================================================================
+// TMidi.FreeBuffers
+//
 // This function unprepares and frees all our buffers -- something we must
 // do to work around a bug in MMYSYSTEM that prevents a device from playing
 // back properly unless it is closed and reopened after each stop.
+//
+//==============================================================================
 procedure TMidi.FreeBuffers;
 var
   idx: DWORD;
@@ -923,22 +1018,42 @@ begin
     end;
 end;
 
+//==============================================================================
+//
+// TMidi.GetChannelCount
+//
+//==============================================================================
 function TMidi.GetChannelCount: DWORD;
 begin
   Result := Length(m_Volumes);
 end;
 
+//==============================================================================
+//
+// TMidi.GetChannelVolume
+//
+//==============================================================================
 function TMidi.GetChannelVolume(dwChannel: DWORD): DWORD;
 begin
   AssertMidiError(dwChannel < GetChannelCount(), 'TMidi.GetChannelVolume(): Invalid channel number (%d)', [dwChannel]);
   Result := m_Volumes[dwChannel];
 end;
 
+//==============================================================================
+//
+// TMidi.GetTempo
+//
+//==============================================================================
 function TMidi.GetTempo: DWORD;
 begin
   Result := m_dwTempoMultiplier;
 end;
 
+//==============================================================================
+//
+// TMidi.GetTrackByte
+//
+//==============================================================================
 function TMidi.GetTrackByte(ptsTrack: LPTRACK; lpbyByte: PBYTE): BOOL;
 begin
   if DWORD(ptsTrack^.pTrackCurrent) - DWORD(ptsTrack^.pTrackStart) = ptsTrack^.dwTrackLength then
@@ -951,8 +1066,9 @@ begin
   Result := True;
 end;
 
-
-
+//==============================================================================
+// TMidi.GetTrackEvent
+//
 // GetTrackEvent
 //
 // Fills in the event struct with the next event from the track
@@ -981,6 +1097,7 @@ end;
 // Maintains the state of the input track (i.e.
 // ptsTrack->pTrackPointers, and ptsTrack->byRunningStatus).
 //
+//==============================================================================
 function TMidi.GetTrackEvent(ptsTrack: LPTRACK;
   pteTemp: LPTEMPEVENT): BOOL;
 var
@@ -1188,8 +1305,9 @@ begin
   Result := True;
 end;
 
-
-
+//==============================================================================
+// TMidi.GetTrackVDWord
+//
 // GetTrackVDWord
 //
 // Attempts to parse a variable length DWORD from the given track. A VDWord
@@ -1199,7 +1317,8 @@ end;
 //
 // Returns the DWORD in *lpdw and True on success; else
 // False if we hit end of track first.
-
+//
+//==============================================================================
 function TMidi.GetTrackVDWord(ptsTrack: LPTRACK; lpdw: PDWORD): BOOL;
 var
   byByte: Byte;
@@ -1233,6 +1352,11 @@ begin
   Result := True;
 end;
 
+//==============================================================================
+//
+// TMidi.GetVolume
+//
+//==============================================================================
 function TMidi.GetVolume: DWORD;
 var
   dwVolume, i: DWORD;
@@ -1244,16 +1368,31 @@ begin
   Result := dwVolume div GetChannelCount();
 end;
 
+//==============================================================================
+//
+// TMidi.IsPaused
+//
+//==============================================================================
 function TMidi.IsPaused: BOOL;
 begin
   Result := m_bPaused;
 end;
 
+//==============================================================================
+//
+// TMidi.IsPlaying
+//
+//==============================================================================
 function TMidi.IsPlaying: BOOL;
 begin
   Result := m_bPlaying;
 end;
 
+//==============================================================================
+//
+// TMidi.MidiError
+//
+//==============================================================================
 procedure TMidi.MidiError(mmResult: MMRESULT);
 var
   chText: array[0..511] of char;
@@ -1262,12 +1401,21 @@ begin
   DebugOutput('Midi error: %s'#13#10, [chText]);
 end;
 
-
+//==============================================================================
+//
+// TMidi.OnMidiOutClose
+//
+//==============================================================================
 procedure TMidi.OnMidiOutClose;
 begin
   DebugOutput('Midi device closed'#13#10, []);
 end;
 
+//==============================================================================
+//
+// TMidi.OnMidiOutDone
+//
+//==============================================================================
 procedure TMidi.OnMidiOutDone(var rHdr: MIDIHDR);
 var
   nChkErr: integer;
@@ -1348,11 +1496,21 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// TMidi.OnMidiOutOpen
+//
+//==============================================================================
 procedure TMidi.OnMidiOutOpen;
 begin
   DebugOutput('Midi device opened'#13#10, []);
 end;
 
+//==============================================================================
+//
+// TMidi.OnMidiOutPositionCB
+//
+//==============================================================================
 procedure TMidi.OnMidiOutPositionCB(var rHdr: MIDIHDR; var rEvent: MIDIEVENT);
 begin
   if MIDIEVENT_TYPE(rEvent.dwEvent) = MIDI_CTRLCHANGE then
@@ -1361,6 +1519,11 @@ begin
       m_Volumes[MIDIEVENT_CHANNEL(rEvent.dwEvent)] := DWORD(MIDIEVENT_VOLUME(rEvent.dwEvent) * 100 div VOLUME_MAX);
 end;
 
+//==============================================================================
+//
+// TMidi.Pause
+//
+//==============================================================================
 function TMidi.Pause: BOOL;
 begin
   if not m_bPaused and m_bPlaying and (m_pSoundData <> nil) and (m_hStream <> 0) then
@@ -1371,6 +1534,11 @@ begin
   Result := False;
 end;
 
+//==============================================================================
+//
+// TMidi.Play
+//
+//==============================================================================
 function TMidi.Play(bInfinite: BOOL): BOOL;
 var
   _mmResult: MMRESULT;
@@ -1406,6 +1574,11 @@ begin
   Result := m_bPlaying;
 end;
 
+//==============================================================================
+//
+// TMidi.Rewind
+//
+//==============================================================================
 function TMidi.Rewind: BOOL;
 var
   i: integer;
@@ -1443,6 +1616,11 @@ begin
   Result := True;
 end;
 
+//==============================================================================
+//
+// TMidi.SetChannelVolume
+//
+//==============================================================================
 procedure TMidi.SetChannelVolume(dwChannel, dwPercent: DWORD);
 var
   dwEvent: DWORD;
@@ -1466,11 +1644,21 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// TMidi.SetInfinitePlay
+//
+//==============================================================================
 procedure TMidi.SetInfinitePlay(bSet: BOOL);
 begin
   m_bLooped := bSet;
 end;
 
+//==============================================================================
+//
+// TMidi.SetTempo
+//
+//==============================================================================
 procedure TMidi.SetTempo(dwPercent: DWORD);
 begin
   if dwPercent <> 0 then
@@ -1480,6 +1668,11 @@ begin
   m_bInsertTempo := True;
 end;
 
+//==============================================================================
+//
+// TMidi.SetVolume
+//
+//==============================================================================
 procedure TMidi.SetVolume(dwpercent: DWORD);
 var
   i: DWORD;
@@ -1488,6 +1681,11 @@ begin
     SetChannelVolume(i, dwPercent);
 end;
 
+//==============================================================================
+//
+// TMidi.Stop
+//
+//==============================================================================
 function TMidi.Stop(bReOpen: BOOL): BOOL;
 var
   mmrRetVal: MMRESULT;
@@ -1559,9 +1757,14 @@ begin
   Result := True;
 end;
 
+//==============================================================================
+// TMidi.StreamBufferSetup
+//
 // StreamBufferSetup()
 //
 // Opens a MIDI stream. Then it goes about converting the data into a midiStream buffer for playback.
+//
+//==============================================================================
 function TMidi.StreamBufferSetup: BOOL;
 var
   nChkErr: integer;
@@ -1673,6 +1876,11 @@ begin
   Result := True;
 end;
 
+//==============================================================================
+//
+// TMidi.TrackError
+//
+//==============================================================================
 procedure TMidi.TrackError(ptsTrack: LPTRACK; const lpszErr: string);
 begin
   DebugOutput('Track buffer offset %d', [DWORD(ptsTrack^.pTrackCurrent) - DWORD(ptsTrack^.pTrackStart)]);
@@ -1680,6 +1888,11 @@ begin
   DebugOutput('%s', [lpszErr]);
 end;
 
+//==============================================================================
+//
+// TMidi.DebugOutput
+//
+//==============================================================================
 procedure TMidi.DebugOutput(const fmt: string; const A: array of const);
 begin
   if devparm then
@@ -1687,6 +1900,11 @@ begin
       fprintf(debugfile, fmt, A);
 end;
 
+//==============================================================================
+//
+// TMidi.SetGlobalVolume
+//
+//==============================================================================
 procedure TMidi.SetGlobalVolume(const v: integer);
 begin
   m_volume := ibetween(v, 0, VOLUME_INIT);
@@ -1698,6 +1916,11 @@ var
   MidiData: PByteArray;
   MidiDataSize: integer;
 
+//==============================================================================
+//
+// I_PlayMidi
+//
+//==============================================================================
 procedure I_PlayMidi(const aMidiFile: string);
 var
   f: TFile;
@@ -1719,6 +1942,11 @@ begin
   midi.Play(True);
 end;
 
+//==============================================================================
+//
+// I_StopMidi
+//
+//==============================================================================
 procedure I_StopMidi;
 begin
   if midi <> nil then
@@ -1728,18 +1956,33 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// I_PauseMidi
+//
+//==============================================================================
 procedure I_PauseMidi;
 begin
   if midi <> nil then
     midi.Pause;
 end;
 
+//==============================================================================
+//
+// I_ResumeMidi
+//
+//==============================================================================
 procedure I_ResumeMidi;
 begin
   if midi <> nil then
     midi.Resume;
 end;
 
+//==============================================================================
+//
+// I_InitMidi
+//
+//==============================================================================
 procedure I_InitMidi;
 begin
   midi := nil;
@@ -1747,6 +1990,11 @@ begin
   MidiDataSize := 0;
 end;
 
+//==============================================================================
+//
+// I_ShutDownMidi
+//
+//==============================================================================
 procedure I_ShutDownMidi;
 begin
   FreeAndNil(midi);
@@ -1756,6 +2004,11 @@ end;
 var
   ws_volume: integer;
 
+//==============================================================================
+//
+// I_SetMusicVolumeMidi
+//
+//==============================================================================
 procedure I_SetMusicVolumeMidi(volume: integer);
 begin
   if midi <> nil then
@@ -1769,6 +2022,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// I_ProcessMidi
+//
+//==============================================================================
 procedure I_ProcessMidi;
 begin
   if midi <> nil then

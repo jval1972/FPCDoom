@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -31,10 +31,25 @@ unit r_aspect;
 
 interface
 
+//==============================================================================
+//
+// R_InitAspect
+//
+//==============================================================================
 procedure R_InitAspect;
 
+//==============================================================================
+//
+// R_ForcedAspect
+//
+//==============================================================================
 function R_ForcedAspect: Double;
 
+//==============================================================================
+//
+// R_GetRelativeAspect
+//
+//==============================================================================
 function R_GetRelativeAspect: double;
 
 var
@@ -59,6 +74,11 @@ uses
 var
   relative_aspect_fs: Double = 1.0;
 
+//==============================================================================
+//
+// R_CmdWideScreen
+//
+//==============================================================================
 procedure R_CmdWideScreen(const parm: string);
 var
   neww: boolean;
@@ -79,7 +99,11 @@ begin
   R_CmdWideScreen('');
 end;
 
-
+//==============================================================================
+//
+// R_CmdExcludeWideScreenPlayerSprites
+//
+//==============================================================================
 procedure R_CmdExcludeWideScreenPlayerSprites(const parm: string);
 var
   neww: boolean;
@@ -100,7 +124,11 @@ begin
   R_CmdExcludeWideScreenPlayerSprites('');
 end;
 
-
+//==============================================================================
+//
+// R_ForcedAspect
+//
+//==============================================================================
 function R_ForcedAspect: Double;
 var
   ar, par: string;
@@ -126,6 +154,11 @@ begin
   forcedaspectstr := ftoa(result);
 end;
 
+//==============================================================================
+//
+// R_CmdForcedAspect
+//
+//==============================================================================
 procedure R_CmdForcedAspect(const parm: string);
 begin
   if parm = '' then
@@ -141,7 +174,11 @@ begin
   R_CmdForcedAspect('');
 end;
 
-
+//==============================================================================
+//
+// R_InitAspect
+//
+//==============================================================================
 procedure R_InitAspect;
 var
   dm: TDevMode;
@@ -187,6 +224,11 @@ begin
   C_AddCmd('forcedaspect', @R_CmdForcedAspect);
 end;
 
+//==============================================================================
+//
+// R_GetRelativeAspect
+//
+//==============================================================================
 function R_GetRelativeAspect: double;
 var
   asp: Double;

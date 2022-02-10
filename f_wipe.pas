@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -31,10 +31,25 @@ unit f_wipe;
 
 interface
 
+//==============================================================================
+//
+// wipe_StartScreen
+//
+//==============================================================================
 procedure wipe_StartScreen;
 
+//==============================================================================
+//
+// wipe_EndScreen
+//
+//==============================================================================
 procedure wipe_EndScreen;
 
+//==============================================================================
+//
+// wipe_Ticker
+//
+//==============================================================================
 function wipe_Ticker(ticks: integer): boolean;
 
 type
@@ -85,6 +100,11 @@ type
 var
   fizzlearray: Pfizzlearray_t;
 
+//==============================================================================
+//
+// wipe_initMelt
+//
+//==============================================================================
 procedure wipe_initMelt;
 var
   i, r: integer;
@@ -159,6 +179,11 @@ begin
   until rndval = 1;
 end;
 
+//==============================================================================
+//
+// wipe_doMelt
+//
+//==============================================================================
 function wipe_doMelt(ticks: integer): integer;
 var
   i: integer;
@@ -219,6 +244,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// wipe_doFade
+//
+//==============================================================================
 function wipe_doFade(ticks: integer): integer;
 var
   i: integer;
@@ -239,6 +269,11 @@ begin
     result := 0;
 end;
 
+//==============================================================================
+//
+// wipe_doSlideDown
+//
+//==============================================================================
 function wipe_doSlideDown(ticks: integer): integer;
 var
   i: integer;
@@ -264,6 +299,11 @@ begin
     result := 0;
 end;
 
+//==============================================================================
+//
+// wipe_doFizzle
+//
+//==============================================================================
 function wipe_doFizzle(ticks: integer): integer;
 var
   x, y: integer;
@@ -296,6 +336,11 @@ begin
     result := 0;
 end;
 
+//==============================================================================
+//
+// wipe_exitMelt
+//
+//==============================================================================
 procedure wipe_exitMelt;
 begin
   Z_Free(yy);
@@ -304,12 +349,22 @@ begin
   memfree(wipe_scr_end, SCREENWIDTH * SCREENHEIGHT * SizeOf(LongWord));
 end;
 
+//==============================================================================
+//
+// wipe_StartScreen
+//
+//==============================================================================
 procedure wipe_StartScreen;
 begin
   wipe_scr_start := malloc(SCREENWIDTH * SCREENHEIGHT * SizeOf(LongWord));
   I_ReadScreen32(wipe_scr_start);
 end;
 
+//==============================================================================
+//
+// wipe_EndScreen
+//
+//==============================================================================
 procedure wipe_EndScreen;
 begin
   wipe_scr_end := malloc(SCREENWIDTH * SCREENHEIGHT * SizeOf(LongWord));
@@ -323,6 +378,11 @@ var
 type
   wipeproc_t = function (ticks: integer): integer;
 
+//==============================================================================
+//
+// wipe_Ticker
+//
+//==============================================================================
 function wipe_Ticker(ticks: integer): boolean;
 var
   wipeproc: wipeproc_t;

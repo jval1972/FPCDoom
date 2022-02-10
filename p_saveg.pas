@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -34,22 +34,62 @@ interface
 uses
   d_fpc;
 
+//==============================================================================
+// P_ArchivePlayers
+//
 // Persistent storage/archiving.
 // These are the load / save game routines.
+//
+//==============================================================================
 procedure P_ArchivePlayers;
 
+//==============================================================================
+//
+// P_UnArchivePlayers
+//
+//==============================================================================
 procedure P_UnArchivePlayers;
 
+//==============================================================================
+//
+// P_ArchiveWorld
+//
+//==============================================================================
 procedure P_ArchiveWorld;
 
+//==============================================================================
+//
+// P_UnArchiveWorld
+//
+//==============================================================================
 procedure P_UnArchiveWorld;
 
+//==============================================================================
+//
+// P_ArchiveThinkers
+//
+//==============================================================================
 procedure P_ArchiveThinkers;
 
+//==============================================================================
+//
+// P_UnArchiveThinkers
+//
+//==============================================================================
 procedure P_UnArchiveThinkers;
 
+//==============================================================================
+//
+// P_ArchiveSpecials
+//
+//==============================================================================
 procedure P_ArchiveSpecials;
 
+//==============================================================================
+//
+// P_UnArchiveSpecials
+//
+//==============================================================================
 procedure P_UnArchiveSpecials;
 
 var
@@ -87,17 +127,23 @@ uses
   r_defs,
   z_memory;
 
+//==============================================================================
+// PADSAVEP
+//
 // Pads save_p to a 4-byte boundary
 //  so that the load/save works on SGI&Gecko.
-
+//
+//==============================================================================
 procedure PADSAVEP(var prt: PByteArray);
 begin
   prt := PByteArray(integer(prt) + ((4 - (integer(prt) and 3) and 3)));
 end;
 
+//==============================================================================
 //
 // P_ArchivePlayers
 //
+//==============================================================================
 procedure P_ArchivePlayers;
 var
   i: integer;
@@ -120,9 +166,11 @@ begin
   end;
 end;
 
+//==============================================================================
 //
 // P_UnArchivePlayers
 //
+//==============================================================================
 procedure P_UnArchivePlayers;
 var
   i: integer;
@@ -154,9 +202,11 @@ begin
   end;
 end;
 
+//==============================================================================
 //
 // P_ArchiveWorld
 //
+//==============================================================================
 procedure P_ArchiveWorld;
 var
   i: integer;
@@ -225,9 +275,11 @@ begin
   save_p := PByteArray(put);
 end;
 
+//==============================================================================
 //
 // P_UnArchiveWorld
 //
+//==============================================================================
 procedure P_UnArchiveWorld;
 var
   i: integer;
@@ -301,9 +353,11 @@ end;
 type
   thinkerclass_t = (tc_end, tc_mobj);
 
+//==============================================================================
 //
 // P_ArchiveThinkers
 //
+//==============================================================================
 procedure P_ArchiveThinkers;
 var
   th: Pthinker_t;
@@ -362,6 +416,7 @@ end;
 
 // P_UnArchiveThinkers
 //
+//==============================================================================
 procedure P_UnArchiveThinkers;
 var
   tclass: byte;
@@ -480,8 +535,8 @@ type
     tc_endspecials
   );
 
-
-
+//==============================================================================
+// P_ArchiveSpecials
 //
 // Things to handle:
 //
@@ -493,6 +548,7 @@ type
 // T_Glow, (glow_t: sector_t *),
 // T_PlatRaise, (plat_t: sector_t *), - active list
 //
+//==============================================================================
 procedure P_ArchiveSpecials;
 var
   th: Pthinker_t;
@@ -639,9 +695,11 @@ begin
   save_p := @save_p[1];
 end;
 
+//==============================================================================
 //
 // P_UnArchiveSpecials
 //
+//==============================================================================
 procedure P_UnArchiveSpecials;
 var
   tclass: byte;

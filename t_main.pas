@@ -2,7 +2,7 @@
 //
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -148,6 +148,11 @@ type
     function Clone: PTexture;
   end;
 
+//==============================================================================
+//
+// T_LoadHiResTexture
+//
+//==============================================================================
 function T_LoadHiResTexture(const FileName: string): PTexture;
 
 var
@@ -181,11 +186,32 @@ type
     destructor Destroy; virtual;
   end;
 
+//==============================================================================
+//
+// GetImageFormat
+//
+//==============================================================================
 function GetImageFormat(FileExt: string): PTextureManager;
+
+//==============================================================================
+//
+// SetBytesPerPixelAddr
+//
+//==============================================================================
 procedure SetBytesPerPixelAddr(Value: pointer);
 
+//==============================================================================
+//
+// T_Init
+//
+//==============================================================================
 procedure T_Init;
 
+//==============================================================================
+//
+// T_ShutDown
+//
+//==============================================================================
 procedure T_ShutDown;
 
 var
@@ -206,6 +232,11 @@ uses
 const
   BytesPerPixel_Addr: PWord = nil;
 
+//==============================================================================
+//
+// pixel15to24
+//
+//==============================================================================
 function pixel15to24(color: word): LongWord; assembler;
 asm
   xor  eax, eax
@@ -216,10 +247,13 @@ asm
   shl  ah, $3
 end;
 
+//==============================================================================
+// T_LoadHiResTexture
 //
 // JVAL
 // Load external texture using the PAKFileSystem
 //
+//==============================================================================
 function T_LoadHiResTexture(const FileName: string): PTexture;
 var
   i: integer;
@@ -276,6 +310,11 @@ begin
   Empty;
 end;
 
+//==============================================================================
+//
+// TTexture.LoadFromFile
+//
+//==============================================================================
 function TTexture.LoadFromFile(const FileName: string): boolean;
 var
   i: integer;
@@ -295,6 +334,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// TTexture.LoadFromStream
+//
+//==============================================================================
 function TTexture.LoadFromStream(stream: TStream; const alias: string): boolean;
 var
   i: integer;
@@ -314,6 +358,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// TTexture.Empty
+//
+//==============================================================================
 procedure TTexture.Empty;
 begin
   if (FData <> nil) and (FSize > 0) then
@@ -331,16 +380,31 @@ begin
     SetBytesPerPixel(0);
 end;
 
+//==============================================================================
+//
+// TTexture.GetData
+//
+//==============================================================================
 function TTexture.GetData: pointer;
 begin
   result := FData;
 end;
 
+//==============================================================================
+//
+// TTexture.GetImage
+//
+//==============================================================================
 function TTexture.GetImage: pointer;
 begin
   result := pOp(FData, 4);
 end;
 
+//==============================================================================
+//
+// TTexture.GetPalette
+//
+//==============================================================================
 function TTexture.GetPalette: PPalette;
 begin
   if FPalette = nil then
@@ -349,6 +413,11 @@ begin
     result := FPalette;
 end;
 
+//==============================================================================
+//
+// TTexture.GetTransformedPalette
+//
+//==============================================================================
 function TTexture.GetTransformedPalette: PPalette;
 begin
   if FTransformedPalette = nil then
@@ -357,26 +426,51 @@ begin
     result := FTransformedPalette;
 end;
 
+//==============================================================================
+//
+// TTexture.GetWidth
+//
+//==============================================================================
 function TTexture.GetWidth: integer;
 begin
   result := FWidth;
 end;
 
+//==============================================================================
+//
+// TTexture.GetHeight
+//
+//==============================================================================
 function TTexture.GetHeight: integer;
 begin
   result := FHeight;
 end;
 
+//==============================================================================
+//
+// TTexture.GetSize
+//
+//==============================================================================
 function TTexture.GetSize: integer;
 begin
   result := FSize;
 end;
 
+//==============================================================================
+//
+// TTexture.HasPalette
+//
+//==============================================================================
 function TTexture.HasPalette: boolean;
 begin
   result := FPalette <> nil;
 end;
 
+//==============================================================================
+//
+// TTexture.GetColumn32
+//
+//==============================================================================
 procedure TTexture.GetColumn32(col: integer; size: integer; dest: pointer);
 var
   row: integer;
@@ -445,6 +539,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// TTexture.GetPalettedColumn32
+//
+//==============================================================================
 function TTexture.GetPalettedColumn32(col: integer; size: integer; dest: pointer; APalColor: LongWord): boolean;
 var
   row: integer;
@@ -481,6 +580,11 @@ begin
     result := false;
 end;
 
+//==============================================================================
+//
+// TTexture.GetRow32
+//
+//==============================================================================
 procedure TTexture.GetRow32(row: integer; size: integer; dest: pointer);
 var
   col: integer;
@@ -545,6 +649,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+//  TTexture.GetPalettedRow32
+//
+//==============================================================================
 function  TTexture.GetPalettedRow32(row: integer; size: integer; dest: pointer; APalColor: LongWord): boolean;
 var
   col: integer;
@@ -579,8 +688,12 @@ begin
     result := false;
 end;
 
-
+//==============================================================================
+// TTexture.AddColorOverlay
+//
 // JVAL: Unused
+//
+//==============================================================================
 procedure TTexture.AddColorOverlay(const color: LongWord);
 var
   plw: PLongWord;
@@ -597,6 +710,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// TTexture.ScaleTo
+//
+//==============================================================================
 procedure TTexture.ScaleTo(AWidth, AHeight: word);
 var
   xs, ys, yi, xi, x, y: integer;
@@ -655,6 +773,11 @@ begin
   FSize := NewSize;
 end;
 
+//==============================================================================
+//
+// TTexture.SetWidth
+//
+//==============================================================================
 procedure TTexture.SetWidth(Value: word);
 var
    newImage: pointer;
@@ -694,6 +817,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// TTexture.SetHeight
+//
+//==============================================================================
 procedure TTexture.SetHeight(Value: word);
 var
   newImage: pointer;
@@ -728,6 +856,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// TTexture.SetBytesPerPixel
+//
+//==============================================================================
 procedure TTexture.SetBytesPerPixel(Value: word);
 begin
   if (FBytesPerPixel <> Value) and (Value > 0) and (Value < 5) then
@@ -753,11 +886,21 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// TTexture.GetBytesPerPixel
+//
+//==============================================================================
 function TTexture.GetBytesPerPixel: word;
 begin
   result := FBytesPerPixel;
 end;
 
+//==============================================================================
+//
+// TTexture.SetPalette
+//
+//==============================================================================
 procedure TTexture.SetPalette(APalette: Pointer; Count: Word; PaletType: TPaletType; RecordSize: Word);
 var
   i: integer;
@@ -789,6 +932,11 @@ begin
     Move(APalette^, FPalette^, Count * SizeOf(integer));
 end;
 
+//==============================================================================
+//
+// TTexture.SetPalColor
+//
+//==============================================================================
 procedure TTexture.SetPalColor(AColor: LongWord);
 var
   i: integer;
@@ -806,8 +954,12 @@ begin
   end;
 end;
 
+//==============================================================================
+// TTexture.PutPixels1
+//
 // PUTPIXELS1: by Matthias K"oppe <mkoeppe@cs.uni-magdeburg.de>:
-
+//
+//==============================================================================
 procedure TTexture.PutPixels1(Source, Dest: Pointer; Count: integer);
 var
   i, j, c, b: integer;
@@ -834,8 +986,12 @@ begin
   end;
 end;
 
+//==============================================================================
+// TTexture.PutPixels4
+//
 // PUTPIXELS4: by Matthias K"oppe <mkoeppe@cs.uni-magdeburg.de>:
-
+//
+//==============================================================================
 procedure TTexture.PutPixels4(Source, Dest: Pointer; Count: integer);
 var
   i, c: integer;
@@ -857,6 +1013,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// TTexture.PutPixels8
+//
+//==============================================================================
 procedure TTexture.PutPixels8(Source, Dest: Pointer; Count: integer);
 var
   i, c: integer;
@@ -870,6 +1031,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// TTexture.PutPixels15
+//
+//==============================================================================
 procedure TTexture.PutPixels15(Source, Dest: Pointer; Count: integer);
 var
   i, c: integer;
@@ -883,6 +1049,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// TTexture.PutPixels24
+//
+//==============================================================================
 procedure TTexture.PutPixels24(Source, Dest: Pointer; Count: integer);
 var
   i, c: integer;
@@ -896,6 +1067,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// TTexture.PutPixels32
+//
+//==============================================================================
 procedure TTexture.PutPixels32(source, dest: pointer; count: integer);
 var
   i, c: integer;
@@ -909,9 +1085,13 @@ begin
   end;
 end;
 
+//==============================================================================
+// TTexture.PutPixels
+//
 // PUTPIXELS:
 // some mods by Matthias K"oppe <mkoeppe@cs.uni-magdeburg.de>:
-
+//
+//==============================================================================
 procedure TTexture.PutPixels(X, Y: Integer; Count: integer; Buffer: Pointer; PixelFormat: integer);
 var
   ofs: pointer;
@@ -932,9 +1112,12 @@ begin
   end;
 end;
 
+//==============================================================================
+// TTexture.Adjust32bitTransparency
 //
 // JVAL: Adjust custom transparent color
 //
+//==============================================================================
 procedure TTexture.Adjust32bitTransparency;
 var
   pdest: PLongWord;
@@ -959,36 +1142,71 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// TTexture.GetTransparentColor
+//
+//==============================================================================
 function TTexture.GetTransparentColor: LongWord;
 begin
   result := FTransparentColor;
 end;
 
+//==============================================================================
+//
+// TTexture.SetTransparentColor
+//
+//==============================================================================
 procedure TTexture.SetTransparentColor(const value: LongWord);
 begin
   FTransparentColor := value;
 end;
 
+//==============================================================================
+//
+// TTexture.GetTransparentColor2
+//
+//==============================================================================
 function TTexture.GetTransparentColor2: LongWord;
 begin
   result := FTransparentColor2;
 end;
 
+//==============================================================================
+//
+// TTexture.SetTransparentColor2
+//
+//==============================================================================
 procedure TTexture.SetTransparentColor2(const value: LongWord);
 begin
   FTransparentColor2 := value;
 end;
 
+//==============================================================================
+//
+// TTexture.GetTransparentColor3
+//
+//==============================================================================
 function TTexture.GetTransparentColor3: LongWord;
 begin
   result := FTransparentColor3;
 end;
 
+//==============================================================================
+//
+// TTexture.SetTransparentColor3
+//
+//==============================================================================
 procedure TTexture.SetTransparentColor3(const value: LongWord);
 begin
   FTransparentColor3 := value;
 end;
 
+//==============================================================================
+//
+// TTexture.Clone
+//
+//==============================================================================
 function TTexture.Clone: PTexture;
 begin
   result := new(PTexture, Create);
@@ -1022,36 +1240,71 @@ begin
   ImageFormats := @self;
 end;
 
+//==============================================================================
+//
+// TTextureManager.SetNext
+//
+//==============================================================================
 procedure TTextureManager.SetNext(Value: PTextureManager);
 begin
   FNext := Value;
 end;
 
+//==============================================================================
+//
+// TTextureManager.GetFileExt
+//
+//==============================================================================
 function TTextureManager.GetFileExt: string;
 begin
   result := TextureExtensions[FFileExt];
 end;
 
+//==============================================================================
+//
+// TTextureManager.SetFileExt
+//
+//==============================================================================
 procedure TTextureManager.SetFileExt(const ext: string);
 begin
   FFileExt := TextureExtensions.Add(ext);
 end;
 
+//==============================================================================
+//
+// TTextureManager.GetBitmap
+//
+//==============================================================================
 function TTextureManager.GetBitmap: PTexture;
 begin
   result := FBitmap;
 end;
 
+//==============================================================================
+//
+// TTextureManager.GetFrameCount
+//
+//==============================================================================
 function TTextureManager.GetFrameCount: integer;
 begin
   result := fFrameCount;
 end;
 
+//==============================================================================
+//
+// TTextureManager.GetNext
+//
+//==============================================================================
 function TTextureManager.GetNext: PTextureManager;
 begin
   result := fNext;
 end;
 
+//==============================================================================
+//
+// TTextureManager.LoadFromFile
+//
+//==============================================================================
 function TTextureManager.LoadFromFile(const FileName: string): boolean;
 var
   Stream: TStream;
@@ -1064,6 +1317,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// TTextureManager.LoadFromStream
+//
+//==============================================================================
 function TTextureManager.LoadFromStream(Stream: TStream): boolean;
 begin
   LoadFromStream := false;
@@ -1076,21 +1334,41 @@ begin
    end;
 end;
 
+//==============================================================================
+//
+// TTextureManager.SetFrame
+//
+//==============================================================================
 procedure TTextureManager.SetFrame(Value: integer);
 begin
   fFrame := Value;
 end;
 
+//==============================================================================
+//
+// TTextureManager.SetBitmap
+//
+//==============================================================================
 procedure TTextureManager.SetBitmap(Value: PTexture);
 begin
   FBitmap := Value;
 end;
 
+//==============================================================================
+//
+// TTextureManager.LoadHeader
+//
+//==============================================================================
 function TTextureManager.LoadHeader(Stream: TStream): boolean;
 begin
   LoadHeader := false;
 end;
 
+//==============================================================================
+//
+// TTextureManager.LoadImage
+//
+//==============================================================================
 function TTextureManager.LoadImage(Stream: TStream): boolean;
 begin
   LoadImage := false;
@@ -1100,6 +1378,11 @@ destructor TTextureManager.Destroy;
 begin
 end;
 
+//==============================================================================
+//
+// GetImageFormat
+//
+//==============================================================================
 function GetImageFormat(FileExt: string): PTextureManager;
 var
   i: integer;
@@ -1115,6 +1398,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// setBytesPerPixelAddr
+//
+//==============================================================================
 procedure setBytesPerPixelAddr(Value: pointer);
 begin
   BytesPerPixel_Addr := Value;
@@ -1125,6 +1413,11 @@ var
   tm_targa: TTGATextureManager;
   tm_png: TPNGTextureManager;
 
+//==============================================================================
+//
+// T_Init
+//
+//==============================================================================
 procedure T_Init;
 begin
   TextureExtensions := TDStringList.Create;
@@ -1136,6 +1429,11 @@ begin
   T_InitDrawTextures;
 end;
 
+//==============================================================================
+//
+// T_ShutDown
+//
+//==============================================================================
 procedure T_ShutDown;
 begin
   TextureExtensions.Free;

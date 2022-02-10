@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -48,15 +48,28 @@ var
   lightexturelookup: array[0..LIGHTBOOSTSIZE - 1] of lpost_t;
   lighttexture: PLongWordArray = nil;
 
+//==============================================================================
+//
+// R_InitLightTexture
+//
+//==============================================================================
 procedure R_InitLightTexture;
 
+//==============================================================================
+//
+// R_ShutDownLightTexture
+//
+//==============================================================================
 procedure R_ShutDownLightTexture;
 
 implementation
 
+//==============================================================================
+// R_InitLightTexture
 //
 // R_InitLights
 //
+//==============================================================================
 procedure R_InitLightTexture;
 var
   i, j: integer;
@@ -90,6 +103,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// R_ShutDownLightTexture
+//
+//==============================================================================
 procedure R_ShutDownLightTexture;
 begin
   if lighttexture <> nil then

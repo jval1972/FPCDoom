@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -31,8 +31,18 @@ unit v_intermission;
 
 interface
 
+//==============================================================================
+//
+// V_IntermissionStretch
+//
+//==============================================================================
 procedure V_IntermissionStretch;
 
+//==============================================================================
+//
+// V_StatusBarStretch
+//
+//==============================================================================
 procedure V_StatusBarStretch;
 
 type
@@ -96,6 +106,11 @@ uses
   st_stuff,
   v_video;
 
+//==============================================================================
+//
+// V_GetISMPct
+//
+//==============================================================================
 function V_GetISMPct(var mode: integer): integer;
 begin
   mode := ibetween(mode, Ord(ism_none), Ord(ism_max) - 1);
@@ -128,6 +143,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// V_DoIntermissionStretch
+//
+//==============================================================================
 procedure V_DoIntermissionStretch(const pct: integer);
 var
   x, y: integer;
@@ -176,6 +196,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// V_IntermissionStretch
+//
+//==============================================================================
 procedure V_IntermissionStretch;
 var
   pct: integer;
@@ -184,6 +209,11 @@ begin
   V_DoIntermissionStretch(pct);
 end;
 
+//==============================================================================
+//
+// V_DoStatusBarStretch
+//
+//==============================================================================
 procedure V_DoStatusBarStretch(const pct: integer);
 var
   x, y: integer;
@@ -243,6 +273,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// V_StatusBarStretch
+//
+//==============================================================================
 procedure V_StatusBarStretch;
 var
   pct: integer;

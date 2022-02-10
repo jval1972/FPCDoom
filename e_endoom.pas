@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2020 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -44,14 +44,39 @@ var
   EndLumpName: string = 'ENDOOM';
   displayendscreen: boolean;
 
+//==============================================================================
+//
+// E_Responder
+//
+//==============================================================================
 function E_Responder(ev: Pevent_t): boolean;
 
+//==============================================================================
+//
+// E_Init
+//
+//==============================================================================
 procedure E_Init;
 
+//==============================================================================
+//
+// E_Drawer
+//
+//==============================================================================
 procedure E_Drawer;
 
+//==============================================================================
+//
+// E_ShutDown
+//
+//==============================================================================
 procedure E_ShutDown;
 
+//==============================================================================
+//
+// E_Ticker
+//
+//==============================================================================
 procedure E_Ticker;
 
 implementation
@@ -71,6 +96,11 @@ var
   e_blink: boolean = true;
   e_needsupdate: boolean = true;
 
+//==============================================================================
+//
+// E_Responder
+//
+//==============================================================================
 function E_Responder(ev: Pevent_t): boolean;
 begin
   if ev._type <> ev_keyup then
@@ -116,6 +146,11 @@ const
 var
   fontpalcolors: array[0..15] of byte;
 
+//==============================================================================
+//
+// E_Init
+//
+//==============================================================================
 procedure E_Init;
 var
   dosfontlump: integer;
@@ -154,6 +189,11 @@ type
   endoomchar_tArray = array[0..1999] of endoomchar_t;
   Pendoomchar_tArray = ^endoomchar_tArray;
 
+//==============================================================================
+//
+// E_Drawer
+//
+//==============================================================================
 procedure E_Drawer;
 var
   endoom: Pendoomchar_tArray;
@@ -216,6 +256,11 @@ begin
   V_CopyCustomScreen(e_screen, 640, 200, SCN_FG);
 end;
 
+//==============================================================================
+//
+// E_ShutDown
+//
+//==============================================================================
 procedure E_ShutDown;
 begin
   if e_ticks > 0 then
@@ -225,6 +270,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// E_Ticker
+//
+//==============================================================================
 procedure E_Ticker;
 var
   blink: boolean;

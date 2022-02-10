@@ -3,7 +3,7 @@
 //  FPCDoom - Port of Doom to Free Pascal Compiler
 //  Copyright (C) 1993-1996 by id Software, Inc.
 //  Copyright (C) 2004-2007 by Jim Valavanis
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2022 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -132,6 +132,11 @@ public
     pm_prefered // Filename match but specified prefered directories
   );
 
+//==============================================================================
+//
+// PAK_GetDirectoryListFromString
+//
+//==============================================================================
 function PAK_GetDirectoryListFromString(const aprefdirs: string): TDStringList;
 
 type
@@ -152,10 +157,32 @@ type
     function Position: integer; override;
   end;
 
+//==============================================================================
+//
+// PAK_InitFileSystem
+//
+//==============================================================================
 procedure PAK_InitFileSystem;
+
+//==============================================================================
+//
+// PAK_ShutDown
+//
+//==============================================================================
 procedure PAK_ShutDown;
 
+//==============================================================================
+//
+// PAK_AddDirectory
+//
+//==============================================================================
 procedure PAK_AddDirectory(const path: string);
+
+//==============================================================================
+//
+// PAK_AddFile
+//
+//==============================================================================
 function PAK_AddFile(const FileName: string): boolean;
 
 implementation
@@ -179,6 +206,11 @@ begin
   Inherited Destroy;
 end;
 
+//==============================================================================
+//
+// TCompressorCache.Read
+//
+//==============================================================================
 function TCompressorCache.Read(var Buf; Sz: Integer): integer;
 begin
   if fPosition + Sz > Size then
@@ -190,6 +222,11 @@ begin
   fPosition := fPosition + result;
 end;
 
+//==============================================================================
+//
+// TCompressorCache.Seek
+//
+//==============================================================================
 function TCompressorCache.Seek(pos: integer): boolean;
 begin
   if (pos < 0) or (pos > Size) then
@@ -201,6 +238,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// MkHash
+//
+//==============================================================================
 function MkHash(const s: string): integer;
 var
   i: integer;
@@ -222,6 +264,11 @@ begin
   MaxEntries := 0;
 end;
 
+//==============================================================================
+//
+// TPakManager.PAddDirectory
+//
+//==============================================================================
 procedure TPakManager.PAddDirectory(const path: string);
 
   procedure DoLoad(const msk: string);
@@ -250,6 +297,11 @@ begin
   DoLoad('*.WAD');
 end;
 
+//==============================================================================
+//
+// TPakManager.Grow
+//
+//==============================================================================
 procedure TPakManager.Grow;
 var
   newentries: integer;
@@ -263,7 +315,12 @@ begin
   end;
 end;
 
+//==============================================================================
+// TPakManager.AddEntry
+//
 // Add a ZIP file entry (ZIP/PK3/PK4)
+//
+//==============================================================================
 procedure TPakManager.AddEntry(ZIPFILE: TZipFile; const ZIPFileName, EntryName: string; const index: integer);
 var
   e: PPakEntry;
@@ -279,7 +336,12 @@ begin
   e.ZIP := ZIPFILE;
 end;
 
+//==============================================================================
+// TPakManager.AddEntry
+//
 // Add an entry from Quake PAK file
+//
+//==============================================================================
 procedure TPakManager.AddEntry(var H: FPakHead; Pakn: string); // Add A Pak Entry to Memory List
 var
   S: string;
@@ -305,7 +367,12 @@ begin
   e.ZIP := nil;
 end;
 
+//==============================================================================
+// TPakManager.AddEntry
+//
 // Add an entry from a WAD file (new WAD version)
+//
+//==============================================================================
 procedure TPakManager.AddEntry(var HD: FWADhead; Pakn: string);
 var
   S: string;
@@ -331,6 +398,11 @@ begin
   e.ZIP := nil;
 end;
 
+//==============================================================================
+//
+// TPakManager.PAddFile
+//
+//==============================================================================
 function TPakManager.PAddFile(const FileName: string): boolean; // Add A Pak file
 var
   Nr: Integer;
@@ -422,6 +494,11 @@ begin
   printf(' adding %s'#13#10, [FileName]);
 end;
 
+//==============================================================================
+//
+// TPakManager.GetEntries
+//
+//==============================================================================
 procedure TPakManager.GetEntries(var s: TDStringList);
 var i: integer;
 begin
@@ -431,7 +508,12 @@ begin
     s.Add(Entries[I].Name);
 end;
 
+//==============================================================================
+// TPakManager.POpenFileName
+//
 // Opens a file
+//
+//==============================================================================
 function TPakManager.POpenFileName(var F: TPakFile; Name: string): boolean;
 var
   I: Integer;
@@ -471,7 +553,12 @@ begin
     end;
 end;
 
+//==============================================================================
+// TPakManager.POpenShortFileName
+//
 // Opens a file with extensive search, checks filenames only, not directory structure!!
+//
+//==============================================================================
 function TPakManager.POpenShortFileName(var F: TPakFile; Name: string): boolean;
 var
   I: Integer;
@@ -519,6 +606,11 @@ type
     next: Ppref_rec;
   end;
 
+//==============================================================================
+//
+// recourcefreememlist
+//
+//==============================================================================
 procedure recourcefreememlist(var list: Ppref_rec);
 begin
   if list <> nil then
@@ -528,7 +620,12 @@ begin
   end;
 end;
 
+//==============================================================================
+// TPakManager.POpenPreferedFileName
+//
 // Opens a file with extensive search prefering the pathname to be contained to prefdirs
+//
+//==============================================================================
 function TPakManager.POpenPreferedFileName(var F: TPakFile; const aName: string; prefdirs: TDStringList): boolean;
 var
   I: Integer;
@@ -610,7 +707,11 @@ begin
   result := true;
 end;
 
-
+//==============================================================================
+//
+// TPakManager.PClosefile
+//
+//==============================================================================
 function TPakManager.PClosefile(var F: TPakFile): boolean;
 begin
   if F.Z <> nil then
@@ -628,6 +729,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// TPakManager.PBlockRead
+//
+//==============================================================================
 function TPakManager.PBlockRead(var F: TPakFile; var Buf; Sz: Integer): integer;
 begin
   if F.Z <> nil then
@@ -640,6 +746,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// TPakManager.PSeek
+//
+//==============================================================================
 function TPakManager.PSeek(var F: TPakFile; Pos: Integer): boolean;
 begin
   if F.Z <> nil then
@@ -656,6 +767,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// TPakManager.PFilePos
+//
+//==============================================================================
 function TPakManager.PFilePos(var F: TPakFile): Integer;
 begin
   if F.Z <> nil then
@@ -668,6 +784,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// TPakManager.PFileSize
+//
+//==============================================================================
 function TPakManager.PFileSize(var F: TPakFile): Integer;
 begin
   if F.Z <> nil then
@@ -701,6 +822,11 @@ end;
 var
   pakmanager: TPakManager;
 
+//==============================================================================
+//
+// PAK_GetDirectoryListFromString
+//
+//==============================================================================
 function PAK_GetDirectoryListFromString(const aprefdirs: string): TDStringList;
 var
   i: integer;
@@ -782,6 +908,11 @@ begin
   Inherited;
 end;
 
+//==============================================================================
+//
+// TPakStream.Read
+//
+//==============================================================================
 function TPakStream.Read(var Buffer; Count: integer): integer;
 begin
   result := manager.PBlockRead(entry, Buffer, Count);
@@ -789,6 +920,11 @@ begin
     inc(FIOResult);
 end;
 
+//==============================================================================
+//
+// TPakStream.Write
+//
+//==============================================================================
 function TPakStream.Write(const Buffer; Count: integer): integer;
 begin
   I_Warning('TPakStream::Write(): Pak managment is read-only'#13#10);
@@ -796,6 +932,11 @@ begin
   result := 0;
 end;
 
+//==============================================================================
+//
+// TPakStream.Seek
+//
+//==============================================================================
 function TPakStream.Seek(Offset: integer; Origin: Word): integer;
 var
   p: integer;
@@ -812,35 +953,63 @@ begin
   result := p;
 end;
 
+//==============================================================================
+//
+// TPakStream.Size
+//
+//==============================================================================
 function TPakStream.Size: integer;
 begin
   result := manager.PFileSize(entry)
 end;
 
+//==============================================================================
+//
+// TPakStream.Position
+//
+//==============================================================================
 function TPakStream.Position: integer;
 begin
   result := manager.PFilePos(entry);
 end;
 
+//==============================================================================
+// PAK_InitFileSystem
 //
 // W_InitPakFileSystem
 //
+//==============================================================================
 procedure PAK_InitFileSystem;
 begin
   pakmanager := TPakManager.Create;
 end;
 
+//==============================================================================
+//
+// PAK_ShutDown
+//
+//==============================================================================
 procedure PAK_ShutDown;
 begin
   pakmanager.Free;
 end;
 
+//==============================================================================
+//
+// PAK_AddDirectory
+//
+//==============================================================================
 procedure PAK_AddDirectory(const path: string);
 begin
   printf(' adding directory %s'#13#10, [path]);
   pakmanager.PAddDirectory(path);
 end;
 
+//==============================================================================
+//
+// PAK_AddFile
+//
+//==============================================================================
 function PAK_AddFile(const FileName: string): boolean;
 begin
   if I_DirectoryExists(FileName) then
