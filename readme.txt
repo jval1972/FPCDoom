@@ -48,6 +48,7 @@ Fixed bug that could rarely cause infinite loop in DEHACKED lumps.
 Recognizes multiple SUBMITNEWFRAMES commands in DEHACKED.
 Fixed potential memory corruption problem in R_MakeSpans() in 4k resolution.
 "ACTIVE SOUND" alias for "ACTION SOUND" DEHACKED field.
+Use 64 characters long string for short names in PK3.
 
 version 1.13.17.133 (20210110)
 ------------------------------
