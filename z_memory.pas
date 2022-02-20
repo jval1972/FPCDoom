@@ -136,6 +136,11 @@ type
     property numitems: integer read fnumitems write fnumitems;
   end;
 
+//==============================================================================
+//
+// TMemManager.Create
+//
+//==============================================================================
 constructor TMemManager.Create;
 begin
   fitems := nil;
@@ -143,6 +148,11 @@ begin
   realsize := 0;
 end;
 
+//==============================================================================
+//
+// TMemManager.Destroy
+//
+//==============================================================================
 destructor TMemManager.Destroy;
 var
   i: integer;

@@ -78,6 +78,11 @@ uses
   m_fixed,
   sc_engine;
 
+//==============================================================================
+//
+// TCustomParamList.Create
+//
+//==============================================================================
 constructor TCustomParamList.Create(const tx: string);
 var
   i: integer;
@@ -101,6 +106,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// TCustomParamList.Destroy
+//
+//==============================================================================
 destructor TCustomParamList.Destroy;
 begin
   if fNumItems > 0 then

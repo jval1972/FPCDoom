@@ -150,6 +150,11 @@ type
     property Compressed: boolean read fCompressed;
   end;
 
+//==============================================================================
+//
+// TZipFileEntryInfo.Create
+//
+//==============================================================================
 constructor TZipFileEntryInfo.Create(const aSize, aCompressedSize, aPosition: integer;
       aCompressed: boolean);
 begin
@@ -159,7 +164,12 @@ begin
   fCompressed := aCompressed;
 end;
 
+//==============================================================================
+// TZipFile.Create
+//
 //------------------------------------------------------------------------------
+//
+//==============================================================================
 constructor TZipFile.Create(const aFileName: string);
 begin
   Inherited Create;
@@ -168,6 +178,11 @@ begin
   Load;
 end;
 
+//==============================================================================
+//
+// TZipFile.Destroy
+//
+//==============================================================================
 destructor TZipFile.Destroy;
 begin
   Clear;

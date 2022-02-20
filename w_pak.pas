@@ -191,6 +191,12 @@ uses
   i_system;
 
 {******** TCompressorCache ********}
+
+//==============================================================================
+//
+// TCompressorCache.Create
+//
+//==============================================================================
 constructor TCompressorCache.Create(aZip: TZipFile; aID: integer);
 begin
   Inherited Create;
@@ -200,6 +206,11 @@ begin
   fPosition := 0;
 end;
 
+//==============================================================================
+//
+// TCompressorCache.Destroy
+//
+//==============================================================================
 destructor TCompressorCache.Destroy;
 begin
   memfree(data, fSize);
@@ -255,6 +266,12 @@ begin
 end;
 
 {********* TPackDir *********}
+
+//==============================================================================
+//
+// TPakManager.Create
+//
+//==============================================================================
 constructor TPakManager.Create;
 begin
   PAKS := TDStringList.Create;
@@ -805,6 +822,11 @@ begin
   end;
 end;
 
+//==============================================================================
+//
+// TPakManager.Destroy
+//
+//==============================================================================
 destructor TPakManager.Destroy;
 var
   i: integer;
@@ -860,8 +882,12 @@ begin
 
 end;
 
+//==============================================================================
+// TPakStream.Create
 //
 // TPakStream
+//
+//==============================================================================
 constructor TPakStream.Create(const FileName: string; amode: pakmode_t; const apreflist: TDStringList);
 var
   ok: boolean;
@@ -892,6 +918,11 @@ begin
     FIOResult := 0;
 end;
 
+//==============================================================================
+//
+// TPakStream.Create
+//
+//==============================================================================
 constructor TPakStream.Create(const FileName: string; amode: pakmode_t; const aprefdirs: string = '');
 var
   apreflist: TDStringList;
@@ -901,6 +932,11 @@ begin
   apreflist.Free;
 end;
 
+//==============================================================================
+//
+// TPakStream.Destroy
+//
+//==============================================================================
 destructor TPakStream.Destroy;
 begin
   manager.PClosefile(entry);
