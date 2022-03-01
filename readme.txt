@@ -52,6 +52,7 @@ Fixed potential memory corruption problem in R_MakeSpans() in 4k resolution.
 Use 64 characters long string for short names in PK3.
 Added "DROPPED ITEM" alias for "DROPITEM" DEHACKED field.
 Fixed masked middle texture bleeding when player was exactly placed on the line.
+Small optimization to masked middle textute rendering.
 
 version 1.13.17.133 (20210110)
 ------------------------------

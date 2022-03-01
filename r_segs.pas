@@ -416,6 +416,7 @@ var
   mc2height: integer;
   texturecolumn: integer;
   t: double;
+  texturemid_dbl: double;
 begin
   // Calculate light table.
   // Use different light tables
@@ -483,6 +484,7 @@ begin
     rcolumn.dc_texturemid := rcolumn.dc_texturemid - viewz;
   end;
   rcolumn.dc_texturemid := rcolumn.dc_texturemid + curline.sidedef.rowoffset;
+  texturemid_dbl := rcolumn.dc_texturemid / FRACUNIT;
 
   if fixedcolormap <> nil then
     rcolumn.dc_colormap := fixedcolormap;
@@ -523,7 +525,7 @@ begin
       end;
 
       //t -> double (delphidoom)
-      t := (centeryfrac / FRACUNIT) - (rcolumn.dc_texturemid / FRACUNIT) * (spryscale / FRACUNIT);
+      t := centery - texturemid_dbl * (spryscale / FRACUNIT);
       if (t + (textureheight[texnum] / FRACUNIT) * (spryscale / FRACUNIT) < 0) or (t > SCREENHEIGHT * 2) or (t < -32000.0) then
       begin
         spryscale := ds.scale1 + Trunc((i - ds.x1) * rw_scalestep_dbl);
