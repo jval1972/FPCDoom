@@ -51,6 +51,7 @@ Fixed potential memory corruption problem in R_MakeSpans() in 4k resolution.
 "RADIUS" alias for "WIDTH" DEHACKED field.
 Use 64 characters long string for short names in PK3.
 Added "DROPPED ITEM" alias for "DROPITEM" DEHACKED field.
+Fixed masked middle texture bleeding when player was exactly placed on the line.
 
 version 1.13.17.133 (20210110)
 ------------------------------
