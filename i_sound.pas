@@ -141,9 +141,9 @@ const
   NUM_CHANNELS = 32;
 
 var
-  pDS: IDirectSound;
-  pDSBPrimary: IDirectSoundBuffer;
-  HandleCount: integer;
+  pDS: IDirectSound = nil;
+  pDSBPrimary: IDirectSoundBuffer = nil;
+  HandleCount: integer = 1;
 
   SampleFormat: TWAVEFORMATEX;
 
@@ -1033,11 +1033,6 @@ begin
       channelids[i] := -1;
   end;
 end;
-
-initialization
-  pDS := nil;
-  pDSBPrimary := nil;
-  HandleCount := 1;
 
 end.
 
