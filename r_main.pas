@@ -890,11 +890,11 @@ begin
     if setblocks = 10 then
       scaledviewwidth := SCREENWIDTH
     else
-      scaledviewwidth := (setblocks * SCREENWIDTH div 10) and (not 7);
+      scaledviewwidth := (setblocks * SCREENWIDTH div 10) and not 7;
     if setblocks = 10 then
       viewheight := V_PreserveY(ST_Y)
     else
-      viewheight := (setblocks * V_PreserveY(ST_Y) div 10) and (not 7);
+      viewheight := (setblocks * V_PreserveY(ST_Y) div 10) and not 7;
   end;
 
   viewwidth := scaledviewwidth;
@@ -1171,7 +1171,7 @@ begin
       nodenum := node.children[0]
   end;
 
-  result := @subsectors[nodenum and (not NF_SUBSECTOR)];
+  result := @subsectors[nodenum and not NF_SUBSECTOR];
 end;
 
 //

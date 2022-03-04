@@ -491,7 +491,7 @@ begin
       fits := true
     else
       inc(i);
-  until not ((not fits) and (i <> 2));
+  until not (not fits and (i <> 2));
 
   if fits and (i < 2) then
     V_DrawPatch(lnodes[wbs.epsd][n].x, lnodes[wbs.epsd][n].y, SCN_TMP, c[i], false)
@@ -577,7 +577,7 @@ begin
         ANIM_LEVEL:
           begin
             // gawd-awful hack for level anims
-            if (not ((state = StatCount) and (i = 7))) and
+            if not ((state = StatCount) and (i = 7)) and
                (wbs.next = a.data1) then
             begin
               a.ctr := a.ctr + 1;
@@ -1102,7 +1102,7 @@ var
 //==============================================================================
 function NG_STATSX: integer;
 begin
-  result := 64 + star.width div 2 + 32 * (not intval(dofrags <> 0)); // JVAL ???
+  result := 64 + star.width div 2 + 32 * not intval(dofrags <> 0); // JVAL ???
 end;
 
 //==============================================================================

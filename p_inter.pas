@@ -214,7 +214,7 @@ var
   ammo: ammotype_t;
 begin
   ammo := weaponinfo[Ord(weapon)].ammo;
-  if netgame and (deathmatch <> 2) and (not dropped) then
+  if netgame and (deathmatch <> 2) and not dropped then
   begin
   // leave placed weapons forever on net games
     if player.weaponowned[Ord(weapon)] <> 0 then
@@ -792,10 +792,10 @@ procedure P_KillMobj(source: Pmobj_t; target: Pmobj_t);
 var
   item: integer;
 begin
-  target.flags := target.flags and (not (MF_SHOOTABLE or MF_FLOAT or MF_SKULLFLY));
+  target.flags := target.flags and not (MF_SHOOTABLE or MF_FLOAT or MF_SKULLFLY);
 
   if target._type <> Ord(MT_SKULL) then
-    target.flags := target.flags and (not MF_NOGRAVITY);
+    target.flags := target.flags and not MF_NOGRAVITY;
 
   target.flags := target.flags or (MF_CORPSE or MF_DROPOFF);
   target.height := _SHR2(target.height);

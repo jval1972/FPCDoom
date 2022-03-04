@@ -258,7 +258,7 @@ begin
   if mo.tics < 1 then
     mo.tics := 1;
 
-  mo.flags := mo.flags and (not MF_MISSILE);
+  mo.flags := mo.flags and not MF_MISSILE;
 
   A_DeathSound(mo, mo);
 end;
@@ -977,7 +977,7 @@ begin
   end;
 
   // check for apropriate skill level
-  if (not netgame) and ((mthing.options and 16) <> 0) then
+  if not netgame and ((mthing.options and 16) <> 0) then
     exit;
 
   if gameskill = sk_baby then

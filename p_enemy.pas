@@ -663,7 +663,7 @@ begin
   begin
     // the target just hit the enemy,
     // so fight back!
-    actor.flags := actor.flags and (not MF_JUSTHIT);
+    actor.flags := actor.flags and not MF_JUSTHIT;
     Result := True;
     exit;
   end;
@@ -792,7 +792,7 @@ begin
     exit;
   end
   else
-    actor.flags := actor.flags and (not MF_INFLOAT);
+    actor.flags := actor.flags and not MF_INFLOAT;
 
   if actor.flags and MF_FLOAT = 0 then
   begin
@@ -1283,8 +1283,8 @@ begin
   // do not attack twice in a row
   if actor.flags and MF_JUSTATTACKED <> 0 then
   begin
-    actor.flags := actor.flags and (not MF_JUSTATTACKED);
-    if (gameskill <> sk_nightmare) and (not fastparm) then
+    actor.flags := actor.flags and not MF_JUSTATTACKED;
+    if (gameskill <> sk_nightmare) and not fastparm then
       P_NewChaseDir(actor);
     exit;
   end;
@@ -1301,7 +1301,7 @@ begin
   // check for missile attack
   if actor.info.missilestate <> 0 then
   begin
-    if (gameskill < sk_nightmare) and (not fastparm) and (actor.movecount <> 0) then
+    if (gameskill < sk_nightmare) and not fastparm and (actor.movecount <> 0) then
       nomissile := True
     else if not P_CheckMissileRange(actor) then
       nomissile := True;
@@ -1315,7 +1315,7 @@ begin
 
   // possibly choose another target
   if netgame and (actor.threshold = 0) and
-    (not P_CheckSight(actor, actor.target)) then
+    not P_CheckSight(actor, actor.target) then
   begin
     if P_LookForPlayers(actor, True) then
       exit;  // got a new target
@@ -1323,7 +1323,7 @@ begin
 
   // chase towards player
   actor.movecount := actor.movecount - 1;
-  if (actor.movecount < 0) or (not P_Move(actor)) then
+  if (actor.movecount < 0) or not P_Move(actor) then
     P_NewChaseDir(actor);
 
   if fast then
@@ -1377,7 +1377,7 @@ begin
   if actor.target = nil then
     exit;
 
-  actor.flags := actor.flags and (not MF_AMBUSH);
+  actor.flags := actor.flags and not MF_AMBUSH;
 
   actor.angle :=
     P_PointToAngle(actor.x, actor.y, actor.target.x, actor.target.y);
@@ -1479,7 +1479,7 @@ begin
     exit;
 
   if (actor.target = nil) or (actor.target.health <= 0) or
-     (not P_CheckSight(actor, actor.target)) then
+     not P_CheckSight(actor, actor.target) then
     P_SetMobjState(actor, statenum_t(actor.info.seestate));
 end;
 
@@ -1497,7 +1497,7 @@ begin
     exit;
 
   if (actor.target = nil) or (actor.target.health <= 0) or
-     (not P_CheckSight(actor, actor.target)) then
+     not P_CheckSight(actor, actor.target) then
     P_SetMobjState(actor, statenum_t(actor.info.seestate));
 end;
 

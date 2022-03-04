@@ -692,7 +692,7 @@ begin
       if videomode = vm32bit then
       begin
         rcolumn.dc_colormap32 := R_GetColormap32(rcolumn.dc_colormap);
-        if (not forcecolormaps) and (fixedcolormap = nil) then
+        if not forcecolormaps and (fixedcolormap = nil) then
         begin
           index := Trunc(rw_scale_dbl * 320 / (1 shl (HLL_LIGHTSCALESHIFT + 2)) / SCREENWIDTH);
           if index >= HLL_MAXLIGHTSCALE then

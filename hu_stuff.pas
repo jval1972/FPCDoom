@@ -680,7 +680,7 @@ begin
   if (showMessages <> 0) or message_dontfuckwithme then
   begin
     // display message if necessary
-    if ((plr._message <> '') and (not message_nottobefuckedwith)) or
+    if ((plr._message <> '') and not message_nottobefuckedwith) or
        ((plr._message <> '') and message_dontfuckwithme) then
     begin
       HUlib_addMessageToSText2(@w_message, '', plr._message);

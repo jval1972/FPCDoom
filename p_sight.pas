@@ -318,7 +318,7 @@ begin
     if bspnum = -1 then
       result := P_CrossSubsector(0)
     else
-      result := P_CrossSubsector(bspnum and (not NF_SUBSECTOR));
+      result := P_CrossSubsector(bspnum and not NF_SUBSECTOR);
     exit;
   end;
 

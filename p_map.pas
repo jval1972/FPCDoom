@@ -1583,7 +1583,7 @@ begin
   begin
     P_SetMobjState(thing, S_GIBS);
 
-    thing.flags := thing.flags and (not MF_SOLID);
+    thing.flags := thing.flags and not MF_SOLID;
     thing.height := 0;
     thing.radius := 0;
 

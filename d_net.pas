@@ -287,19 +287,19 @@ begin
 
   if (delta >= -64) and (delta <= 64) then
   begin
-    result := (maketic and (not $ff)) + low;
+    result := (maketic and not $ff) + low;
     exit;
   end;
 
   if delta > 64 then
   begin
-    result := (maketic and (not $ff)) - 256 + low;
+    result := (maketic and not $ff) - 256 + low;
     exit;
   end;
 
   if delta < -64 then
   begin
-    result := (maketic and (not $ff)) + 256 + low;
+    result := (maketic and not $ff) + 256 + low;
     exit;
   end;
 
@@ -461,7 +461,7 @@ begin
     if netbuffer.checksum and NCMD_SETUP <> 0 then
       continue;    // extra setup packet
 
-    netconsole := netbuffer.player and (not PL_DRONE);
+    netconsole := netbuffer.player and not PL_DRONE;
     netnode := doomcom.remotenode;
 
   // to save bytes, only the low byte of tic numbers are sent
@@ -818,7 +818,7 @@ procedure D_QuitNetGame;
 var
   i, j: integer;
 begin
-  if (not netgame) or (not usergame) or (consoleplayer = -1) or (demoplayback) then
+  if not netgame or not usergame or (consoleplayer = -1) or demoplayback then
     exit;
 
   // send a bunch of packets for security

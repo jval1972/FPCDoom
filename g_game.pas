@@ -1044,7 +1044,7 @@ begin
   end;
 
   // any other key pops up menu if in demos
-  if (gameaction = ga_nothing) and (not singledemo) and
+  if (gameaction = ga_nothing) and not singledemo and
      (demoplayback or (gamestate = GS_DEMOSCREEN)) then
   begin
     if (ev._type = ev_keydown) or
@@ -2297,7 +2297,7 @@ begin
     demo_p := @demo_p[2];
   end;
 
-  cmd.buttons := demo_p[0] and (not BT_SPECIAL);
+  cmd.buttons := demo_p[0] and not BT_SPECIAL;
   demo_p := @demo_p[1];
 
   if olddemo then
@@ -2383,7 +2383,7 @@ begin
   PSmallInt(demo_p)^ := cmd.angleturn;
   demo_p := @demo_p[2];
 
-  demo_p[0] := cmd.buttons and (not BT_SPECIAL);
+  demo_p[0] := cmd.buttons and not BT_SPECIAL;
   demo_p := @demo_p[1];
 
   // JVAL Look Up/Down

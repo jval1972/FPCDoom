@@ -1222,7 +1222,7 @@ begin
     end;
 
     if (scale < spr.scale) or
-       ((lowscale < spr.scale) and (not R_PointOnSegSide(spr.gx, spr.gy, ds.curline))) then
+       ((lowscale < spr.scale) and not R_PointOnSegSide(spr.gx, spr.gy, ds.curline)) then
     begin
       // masked mid texture?
       if ds.maskedtexturecol <> nil then

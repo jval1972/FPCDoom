@@ -390,7 +390,7 @@ begin
             AM_Drawer;
           if wipe or ((viewheight <> SCREENHEIGHT) and viewfullscreen) then
             redrawsbar := true;
-          if inhelpscreensstate and (not inhelpscreens) then
+          if inhelpscreensstate and not inhelpscreens then
             redrawsbar := true; // just put away the help screen
           viewfullscreen := viewheight = SCREENHEIGHT;
           if viewfullscreen then
@@ -443,7 +443,7 @@ begin
     begin
       if scaledviewwidth <> SCREENWIDTH then
       begin
-        if menuactive or menuactivestate or (not viewactivestate) or C_IsConsoleActive then
+        if menuactive or menuactivestate or not viewactivestate or C_IsConsoleActive then
           borderdrawcount := 3;
         if borderdrawcount > 0 then
         begin
@@ -1957,7 +1957,7 @@ begin
   // Check for -file in shareware
   // JVAL
   // Allow modified games if -devparm is specified, for debuging reasons
-  if modifiedgame and (not devparm) then
+  if modifiedgame and not devparm then
   begin
     err_shown := false;
     if gamemode = shareware then

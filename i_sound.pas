@@ -760,7 +760,7 @@ begin
   begin
     if ChannelBuffers[channel] <> nil then
     begin
-      if (channelids[channel] = id) and (not I_ChannelPlaying(channel)) then
+      if (channelids[channel] = id) and not I_ChannelPlaying(channel) then
       begin
         result := I_RestartChannel(channel, vol, sep);
         exit;
