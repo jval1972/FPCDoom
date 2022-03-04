@@ -232,7 +232,7 @@ end;
 // RGB
 //
 //==============================================================================
-function RGB(RedValue, GreenValue, BlueValue : word):integer; assembler;
+function RGB(RedValue, GreenValue, BlueValue: word):integer; assembler;
 asm
   mov  ax, RedValue    // ------------------------RRRRRRRR
   shl  eax, $16        // --------RRRRRRRR----------------

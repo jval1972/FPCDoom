@@ -111,25 +111,26 @@ const
 // moves 140 pixels in 1 second }
   F_PANINC = 4;
 
-{ how much zoom-in per tic }
 
 //==============================================================================
 //
 // M_ZOOMIN
 //
+// How much zoom-in per tic
+//
 //==============================================================================
 function M_ZOOMIN: integer;
-
-{ how much zoom-out per tic }
 
 //==============================================================================
 //
 // M_ZOOMOUT
 //
+// How much zoom-out per tic
+//
 //==============================================================================
 function M_ZOOMOUT: integer;
 
-{ translates between frame-buffer and map distances }
+// Translates between frame-buffer and map distances
 
 //==============================================================================
 //
@@ -145,7 +146,7 @@ function FTOM(x: integer): integer;
 //==============================================================================
 function MTOF(x: integer): integer;
 
-{ translates between frame-buffer and map coordinates }
+// Translates between frame-buffer and map coordinates
 
 //==============================================================================
 //
@@ -416,7 +417,7 @@ end;
 // FTOM
 //
 //==============================================================================
-function FTOM(x : integer): integer;
+function FTOM(x: integer): integer;
 begin
   result := FixedMul(x * FRACUNIT, scale_ftom);
 end;
@@ -426,7 +427,7 @@ end;
 // MTOF
 //
 //==============================================================================
-function MTOF(x : integer): integer;
+function MTOF(x: integer): integer;
 begin
   result := FixedInt(FixedMul(x, scale_mtof));
 end;
@@ -436,7 +437,7 @@ end;
 // CXMTOF
 //
 //==============================================================================
-function CXMTOF(x : integer): integer;
+function CXMTOF(x: integer): integer;
 begin
   result := f_x + MTOF(x - m_x);
 end;
@@ -446,7 +447,7 @@ end;
 // CYMTOF
 //
 //==============================================================================
-function CYMTOF(y : integer): integer;
+function CYMTOF(y: integer): integer;
 begin
   result := f_y + (f_h - MTOF(y - m_y));
 end;
@@ -1354,7 +1355,7 @@ begin
     while true do
     begin
       PUTDOT(x, y, color);
-      if (y = fl.b.y) then exit;
+      if y = fl.b.y then exit;
       if d >= 0 then
       begin
         x := x + sx;

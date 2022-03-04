@@ -472,8 +472,8 @@ begin
         if not player.cards[Ord(it_bluecard)] then
           player._message := GOTBLUECARD;
         P_GiveCard(player, it_bluecard);
-      if netgame then
-        exit;
+        if netgame then
+          exit;
       end;
 
     Ord(SPR_YKEY):
@@ -948,7 +948,7 @@ begin
 
     // make fall forwards sometimes
     if (damage < 40) and (damage > target.health) and
-       (target.z - inflictor.z > 64 * FRACUNIT) and ((P_Random and 1) <> 0) then
+       (target.z - inflictor.z > 64 * FRACUNIT) and (P_Random and 1 <> 0) then
     begin
       ang := ang + ANG180;
       thrust := thrust * 4;

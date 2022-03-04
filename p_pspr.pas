@@ -930,7 +930,7 @@ end;
 //==============================================================================
 procedure A_FireCGun(player: Pplayer_t; psp: Ppspdef_t);
 var
-  am : integer;
+  am: integer;
 begin
   S_StartSound(player.mo, Ord(sfx_pistol));
 

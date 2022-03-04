@@ -492,7 +492,7 @@ begin
   // check for special pickup
   if thing.flags and MF_SPECIAL <> 0 then
   begin
-    solid := (thing.flags and MF_SOLID) <> 0;
+    solid := thing.flags and MF_SOLID <> 0;
     if tmflags and MF_PICKUP <> 0 then
     begin
       // can remove thing
@@ -501,7 +501,7 @@ begin
     result := not solid;
   end
   else
-    result := (thing.flags and MF_SOLID) = 0;
+    result := thing.flags and MF_SOLID = 0;
 end;
 
 //==============================================================================
@@ -668,8 +668,10 @@ begin
 
   oldx := thing.x;
   oldy := thing.y;
+
   thing.floorz := tmfloorz;
   thing.ceilingz := tmceilingz;
+
   thing.x := x;
   thing.y := y;
 
@@ -900,6 +902,7 @@ begin
 
   repeat
     inc(hitcount);
+
     if hitcount = 3 then
     begin
       stairstep;
@@ -979,6 +982,7 @@ begin
     mo.momy := tmymove;
 
   until P_TryMove(mo, mo.x + tmxmove, mo.y + tmymove);
+
 end;
 
 //

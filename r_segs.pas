@@ -165,7 +165,7 @@ begin
 end;
 
 var
-  maskedtexturecol: PSmallIntArray; // JVAL : declared in r_defs
+  maskedtexturecol: PSmallIntArray; // JVAL: declared in r_defs
 
 // True if any of the segs textures might be visible.
   segtextured: boolean;
