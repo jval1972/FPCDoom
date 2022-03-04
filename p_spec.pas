@@ -32,11 +32,11 @@ unit p_spec;
 interface
 
 uses
+  doomdef,
   m_fixed,
   d_player,
   d_think,
   p_mobj_h,
-  doomdef,
   r_defs;
 
 //
@@ -1085,6 +1085,7 @@ begin
       if result.floorheight = floordestheight then
         exit;
     end;
+    inc(i);
   end;
   result := nil;
 end;
@@ -1139,6 +1140,7 @@ begin
       if result.ceilingheight = ceildestheight then
         exit;
     end;
+    inc(i);
   end;
   result := nil;
 end;
