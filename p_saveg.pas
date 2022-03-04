@@ -104,7 +104,6 @@ implementation
 
 uses
   doomdef,
-  doomstat,
   d_player,
   d_think,
   g_game,

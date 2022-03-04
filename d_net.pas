@@ -201,8 +201,7 @@ uses
   r_main,
   p_mobj_h,
   p_terrain,
-  g_game,
-  doomstat;
+  g_game;
 
 const
   NCMD_EXIT = $80000000;

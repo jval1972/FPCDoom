@@ -2177,11 +2177,9 @@ end;
 //
 //==============================================================================
 procedure A_Spawn(actor: Pmobj_t);
-var
-  mo: Pmobj_t;
 begin
   if actor.state.misc1 > 0 then
-    mo := P_SpawnMobj(actor.x, actor.y, actor.state.misc2 * FRACUNIT + actor.z, actor.state.misc1 - 1);
+    P_SpawnMobj(actor.x, actor.y, actor.state.misc2 * FRACUNIT + actor.z, actor.state.misc1 - 1);
 end;
 
 //==============================================================================

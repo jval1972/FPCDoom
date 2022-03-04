@@ -547,8 +547,6 @@ begin
   psp.sy := WEAPONTOP + FixedMul(player.bob, finesine[angle]);
   // Customizable player bob
   psprdefs[pid, ppid].r_sy := WEAPONTOP + (FixedMul(player.bob, finesine[angle]) * weaponbobstrengthpct div 100);
-
-  angle := angle and (FINEANGLES div 2 - 1);
 end;
 
 //==============================================================================

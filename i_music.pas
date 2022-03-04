@@ -114,10 +114,8 @@ implementation
 uses
   Windows,
   MMSystem,
-  doomstat,
   m_argv,
   i_system,
-  i_sound,
   i_midi,
   s_sound,
   z_memory;

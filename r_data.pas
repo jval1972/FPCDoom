@@ -157,7 +157,6 @@ var
 implementation
 
 uses
-  doomstat,
   d_think,
   i_system,
   p_setup,

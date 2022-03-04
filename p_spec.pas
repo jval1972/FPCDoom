@@ -436,11 +436,9 @@ implementation
 
 uses
   d_fpc,
-  doomstat,
   doomdata,
   d_english,
   i_system,
-  i_io,
   z_memory,
   m_argv,
   m_rnd,

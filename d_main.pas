@@ -194,7 +194,6 @@ uses
   info,
   info_rnd,
   i_system,
-  i_sound,
   i_video,
   i_io,
   g_game,

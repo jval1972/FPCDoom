@@ -387,7 +387,6 @@ uses
   info,
   info_rnd,
   i_system,
-  i_io,
   e_endoom,
   m_argv,
   m_misc,
@@ -878,8 +877,6 @@ begin
   begin
     if zaxisshift then
     begin
-      if look < 0 then
-        look := look + 16;
       // JVAL Look Up/Down
       if look16 < 0 then
         look16 := look16 + 16 * 256;
