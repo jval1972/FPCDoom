@@ -53,6 +53,7 @@ Use 64 characters long string for short names in PK3.
 Added "DROPPED ITEM" alias for "DROPITEM" DEHACKED field.
 Fixed masked middle texture bleeding when player was exactly placed on the line.
 Small optimization to masked middle textute rendering.
+Fixed misspelled of "joystick" in the menus.
 
 version 1.13.17.133 (20210110)
 ------------------------------
