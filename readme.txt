@@ -54,6 +54,7 @@ Added "DROPPED ITEM" alias for "DROPITEM" DEHACKED field.
 Fixed masked middle texture bleeding when player was exactly placed on the line.
 Small optimization to masked middle textute rendering.
 Fixed misspelled of "joystick" in the menus.
+Improved priority logic for sound channel selection.
 
 version 1.13.17.133 (20210110)
 ------------------------------
