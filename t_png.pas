@@ -1205,7 +1205,7 @@ end;
 //==============================================================================
 function CreateClassChunk(Owner: TPngObject; Name: TChunkName): TChunk;
 var
-  i       : Integer;
+  i: Integer;
   NewChunk: TChunkClass;
 begin
   {Looks for this chunk}
@@ -1322,8 +1322,8 @@ function DecompressZLIB(const Input: Pointer; InputSize: Integer;
   var Output: Pointer; var OutputSize: Integer;
   var ErrorOutput: String): Boolean;
 var
-  StreamRec : {$IFDEF FPC}TZStream{$ELSE}TZStreamRec{$ENDIF};
-  Buffer    : array[Byte] of Byte;
+  StreamRec: {$IFDEF FPC}TZStream{$ELSE}TZStreamRec{$ENDIF};
+  Buffer: array[Byte] of Byte;
   InflateRet: Integer;
 begin
   with StreamRec do
@@ -2449,15 +2449,19 @@ begin
     COLOR_GRAYSCALE, COLOR_PALETTE, COLOR_GRAYSCALEALPHA:
       case BitDepth of
         {These are supported by windows}
-        1, 4, 8: SetInfo(BitDepth, true);
+        1, 4, 8:
+          SetInfo(BitDepth, true);
         {2 bits for each pixel is not supported by windows bitmap}
-        2      : SetInfo(4, true);
+        2:
+          SetInfo(4, true);
         {Also 16 bits (2 bytes) for each pixel is not supported}
         {and should be transormed into a 8 bit grayscale}
-        16     : SetInfo(8, true);
+        16:
+          SetInfo(8, true);
       end;
     {Only 1 byte (8 bits) is supported}
-    COLOR_RGB, COLOR_RGBALPHA:  SetInfo(24, false);
+    COLOR_RGB, COLOR_RGBALPHA:
+      SetInfo(24, false);
   end {case ColorType};
   {Number of bytes for each scanline}
   BytesPerRow := (((BitmapInfo.bmiHeader.biBitCount * Width) + 31)
@@ -3490,12 +3494,15 @@ begin
     {Types using palettes}
     COLOR_PALETTE, COLOR_GRAYSCALE:
       case Header.BitDepth of
-        1, 4, 8: CopyProc := CopyNonInterlacedPalette148;
-        2      : if Header.ColorType = COLOR_PALETTE then
-                   CopyProc := CopyNonInterlacedPalette2
-                 else
-                   CopyProc := CopyNonInterlacedGray2;
-        16     : CopyProc := CopyNonInterlacedGrayscale16;
+        1, 4, 8:
+          CopyProc := CopyNonInterlacedPalette148;
+        2:
+          if Header.ColorType = COLOR_PALETTE then
+            CopyProc := CopyNonInterlacedPalette2
+          else
+            CopyProc := CopyNonInterlacedGray2;
+        16:
+          CopyProc := CopyNonInterlacedGrayscale16;
       end;
     {R, G, B followed by alpha}
     COLOR_RGBALPHA:
