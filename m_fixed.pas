@@ -216,8 +216,6 @@ end;
 function FixedDivEx(const a, b: fixed_t): fixed_t; {$IFDEF FPC}inline;{$ENDIF}
 var
   ret: Double;
-  ad: Double;
-  bd: Double;
 begin
   if b = 0 then
   begin
@@ -228,16 +226,13 @@ begin
   end
   else
   begin
-    ad := a / FRACUNIT;
-    bd := b / FRACUNIT;
-    ret := (ad / bd) * FRACUNIT;
-    ret := Trunc(ret);
-    if ret < MININT then
+    ret := (a / b) * FRACUNIT;
+    if ret < MININT + 1 then
       result := MININT
-    else if ret > MAXINT then
+    else if ret > MAXINT - 1 then
       result := MAXINT
     else
-      result := Trunc(ret);
+      result := Round(ret);
   end;
 end;
 
