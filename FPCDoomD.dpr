@@ -148,7 +148,11 @@ uses
   w_wad in 'w_wad.pas',
   w_pak in 'w_pak.pas',
   wi_stuff in 'wi_stuff.pas',
-  z_memory in 'z_memory.pas', r_renderstyle;
+  z_memory in 'z_memory.pas',
+  i_threads in 'i_threads.pas',
+  p_sounds in 'p_sounds.pas',
+  r_renderstyle in 'r_renderstyle.pas',
+  z_files in 'z_files.pas';
 
 var
   Saved8087CW: Word;

@@ -100,7 +100,7 @@ Conditionals=
 DebugSourceDirs=
 UsePackages=0
 [Parameters]
-RunParams=-iwad doomu.wad
+RunParams=-iwad doom2.wad 
 HostApplication=
 Launcher=
 UseLauncher=0
