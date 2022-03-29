@@ -425,7 +425,7 @@ uses
 //==============================================================================
 function V_ReadPalette(tag: integer): PByteArray;
 begin
-  result := PByteArray(W_CacheLumpName(PLAYPAL, tag));
+  result := W_CacheLumpName(PLAYPAL, tag);
 end;
 
 // x and y translation tables for stretcing

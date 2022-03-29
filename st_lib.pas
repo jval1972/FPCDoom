@@ -238,9 +238,9 @@ begin
     oldversion := true;
 
   if oldsharewareversion or oldversion then
-    sttminus := Ppatch_t(W_CacheLumpName('STCFN046', PU_STATIC))
+    sttminus := W_CacheLumpName('STCFN046', PU_STATIC)
   else
-    sttminus := Ppatch_t(W_CacheLumpNum(lump, PU_STATIC));
+    sttminus := W_CacheLumpNum(lump, PU_STATIC);
 end;
 
 //==============================================================================
