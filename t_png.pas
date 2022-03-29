@@ -985,11 +985,11 @@ uses
   i_system;
 
 var
-  ChunkClasses: TPngPointerList;
+  ChunkClasses: TPngPointerList = nil;
   {Table of CRCs of all 8-bit messages}
   crc_table: array[0..255] of Cardinal;
   {Flag: has the table been computed? Initially false}
-  crc_table_computed: Boolean;
+  crc_table_computed: Boolean = False;
 
 {Make the table for a fast CRC.}
 
@@ -1125,7 +1125,7 @@ begin
 end;
 
 type
-  pChunkClassInfo = ^TChunkClassInfo;
+  PChunkClassInfo = ^TChunkClassInfo;
   TChunkClassInfo = record
     ClassName: TChunkClass;
   end;
@@ -1139,7 +1139,7 @@ type
 //==============================================================================
 procedure RegisterChunk(ChunkClass: TChunkClass);
 var
-  NewClass: pChunkClassInfo;
+  NewClass: PChunkClassInfo;
 begin
   {In case the list object has not being created yet}
   if ChunkClasses = nil then ChunkClasses := TPngPointerList.Create(nil);
@@ -1164,7 +1164,7 @@ begin
   if (ChunkClasses <> nil) then
   begin
     for i := 0 to ChunkClasses.Count - 1 do
-      Dispose(pChunkClassInfo(ChunkClasses.Item[i]));
+      Dispose(PChunkClassInfo(ChunkClasses.Item[i]));
     ChunkClasses.Free;
   end;
 end;
@@ -1215,9 +1215,9 @@ begin
   if Assigned(ChunkClasses) then
     for i := 0 to ChunkClasses.Count - 1 do
     begin
-      if pChunkClassInfo(ChunkClasses.Item[i])^.ClassName.GetName = Name then
+      if PChunkClassInfo(ChunkClasses.Item[i])^.ClassName.GetName = Name then
       begin
-        NewChunk := pChunkClassInfo(ChunkClasses.Item[i])^.ClassName;
+        NewChunk := PChunkClassInfo(ChunkClasses.Item[i])^.ClassName;
         break;
       end;
     end;
@@ -1419,7 +1419,9 @@ begin
         {Updates the output memory}
         inc(OutputSize, total_out);
         if Output = nil then
-          GetMem(Output, OutputSize) else ReallocMem(Output, OutputSize);
+          GetMem(Output, OutputSize)
+        else
+          ReallocMem(Output, OutputSize);
 
         {Copies the new data}
         memcpy(pOp(Output, OutputSize - total_out),
@@ -2256,8 +2258,8 @@ begin
   {Free old image data}
   if ImageHandle <> 0 then
     DeleteObject(ImageHandle);
-  if ImageDC <> 0
-    then DeleteDC(ImageDC);
+  if ImageDC <> 0 then
+    DeleteDC(ImageDC);
   if ImageAlpha <> nil then
     FreeMem(ImageAlpha);
   if ImagePalette <> 0 then
@@ -2380,7 +2382,7 @@ begin
   {Fill it with grayscale colors}
   for j := 0 to palEntries.palNumEntries - 1 do
   begin
-    palEntries.palPalEntry[j].peRed  :=
+    palEntries.palPalEntry[j].peRed :=
       fOwner.GammaTable[MulDiv(j, 255, palEntries.palNumEntries - 1)];
     palEntries.palPalEntry[j].peGreen := palEntries.palPalEntry[j].peRed;
     palEntries.palPalEntry[j].peBlue := palEntries.palPalEntry[j].peRed;
@@ -2696,7 +2698,8 @@ begin
       Differ255 := 0; {Count the entries with a value different from 255}
       {Tests if it uses bit transparency}
       for i := 0 to Size - 1 do
-        if PaletteValues[i] <> 255 then inc(Differ255);
+        if PaletteValues[i] <> 255 then
+          inc(Differ255);
 
       {If it has one value different from 255 it is a bit transparency}
       fBitTransparency := (Differ255 = 1);
@@ -3420,9 +3423,9 @@ begin
     //Copy rgb and alpha values (transforming from 16 bits to 8 bits)
     {Copy pixel values}
     Trans^ := PChar(pOp(Src, 6))^;
-    Byte(Dest^)  := fOwner.GammaTable[PByte(pOp(Src, 4))^]; inc(Dest);
-    Byte(Dest^)  := fOwner.GammaTable[PByte(pOp(Src, 2))^]; inc(Dest);
-    Byte(Dest^)  := fOwner.GammaTable[PByte(Src)^]; inc(Dest);
+    Byte(Dest^) := fOwner.GammaTable[PByte(pOp(Src, 4))^]; inc(Dest);
+    Byte(Dest^) := fOwner.GammaTable[PByte(pOp(Src, 2))^]; inc(Dest);
+    Byte(Dest^) := fOwner.GammaTable[PByte(Src)^]; inc(Dest);
     {$IFDEF Store16bits}
     {Copy extra pixel values}
     Byte(Extra^) := fOwner.GammaTable[PByte(pOp(Src, 5))^]; inc(Extra);
@@ -3630,8 +3633,7 @@ function TChunkIDAT.LoadFromStream(Stream: TStream; const ChunkName: TChunkName;
   Size: Integer): Boolean;
 var
   ZLIBStream: TZStreamRec2;
-  CRCCheck,
-  CRCFile: Cardinal;
+  CRCCheck, CRCFile: Cardinal;
 begin
   {Get pointer to the header chunk}
   Header := Owner.Chunks.Item[0] as TChunkIHDR;
@@ -3829,7 +3831,7 @@ begin
     next_in := nil;
     avail_in := 0;
 
-    while deflate(ZLIB,Z_FINISH) <> Z_STREAM_END do
+    while deflate(ZLIB, Z_FINISH) <> Z_STREAM_END do
     begin
       {Writes this IDAT chunk}
       WriteIDAT(fStream, Data, Owner.MaxIdatSize - avail_out);
@@ -4044,8 +4046,8 @@ begin
     {Grayscale images followed by an alpha}
     COLOR_GRAYSCALEALPHA:
       case Header.BitDepth of
-        8:  CopyProc := EncodeNonInterlacedGrayscaleAlpha8;
-       16:  CopyProc := EncodeNonInterlacedGrayscaleAlpha16;
+        8: CopyProc := EncodeNonInterlacedGrayscaleAlpha8;
+       16: CopyProc := EncodeNonInterlacedGrayscaleAlpha16;
       end;
   end {case Header.ColorType};
 
@@ -4591,9 +4593,9 @@ begin
   for j := 0 to fCount - 1 do
     with palEntries.palPalEntry[j] do
     begin
-      peRed  :=  Owner.GammaTable[PalColor.r];
+      peRed := Owner.GammaTable[PalColor.r];
       peGreen := Owner.GammaTable[PalColor.g];
-      peBlue :=  Owner.GammaTable[PalColor.b];
+      peBlue := Owner.GammaTable[PalColor.b];
       peFlags := 0;
       {Move to next palette entry}
       inc(PalColor);
@@ -4714,7 +4716,7 @@ end;
 function Power(Base, Exponent: Extended): Extended;
 begin
   if Exponent = 0.0 then
-    Result := 1.0               {Math rule}
+    Result := 1.0 {Math rule}
   else if (Base = 0) or (Exponent = 0) then
     Result := 0
   else
@@ -4845,7 +4847,6 @@ begin
   fMaxIdatSize := High(Word);
   {Create chunklist object}
   fChunkList := TPngList.Create(Self);
-
 end;
 
 {Portable Network Graphics object being destroyed}
@@ -5524,7 +5525,7 @@ var
   DC: HDC;
 begin
   {Set width and height}
-  Header.Width  := Info.bmWidth;
+  Header.Width := Info.bmWidth;
   Header.Height := abs(Info.bmHeight);
   {Set bit depth}
   if Info.bmBitsPixel >= 16 then
@@ -5605,9 +5606,9 @@ begin
     palEntries.palNumEntries := 1 shl BitmapInfo.bmBitsPixel;
     for i := 0 to palEntries.palNumEntries - 1 do
     begin
-      palEntries.palPalEntry[i].peRed   := Header.BitmapInfo.bmiColors[i].rgbRed;
+      palEntries.palPalEntry[i].peRed := Header.BitmapInfo.bmiColors[i].rgbRed;
       palEntries.palPalEntry[i].peGreen := Header.BitmapInfo.bmiColors[i].rgbGreen;
-      palEntries.palPalEntry[i].peBlue  := Header.BitmapInfo.bmiColors[i].rgbBlue;
+      palEntries.palPalEntry[i].peBlue := Header.BitmapInfo.bmiColors[i].rgbBlue;
     end;
     DoSetPalette(CreatePalette(pLogPalette(@palEntries)^), false);
   end;
@@ -5962,9 +5963,10 @@ begin
             GammaTable[rgbBlue]);
       COLOR_GRAYSCALE:
       begin
-        if BitDepth = 1
-        then ByteData := GammaTable[Byte(ByteData * 255)]
-        else ByteData := GammaTable[Byte(ByteData * ((1 shl DataDepth) + 1))];
+        if BitDepth = 1 then
+          ByteData := GammaTable[Byte(ByteData * 255)]
+        else
+          ByteData := GammaTable[Byte(ByteData * ((1 shl DataDepth) + 1))];
         Result := rgb(ByteData, ByteData, ByteData);
       end;
       else
