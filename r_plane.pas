@@ -442,29 +442,39 @@ begin
   begin
   // JVAL 9/7/05
     if t1 < viewheight then
-      R_MapPlane(t1, spanstart[t1], x);
+      R_MapPlane(t1, spanstart[t1], x)
+    else
+      Break;
     inc(t1);
   end;
   while (b1 > b2) and (b1 >= t1) do
   begin
   // JVAL 9/7/05
     if LongWord(b1) < LongWord(viewheight) then
-      R_MapPlane(b1, spanstart[b1], x1);
+      R_MapPlane(b1, spanstart[b1], x1)
+    else
+      Break;
     dec(b1);
   end;
 
+  if t2 < 0 then
+    t2 := 0;
   while (t2 < t1) and (t2 <= b2) do
   begin
   // JVAL 9/7/05
     if t2 < viewheight then
-      spanstart[t2] := x;
+      spanstart[t2] := x
+    else
+      Break;
     inc(t2);
   end;
   while (b2 > b1) and (b2 >= t2) do
   begin
   // JVAL 9/7/05
     if LongWord(b2) < LongWord(viewheight) then
-      spanstart[b2] := x;
+      spanstart[b2] := x
+    else
+      Break;
     dec(b2);
   end;
 end;
