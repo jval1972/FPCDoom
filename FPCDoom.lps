@@ -619,8 +619,8 @@
         <Filename Value="r_defs.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="3"/>
-        <TopLine Value="127"/>
-        <CursorPos Y="143"/>
+        <TopLine Value="375"/>
+        <CursorPos Y="393"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit71>
@@ -697,9 +697,10 @@
       <Unit80>
         <Filename Value="r_things.pas"/>
         <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="15"/>
-        <TopLine Value="673"/>
-        <CursorPos X="36" Y="687"/>
+        <TopLine Value="1190"/>
+        <CursorPos X="16" Y="1205"/>
         <ExtraEditorCount Value="1"/>
         <ExtraEditor1>
           <EditorIndex Value="-1"/>
@@ -959,10 +960,9 @@
       <Unit110>
         <Filename Value="r_render.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="30"/>
         <TopLine Value="376"/>
-        <CursorPos X="25" Y="385"/>
+        <CursorPos X="52" Y="384"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit110>
@@ -1104,123 +1104,127 @@
         <UsageCount Value="8"/>
       </Unit128>
     </Units>
-    <JumpHistory Count="29" HistoryIndex="28">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="r_hires.pas"/>
-        <Caret Line="741" Column="20" TopLine="739"/>
-      </Position1>
-      <Position2>
-        <Filename Value="r_draw_column.pas"/>
-        <Caret Line="460" Column="25" TopLine="445"/>
-      </Position2>
-      <Position3>
-        <Filename Value="r_hires.pas"/>
-        <Caret Line="665" Column="17" TopLine="662"/>
-      </Position3>
-      <Position4>
-        <Filename Value="r_draw_column.pas"/>
-        <Caret Line="600" Column="24" TopLine="579"/>
-      </Position4>
-      <Position5>
-        <Filename Value="p_sight.pas"/>
-        <Caret Line="321" Column="61" TopLine="305"/>
-      </Position5>
-      <Position6>
-        <Filename Value="r_draw_column.pas"/>
-        <Caret Line="530" Column="52" TopLine="512"/>
-      </Position6>
-      <Position7>
-        <Filename Value="r_draw_column.pas"/>
-        <Caret Line="600" Column="60" TopLine="575"/>
-      </Position7>
-      <Position8>
-        <Filename Value="r_draw_column.pas"/>
-        <Caret Line="1023" Column="31" TopLine="996"/>
-      </Position8>
-      <Position9>
-        <Filename Value="r_draw_column.pas"/>
-        <Caret Line="1044" Column="34" TopLine="1020"/>
-      </Position9>
-      <Position10>
-        <Filename Value="r_draw_column.pas"/>
-        <Caret Line="47" Column="18" TopLine="32"/>
-      </Position10>
-      <Position11>
-        <Filename Value="r_draw_column.pas"/>
-        <Caret Line="443" Column="24" TopLine="431"/>
-      </Position11>
-      <Position12>
-        <Filename Value="r_draw_column.pas"/>
-        <Caret Line="871" Column="7" TopLine="639"/>
-      </Position12>
-      <Position13>
         <Filename Value="r_plane.pas"/>
         <Caret Line="235" Column="16" TopLine="220"/>
+      </Position1>
+      <Position2>
+        <Filename Value="r_render.pas"/>
+        <Caret Line="90" Column="18" TopLine="70"/>
+      </Position2>
+      <Position3>
+        <Filename Value="r_render.pas"/>
+        <Caret Line="87" Column="19" TopLine="70"/>
+      </Position3>
+      <Position4>
+        <Filename Value="r_render.pas"/>
+        <Caret Line="90" Column="26" TopLine="70"/>
+      </Position4>
+      <Position5>
+        <Filename Value="r_render.pas"/>
+        <Caret Line="300" Column="19" TopLine="281"/>
+      </Position5>
+      <Position6>
+        <Filename Value="r_render.pas"/>
+        <Caret Line="303" Column="26" TopLine="296"/>
+      </Position6>
+      <Position7>
+        <Filename Value="r_render.pas"/>
+        <Caret Line="334" Column="19" TopLine="321"/>
+      </Position7>
+      <Position8>
+        <Filename Value="r_render.pas"/>
+        <Caret Line="337" Column="26" TopLine="321"/>
+      </Position8>
+      <Position9>
+        <Filename Value="r_render.pas"/>
+        <Caret Line="341" Column="20" TopLine="321"/>
+      </Position9>
+      <Position10>
+        <Filename Value="r_render.pas"/>
+        <Caret Line="343" Column="22" TopLine="321"/>
+      </Position10>
+      <Position11>
+        <Filename Value="r_render.pas"/>
+        <Caret Line="347" Column="20" TopLine="321"/>
+      </Position11>
+      <Position12>
+        <Filename Value="r_render.pas"/>
+        <Caret Line="399" Column="15" TopLine="375"/>
+      </Position12>
+      <Position13>
+        <Filename Value="r_render.pas"/>
+        <Caret Line="396" Column="16" TopLine="375"/>
       </Position13>
       <Position14>
         <Filename Value="r_render.pas"/>
-        <Caret Line="90" Column="18" TopLine="70"/>
+        <Caret Line="399" Column="23" TopLine="375"/>
       </Position14>
       <Position15>
         <Filename Value="r_render.pas"/>
-        <Caret Line="87" Column="19" TopLine="70"/>
+        <Caret Line="481" Column="83" TopLine="454"/>
       </Position15>
       <Position16>
         <Filename Value="r_render.pas"/>
-        <Caret Line="90" Column="26" TopLine="70"/>
+        <Caret Line="290" Column="10" TopLine="274"/>
       </Position16>
       <Position17>
         <Filename Value="r_render.pas"/>
-        <Caret Line="300" Column="19" TopLine="281"/>
+        <Caret Line="325" Column="15" TopLine="305"/>
       </Position17>
       <Position18>
         <Filename Value="r_render.pas"/>
-        <Caret Line="303" Column="26" TopLine="296"/>
+        <Caret Line="384" Column="52" TopLine="376"/>
       </Position18>
       <Position19>
-        <Filename Value="r_render.pas"/>
-        <Caret Line="334" Column="19" TopLine="321"/>
+        <Filename Value="r_things.pas"/>
+        <Caret Line="1106" Column="27" TopLine="1086"/>
       </Position19>
       <Position20>
-        <Filename Value="r_render.pas"/>
-        <Caret Line="337" Column="26" TopLine="321"/>
+        <Filename Value="r_defs.pas"/>
+        <Caret Line="143" TopLine="127"/>
       </Position20>
       <Position21>
-        <Filename Value="r_render.pas"/>
-        <Caret Line="341" Column="20" TopLine="321"/>
+        <Filename Value="r_defs.pas"/>
+        <Caret Line="393" TopLine="375"/>
       </Position21>
       <Position22>
-        <Filename Value="r_render.pas"/>
-        <Caret Line="343" Column="22" TopLine="321"/>
+        <Filename Value="r_things.pas"/>
+        <Caret Line="1094" Column="15" TopLine="1089"/>
       </Position22>
       <Position23>
-        <Filename Value="r_render.pas"/>
-        <Caret Line="347" Column="20" TopLine="321"/>
+        <Filename Value="r_things.pas"/>
+        <Caret Line="1162" Column="20" TopLine="1147"/>
       </Position23>
       <Position24>
-        <Filename Value="r_render.pas"/>
-        <Caret Line="399" Column="15" TopLine="375"/>
+        <Filename Value="r_things.pas"/>
+        <Caret Line="1174" Column="17" TopLine="1160"/>
       </Position24>
       <Position25>
-        <Filename Value="r_render.pas"/>
-        <Caret Line="396" Column="16" TopLine="375"/>
+        <Filename Value="r_things.pas"/>
+        <Caret Line="1176" Column="34" TopLine="1162"/>
       </Position25>
       <Position26>
-        <Filename Value="r_render.pas"/>
-        <Caret Line="399" Column="23" TopLine="375"/>
+        <Filename Value="r_things.pas"/>
+        <Caret Line="1189" Column="39" TopLine="1175"/>
       </Position26>
       <Position27>
-        <Filename Value="r_render.pas"/>
-        <Caret Line="481" Column="83" TopLine="454"/>
+        <Filename Value="r_things.pas"/>
+        <Caret Line="1200" Column="37" TopLine="1184"/>
       </Position27>
       <Position28>
-        <Filename Value="r_render.pas"/>
-        <Caret Line="290" Column="10" TopLine="274"/>
+        <Filename Value="r_things.pas"/>
+        <Caret Line="1202" Column="17" TopLine="1187"/>
       </Position28>
       <Position29>
-        <Filename Value="r_render.pas"/>
-        <Caret Line="325" Column="15" TopLine="305"/>
+        <Filename Value="r_things.pas"/>
+        <Caret Line="1205" Column="23" TopLine="1196"/>
       </Position29>
+      <Position30>
+        <Filename Value="r_things.pas"/>
+        <Caret Line="391" Column="3" TopLine="375"/>
+      </Position30>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>

@@ -388,6 +388,8 @@ type
     _type: integer;
     infoscale: fixed_t;
   end;
+  visspritebuffer_t = array[0..$FFFF] of Pvissprite_t;
+  visspritebuffer_p = ^visspritebuffer_t;
 
 //
 // Sprites are patches with a special naming convention

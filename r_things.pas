@@ -1089,71 +1089,119 @@ end;
 // R_SortVisSprites
 //
 var
-  vsprsortedhead: vissprite_t;
+  vis_buf: visspritebuffer_p = nil;
+  vis_buf_size: integer = 0;
 
 //==============================================================================
 //
 // R_SortVisSprites
 //
 //==============================================================================
+//==============================================================================
+//
+// R_SortVisSprites
+//
+// Algorithm from http://alexandrecmachado.blogspot.com.br/2015/02/merge-sort-for-delphi.html
+//
+//==============================================================================
 procedure R_SortVisSprites;
 var
-  i: integer;
-  count: integer;
-  ds: Pvissprite_t;
-  best: Pvissprite_t;
-  unsorted: vissprite_t;
-  bestscale: fixed_t;
-begin
-  count := vissprite_p;
+  xTempListSize: Integer;
 
-  if count = 0 then
-    exit;
-
-  unsorted.next := @unsorted;
-  unsorted.prev := @unsorted;
-
-  vissprites[0].next := vissprites[1];
-  vissprites[0].prev := @unsorted;
-
-  for i := 1 to count - 1 do
+  procedure DoInsertionSort(ptrList: visspritebuffer_p; FirstIndex: Integer; LastIndex: Integer);
+  var
+    i, j: Integer;
+    t: Pvissprite_t;
   begin
-    vissprites[i].next := vissprites[i + 1];
-    vissprites[i].prev := vissprites[i - 1];
-  end;
-
-  unsorted.prev := vissprites[vissprite_p - 1];
-  unsorted.next := vissprites[0];
-  vissprites[vissprite_p - 1].next := @unsorted;
-
-  // pull the vissprites out by scale
-  vsprsortedhead.next := @vsprsortedhead;
-  vsprsortedhead.prev := @vsprsortedhead;
-  for i := 0 to count - 1 do
-  begin
-    bestscale := MAXINT;
-    ds := unsorted.next;
-    best := nil; // JVAL - > avoid compiler warning
-    while ds <> @unsorted do
+    for i := FirstIndex + 1 to LastIndex do
     begin
-      if ds.scale < bestscale then
+      t := ptrList[i];
+      j := i;
+      while (j > FirstIndex) and (t.scale < ptrList[j - 1].scale) do
       begin
-        bestscale := ds.scale;
-        best := ds;
+        ptrList[j] := ptrList[j - 1];
+        dec(j);
       end;
-      ds := ds.next;
-    end;
-
-    if best <> nil then // JVAL - > avoid compiler warning
-    begin
-      best.next.prev := best.prev;
-      best.prev.next := best.next;
-      best.next := @vsprsortedhead;
-      best.prev := vsprsortedhead.prev;
-      vsprsortedhead.prev.next := best;
-      vsprsortedhead.prev := best;
+      ptrList[j] := t;
     end;
   end;
+
+  procedure DoMergeSort(ptrList: visspritebuffer_p; FirstIndex: Integer; LastIndex: Integer);
+  const
+    // When the list is smaller than this we use InsertionSort instead of calling MergeSort recursively.
+    // 8 and 64 seem to be the lower and upper limits where the performance degrades, so
+    // something between 16 and 32 probably gives the best performance
+    MIN_LIST_SIZE = 16;
+  var
+    Mid: Integer;
+    i, j: Integer;
+    ToInx: Integer;
+    FirstCount: Integer;
+  begin
+    // calculate the midpoint
+    Mid := (FirstIndex + LastIndex) div 2;
+    // sort the 1st half of the list, either with merge sort, or, if there are few enough items, with insertion sort
+    if FirstIndex < Mid then
+    begin
+      if Mid - FirstIndex <= MIN_LIST_SIZE then
+        DoInsertionSort(ptrList, FirstIndex, Mid)
+      else
+        DoMergeSort(ptrList, FirstIndex, Mid);
+    end;
+    // sort the 2nd half of the list likewise
+    if (Mid + 1) < LastIndex then
+    begin
+      if (LastIndex - Mid - 1) <= MIN_LIST_SIZE then
+        DoInsertionSort(ptrList, succ(Mid), LastIndex)
+      else
+        DoMergeSort(ptrList, succ(Mid), LastIndex);
+    end;
+    // copy the first half of the list to our temporary list
+    FirstCount := Mid - FirstIndex + 1;
+    memcpy(@vis_buf[0], @ptrList[FirstIndex], FirstCount * SizeOf(Pvissprite_t));
+    // set up the indexes: i is the index for the temporary list (i.e., the
+    //  first half of the list), j is the index for the second half of the
+    //  list, ToInx is the index in the merged where items will be copied
+    i := 0;
+    j := Mid + 1;
+    ToInx := FirstIndex;
+    // now merge the two lists
+    // repeat until one of the lists empties...
+    while (i < FirstCount) and (j <= LastIndex) do
+    begin
+       // calculate the smaller item from the next items in both lists and copy it over; increment the relevant index
+      if vis_buf[i].scale <= ptrList[j].scale then
+      begin
+        ptrList[ToInx] := vis_buf[i];
+        inc(i);
+      end
+      else
+      begin
+        ptrList[ToInx] := ptrList[j];
+        inc(j);
+      end;
+      // there's one more item in the merged list
+      inc(ToInx);
+    end;
+    // if there are any more items in the first list, copy them back over
+    if i < FirstCount then
+      memcpy(@ptrList[ToInx], @vis_buf[i], (FirstCount - i) * SizeOf(Pvissprite_t));
+    // if there are any more items in the second list then they're already in place and we're done; if there aren't, we're still done
+  end;
+
+begin
+  if vissprite_p < 2 then
+    Exit;
+
+  xTempListSize := (vissprite_p div 2) + 1;
+  if xTempListSize > vis_buf_size then
+  begin
+    {$IFNDEF FPC}vis_buf := {$ENDIF}realloc(vis_buf, vis_buf_size * SizeOf(Pvissprite_t), (128 +
+      xTempListSize) * SizeOf(Pvissprite_t));
+    vis_buf_size := xTempListSize + 128;
+  end;
+
+  DoMergeSort(@vissprites, 0, vissprite_p - 1);
 end;
 
 //
@@ -1295,20 +1343,11 @@ end;
 //==============================================================================
 procedure R_DrawMasked;
 var
-  spr: Pvissprite_t;
   ds: Pdrawseg_t;
   i: integer;
 begin
-  if vissprite_p > 0 then
-  begin
-    // draw all vissprites back to front
-    spr := vsprsortedhead.next;
-    while spr <> @vsprsortedhead do
-    begin
-      R_DrawSprite(spr);
-      spr := spr.next;
-    end;
-  end;
+  for i := 0 to vissprite_p - 1 do
+    R_DrawSprite(vissprites[i]);
 
   // render any remaining masked mid textures
   colfunc := maskedcolfunc;
@@ -1327,18 +1366,10 @@ end;
 //==============================================================================
 procedure R_MarkLights;
 var
-  spr: Pvissprite_t;
+  i: integer;
 begin
-  if vissprite_p > 0 then
-  begin
-    // draw all vissprites back to front
-    spr := vsprsortedhead.next;
-    while spr <> @vsprsortedhead do
-    begin
-      R_MarkDLights(spr.mo);
-      spr := spr.next;
-    end;
-  end;
+  for i := 0 to vissprite_p - 1 do
+    R_MarkDLights(vissprites[i].mo);
   R_AddAdditionalLights;
 end;
 
