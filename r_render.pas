@@ -402,11 +402,12 @@ begin
 end;
 
 type
+  Prange_t = ^range_t;
   range_t = record
     start, stop: integer;
     id: integer;
+    next: Prange_t;
   end;
-  Prange_t = ^range_t;
 
 var
   ranges: array[0..MAXRTHREADS - 1] of range_t;
@@ -419,15 +420,38 @@ var
 //==============================================================================
 function _render_task_range(p: pointer): integer; stdcall;
 var
-  i: integer;
+  parms: Prange_t;
   start, stop: integer;
   ria: Prenderitem_tArray;
 begin
-  ria := ritems[Prange_t(p).id].data;
-  start := Prange_t(p).start;
-  stop := Prange_t(p).stop;
-  for i := start to stop do
-    R_RenderTask(@ria[i]);
+  parms := p;
+  ria := ritems[parms.id].data;
+  while parms.start <= parms.stop do
+  begin
+    R_RenderTask(@ria[parms.start]);
+    ThreadInc(parms.start);
+  end;
+
+  parms := parms.next;
+  if parms = nil then
+  begin
+    result := 0;
+    exit;
+  end;
+
+  if parms.start < parms.stop + 2 then
+  begin
+    stop := parms.stop;
+    start := (parms.start + parms.stop) div 2;
+    ThreadSet(parms.stop, start);
+    ria := ritems[parms.id].data;
+    while start < stop do
+    begin
+      Inc(start);
+      R_RenderTask(@ria[start]);
+    end;
+  end;
+
   result := 0;
 end;
 
@@ -523,6 +547,9 @@ begin
     for i := 0 to nt - 2 do
       ranges[i].stop := ranges[i + 1].start - 1;
     ranges[nt - 1].stop := rip.numitems - 1;
+    for i := 0 to nt - 2 do
+      ranges[i].next := @ranges[i + 1];
+    ranges[nt - 1].next := @ranges[0];
 
     tfunc := @_render_task_range;
   end
@@ -534,6 +561,8 @@ begin
     for i := 0 to nt - 2 do
       ranges[i].stop := ranges[i + 1].start - 1;
     ranges[nt - 1].stop := rip.pint^ - 1;
+    for i := 0 to nt - 1 do
+      ranges[i].next := nil;
 
     tfunc := @_render_task_index;
   end;

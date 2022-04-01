@@ -68,6 +68,27 @@ const
   THR_ACTIVE = 1;
   THR_IDLE = 2;
 
+//==============================================================================
+//
+// ThreadInc
+//
+//==============================================================================
+function ThreadInc(var x: Integer): Integer;
+
+//==============================================================================
+//
+// ThreadDec
+//
+//==============================================================================
+function ThreadDec(var x: Integer): Integer;
+
+//==============================================================================
+//
+// ThreadSet
+//
+//==============================================================================
+function ThreadSet(var x: Integer; const newvalue: Integer): Integer;
+
 implementation
 
 uses
@@ -207,6 +228,36 @@ end;
 function TDThread.IsIdle: Boolean;
 begin
   result := fstatus = THR_IDLE;
+end;
+
+//==============================================================================
+//
+// ThreadInc
+//
+//==============================================================================
+function ThreadInc(var x: Integer): Integer;
+begin
+  Result := InterlockedIncrement(x);
+end;
+
+//==============================================================================
+//
+// ThreadDec
+//
+//==============================================================================
+function ThreadDec(var x: Integer): Integer;
+begin
+  Result := InterlockedDecrement(x);
+end;
+
+//==============================================================================
+//
+// ThreadSet
+//
+//==============================================================================
+function ThreadSet(var x: Integer; const newvalue: Integer): Integer;
+begin
+  Result := InterlockedExchange(x, newvalue);
 end;
 
 end.

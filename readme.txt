@@ -55,6 +55,7 @@ Fixed masked middle texture bleeding when player was exactly placed on the line.
 Small optimization to masked middle textute rendering.
 Fixed misspelled of "joystick" in the menus.
 Improved priority logic for sound channel selection.
+Speed optimizations by better exploitation of multiple threads.
 
 version 1.13.17.133 (20210110)
 ------------------------------
