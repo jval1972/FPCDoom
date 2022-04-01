@@ -194,7 +194,7 @@ begin
 
   while fstatus = THR_ACTIVE do
   begin
-  //  I_Sleep(0);
+    I_Sleep(0);
   end;
   suspended := true;
   SuspendThread(fid);
