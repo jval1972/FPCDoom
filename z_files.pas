@@ -91,8 +91,7 @@ type
 implementation
 
 uses
-  i_system,
-  {$IFDEF FPC}paszlib{$ELSE}ZLib{$ENDIF};
+  {$IFDEF FPC}i_system, paszlib{$ELSE}ZLib{$ENDIF};
 
 //==============================================================================
 //
