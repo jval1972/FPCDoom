@@ -4,7 +4,7 @@
     <PathDelim Value="\"/>
     <Version Value="11"/>
     <BuildModes Active="Release"/>
-    <Units Count="129">
+    <Units Count="130">
       <Unit0>
         <Filename Value="FPCDoom.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -16,7 +16,7 @@
       <Unit1>
         <Filename Value="am_map.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="51"/>
+        <EditorIndex Value="52"/>
         <TopLine Value="1635"/>
         <CursorPos X="44" Y="1649"/>
         <UsageCount Value="204"/>
@@ -92,7 +92,7 @@
       <Unit10>
         <Filename Value="d_net.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="56"/>
+        <EditorIndex Value="57"/>
         <TopLine Value="806"/>
         <CursorPos X="73" Y="821"/>
         <UsageCount Value="204"/>
@@ -173,7 +173,7 @@
       <Unit20>
         <Filename Value="g_game.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="57"/>
+        <EditorIndex Value="58"/>
         <TopLine Value="2371"/>
         <CursorPos X="46" Y="2386"/>
         <UsageCount Value="204"/>
@@ -182,7 +182,7 @@
       <Unit21>
         <Filename Value="hu_lib.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="58"/>
+        <EditorIndex Value="59"/>
         <TopLine Value="714"/>
         <CursorPos X="31" Y="738"/>
         <UsageCount Value="204"/>
@@ -191,7 +191,7 @@
       <Unit22>
         <Filename Value="hu_stuff.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="59"/>
+        <EditorIndex Value="60"/>
         <TopLine Value="669"/>
         <CursorPos X="63" Y="683"/>
         <UsageCount Value="204"/>
@@ -200,7 +200,7 @@
       <Unit23>
         <Filename Value="i_input.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="55"/>
+        <EditorIndex Value="56"/>
         <TopLine Value="594"/>
         <CursorPos X="33" Y="609"/>
         <UsageCount Value="204"/>
@@ -225,7 +225,7 @@
       <Unit26>
         <Filename Value="i_midi.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="44"/>
+        <EditorIndex Value="45"/>
         <TopLine Value="38"/>
         <CursorPos X="17" Y="50"/>
         <UsageCount Value="204"/>
@@ -234,7 +234,7 @@
       <Unit27>
         <Filename Value="i_music.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="45"/>
+        <EditorIndex Value="46"/>
         <TopLine Value="590"/>
         <CursorPos Y="614"/>
         <UsageCount Value="204"/>
@@ -259,7 +259,7 @@
       <Unit30>
         <Filename Value="i_system.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="34"/>
+        <EditorIndex Value="35"/>
         <TopLine Value="407"/>
         <CursorPos X="24" Y="421"/>
         <UsageCount Value="204"/>
@@ -268,7 +268,7 @@
       <Unit31>
         <Filename Value="i_video.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="43"/>
+        <EditorIndex Value="44"/>
         <TopLine Value="406"/>
         <CursorPos X="40" Y="384"/>
         <UsageCount Value="204"/>
@@ -277,7 +277,7 @@
       <Unit32>
         <Filename Value="info.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="50"/>
+        <EditorIndex Value="51"/>
         <TopLine Value="36"/>
         <CursorPos X="3" Y="40"/>
         <UsageCount Value="204"/>
@@ -286,7 +286,7 @@
       <Unit33>
         <Filename Value="info_h.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="53"/>
+        <EditorIndex Value="54"/>
         <TopLine Value="412"/>
         <CursorPos X="17" Y="418"/>
         <UsageCount Value="204"/>
@@ -328,7 +328,7 @@
       <Unit38>
         <Filename Value="m_defs.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="47"/>
+        <EditorIndex Value="48"/>
         <TopLine Value="1054"/>
         <CursorPos X="23" Y="1072"/>
         <ExtraEditorCount Value="1"/>
@@ -351,7 +351,7 @@
       <Unit40>
         <Filename Value="m_menu.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="60"/>
+        <EditorIndex Value="61"/>
         <TopLine Value="2596"/>
         <CursorPos X="18" Y="2611"/>
         <UsageCount Value="204"/>
@@ -399,7 +399,7 @@
       <Unit46>
         <Filename Value="p_doors.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="61"/>
+        <EditorIndex Value="62"/>
         <TopLine Value="228"/>
         <CursorPos X="12" Y="244"/>
         <UsageCount Value="204"/>
@@ -408,7 +408,7 @@
       <Unit47>
         <Filename Value="p_enemy.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="62"/>
+        <EditorIndex Value="63"/>
         <TopLine Value="1485"/>
         <CursorPos X="43" Y="1500"/>
         <UsageCount Value="204"/>
@@ -505,7 +505,7 @@
       <Unit58>
         <Filename Value="p_pspr.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="41"/>
+        <EditorIndex Value="42"/>
         <TopLine Value="510"/>
         <CursorPos X="8" Y="524"/>
         <UsageCount Value="204"/>
@@ -514,7 +514,7 @@
       <Unit59>
         <Filename Value="p_pspr_h.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="42"/>
+        <EditorIndex Value="43"/>
         <TopLine Value="28"/>
         <CursorPos X="5" Y="47"/>
         <UsageCount Value="204"/>
@@ -531,7 +531,7 @@
       <Unit61>
         <Filename Value="p_setup.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="40"/>
+        <EditorIndex Value="41"/>
         <TopLine Value="846"/>
         <CursorPos X="32" Y="862"/>
         <UsageCount Value="204"/>
@@ -558,7 +558,7 @@
       <Unit64>
         <Filename Value="p_switch.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="52"/>
+        <EditorIndex Value="53"/>
         <TopLine Value="157"/>
         <CursorPos X="17" Y="172"/>
         <UsageCount Value="204"/>
@@ -672,7 +672,7 @@
       <Unit77>
         <Filename Value="r_plane.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="39"/>
+        <EditorIndex Value="40"/>
         <TopLine Value="214"/>
         <CursorPos X="16" Y="235"/>
         <UsageCount Value="204"/>
@@ -681,7 +681,7 @@
       <Unit78>
         <Filename Value="r_segs.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="38"/>
+        <EditorIndex Value="39"/>
         <TopLine Value="1112"/>
         <CursorPos X="35" Y="1123"/>
         <UsageCount Value="204"/>
@@ -721,7 +721,7 @@
       <Unit82>
         <Filename Value="sounds.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="49"/>
+        <EditorIndex Value="50"/>
         <TopLine Value="649"/>
         <CursorPos X="31" Y="596"/>
         <UsageCount Value="204"/>
@@ -730,7 +730,7 @@
       <Unit83>
         <Filename Value="s_sound.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="46"/>
+        <EditorIndex Value="47"/>
         <TopLine Value="651"/>
         <CursorPos X="30" Y="505"/>
         <UsageCount Value="204"/>
@@ -739,7 +739,7 @@
       <Unit84>
         <Filename Value="sc_engine.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="48"/>
+        <EditorIndex Value="49"/>
         <TopLine Value="491"/>
         <CursorPos X="97" Y="505"/>
         <UsageCount Value="204"/>
@@ -798,7 +798,7 @@
       <Unit91>
         <Filename Value="t_main.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="35"/>
+        <EditorIndex Value="36"/>
         <TopLine Value="158"/>
         <CursorPos X="17" Y="180"/>
         <UsageCount Value="204"/>
@@ -848,7 +848,7 @@
       <Unit97>
         <Filename Value="wi_stuff.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="36"/>
+        <EditorIndex Value="37"/>
         <TopLine Value="1089"/>
         <CursorPos X="66" Y="1105"/>
         <UsageCount Value="204"/>
@@ -857,7 +857,7 @@
       <Unit98>
         <Filename Value="sc_actordef.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="54"/>
+        <EditorIndex Value="55"/>
         <TopLine Value="401"/>
         <CursorPos Y="425"/>
         <UsageCount Value="200"/>
@@ -866,7 +866,7 @@
       <Unit99>
         <Filename Value="z_memory.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="37"/>
+        <EditorIndex Value="38"/>
         <TopLine Value="178"/>
         <CursorPos X="12" Y="257"/>
         <UsageCount Value="200"/>
@@ -883,7 +883,7 @@
       <Unit101>
         <Filename Value="r_draw_span.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="31"/>
+        <EditorIndex Value="32"/>
         <TopLine Value="54"/>
         <CursorPos X="13" Y="229"/>
         <UsageCount Value="201"/>
@@ -949,7 +949,7 @@
       <Unit109>
         <Filename Value="i_threads.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="32"/>
+        <EditorIndex Value="33"/>
         <TopLine Value="13"/>
         <CursorPos X="29" Y="15"/>
         <UsageCount Value="200"/>
@@ -958,7 +958,6 @@
       <Unit110>
         <Filename Value="r_render.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="30"/>
         <TopLine Value="194"/>
         <CursorPos X="48" Y="212"/>
@@ -968,7 +967,7 @@
       <Unit111>
         <Filename Value="r_lightmap.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="33"/>
+        <EditorIndex Value="34"/>
         <TopLine Value="1193"/>
         <CursorPos X="57" Y="1186"/>
         <UsageCount Value="200"/>
@@ -1102,8 +1101,15 @@
         <EditorIndex Value="-1"/>
         <UsageCount Value="8"/>
       </Unit128>
+      <Unit129>
+        <Filename Value="..\..\DelphiDoom_Src\Src\Strife\R_DrawSkyColumnMedium.inc"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="31"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit129>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="29">
+    <JumpHistory Count="28" HistoryIndex="27">
       <Position1>
         <Filename Value="s_sound.pas"/>
         <Caret Line="38" Column="13" TopLine="13"/>
@@ -1170,60 +1176,52 @@
       </Position16>
       <Position17>
         <Filename Value="r_segs.pas"/>
-        <Caret Line="864" Column="61" TopLine="888"/>
+        <Caret Line="337" Column="25" TopLine="333"/>
       </Position17>
       <Position18>
         <Filename Value="r_segs.pas"/>
-        <Caret Line="235" Column="42" TopLine="256"/>
+        <Caret Line="344" Column="31" TopLine="333"/>
       </Position18>
       <Position19>
         <Filename Value="r_segs.pas"/>
-        <Caret Line="337" Column="25" TopLine="333"/>
+        <Caret Line="372" Column="25" TopLine="362"/>
       </Position19>
       <Position20>
         <Filename Value="r_segs.pas"/>
-        <Caret Line="344" Column="31" TopLine="333"/>
+        <Caret Line="375" Column="31" TopLine="362"/>
       </Position20>
       <Position21>
         <Filename Value="r_segs.pas"/>
-        <Caret Line="372" Column="25" TopLine="362"/>
+        <Caret Line="856" Column="40" TopLine="844"/>
       </Position21>
       <Position22>
         <Filename Value="r_segs.pas"/>
-        <Caret Line="375" Column="31" TopLine="362"/>
+        <Caret Line="862" Column="43" TopLine="844"/>
       </Position22>
       <Position23>
-        <Filename Value="r_segs.pas"/>
-        <Caret Line="856" Column="40" TopLine="844"/>
-      </Position23>
-      <Position24>
-        <Filename Value="r_segs.pas"/>
-        <Caret Line="862" Column="43" TopLine="844"/>
-      </Position24>
-      <Position25>
         <Filename Value="r_plane.pas"/>
         <Caret Line="235" Column="16" TopLine="214"/>
+      </Position23>
+      <Position24>
+        <Filename Value="r_render.pas"/>
+        <Caret Line="90" Column="11" TopLine="74"/>
+      </Position24>
+      <Position25>
+        <Filename Value="r_render.pas"/>
+        <Caret Line="87" Column="19" TopLine="74"/>
       </Position25>
       <Position26>
         <Filename Value="r_render.pas"/>
-        <Caret Line="90" Column="11" TopLine="74"/>
+        <Caret Line="90" Column="26" TopLine="74"/>
       </Position26>
       <Position27>
         <Filename Value="r_render.pas"/>
-        <Caret Line="87" Column="19" TopLine="74"/>
+        <Caret Line="343" Column="19" TopLine="332"/>
       </Position27>
       <Position28>
         <Filename Value="r_render.pas"/>
-        <Caret Line="90" Column="26" TopLine="74"/>
-      </Position28>
-      <Position29>
-        <Filename Value="r_render.pas"/>
-        <Caret Line="343" Column="19" TopLine="332"/>
-      </Position29>
-      <Position30>
-        <Filename Value="r_render.pas"/>
         <Caret Line="310" Column="14" TopLine="297"/>
-      </Position30>
+      </Position28>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
