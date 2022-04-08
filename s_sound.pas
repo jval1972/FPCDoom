@@ -31,6 +31,9 @@ unit s_sound;
 
 interface
 
+uses
+  p_mobj_h;
+
 //==============================================================================
 // S_Init
 //
@@ -88,6 +91,14 @@ procedure S_StartSound(origin: pointer; const sndname: string); overload;
 //
 //==============================================================================
 procedure S_StartSoundAtVolume(origin_p: pointer; sfx_id: integer; volume: integer);
+
+//==============================================================================
+// S_UnlinkSound
+//
+// From Woof: [FG] removed map objects may finish their sounds
+//
+//==============================================================================
+procedure S_UnlinkSound(origin: Pmobj_t);
 
 //==============================================================================
 // S_StopSound
@@ -176,6 +187,9 @@ var
 const
   MIN_NUMCHANNELS = 8;
 
+var
+  full_sounds: boolean = true;
+
 implementation
 
 uses
@@ -190,7 +204,7 @@ uses
   m_fixed,
   m_rnd,
   m_misc,
-  p_mobj_h,
+  r_defs,
   r_mirror,
   sounds,
   z_memory,
@@ -238,6 +252,7 @@ type
 // the set of channels available
 var
   channels: Pchannel_tArray;
+  sobjs: Pdegenmobj_tArray;
 
 var
 // whether songs are mus_paused
@@ -353,6 +368,8 @@ begin
     numChannels := MIN_NUMCHANNELS; // JVAL: Set the minimum number of channels
 
   channels := Z_Malloc(numChannels * SizeOf(channel_t), PU_STATIC, nil);
+  // From Woof: [FG] removed map objects may finish their sounds
+  sobjs := Z_Malloc(numChannels * SizeOf(degenmobj_t), PU_STATIC, nil);
 
   // Free all channels for use
   for i := 0 to numChannels - 1 do
@@ -596,6 +613,30 @@ end;
 procedure S_StartSound(origin: pointer; const sndname: string);
 begin
   S_StartSoundAtVolume(origin, S_GetSoundNumForName(sndname), snd_SfxVolume);
+end;
+
+//==============================================================================
+// S_UnlinkSound
+//
+// From Woof: [FG] removed map objects may finish their sounds
+//
+//==============================================================================
+procedure S_UnlinkSound(origin: Pmobj_t);
+var
+  cnum: integer;
+begin
+  if origin = nil then
+    exit;
+
+  for cnum := 0 to numChannels - 1 do
+    if (channels[cnum].sfxinfo <> nil) and (channels[cnum].origin = origin) then
+    begin
+      sobjs[cnum].x := origin.x;
+      sobjs[cnum].y := origin.y;
+      sobjs[cnum].z := origin.z;
+      channels[cnum].origin := @sobjs[cnum];
+      exit;
+    end;
 end;
 
 //==============================================================================

@@ -93,7 +93,7 @@ type
   Pdefault_t = ^default_t;
 
 const
-  NUMDEFAULTS = 149;
+  NUMDEFAULTS = 150;
 
   defaults: array[0..NUMDEFAULTS - 1] of default_t = (
     (name: 'Display';
@@ -1065,13 +1065,21 @@ const
      defaultbvalue: false;
      _type: tGroup),
 
-    (name: 'snd_channels';
-     location: @numChannels;
-     setable: DFS_NEVER;
+     (name: 'snd_channels';
+      location: @numChannels;
+      setable: DFS_NEVER;
+      defaultsvalue: '';
+      defaultivalue: 32;
+      defaultbvalue: false;
+      _type: tInteger),
+
+    (name: 'full_sounds';
+     location: @full_sounds;
+     setable: DFS_ALWAYS;
      defaultsvalue: '';
-     defaultivalue: 32;
-     defaultbvalue: false;
-     _type: tInteger),
+     defaultivalue: 1;
+     defaultbvalue: true;
+     _type: tBoolean),
 
     (name: 'sfx_volume';
      location: @snd_SfxVolume;

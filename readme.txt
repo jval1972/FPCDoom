@@ -59,6 +59,7 @@ Default sound channels increased to 32.
 Speed optimizations by better exploitation of multiple threads.
 Proper windowed mode.
 Increased saved game size to 5MB.
+Added full_sounds console variable.
 
 version 1.13.17.133 (20210110)
 ------------------------------
