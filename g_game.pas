@@ -359,7 +359,7 @@ type
   );
 
 var
-  autorunmode: boolean = false;
+  autorunmode: integer = 2;
   keepcheatsinplayerreborn: boolean = false;
   allowplayerjumps: boolean = true;
   majorbossdeathendsdoom1level: boolean = false;
@@ -386,6 +386,7 @@ uses
   info_h,
   info,
   info_rnd,
+  i_input,
   i_system,
   e_endoom,
   m_argv,
@@ -618,7 +619,10 @@ begin
             (usemouse and mousebuttons[mousebstrafe]) or
             (usejoystick and joybuttons[joybstrafe]);
   speed := intval(gamekeydown[key_speed] or joybuttons[joybspeed]);
-  if autorunmode then
+  if autorunmode = 0 then
+  else if autorunmode = 1 then
+    speed := 1 - speed
+  else if I_GetCapsLock then
     speed := 1 - speed;
 
   _forward := 0;

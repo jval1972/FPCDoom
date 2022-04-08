@@ -2144,6 +2144,7 @@ begin
 end;
 
 const
+  mautorunstrings: array[0..2] of string = ('OFF', 'ON', 'USE CAPS LOCK');
   strmenukeyescfunc: array[0..1] of string = ('BACKSPACE', 'ESC');
 
 //==============================================================================
@@ -2157,6 +2158,10 @@ var
 begin
   V_DrawPatch(108, 15, SCN_TMP, 'M_OPTTTL', false);
   V_DrawPatch(20, 48, SCN_TMP, 'MENU_CON', false);
+
+  autorunmode := ibetween(autorunmode, 0, 2);
+  ppos := M_WriteText(ControlsDef.x, ControlsDef.y + ControlsDef.itemheight * Ord(ctrl_autorun), 'Always run: ');
+  M_WriteColorText(ppos.x, ppos.y, mautorunstrings[autorunmode], 'CRGRAY');
 
   menukeyescfunc := ibetween(menukeyescfunc, 0, 1);
   ppos := M_WriteText(ControlsDef.x, ControlsDef.y + ControlsDef.itemheight * Ord(ctrl_menukeyescfunc), 'Go to upper level menu: ');
@@ -2234,6 +2239,19 @@ end;
 procedure M_OptionsSensitivity(choice: integer);
 begin
   M_SetupNextMenu(@SensitivityDef);
+end;
+
+//==============================================================================
+//
+// M_OptionsAutorun
+//
+//==============================================================================
+procedure M_OptionsAutorun(choice: integer);
+begin
+  autorunmode := ibetween(autorunmode, 0, 2);
+  inc(autorunmode);
+  if autorunmode = 3 then
+    autorunmode := 0;
 end;
 
 //==============================================================================
@@ -6416,9 +6434,9 @@ begin
   inc(pmi);
   pmi.status := 1;
   pmi.name := '!Always run';
-  pmi.cmd := 'autorunmode';
-  pmi.routine := @M_BoolCmd;
-  pmi.pBoolVal := @autorunmode;
+  pmi.cmd := '';
+  pmi.routine := @M_OptionsAutorun;
+  pmi.pBoolVal := nil;
   pmi.alphaKey := 'a';
 
   inc(pmi);
