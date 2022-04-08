@@ -1401,14 +1401,12 @@ begin
   end;
 end;
 
-//----------------------------------------------------------------------------
+//==============================================================================
 //
 // FUNC P_SeekerMissile
 //
 // The missile's tracer field must be the target.  Returns true if
 // target was tracked, false if not.
-//
-//----------------------------------------------------------------------------
 //
 //==============================================================================
 function P_SeekerMissile(actor: Pmobj_t; thresh, turnMax: angle_t): boolean;
