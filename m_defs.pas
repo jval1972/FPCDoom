@@ -47,6 +47,7 @@ uses
   p_saveg,
   p_pspr,
   i_video,
+  i_main,
   i_system,
   i_music,
   i_sound,
@@ -151,6 +152,22 @@ const
      defaultivalue: 1;
      defaultbvalue: true;
      _type: tBoolean),
+
+    (name: 'windowxpos';
+     location: @windowxpos;
+     setable: DFS_NEVER;
+     defaultsvalue: '';
+     defaultivalue: 0;
+     defaultbvalue: true;
+     _type: tInteger),
+
+    (name: 'windowypos';
+     location: @windowypos;
+     setable: DFS_NEVER;
+     defaultsvalue: '';
+     defaultivalue: 0;
+     defaultbvalue: true;
+     _type: tInteger),
 
     (name: 'interpolate';
      location: @interpolate;
