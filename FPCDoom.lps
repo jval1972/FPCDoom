@@ -328,10 +328,9 @@
       <Unit38>
         <Filename Value="m_defs.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="48"/>
-        <TopLine Value="39"/>
-        <CursorPos X="10" Y="50"/>
+        <TopLine Value="138"/>
+        <CursorPos X="26" Y="146"/>
         <ExtraEditorCount Value="1"/>
         <ExtraEditor1>
           <EditorIndex Value="-1"/>
@@ -352,9 +351,10 @@
       <Unit40>
         <Filename Value="m_menu.pas"/>
         <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="61"/>
-        <TopLine Value="2596"/>
-        <CursorPos X="18" Y="2611"/>
+        <TopLine Value="1021"/>
+        <CursorPos X="20" Y="1037"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit40>
@@ -1119,123 +1119,123 @@
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="s_sound.pas"/>
-        <Caret Line="333" Column="17" TopLine="317"/>
+        <Caret Line="350" Column="38" TopLine="329"/>
       </Position1>
       <Position2>
         <Filename Value="s_sound.pas"/>
-        <Caret Line="344" Column="16" TopLine="329"/>
+        <Caret Line="353" Column="35" TopLine="329"/>
       </Position2>
       <Position3>
         <Filename Value="s_sound.pas"/>
-        <Caret Line="350" Column="38" TopLine="329"/>
+        <Caret Line="354" Column="16" TopLine="329"/>
       </Position3>
       <Position4>
         <Filename Value="s_sound.pas"/>
-        <Caret Line="353" Column="35" TopLine="329"/>
+        <Caret Line="355" Column="61" TopLine="339"/>
       </Position4>
       <Position5>
         <Filename Value="s_sound.pas"/>
-        <Caret Line="354" Column="16" TopLine="329"/>
+        <Caret Line="93" Column="15" TopLine="72"/>
       </Position5>
       <Position6>
         <Filename Value="s_sound.pas"/>
-        <Caret Line="355" Column="61" TopLine="339"/>
+        <Caret Line="101" Column="15" TopLine="72"/>
       </Position6>
       <Position7>
         <Filename Value="s_sound.pas"/>
-        <Caret Line="93" Column="15" TopLine="72"/>
+        <Caret Line="106" Column="22" TopLine="72"/>
       </Position7>
       <Position8>
         <Filename Value="s_sound.pas"/>
-        <Caret Line="101" Column="15" TopLine="72"/>
+        <Caret Line="554" Column="14" TopLine="521"/>
       </Position8>
       <Position9>
         <Filename Value="s_sound.pas"/>
-        <Caret Line="106" Column="22" TopLine="72"/>
+        <Caret Line="636" TopLine="595"/>
       </Position9>
       <Position10>
         <Filename Value="s_sound.pas"/>
-        <Caret Line="554" Column="14" TopLine="521"/>
+        <Caret Line="201" TopLine="173"/>
       </Position10>
       <Position11>
         <Filename Value="s_sound.pas"/>
-        <Caret Line="636" TopLine="595"/>
+        <Caret Line="35" Column="12" TopLine="19"/>
       </Position11>
       <Position12>
         <Filename Value="s_sound.pas"/>
-        <Caret Line="201" TopLine="173"/>
+        <Caret Line="190" Column="83" TopLine="185"/>
       </Position12>
       <Position13>
-        <Filename Value="s_sound.pas"/>
-        <Caret Line="35" Column="12" TopLine="19"/>
+        <Filename Value="p_mobj.pas"/>
+        <Caret Line="79" Column="21" TopLine="63"/>
       </Position13>
       <Position14>
-        <Filename Value="s_sound.pas"/>
-        <Caret Line="190" Column="83" TopLine="185"/>
+        <Filename Value="p_mobj.pas"/>
+        <Caret Line="220" Column="19" TopLine="222"/>
       </Position14>
       <Position15>
         <Filename Value="p_mobj.pas"/>
-        <Caret Line="79" Column="21" TopLine="63"/>
+        <Caret Line="349" Column="21" TopLine="337"/>
       </Position15>
       <Position16>
         <Filename Value="p_mobj.pas"/>
-        <Caret Line="220" Column="19" TopLine="222"/>
+        <Caret Line="596" Column="13" TopLine="572"/>
       </Position16>
       <Position17>
         <Filename Value="p_mobj.pas"/>
-        <Caret Line="349" Column="21" TopLine="337"/>
+        <Caret Line="807" TopLine="790"/>
       </Position17>
       <Position18>
         <Filename Value="p_mobj.pas"/>
-        <Caret Line="596" Column="13" TopLine="572"/>
+        <Caret Line="1146" Column="11" TopLine="1143"/>
       </Position18>
       <Position19>
         <Filename Value="p_mobj.pas"/>
-        <Caret Line="807" TopLine="790"/>
+        <Caret Line="1200" Column="11" TopLine="1185"/>
       </Position19>
       <Position20>
         <Filename Value="p_mobj.pas"/>
-        <Caret Line="1146" Column="11" TopLine="1143"/>
+        <Caret Line="1265" Column="15" TopLine="1239"/>
       </Position20>
       <Position21>
         <Filename Value="p_mobj.pas"/>
-        <Caret Line="1200" Column="11" TopLine="1185"/>
+        <Caret Line="1413" Column="66" TopLine="1401"/>
       </Position21>
       <Position22>
-        <Filename Value="p_mobj.pas"/>
-        <Caret Line="1265" Column="15" TopLine="1239"/>
+        <Filename Value="m_defs.pas"/>
+        <Caret Line="1072" Column="23" TopLine="1054"/>
       </Position22>
       <Position23>
-        <Filename Value="p_mobj.pas"/>
-        <Caret Line="1413" Column="66" TopLine="1401"/>
+        <Filename Value="m_defs.pas"/>
+        <Caret Line="96" Column="20" TopLine="81"/>
       </Position23>
       <Position24>
         <Filename Value="m_defs.pas"/>
-        <Caret Line="1072" Column="23" TopLine="1054"/>
+        <Caret Line="52" Column="10" TopLine="37"/>
       </Position24>
       <Position25>
         <Filename Value="m_defs.pas"/>
-        <Caret Line="96" Column="20" TopLine="81"/>
+        <Caret Line="70" Column="10" TopLine="45"/>
       </Position25>
       <Position26>
         <Filename Value="m_defs.pas"/>
-        <Caret Line="52" Column="10" TopLine="37"/>
+        <Caret Line="1076" Column="30" TopLine="1025"/>
       </Position26>
       <Position27>
-        <Filename Value="m_defs.pas"/>
-        <Caret Line="70" Column="10" TopLine="45"/>
+        <Filename Value="i_main.pas"/>
+        <Caret Line="164" Column="12" TopLine="147"/>
       </Position27>
       <Position28>
         <Filename Value="m_defs.pas"/>
-        <Caret Line="1076" Column="30" TopLine="1025"/>
+        <Caret Line="164" Column="27" TopLine="117"/>
       </Position28>
       <Position29>
-        <Filename Value="i_main.pas"/>
-        <Caret Line="164" Column="12" TopLine="147"/>
+        <Filename Value="m_menu.pas"/>
+        <Caret Line="2610" Column="56" TopLine="2596"/>
       </Position29>
       <Position30>
-        <Filename Value="m_defs.pas"/>
-        <Caret Line="164" Column="27" TopLine="117"/>
+        <Filename Value="m_menu.pas"/>
+        <Caret Line="6202" Column="30" TopLine="6184"/>
       </Position30>
     </JumpHistory>
     <RunParams>
