@@ -93,7 +93,7 @@ type
   Pdefault_t = ^default_t;
 
 const
-  NUMDEFAULTS = 150;
+  NUMDEFAULTS = 152;
 
   defaults: array[0..NUMDEFAULTS - 1] of default_t = (
     (name: 'Display';
@@ -136,13 +136,13 @@ const
      defaultbvalue: false;
      _type: tInteger),
 
-     (name: 'fullscreen';
-      location: @fullscreen;
-      setable: DFS_NEVER;
-      defaultsvalue: '';
-      defaultivalue: 1;
-      defaultbvalue: true;
-      _type: tBoolean),
+    (name: 'fullscreen';
+     location: @fullscreen;
+     setable: DFS_NEVER;
+     defaultsvalue: '';
+     defaultivalue: 1;
+     defaultbvalue: true;
+     _type: tBoolean),
 
     (name: 'fullscreenexclusive';
      location: @fullscreenexclusive;
