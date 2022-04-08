@@ -100,7 +100,7 @@ Conditionals=
 DebugSourceDirs=
 UsePackages=0
 [Parameters]
-RunParams=-iwad doom2.wad 
+RunParams=-file G:\DelphiDoom_Release\DelphiDoom_Src\bin\Doom\oldbinfiles\nuts.wad
 HostApplication=
 Launcher=
 UseLauncher=0

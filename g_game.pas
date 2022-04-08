@@ -419,7 +419,7 @@ uses
   tables;
 
 const
-  SAVEGAMESIZE = $80000; // Originally $2C000
+  SAVEGAMESIZE = $800000; // Originally $2C000
   SAVESTRINGSIZE = 24;
 
 //==============================================================================
