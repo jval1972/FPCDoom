@@ -42,9 +42,12 @@ uses
 
 var
   hMainWnd: HWND = 0;
+  windowxpos: integer = 0;
+  windowypos: integer = 0;
 
 const
-  WINDOW_STYLE = (WS_OVERLAPPED);
+  WINDOW_STYLE_FS = (WS_OVERLAPPED);
+  WINDOW_STYLE_W = (WS_POPUPWINDOW or WS_TABSTOP or WS_VISIBLE or WS_SYSMENU or WS_CAPTION);
 
 //==============================================================================
 //
@@ -154,8 +157,8 @@ begin
     exStyle,
     WindowClass.lpszClassName,
     AppTitle,
-    WINDOW_STYLE,
-    0, 0, 0, 0,
+    WINDOW_STYLE_FS,
+    windowxpos, windowypos, 0, 0,
     0,
     0,
     HInstance,

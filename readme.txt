@@ -57,6 +57,7 @@ Fixed misspelled of "joystick" in the menus.
 Improved priority logic for sound channel selection.
 Default sound channels increased to 32.
 Speed optimizations by better exploitation of multiple threads.
+Proper windowed mode.
 
 version 1.13.17.133 (20210110)
 ------------------------------

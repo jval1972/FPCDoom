@@ -1779,7 +1779,7 @@ begin
   if SCREENWIDTH < SCREENHEIGHT then
     SCREENWIDTH := SCREENHEIGHT;
 
-  I_RestoreWindowPos;
+  I_RestoreWindowPos(fullscreen);
 
   singletics := M_CheckParm('-singletics') > 0;
 
