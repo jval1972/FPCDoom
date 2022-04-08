@@ -84,8 +84,8 @@
         <Filename Value="d_main.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="1945"/>
-        <CursorPos X="34" Y="1960"/>
+        <TopLine Value="147"/>
+        <CursorPos X="16" Y="163"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit9>
@@ -175,7 +175,7 @@
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="57"/>
         <TopLine Value="2371"/>
-        <CursorPos X="46" Y="2386"/>
+        <CursorPos X="19" Y="2381"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit20>
@@ -218,8 +218,8 @@
         <Filename Value="i_main.pas"/>
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="89"/>
-        <CursorPos X="29" Y="103"/>
+        <TopLine Value="125"/>
+        <CursorPos X="19" Y="134"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit25>
@@ -1108,7 +1108,7 @@
         <UsageCount Value="10"/>
       </Unit129>
     </Units>
-    <JumpHistory Count="28" HistoryIndex="27">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="s_sound.pas"/>
         <Caret Line="38" Column="13" TopLine="13"/>
@@ -1221,6 +1221,14 @@
         <Filename Value="r_render.pas"/>
         <Caret Line="310" Column="14" TopLine="297"/>
       </Position28>
+      <Position29>
+        <Filename Value="g_game.pas"/>
+        <Caret Line="2381" Column="19" TopLine="2371"/>
+      </Position29>
+      <Position30>
+        <Filename Value="d_main.pas"/>
+        <Caret Line="163" Column="16" TopLine="147"/>
+      </Position30>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
