@@ -2931,7 +2931,7 @@ procedure TChunkIDAT.CopyInterlacedPalette148(const Pass: Byte;
   Src, Dest, Trans{$IFDEF Store16bits}, Extra{$ENDIF}: PChar);
 const
   BitTable: array[1..8] of Integer = ($1, $3, 0, $F, 0, 0, 0, $FF);
-  StartBit: array[1..8] of Integer = (7 , 0 , 0, 4,  0, 0, 0, 0);
+  StartBit: array[1..8] of Integer = (7, 0, 0, 4, 0, 0, 0, 0);
 var
   CurBit, Col: Integer;
   Dest2: PChar;

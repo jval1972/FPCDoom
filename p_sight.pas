@@ -174,7 +174,7 @@ begin
   num := FixedMul8(v1.x - v2.x, v1.dy) +
          FixedMul8(v2.y - v1.y, v1.dx);
 
-  result := FixedDiv(num , den);
+  result := FixedDiv(num, den);
 end;
 
 //==============================================================================

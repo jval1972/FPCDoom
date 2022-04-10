@@ -113,7 +113,7 @@ begin
       24:
         begin
           stream.read(Palet^, hdr.cmlen * 3);
-          FBitmap^.setPalette(Palet, hdr.cmLen, ptBGR8 ,3);
+          FBitmap^.setPalette(Palet, hdr.cmLen, ptBGR8, 3);
          end;
       32:
         begin
