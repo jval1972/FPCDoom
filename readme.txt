@@ -40,6 +40,8 @@ Features:
 
 History - Change log
 --------------------
+version 1.14.18.134 (20220410)
+------------------------------
 Support for the wait keyword in ACTORDEF.
 Corrected states initialization for DEHEXTRA.
 Faster and safer thread de-allocation.
@@ -124,7 +126,6 @@ Added replaces keyword in ACTORDEF
 Support "-" before a flag to remove it in ACTORDEF flags.
 Support for SCALE keyword in ACTOR definitions inside ACTORDEF lumps. Default is 1.0
 Added A_SpawnItemEx ACTORDEF function.
-
 
 Version 1.12.4.118 (20191203)
 ----------------------------
