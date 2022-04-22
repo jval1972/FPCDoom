@@ -332,6 +332,13 @@ var
   usemmx: boolean = true;
   win_vista_or_newer: boolean = true;
 
+//==============================================================================
+//
+// I_GetTickCount
+//
+//==============================================================================
+function I_GetTickCount: LongWord;
+
 implementation
 
 uses
@@ -1130,6 +1137,16 @@ begin
   if assigned(dpifunc) then
     result := dpifunc;
   FreeLibrary(dllinst);
+end;
+
+//==============================================================================
+//
+// I_GetTickCount
+//
+//==============================================================================
+function I_GetTickCount: LongWord;
+begin
+  Result := GetTickCount;
 end;
 
 initialization
