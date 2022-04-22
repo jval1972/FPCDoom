@@ -40,6 +40,9 @@ Features:
 
 History - Change log
 --------------------
+Displays loading time at startup.
+
+--------------------
 version 1.14.18.134 (20220410)
 ------------------------------
 Support for the wait keyword in ACTORDEF.

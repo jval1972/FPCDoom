@@ -1366,6 +1366,7 @@ var
   filename: string;
   scale: integer;
   _time: integer;
+  startloadingtime: LongWord;
   s_error: string;
   i: integer;
   j: integer;
@@ -1373,6 +1374,8 @@ var
   err_shown: boolean;
   s1, s2: string;
 begin
+  startloadingtime := I_GetTickCount;
+
   outproc := @I_IOprintf;
   wadfiles := TDSTringList.Create;
 
@@ -2073,6 +2076,10 @@ begin
     G_RecordDemo(myargv[p + 1]);
     autostart := true;
   end;
+
+  printf(StringOfChar('-', 21) + #13#10);
+  printf('Load time: %2.3f secs'#13#10, [(I_GetTickCount - startloadingtime) / 1000]);
+  printf(StringOfChar('-', 21) + #13#10);
 
   p := M_CheckParm('-playdemo');
   if (p <> 0) and (p < myargc - 1) then
