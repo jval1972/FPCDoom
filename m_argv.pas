@@ -162,6 +162,10 @@ begin
       myargc := i + 1;
       exit;
     end;
+    if myargv[i] <> '' then
+      if myargv[i][1] <> '-' then
+        if fexists(myargv[i]) then
+          myargv[i] := fexpand(myargv[i]);
   end;
 
   for i := myargc to MAXARGS do
@@ -172,6 +176,7 @@ begin
     cmdln := cmdln + ' ' + myargv[i];
   printf('%s'#13#10, [cmdln]);
 
+  ChDir(fpath(myargv[0]));
 end;
 
 //==============================================================================

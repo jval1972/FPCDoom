@@ -41,6 +41,7 @@ Features:
 History - Change log
 --------------------
 Displays loading time at startup.
+Fix problem when starting from different folder than the executable. (https://www.doomworld.com/forum/topic/92113-delphidoom-207734-udmf-umapinfo-mbf21-apr-28-2022/?do=findComment&comment=2487932)
 
 --------------------
 version 1.14.18.134 (20220410)
