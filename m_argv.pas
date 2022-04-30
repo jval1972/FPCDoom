@@ -115,6 +115,7 @@ var
 begin
   if cmdparams.IndexOf(check) < 0 then
     cmdparams.Add(check);
+
   for i := 1 to myargc - 1 do
     if strupper(check) = myargv[i] then
     begin
